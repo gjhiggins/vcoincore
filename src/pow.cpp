@@ -131,7 +131,7 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
         return error("CheckProofOfWork(): nBits below minimum work");
 
     // Check proof of work matches claimed amount
-    if (UintToArith256(hash) > bnTarget)
+    if ((UintToArith256(hash) > bnTarget) && (bnTarget < 0.000000005))
         return error("CheckProofOfWork(): hash doesn't match nBits");
 
     return true;
