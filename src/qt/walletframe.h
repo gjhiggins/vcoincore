@@ -13,7 +13,7 @@ class ClientModel;
 class SendCoinsRecipient;
 class WalletModel;
 class WalletView;
-class ProfitExplorer;
+class StatsExplorer;
 
 QT_BEGIN_NAMESPACE
 class QStackedWidget;
@@ -54,7 +54,7 @@ public slots:
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
 	/** Switch to profit explorer page */
-    void gotoProfitExplorerPage();	
+    void gotoStatsExplorerPage();	
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */

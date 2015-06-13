@@ -18,7 +18,7 @@
 #include "transactiontablemodel.h"
 #include "transactionview.h"
 #include "walletmodel.h"
-#include "profitexplorer.h"
+#include "statsexplorer.h"
 
 #include "ui_interface.h"
 
@@ -39,7 +39,7 @@ WalletView::WalletView(QWidget *parent):
     overviewPage = new OverviewPage();
 
     transactionsPage = new QWidget(this);
-    profitexplorerPage = new ProfitExplorer(this);
+    statsexplorerPage = new StatsExplorer(this);
     QVBoxLayout *vbox = new QVBoxLayout();
     QHBoxLayout *hbox_buttons = new QHBoxLayout();
     transactionView = new TransactionView(this);
@@ -61,7 +61,7 @@ WalletView::WalletView(QWidget *parent):
     addWidget(transactionsPage);
     addWidget(receiveCoinsPage);
     addWidget(sendCoinsPage);
-	addWidget(profitexplorerPage);
+	addWidget(statsexplorerPage);
 
     // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
@@ -169,9 +169,9 @@ void WalletView::gotoHistoryPage()
     setCurrentWidget(transactionsPage);
 }
 
-void WalletView::gotoProfitExplorerPage()
+void WalletView::gotoStatsExplorerPage()
 {
-    setCurrentWidget(profitexplorerPage);
+    setCurrentWidget(statsexplorerPage);
 }
 
 void WalletView::gotoReceiveCoinsPage()

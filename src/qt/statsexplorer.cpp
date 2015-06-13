@@ -1,4 +1,4 @@
-#include "profitexplorer.h"
+#include "statsexplorer.h"
 #include "ui_profitexplorer.h"
 #include "rpcserver.h"
 #include "wallet/wallet.h"
@@ -16,9 +16,9 @@ extern unsigned int nTargetSpacing;
 QVector<double> nTimeData(0), myStakeData(0), netStakeData(0), difficultyData(0);
 QVector<double> velTimeData(0), velAmountData(0);
 
-ProfitExplorer::ProfitExplorer(QWidget *parent) :
+StatsExplorer::StatsExplorer(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ProfitExplorer)
+    ui(new Ui::StatsExplorer)
 {
     ui->setupUi(this);
     loadStakeChart(true);
@@ -28,7 +28,7 @@ ProfitExplorer::ProfitExplorer(QWidget *parent) :
     updateTimer.start();
 }
 
-void ProfitExplorer::updateTimer_timeout()
+void StatsExplorer::updateTimer_timeout()
 {
     // if(fShutdown)
     // return;
@@ -37,7 +37,7 @@ void ProfitExplorer::updateTimer_timeout()
         loadStakeChart(false);
 }
 
-void ProfitExplorer::on_recomputeButton_clicked()
+void StatsExplorer::on_recomputeButton_clicked()
 {
     loadStakeChart(false);
 }
@@ -144,7 +144,7 @@ void OverviewPage::updatePlot(int count)
 */
 
 
-void ProfitExplorer::loadStakeChart(bool firstRun)
+void StatsExplorer::loadStakeChart(bool firstRun)
 {
     // if(fShutdown)
     // return;
@@ -364,7 +364,7 @@ void ProfitExplorer::loadStakeChart(bool firstRun)
 
 }
 
-ProfitExplorer::~ProfitExplorer()
+StatsExplorer::~StatsExplorer()
 {
     delete ui;
 }

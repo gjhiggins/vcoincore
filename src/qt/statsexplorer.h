@@ -1,25 +1,25 @@
-#ifndef PROFITEXPLORER_H
-#define PROFITEXPLORER_H
+#ifndef STATSEXPLORER_H
+#define STATSEXPLORER_H
 
 #include <QWidget>
 #include <QTimer>
 #include "qcustomplot.h"
 
 namespace Ui {
-    class ProfitExplorer;
+    class StatsExplorer;
 }
 
-class ProfitExplorer : public QWidget
+class StatsExplorer : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ProfitExplorer(QWidget *parent = 0);
-    ~ProfitExplorer();
+    explicit StatsExplorer(QWidget *parent = 0);
+    ~StatsExplorer();
     void loadStakeChart(bool firstRun);
 
 private:
-    Ui::ProfitExplorer *ui;
+    Ui::StatsExplorer *ui;
     QTimer updateTimer;
 
 private slots:
@@ -27,4 +27,4 @@ private slots:
     void on_recomputeButton_clicked();
 };
 
-#endif // PROFITEXPLORER_H
+#endif // STATSEXPLORER_H
