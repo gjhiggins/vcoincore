@@ -66,10 +66,6 @@
         <translation>این‌ها نشانی‌های بیت‌کوین شما برای ارسال وجود هستند. همیشه قبل از ارسال سکه‌ها، نشانی دریافت‌کننده و مقدار ارسالی را بررسی کنید.</translation>
     </message>
     <message>
-        <source>These are your Bitcoin addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>این‌ها نشانی‌های بیت‌کوین شما برای دریافت وجوه هستند. توصیه می‌شود یک نشانی دریافت جدید برای هر تبادل استفاده کنید.</translation>
-    </message>
-    <message>
         <source>Copy &amp;Label</source>
         <translation>کپی و برچسب‌&amp;گذاری</translation>
     </message>
@@ -158,10 +154,6 @@
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
         <translation>آیا مطمئن هستید که می‌خواهید کیف پول خود را رمزنگاری کنید؟</translation>
-    </message>
-    <message>
-        <source>Bitcoin Core will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your bitcoins from being stolen by malware infecting your computer.</source>
-        <translation>هسته بیت‌کوین هم اکنون بسته می‌شود تا فرایند رمزگذاری را تمام کند. به خاطر داشته باشید که رمزگذاری کردن کیف پول‌تان نمی‌تواند به طور کامل بیت‌کوین‌های شما را در برابر دزدیده شدن توسط بدافزارهایی که رایانه‌ی شما را آلوده می‌کنند، محافظت نماید.</translation>
     </message>
     <message>
         <source>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. For security reasons, previous backups of the unencrypted wallet file will become useless as soon as you start using the new, encrypted wallet.</source>
@@ -465,24 +457,8 @@
         <translation>پول خورد:</translation>
     </message>
     <message>
-        <source>Tree mode</source>
-        <translation>مدل درختی</translation>
-    </message>
-    <message>
-        <source>List mode</source>
-        <translation>مدل لیست</translation>
-    </message>
-    <message>
         <source>Amount</source>
         <translation>مبلغ</translation>
-    </message>
-    <message>
-        <source>Received with label</source>
-        <translation>دریافت شده با برچسب</translation>
-    </message>
-    <message>
-        <source>Received with address</source>
-        <translation>دریافت شده با نشانی</translation>
     </message>
     <message>
         <source>Date</source>
@@ -491,10 +467,6 @@
     <message>
         <source>Confirmed</source>
         <translation>تأیید شده</translation>
-    </message>
-    <message>
-        <source>Priority</source>
-        <translation>اولویت</translation>
     </message>
     <message>
         <source>Copy address</source>
@@ -511,22 +483,6 @@
     <message>
         <source>Copy transaction ID</source>
         <translation>کپی شناسهٔ تراکنش</translation>
-    </message>
-    <message>
-        <source>low</source>
-        <translation>کم</translation>
-    </message>
-    <message>
-        <source>lower</source>
-        <translation>کمتر</translation>
-    </message>
-    <message>
-        <source>lowest</source>
-        <translation>کمترین</translation>
-    </message>
-    <message>
-        <source>none</source>
-        <translation>هیچکدام</translation>
     </message>
     <message>
         <source>yes</source>
@@ -751,10 +707,6 @@
         <translation>پیش‌فرض</translation>
     </message>
     <message>
-        <source>none</source>
-        <translation>هیچکدام</translation>
-    </message>
-    <message>
         <source>Confirm options reset</source>
         <translation>تأییدِ بازنشانی گزینه‌ها</translation>
     </message>
@@ -813,20 +765,8 @@
         <translation>مدیریت URI</translation>
     </message>
     <message>
-        <source>Payment request error</source>
-        <translation>خطای درخواست پرداخت</translation>
-    </message>
-    <message>
         <source>Cannot start bitcoin: click-to-pay handler</source>
         <translation>نمی‌توان بیت‌کوین را اجرا کرد: کنترل‌کنندهٔ کلیک-و-پرداخت</translation>
-    </message>
-    <message>
-        <source>Payment request expired.</source>
-        <translation>درخواست پرداخت منقضی شد.</translation>
-    </message>
-    <message>
-        <source>Invalid payment request.</source>
-        <translation>درخواست پرداخت نامعتبر</translation>
     </message>
     </context>
 <context>
@@ -1089,10 +1029,6 @@
         <translation>با احتساب هزینهٔ %1 برای هر تراکنش، مجموع میزان پرداختی از مبلغ تراز شما بیشتر می‌شود.</translation>
     </message>
     <message>
-        <source>Payment request expired.</source>
-        <translation>درخواست پرداخت منقضی شد.</translation>
-    </message>
-    <message>
         <source>(no label)</source>
         <translation>(بدون برچسب)</translation>
     </message>
@@ -1116,18 +1052,6 @@
         <translation>&amp;برچسب:</translation>
     </message>
     <message>
-        <source>Choose previously used address</source>
-        <translation>انتخاب نشانی پیش‌تر استفاده شده</translation>
-    </message>
-    <message>
-        <source>This is a normal payment.</source>
-        <translation>این یک پرداخت عادی است</translation>
-    </message>
-    <message>
-        <source>The Bitcoin address to send the payment to</source>
-        <translation>نشانی بیت‌کوین برای ارسال پرداخت به آن</translation>
-    </message>
-    <message>
         <source>Alt+A</source>
         <translation>Alt+A</translation>
     </message>
@@ -1138,10 +1062,6 @@
     <message>
         <source>Alt+P</source>
         <translation>Alt+P</translation>
-    </message>
-    <message>
-        <source>Remove this entry</source>
-        <translation>حذف این مدخل</translation>
     </message>
     <message>
         <source>Message:</source>
@@ -1160,14 +1080,6 @@
     <message>
         <source>&amp;Sign Message</source>
         <translation>ا&amp;مضای پیام</translation>
-    </message>
-    <message>
-        <source>The Bitcoin address to sign the message with</source>
-        <translation>نشانی بیت‌کوین برای امضاء پیغام با آن</translation>
-    </message>
-    <message>
-        <source>Choose previously used address</source>
-        <translation>انتخاب نشانی پیشتر استفاده شده</translation>
     </message>
     <message>
         <source>Alt+A</source>
@@ -1212,10 +1124,6 @@
     <message>
         <source>&amp;Verify Message</source>
         <translation>&amp;شناسایی پیام</translation>
-    </message>
-    <message>
-        <source>The Bitcoin address the message was signed with</source>
-        <translation>نشانی بیت‌کوین که پیغام با آن امضاء شده</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified Bitcoin address</source>
@@ -1289,21 +1197,13 @@
         <translation> هسته Bitcoin </translation>
     </message>
     <message>
-        <source>The Bitcoin Core developers</source>
-        <translation>توسعه‌دهندگان هسته بیت‌کوین</translation>
-    </message>
-    <message>
         <source>[testnet]</source>
         <translation>آزمایش شبکه</translation>
     </message>
 </context>
 <context>
     <name>TrafficGraphWidget</name>
-    <message>
-        <source>KB/s</source>
-        <translation>کیلوبایت</translation>
-    </message>
-</context>
+    </context>
 <context>
     <name>TransactionDesc</name>
     <message>
@@ -1604,10 +1504,6 @@
         <translation>استخراج انجام نشد</translation>
     </message>
     <message>
-        <source>Exporting Successful</source>
-        <translation>استخراج موفق</translation>
-    </message>
-    <message>
         <source>Comma separated file (*.csv)</source>
         <translation>پروندهٔ نوع CSV جداشونده با کاما (*.csv)</translation>
     </message>
@@ -1763,20 +1659,8 @@
         <translation>خطا در بازگشایی پایگاه داده ی بلوک</translation>
     </message>
     <message>
-        <source>Error: A fatal internal error occured, see debug.log for details</source>
-        <translation>خطا: یک خطای داخلی مهلک روی داد، debug.log را برای جزئیات ببینید</translation>
-    </message>
-    <message>
-        <source>Error: Disk space is low!</source>
-        <translation>خطا: فضای دیسک کم است!</translation>
-    </message>
-    <message>
         <source>Failed to listen on any port. Use -listen=0 if you want this.</source>
         <translation>شنیدن هر گونه درگاه انجام پذیر نیست. ازlisten=0  برای اینکار استفاده کیند.</translation>
-    </message>
-    <message>
-        <source>Importing...</source>
-        <translation>در حال پیاده‌سازی...</translation>
     </message>
     <message>
         <source>Verifying blocks...</source>
@@ -1785,10 +1669,6 @@
     <message>
         <source>Verifying wallet...</source>
         <translation>در حال بازبینی کیف پول...</translation>
-    </message>
-    <message>
-        <source>Warning: Please check that your computer's date and time are correct! If your clock is wrong Bitcoin Core will not work properly.</source>
-        <translation>هشدار: تاریخ و ساعت کامپیوتر خود را بررسی کنید. اگر ساعت درست نباشد هسته بیت‌کوین به درستی کار نخواهد کرد.</translation>
     </message>
     <message>
         <source>Choose data directory on startup (default: 0)</source>
@@ -1817,10 +1697,6 @@
     <message>
         <source>Start minimized</source>
         <translation>اجرای برنامه به صورت کوچک‌شده</translation>
-    </message>
-    <message>
-        <source>UI Options:</source>
-        <translation>گزینه‌های رابط کاربری:</translation>
     </message>
     <message>
         <source>Use UPnP to map the listening port (default: 1 when listening)</source>

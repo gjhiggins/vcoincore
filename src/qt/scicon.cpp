@@ -73,7 +73,8 @@ QColor SingleColor()
         colorbase = colorHighlightBg;
     else
         colorbase = colorHighlightFg;
-    return colorbase;
+    // return colorbase;
+    return QColor(5,168,162);
 #endif
 }
 
