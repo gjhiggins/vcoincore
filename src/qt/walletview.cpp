@@ -277,6 +277,12 @@ void WalletView::usedSendingAddresses()
     dlg->setModel(walletModel->getAddressTableModel());
     dlg->show();
 }
+void WalletView::updatePlot(int count)
+{
+    if(!walletModel)
+        return;
+    overviewPage->updatePlot(count);
+}
 
 void WalletView::usedReceivingAddresses()
 {

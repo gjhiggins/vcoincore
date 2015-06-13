@@ -9,17 +9,23 @@
 #include "clientmodel.h"
 #include "guiconstants.h"
 #include "guiutil.h"
+#include "main.h"
+#include "util.h"
 #include "optionsmodel.h"
 #include "scicon.h"
 #include "transactionfilterproxy.h"
 #include "transactiontablemodel.h"
 #include "walletmodel.h"
+#include "univalue/univalue.h"
 
 #include <QAbstractItemDelegate>
 #include <QPainter>
 
 #define DECORATION_SIZE 54
 #define NUM_ITEMS 5
+
+extern UniValue GetNetworkHashPS(int lookup, int height);
+// extern UniValue getnetworkhashps(const UniValue& params, bool fHelp);
 
 class TxViewDelegate : public QAbstractItemDelegate
 {
@@ -137,6 +143,94 @@ OverviewPage::OverviewPage(QWidget *parent) :
 
     // start with displaying the "out of sync" warnings
     showOutOfSyncWarning(true);
+    if(GetBoolArg("-chart", true))
+    {
+        // setup Plot
+        // create graph
+        ui->hashplot->addGraph();
+
+        // Use usual background
+        ui->hashplot->setBackground(QBrush(QWidget::palette().color(this->backgroundRole())));
+
+        // give the axes some labels:
+        ui->hashplot->xAxis->setLabel(tr("Blocks"));
+        ui->hashplot->yAxis->setLabel(tr("NethashPS"));
+
+        // set the pens
+        ui->hashplot->graph(0)->setPen(QPen(QColor(5, 168, 162)));
+        ui->hashplot->graph(0)->setLineStyle(QCPGraph::lsLine);
+
+        // set axes label fonts:
+        QFont label = font();
+        ui->hashplot->xAxis->setLabelFont(label);
+        ui->hashplot->yAxis->setLabelFont(label);
+    }
+    else
+    {
+        ui->hashplot->setVisible(false);
+    }
+}
+
+void OverviewPage::updatePlot(int count)
+{
+	static int64_t lastUpdate = 0;
+    // Double Check to make sure we don't try to update the plot when it is disabled
+    if(!GetBoolArg("-chart", true)) { return; }
+    if (GetTime() - lastUpdate < 60) { return; } // This is just so it doesn't redraw rapidly during syncing
+
+    // if(fDebug) { printf("Plot: Getting Ready: pidnexBest: %p\n", pindexBest); }
+
+    int numLookBack = 4320;
+    int64_t hashMax = 0;
+    CBlockIndex* pindex = chainActive.Tip();
+    int height = chainActive.Height();
+    int xStart = std::max<int>(height-numLookBack, 0) + 1;
+    int xEnd = height;
+
+    // Start at the end and walk backwards
+    int i = numLookBack-1;
+    int x = xEnd;
+
+    // This should be a noop if the size is already 2000
+    vX.resize(numLookBack);
+    vY.resize(numLookBack);
+
+    if(fDebug) {
+       if(height != pindex->nHeight) {
+           printf("Plot: Warning: nBestHeight and pindexBest->nHeight don't match: %d:%d:\n", height, pindex->nHeight);
+       }
+    }
+
+    if(fDebug) { printf("Plot: Reading blockchain\n"); }
+    CBlockIndex* itr = pindex;
+    while(i >= 0 && itr != NULL)
+    {
+        if(fDebug) { printf("Plot: Processing block: %d - pprev: %p\n", itr->nHeight, itr->pprev); }
+        vX[i] = itr->nHeight;
+        vY[i] = GetNetworkHashPS(120, vX[i]).get_int64();
+        hashMax = std::max<int64_t>(hashMax, vY[i]);
+
+        itr = itr->pprev;
+        i--;
+        x--;
+    }
+
+    if(fDebug) { printf("Plot: Drawing plot\n"); }
+
+    ui->hashplot->graph(0)->setData(vX, vY);
+
+    // set axes ranges, so we see all data:
+    ui->hashplot->xAxis->setRange((double)xStart, (double)xEnd);
+    ui->hashplot->yAxis->setRange(0, hashMax+(hashMax/10));
+
+    ui->hashplot->xAxis->setAutoSubTicks(false);
+    ui->hashplot->yAxis->setAutoSubTicks(false);
+    ui->hashplot->xAxis->setSubTickCount(0);
+    ui->hashplot->yAxis->setSubTickCount(0);
+
+    ui->hashplot->replot();
+
+    if(fDebug) { printf("Plot: Done!\n"); }
 }
 
 void OverviewPage::handleTransactionClicked(const QModelIndex &index)
@@ -195,12 +289,13 @@ void OverviewPage::updateWatchOnlyLabels(bool showWatchOnly)
 
 void OverviewPage::setClientModel(ClientModel *model)
 {
+    bool fTestNet = GetBoolArg("-testnet", false);
     this->clientModel = model;
     if(model)
     {
         // Show warning if this is a prerelease version
         connect(model, SIGNAL(alertsChanged(QString)), this, SLOT(updateAlerts(QString)));
-        updateAlerts(model->getStatusBarWarnings());
+        updateAlerts(fTestNet? "This is testnet" : model->getStatusBarWarnings());
     }
 }
 

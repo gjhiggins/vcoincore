@@ -662,6 +662,11 @@ void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate)
     // Prevent orphan statusbar messages (e.g. hover Quit in main menu, wait until chain-sync starts -> garbelled text)
     statusBar()->clearMessage();
 
+    if(GetBoolArg("-chart", true) && count > 0 )
+    {
+        walletFrame->updatePlot(count);
+    }
+
     // Acquire current block source
     enum BlockSource blockSource = clientModel->getBlockSource();
     switch (blockSource) {

@@ -75,6 +75,8 @@ public slots:
     void usedSendingAddresses();
     /** Show used receiving addresses */
     void usedReceivingAddresses();
+    /** Update the plot on the overview (home) page */
+    void updatePlot(int count);
 };
 
 #endif // BITCOIN_QT_WALLETFRAME_H

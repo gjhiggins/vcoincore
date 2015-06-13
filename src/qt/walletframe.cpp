@@ -175,6 +175,13 @@ void WalletFrame::unlockWallet()
         walletView->unlockWallet();
 }
 
+void WalletFrame::updatePlot(int count)
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+    	walletView->updatePlot(count);
+}
+
 void WalletFrame::usedSendingAddresses()
 {
     WalletView *walletView = currentWalletView();

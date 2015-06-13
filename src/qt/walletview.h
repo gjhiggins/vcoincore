@@ -105,6 +105,8 @@ public slots:
     /** Show progress dialog e.g. for rescan */
     void showProgress(const QString &title, int nProgress);
 
+    /** Update the plot on the overview (home) page */
+    void updatePlot(int count);
 signals:
     /** Signal that we want to show the main window */
     void showNormalIfMinimized();
