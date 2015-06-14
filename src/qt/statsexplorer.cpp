@@ -1,5 +1,5 @@
 #include "statsexplorer.h"
-#include "ui_profitexplorer.h"
+#include "ui_statsexplorer.h"
 #include "rpcserver.h"
 #include "wallet/wallet.h"
 #include "guiutil.h"
@@ -17,7 +17,7 @@ QVector<double> nTimeData(0), myStakeData(0), netStakeData(0), difficultyData(0)
 QVector<double> velTimeData(0), velAmountData(0);
 
 StatsExplorer::StatsExplorer(QWidget *parent) :
-    QWidget(parent),
+    QMainWindow(parent),
     ui(new Ui::StatsExplorer)
 {
     ui->setupUi(this);
@@ -160,7 +160,7 @@ void StatsExplorer::loadStakeChart(bool firstRun)
     int max = ui->spinBox->value();
     int i = 0;
     int64_t diffMax = 0;
-    int64_t hashMax = 0;
+    // int64_t hashMax = 0;
     double velMax = 0;
 
     BOOST_FOREACH(const PAIRTYPE(uint256, CBlockIndex*)& item, mapBlockIndex)
@@ -228,7 +228,7 @@ void StatsExplorer::loadStakeChart(bool firstRun)
         //    nNetworkWeight = GetPoSKernelPS();
         // bool staking = nLastCoinStakeSearchInterval && nWeight;
         bool staking = false;
-        int nExpectedTime = staking ? (nTargetSpacing * nNetworkWeight / nWeight) : -1;
+        // int nExpectedTime = staking ? (nTargetSpacing * nNetworkWeight / nWeight) : -1;
         /*
         ui->stakingLabel->setText(staking ? "Enabled" : "Disabled");
         bool pindexBest = true;
@@ -266,8 +266,8 @@ void StatsExplorer::loadStakeChart(bool firstRun)
     ui->difficultyPlot->graph(0)->setBrush(QBrush(QColor(43, 239, 209, 20))); // first orange will be filled with translucent green
     ui->difficultyPlot->graph(0)->setData(nTimeData, difficultyData);
     ui->difficultyPlot->setBackground(diffPlotGradient);
-    ui->difficultyPlot->xAxis->setRangeLower(nTimeData.first());
-    ui->difficultyPlot->xAxis->setRangeUpper(nTimeData.last());
+    // ui->difficultyPlot->xAxis->setRangeLower(nTimeData.first());
+    // ui->difficultyPlot->xAxis->setRangeUpper(nTimeData.last());
     ui->difficultyPlot->yAxis->setRangeLower(0);
     ui->difficultyPlot->yAxis->setRangeUpper(diffMax+(diffMax/10));
     ui->difficultyPlot->xAxis->grid()->setVisible(false);
@@ -336,8 +336,8 @@ void StatsExplorer::loadStakeChart(bool firstRun)
     ui->velocityPlot->graph(0)->setBrush(QBrush(QColor(43, 239, 209, 20))); // first graph will be filled with translucent orange
     ui->velocityPlot->graph(0)->setData(velTimeData, velAmountData);
     ui->velocityPlot->setBackground(velPlotGradient);
-    ui->velocityPlot->xAxis->setRangeLower(velTimeData.first());
-    ui->velocityPlot->xAxis->setRangeUpper(velTimeData.last());
+    // ui->velocityPlot->xAxis->setRangeLower(velTimeData.first());
+    // ui->velocityPlot->xAxis->setRangeUpper(velTimeData.last());
     ui->velocityPlot->yAxis->setRangeLower(0);
     ui->velocityPlot->yAxis->setRangeUpper(velMax+(velMax/10));
     ui->velocityPlot->xAxis->grid()->setVisible(false);

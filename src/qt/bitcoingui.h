@@ -119,7 +119,7 @@ private:
     Notificator *notificator;
     RPCConsole *rpcConsole;
     BlockExplorer  *explorerWindow;
-    StatsExplorer *statsexplorerPage;
+    StatsExplorer *statsexplorerWindow;
     tradingDialog  *tradingWindow;
 
     /** Keep track of previous number of blocks, to detect progress */

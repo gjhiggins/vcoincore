@@ -45,6 +45,7 @@
         <file alias="about_qt">res/icons/about_qt.png</file>
         <file alias="verify">res/icons/verify.png</file>
         <file alias="warning">res/icons/warning.png</file>
+        <file alias="trade">res/icons/trade.png</file>
         <file alias="explorer">res/icons/explorer.png</file>
         <file alias="forward">res/icons/forward.png</file>
         <file alias="back">res/icons/back.png</file>

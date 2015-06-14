@@ -92,7 +92,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle *networkStyle, QWidget *parent) :
     encryptWalletAction(0),
     backupWalletAction(0),
     changePassphraseAction(0),
-    statsexplorerWindow(0),
+    // statsexplorerWindow(0),
     aboutQtAction(0),
     openRPCConsoleAction(0),
     openAction(0),
