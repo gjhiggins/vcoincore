@@ -49,6 +49,7 @@
         <file alias="explorer">res/icons/explorer.png</file>
         <file alias="forward">res/icons/forward.png</file>
         <file alias="back">res/icons/back.png</file>
+		<file alias="stats">res/icons/stats.png</file>
     </qresource>
     <qresource prefix="/movies">
         <file alias="spinner-000">res/movies/spinner-000.png</file>

@@ -24,6 +24,7 @@ class Notificator;
 class OptionsModel;
 class RPCConsole;
 class BlockExplorer;
+class StatsExplorer;
 class SendCoinsRecipient;
 class UnitDisplayStatusBarControl;
 class WalletFrame;
@@ -108,6 +109,7 @@ private:
     QAction *openRPCConsoleAction;
     QAction *openAction;
 	QAction *openBlockExplorerAction;
+    QAction *openStatsExplorerAction;
     QAction *showHelpMessageAction;
 
     QSystemTrayIcon *trayIcon;
@@ -115,6 +117,7 @@ private:
     Notificator *notificator;
     RPCConsole *rpcConsole;
     BlockExplorer  *explorerWindow;
+    StatsExplorer *statsexplorerPage;
 
     /** Keep track of previous number of blocks, to detect progress */
     int prevBlocks;
@@ -179,6 +182,8 @@ private slots:
     void gotoHistoryPage();
     /** Switch to Explorer Page */
     void gotoBlockExplorerPage(); 
+    /** Switch to profit explorer page */
+    void gotoStatsExplorerPage();
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */

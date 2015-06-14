@@ -125,7 +125,13 @@ void WalletFrame::gotoBlockExplorerPage()
     for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
         i.value()->gotoBlockExplorerPage();
 }
-void WalletFrame::gotoTradingPage()
+
+void WalletFrame::gotoStatsExplorerPage()
+{
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoStatsExplorerPage();
+}
 
 void WalletFrame::gotoReceiveCoinsPage()
 {

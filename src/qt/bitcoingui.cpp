@@ -21,6 +21,7 @@
 #include "walletframe.h"
 #include "walletmodel.h"
 #include "blockexplorer.h"
+#include "statsexplorer.h"
 #endif // ENABLE_WALLET
 
 #ifdef Q_OS_MAC
@@ -90,6 +91,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle *networkStyle, QWidget *parent) :
     encryptWalletAction(0),
     backupWalletAction(0),
     changePassphraseAction(0),
+    statsexplorerWindow(0),
     aboutQtAction(0),
     openRPCConsoleAction(0),
     openAction(0),
@@ -140,6 +142,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle *networkStyle, QWidget *parent) :
         walletFrame = new WalletFrame(this);
         setCentralWidget(walletFrame);
         explorerWindow = new BlockExplorer(this);
+        statsexplorerWindow = new StatsExplorer(this);
     } else
 #endif // ENABLE_WALLET
     {
@@ -224,6 +227,12 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle *networkStyle, QWidget *parent) :
 
     // prevents an oben debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), explorerWindow, SLOT(hide()));
+
+    connect(openStatsExplorerAction, SIGNAL(triggered()), statsexplorerWindow, SLOT(show()));
+
+    // prevents an oben debug window from becoming stuck/unusable on client shutdown
+    connect(quitAction, SIGNAL(triggered()), statsexplorerWindow, SLOT(hide()));
+
     // Install event filter to be able to catch status tip events (QEvent::StatusTip)
     this->installEventFilter(this);
 
@@ -349,6 +358,9 @@ void BitcoinGUI::createActions()
     openBlockExplorerAction = new QAction(QIcon(":/icons/explorer"), tr("&Block explorer window"), this);
     openBlockExplorerAction->setStatusTip(tr("Block explorer window"));
 
+    openStatsExplorerAction = new QAction(QIcon(":/icons/stats"), tr("&Stats explorer window"), this);
+    openBlockExplorerAction->setStatusTip(tr("Statistics explorer window"));
+
     showHelpMessageAction = new QAction(TextColorIcon(":/icons/info"), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
     showHelpMessageAction->setStatusTip(tr("Show the VCoin Core help message to get a list with possible VCoin command-line options"));
@@ -410,6 +422,7 @@ void BitcoinGUI::createMenuBar()
 
     QMenu *trading = appMenuBar->addMenu(tr("&Trade"));
     trading->addAction(openBlockExplorerAction);
+    trading->addAction(openStatsExplorerAction);
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
     if(walletFrame)
@@ -564,6 +577,7 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(optionsAction);
     trayIconMenu->addAction(openBlockExplorerAction);
+    trayIconMenu->addAction(openStatsExplorerAction);
     trayIconMenu->addAction(openRPCConsoleAction);
 #ifndef Q_OS_MAC // This is built-in on Mac
     trayIconMenu->addSeparator();
@@ -656,6 +670,12 @@ void BitcoinGUI::gotoBlockExplorerPage()
 {
     openBlockExplorerAction->setChecked(true);
     if (walletFrame) walletFrame->gotoBlockExplorerPage();
+}
+
+void BitcoinGUI::gotoStatsExplorerPage()
+{
+    openStatsExplorerAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoStatsExplorerPage();
 }
 
 #endif // ENABLE_WALLET

@@ -18,6 +18,7 @@ class SendCoinsRecipient;
 class TransactionView;
 class WalletModel;
 class BlockExplorer;
+class StatsExplorer;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -62,6 +63,7 @@ private:
     ReceiveCoinsDialog *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
     BlockExplorer *explorerWindow;
+    StatsExplorer *statsexplorerPage;
 
     TransactionView *transactionView;
 
@@ -74,6 +76,8 @@ public slots:
     void gotoHistoryPage();
     /** Switch to explorer page */
     void gotoBlockExplorerPage();	
+    /** Switch to profit explorer page */
+    void gotoStatsExplorerPage();	
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
