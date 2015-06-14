@@ -15,6 +15,7 @@ class WalletModel;
 class WalletView;
 class BlockExplorer;
 class StatsExplorer;
+class TradingDialog;
 
 QT_BEGIN_NAMESPACE
 class QStackedWidget;
@@ -58,6 +59,8 @@ public slots:
     void gotoBlockExplorerPage();	
 	/** Switch to profit explorer page */
     void gotoStatsExplorerPage();	
+	/** Switch to trading page */
+    void gotoTradingPage();	
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */

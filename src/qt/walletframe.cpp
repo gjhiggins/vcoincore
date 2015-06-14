@@ -133,6 +133,13 @@ void WalletFrame::gotoStatsExplorerPage()
         i.value()->gotoStatsExplorerPage();
 }
 
+void WalletFrame::gotoTradingPage()
+{
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoTradingPage();
+}
+
 void WalletFrame::gotoReceiveCoinsPage()
 {
     QMap<QString, WalletView*>::const_iterator i;
