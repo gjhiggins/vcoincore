@@ -23,7 +23,7 @@ class NetworkStyle;
 class Notificator;
 class OptionsModel;
 class RPCConsole;
-class tradingDialog;
+class StatsExplorer;
 class SendCoinsRecipient;
 class UnitDisplayStatusBarControl;
 class WalletFrame;
@@ -107,14 +107,14 @@ private:
     QAction *aboutQtAction;
     QAction *openRPCConsoleAction;
     QAction *openAction;
-	QAction *openTradingwindowAction;
+    QAction *openStatsExplorerAction;
     QAction *showHelpMessageAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
     Notificator *notificator;
     RPCConsole *rpcConsole;
-    tradingDialog  *tradingWindow;
+    StatsExplorer *statsexplorerWindow;
 
     /** Keep track of previous number of blocks, to detect progress */
     int prevBlocks;
@@ -177,9 +177,9 @@ private slots:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
+    /** Switch to profit explorer page */
+    void gotoStatsExplorerPage();
     /** Switch to Trading Page */
-    void gotoTradingPage(); 
-    /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");

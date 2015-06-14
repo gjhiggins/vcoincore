@@ -20,7 +20,7 @@
 #ifdef ENABLE_WALLET
 #include "walletframe.h"
 #include "walletmodel.h"
-#include "tradingdialog.h"
+#include "statsexplorer.h"
 #endif // ENABLE_WALLET
 
 #ifdef Q_OS_MAC
@@ -90,6 +90,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle *networkStyle, QWidget *parent) :
     encryptWalletAction(0),
     backupWalletAction(0),
     changePassphraseAction(0),
+    // statsexplorerWindow(0),
     aboutQtAction(0),
     openRPCConsoleAction(0),
     openAction(0),
@@ -98,7 +99,6 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle *networkStyle, QWidget *parent) :
     trayIconMenu(0),
     notificator(0),
     rpcConsole(0),
-    tradingWindow(0),
     prevBlocks(0),
     spinnerFrame(0)
 {
@@ -139,7 +139,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle *networkStyle, QWidget *parent) :
         /** Create wallet frame and make it the central widget */
         walletFrame = new WalletFrame(this);
         setCentralWidget(walletFrame);
-        tradingWindow = new tradingDialog(this);
+        statsexplorerWindow = new StatsExplorer(this);
     } else
 #endif // ENABLE_WALLET
     {
@@ -220,10 +220,10 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle *networkStyle, QWidget *parent) :
     // prevents an open debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), rpcConsole, SLOT(hide()));
 
-    connect(openTradingwindowAction, SIGNAL(triggered()), tradingWindow, SLOT(show()));
+    connect(openStatsExplorerAction, SIGNAL(triggered()), statsexplorerWindow, SLOT(show()));
 
     // prevents an oben debug window from becoming stuck/unusable on client shutdown
-    connect(quitAction, SIGNAL(triggered()), tradingWindow, SLOT(hide()));
+    connect(quitAction, SIGNAL(triggered()), statsexplorerWindow, SLOT(hide()));
     // Install event filter to be able to catch status tip events (QEvent::StatusTip)
     this->installEventFilter(this);
 
@@ -347,8 +347,8 @@ void BitcoinGUI::createActions()
     openAction->setStatusTip(tr("Open a vcoin: URI or payment request"));
 
 
-    openTradingwindowAction = new QAction(QIcon(":/icons/trade"), tr("&Trading window"), this);
-    openTradingwindowAction->setStatusTip(tr("Bleutrade trading window"));
+    openStatsExplorerAction = new QAction(QIcon(":/icons/stats"), tr("&Stats explorer window"), this);
+    openBlockExplorerAction->setStatusTip(tr("Statistics explorer window"));
 
 
     showHelpMessageAction = new QAction(TextColorIcon(":/icons/info"), tr("&Command-line options"), this);
@@ -411,7 +411,7 @@ void BitcoinGUI::createMenuBar()
     settings->addAction(optionsAction);
 
     QMenu *trading = appMenuBar->addMenu(tr("&Trade"));
-    trading->addAction(openTradingwindowAction);
+    trading->addAction(openStatsExplorerAction);
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
     if(walletFrame)
@@ -565,7 +565,7 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addAction(verifyMessageAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(optionsAction);
-    trayIconMenu->addAction(openTradingwindowAction);
+    trayIconMenu->addAction(openStatsExplorerAction);
     trayIconMenu->addAction(openRPCConsoleAction);
 #ifndef Q_OS_MAC // This is built-in on Mac
     trayIconMenu->addSeparator();
@@ -654,10 +654,10 @@ void BitcoinGUI::gotoVerifyMessageTab(QString addr)
     if (walletFrame) walletFrame->gotoVerifyMessageTab(addr);
 }
 
-void BitcoinGUI::gotoTradingPage()
+void BitcoinGUI::gotoStatsExplorerPage()
 {
-    openTradingwindowAction->setChecked(true);
-    if (walletFrame) walletFrame->gotoTradingPage();
+    openStatsExplorerAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoStatsExplorerPage();
 }
 
 #endif // ENABLE_WALLET
@@ -684,6 +684,11 @@ void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate)
 
     // Prevent orphan statusbar messages (e.g. hover Quit in main menu, wait until chain-sync starts -> garbelled text)
     statusBar()->clearMessage();
+
+    if(GetBoolArg("-chart", true) && count > 0 )
+    {
+        walletFrame->updatePlot(count);
+    }
 
     // Acquire current block source
     enum BlockSource blockSource = clientModel->getBlockSource();
