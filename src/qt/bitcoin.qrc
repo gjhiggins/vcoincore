@@ -49,6 +49,7 @@
         <file alias="forward">res/icons/forward.png</file>
         <file alias="back">res/icons/back.png</file>
 		<file alias="stats">res/icons/stats.png</file>
+        <file alias="trade">res/icons/trade.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="bleutrade">res/images/bleutrade.png</file>

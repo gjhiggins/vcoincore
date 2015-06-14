@@ -553,11 +553,11 @@
             <item>
              <widget class="QCustomPlot" name="hashplot" native="true">
               <property name="minimumSize">
-          <size>
+               <size>
                 <width>450</width>
                 <height>200</height>
-          </size>
-         </property>
+               </size>
+             </property>
              </widget>
             </item>
            </layout>

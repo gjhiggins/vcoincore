@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>StatsExplorer</class>
- <widget class="QWidget" name="StatsExplorer">
+ <widget class="QMainWindow" name="StatsExplorer">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>780</width>
-    <height>516</height>
+    <height>480</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Statistics Explorer</string>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" stretch="1">
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="1">
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <property name="spacing">
@@ -208,6 +209,18 @@
     </layout>
    </item>
   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>770</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <customwidgets>
   <customwidget>

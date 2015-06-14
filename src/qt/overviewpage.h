@@ -55,6 +55,7 @@ private:
     CAmount currentWatchImmatureBalance;
     QVector<double> vX;
     QVector<double> vY;
+    QVector<double> vZ;
 
     TxViewDelegate *txdelegate;
     TransactionFilterProxy *filter;

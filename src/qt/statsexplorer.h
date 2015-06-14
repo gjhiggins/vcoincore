@@ -1,7 +1,7 @@
 #ifndef STATSEXPLORER_H
 #define STATSEXPLORER_H
 
-#include <QWidget>
+#include <QMainWindow>
 #include <QTimer>
 #include "qcustomplot.h"
 
@@ -9,7 +9,7 @@ namespace Ui {
     class StatsExplorer;
 }
 
-class StatsExplorer : public QWidget
+class StatsExplorer : public QMainWindow
 {
     Q_OBJECT
 

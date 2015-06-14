@@ -22,7 +22,7 @@
 #include <QPainter>
 
 #define DECORATION_SIZE 54
-#define NUM_ITEMS 5
+#define NUM_ITEMS 4
 
 extern UniValue GetNetworkHashPS(int lookup, int height);
 // extern UniValue getnetworkhashps(const UniValue& params, bool fHelp);
