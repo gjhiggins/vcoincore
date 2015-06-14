@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg4874"
+   height="90"
+   viewBox="0 0 90 90.000001"
+   width="90"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="messaging-app-symbolic.svg"
+   inkscape:export-filename="/home/gjh/minkiz/coinage/workbench/rehab/VCoinWork/vcoincore/src/qt/res/icons/chat.png"
+   inkscape:export-xdpi="128"
+   inkscape:export-ydpi="128">
+  <defs
+     id="defs13" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="468"
+     inkscape:window-height="495"
+     id="namedview11"
+     showgrid="false"
+     inkscape:zoom="2.6222222"
+     inkscape:cx="45"
+     inkscape:cy="45"
+     inkscape:window-x="0"
+     inkscape:window-y="34"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg4874" />
+  <metadata
+     id="metadata4879">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="matrix(1.875,0,0,1.875,-539.993,-1793.155)"
+     id="g1630">
+    <rect
+       x="288"
+       y="152"
+       width="48"
+       height="48"
+       transform="translate(0,804.36)"
+       style="opacity:0.21171001;fill:none"
+       id="rect1632" />
+  </g>
+  <path
+     inkscape:connector-curvature="0"
+     d="m 32.007,81.005 13,-10.099 -2.0588,-4.208 h -21.882 l -2.06,4.21 z"
+     style="fill:#000000"
+     id="path1652" />
+  <path
+     inkscape:connector-curvature="0"
+     d="m 15.007,11.005 c -10,0 -15,-2e-4 -15,11.627 v 36.746 c 0,11.627 5,11.627 15,11.627 h 60 c 10,0 15,2.1e-4 15,-11.627 V 22.632 c 0,-11.627 -5,-11.627 -15,-11.627 z m 3,21 h 30 v 6 h -30 z m 0,12 h 57 v 6 h -57 z"
+     style="fill:#000000"
+     id="path4237" />
+</svg>

@@ -13,6 +13,7 @@ class ClientModel;
 class SendCoinsRecipient;
 class WalletModel;
 class WalletView;
+class ChatWindow;
 
 QT_BEGIN_NAMESPACE
 class QStackedWidget;
@@ -52,6 +53,8 @@ public slots:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
+	/** Switch to chat page */
+    void gotoChatPage();
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
