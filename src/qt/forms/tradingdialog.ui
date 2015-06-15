@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Bleutrade API</string>
   </property>
   <widget class="QTabWidget" name="TradingTabWidget">
    <property name="enabled">
@@ -35,7 +35,7 @@
     <enum>QTabWidget::North</enum>
    </property>
    <property name="currentIndex">
-    <number>7</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="BuyTab">
     <attribute name="title">
@@ -2979,14 +2979,33 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>10</y>
-      <width>151</width>
+      <y>0</y>
+      <width>240</width>
       <height>16</height>
      </rect>
     </property>
     <property name="minimumSize">
      <size>
-      <width>151</width>
+      <width>140</width>
+      <height>0</height>
+     </size>
+    </property>
+    <property name="text">
+     <string>0.00000000</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="Ask">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>20</y>
+      <width>240</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>160</width>
       <height>0</height>
      </size>
     </property>
@@ -2997,9 +3016,9 @@
    <widget class="QLabel" name="volumet">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>10</y>
-      <width>201</width>
+      <x>380</x>
+      <y>20</y>
+      <width>240</width>
       <height>16</height>
      </rect>
     </property>
@@ -3013,37 +3032,18 @@
      <string>0.000000000</string>
     </property>
    </widget>
-   <widget class="QLabel" name="Ask">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>10</y>
-      <width>181</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>181</width>
-      <height>0</height>
-     </size>
-    </property>
-    <property name="text">
-     <string>0.00000000</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="volumebtc">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>10</y>
-      <width>171</width>
+      <x>380</x>
+      <y>0</y>
+      <width>240</width>
       <height>16</height>
      </rect>
     </property>
     <property name="minimumSize">
      <size>
-      <width>171</width>
+      <width>160</width>
       <height>0</height>
      </size>
     </property>
