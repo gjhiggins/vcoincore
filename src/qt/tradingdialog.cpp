@@ -53,6 +53,8 @@ tradingDialog::tradingDialog(QWidget *parent) :
     QPalette sample_palette;
     sample_palette.setColor(QPalette::Window, Qt::green);
 
+    InitTrading();
+
     ui->BuyCostLabel->setPalette(sample_palette);
     ui->SellCostLabel->setPalette(sample_palette);
     ui->VCNAvailableLabel->setPalette(sample_palette);
@@ -175,11 +177,8 @@ QString tradingDialog::GetNonce()
     // There must be a better way, lol.
     QString str = "";
     QDateTime currentDateTime = QDateTime::currentDateTime();
-    int nonce = currentDateTime.currentMSecsSinceEpoch() - 14399999999999; // 3785342360
-    QString Response = str.number(nonce,'i',8);
-    int sPos = Response.indexOf(".");
-    Response.remove(sPos,sizeof(Response));
-    // QMessageBox::information(this,"nonce:",Response);
+    qint64 nonce = currentDateTime.currentMSecsSinceEpoch();
+    QString Response = str.setNum(nonce / 1000);
     return Response;
 }
 
@@ -862,8 +861,6 @@ void tradingDialog::on_UpdateKeys_clicked()
 {
     this->ApiKey    = ui->ApiKeyInput->text();
     this->SecretKey = ui->SecretKeyInput->text();
-    this->ApiKey    = "6e99c70a58efc512d0112ea9d5c250ce";
-    this->SecretKey = "1a32713f3582eb974a5c5787a6f78697";
     this->Currency = "VCN";
 
 
