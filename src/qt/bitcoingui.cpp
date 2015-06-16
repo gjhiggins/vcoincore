@@ -243,7 +243,6 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle *networkStyle, QWidget *parent) :
 
     // prevents an oben debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), tradingWindow, SLOT(hide()));
-    // Install event filter to be able to catch status tip events (QEvent::StatusTip)
 
     connect(openChatWindowAction, SIGNAL(triggered()), chatWindow, SLOT(show()));
 
@@ -251,7 +250,6 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle *networkStyle, QWidget *parent) :
     connect(quitAction, SIGNAL(triggered()), chatWindow, SLOT(hide()));
 
     // Install event filter to be able to catch status tip events (QEvent::StatusTip)
-
     this->installEventFilter(this);
 
     // Initially wallet actions should be disabled
@@ -373,13 +371,13 @@ void BitcoinGUI::createActions()
     openAction = new QAction(TextColorIcon(":/icons/open"), tr("Open &URI..."), this);
     openAction->setStatusTip(tr("Open a vcoin: URI or payment request"));
 
-    openBlockExplorerAction = new QAction(QIcon(":/icons/explorer"), tr("&Block explorer window"), this);
+    openBlockExplorerAction = new QAction(TextColorIcon(":/icons/explorer"), tr("&Block explorer window"), this);
     openBlockExplorerAction->setStatusTip(tr("Block explorer window"));
 
-    openStatsExplorerAction = new QAction(QIcon(":/icons/stats"), tr("&Stats explorer window"), this);
+    openStatsExplorerAction = new QAction(TextColorIcon(":/icons/stats"), tr("&Stats explorer window"), this);
     openBlockExplorerAction->setStatusTip(tr("Statistics explorer window"));
 
-    openTradingwindowAction = new QAction(QIcon(":/icons/trade"), tr("&Trading window"), this);
+    openTradingwindowAction = new QAction(TextColorIcon(":/icons/trade"), tr("&Trading window"), this);
     openTradingwindowAction->setStatusTip(tr("Bleutrade trading window"));
 
     openChatWindowAction = new QAction(TextColorIcon(":/icons/chat"), tr("&Chat window"), this);
