@@ -421,11 +421,32 @@
        </item>
        <item>
         <widget class="QLabel" name="label_2">
+         <property name="minimumSize">
+          <size>
+           <width>240</width>
+           <height>240</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>240</width>
+           <height>240</height>
+          </size>
+         </property>
          <property name="text">
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="../bitcoin.qrc">:/icons/vcoin</pixmap>
+          <pixmap resource="../bitcoin.qrc">:/icons/bitcoin</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="margin">
+          <number>1</number>
          </property>
         </widget>
        </item>
@@ -556,8 +577,8 @@
           <size>
                 <width>450</width>
                 <height>200</height>
-          </size>
-         </property>
+               </size>
+              </property>
              </widget>
             </item>
            </layout>
