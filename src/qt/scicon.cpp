@@ -3,6 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "scicon.h"
+#include "util.h"
 
 #include <QApplication>
 #include <QColor>
@@ -74,7 +75,14 @@ QColor SingleColor()
     else
         colorbase = colorHighlightFg;
     // return colorbase;
-    return QColor(5,168,162);
+    bool fTestNet = GetBoolArg("-testnet", false);
+    if (fTestNet) {
+        return QColor(31,14,157);
+    }
+    else
+    {
+        return QColor(5,168,162);
+    }
 #endif
 }
 
