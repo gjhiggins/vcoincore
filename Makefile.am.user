@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 3.1.2, 2015-06-14T18:11:05. -->
+<!-- Written by QtCreator 3.1.2, 2015-06-16T13:03:59. -->
 <qtcreator>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -167,7 +167,7 @@
     </valuelist>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-datadir=/home/gjh/.vcoincore -printtoconsole -debug </value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-datadir=/home/gjh/.vcoincore -printtoconsole -debug -testnet</value>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/home/gjh/minkiz/coinage/workbench/rehab/VCoinWork/vcoincore/src/qt/vcoin-qt</value>
     <value type="bool" key="ProjectExplorer.CustomExecutableRunConfiguration.UseTerminal">false</value>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">%{buildDir}</value>
