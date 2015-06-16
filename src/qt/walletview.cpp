@@ -3,7 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "walletview.h"
-
+#include "chatwindow.h"
 #include "addressbookpage.h"
 #include "askpassphrasedialog.h"
 #include "bitcoingui.h"
@@ -41,6 +41,7 @@ WalletView::WalletView(QWidget *parent):
     overviewPage = new OverviewPage();
 	explorerWindow = new BlockExplorer(this);
 	tradingPage = new tradingDialog(this);
+	chatWindow = new ChatWindow(this);
 
     transactionsPage = new QWidget(this);
     statsexplorerPage = new StatsExplorer(this);
@@ -68,6 +69,7 @@ WalletView::WalletView(QWidget *parent):
 	addWidget(explorerWindow);
 	addWidget(statsexplorerPage);
 	addWidget(tradingPage);
+	addWidget(chatWindow);
 
     // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
@@ -188,6 +190,11 @@ void WalletView::gotoStatsExplorerPage()
 void WalletView::gotoTradingPage()
 {
     setCurrentWidget(tradingPage);
+}
+
+void WalletView::gotoChatPage()
+{
+    setCurrentWidget(chatWindow);
 }
 
 void WalletView::gotoReceiveCoinsPage()

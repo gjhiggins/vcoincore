@@ -23,6 +23,7 @@
 #include "blockexplorer.h"
 #include "statsexplorer.h"
 #include "tradingdialog.h"
+#include "chatwindow.h"
 #endif // ENABLE_WALLET
 
 #ifdef Q_OS_MAC
@@ -103,6 +104,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle *networkStyle, QWidget *parent) :
     rpcConsole(0),
     explorerWindow(0),
     tradingWindow(0),
+    chatWindow(0),
     prevBlocks(0),
     spinnerFrame(0)
 {
@@ -146,6 +148,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle *networkStyle, QWidget *parent) :
         explorerWindow = new BlockExplorer(this);
         statsexplorerWindow = new StatsExplorer(this);
         tradingWindow = new tradingDialog(this);
+        chatWindow = new ChatWindow(this);
     } else
 #endif // ENABLE_WALLET
     {
@@ -241,6 +244,14 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle *networkStyle, QWidget *parent) :
     // prevents an oben debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), tradingWindow, SLOT(hide()));
     // Install event filter to be able to catch status tip events (QEvent::StatusTip)
+
+    connect(openChatWindowAction, SIGNAL(triggered()), chatWindow, SLOT(show()));
+
+    // prevents an oben debug window from becoming stuck/unusable on client shutdown
+    connect(quitAction, SIGNAL(triggered()), chatWindow, SLOT(hide()));
+
+    // Install event filter to be able to catch status tip events (QEvent::StatusTip)
+
     this->installEventFilter(this);
 
     // Initially wallet actions should be disabled
@@ -306,6 +317,19 @@ void BitcoinGUI::createActions()
     historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
     tabGroup->addAction(historyAction);
 
+    openExchangeBrowserAction = new QAction(SingleColorIcon(":/icons/market"), tr("&Review"), this);
+    openExchangeBrowserAction->setStatusTip(tr("Market Statistics"));
+    openExchangeBrowserAction->setToolTip(openExchangeBrowserAction->statusTip());
+    openExchangeBrowserAction->setCheckable(true);
+    openExchangeBrowserAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
+    tabGroup->addAction(openExchangeBrowserAction);
+
+    openNewsPageAction = new QAction(SingleColorIcon(":/icons/news"), tr("&News"), this);
+    openNewsPageAction->setStatusTip(tr("News Channel"));
+    openNewsPageAction->setToolTip(openNewsPageAction->statusTip());
+    openNewsPageAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
+    openNewsPageAction->setCheckable(true);
+    tabGroup->addAction(openNewsPageAction);
 #ifdef ENABLE_WALLET
     // These showNormalIfMinimized are needed because Send Coins and Receive Coins
     // can be triggered from the tray menu, and need to show the GUI to be useful.
@@ -321,6 +345,9 @@ void BitcoinGUI::createActions()
     connect(receiveCoinsMenuAction, SIGNAL(triggered()), this, SLOT(gotoReceiveCoinsPage()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(gotoHistoryPage()));
+    connect(openExchangeBrowserAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(openExchangeBrowserAction, SIGNAL(triggered()), this, SLOT(gotoExchangeBrowserPage()));
+    connect(openNewsPageAction, SIGNAL(triggered()), this, SLOT(gotoNewsPage()));
 #endif // ENABLE_WALLET
 
     quitAction = new QAction(TextColorIcon(":/icons/quit"), tr("E&xit"), this);
@@ -370,6 +397,9 @@ void BitcoinGUI::createActions()
 
     openTradingwindowAction = new QAction(QIcon(":/icons/trade"), tr("&Trading window"), this);
     openTradingwindowAction->setStatusTip(tr("Bleutrade trading window"));
+
+    openChatWindowAction = new QAction(TextColorIcon(":/icons/chat"), tr("&Chat window"), this);
+    openChatWindowAction->setStatusTip(tr("Chat window"));
 
     showHelpMessageAction = new QAction(TextColorIcon(":/icons/info"), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
@@ -439,6 +469,7 @@ void BitcoinGUI::createMenuBar()
     if(walletFrame)
     {
         help->addAction(openRPCConsoleAction);
+    	help->addAction(openChatWindowAction);
     }
     help->addAction(showHelpMessageAction);
     help->addSeparator();
@@ -457,6 +488,8 @@ void BitcoinGUI::createToolBars()
         toolbar->addAction(sendCoinsAction);
         toolbar->addAction(receiveCoinsAction);
         toolbar->addAction(historyAction);
+        toolbar->addAction(openExchangeBrowserAction);
+		toolbar->addAction(openNewsPageAction);
         overviewAction->setChecked(true);
     }
 }
@@ -591,6 +624,7 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addAction(openStatsExplorerAction);
     trayIconMenu->addAction(openTradingwindowAction);
     trayIconMenu->addAction(openRPCConsoleAction);
+    trayIconMenu->addAction(openChatWindowAction);
 #ifndef Q_OS_MAC // This is built-in on Mac
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(quitAction);
@@ -694,6 +728,12 @@ void BitcoinGUI::gotoTradingPage()
 {
     openTradingwindowAction->setChecked(true);
     if (walletFrame) walletFrame->gotoTradingPage();
+}
+
+void BitcoinGUI::gotoChatPage()
+{
+    openChatWindowAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoChatPage();
 }
 
 #endif // ENABLE_WALLET

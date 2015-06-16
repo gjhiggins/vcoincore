@@ -26,6 +26,7 @@ class RPCConsole;
 class BlockExplorer;
 class StatsExplorer;
 class tradingDialog;
+class ChatWindow;
 class SendCoinsRecipient;
 class UnitDisplayStatusBarControl;
 class WalletFrame;
@@ -112,6 +113,7 @@ private:
 	QAction *openBlockExplorerAction;
     QAction *openStatsExplorerAction;
 	QAction *openTradingwindowAction;
+    QAction *openChatWindowAction;
     QAction *showHelpMessageAction;
 
     QSystemTrayIcon *trayIcon;
@@ -121,6 +123,7 @@ private:
     BlockExplorer  *explorerWindow;
     StatsExplorer *statsexplorerWindow;
     tradingDialog  *tradingWindow;
+    ChatWindow *chatWindow;
 
     /** Keep track of previous number of blocks, to detect progress */
     int prevBlocks;
@@ -189,6 +192,8 @@ private slots:
     void gotoStatsExplorerPage();
     /** Switch to Trading Page */
     void gotoTradingPage(); 
+	/** Switch to chat page */
+    void gotoChatPage();
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
