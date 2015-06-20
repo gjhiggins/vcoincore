@@ -27,6 +27,14 @@
 using namespace boost::xpressive;
 using namespace std;
 
+//Coinbase API, latest BTC orice
+const QString apiCoinbasePrice = "https://www.bitstamp.net/api/ticker/";
+
+//Bleutrade API
+const QString apiBleutradeMarketSummary = "https://bleutrade.com/api/v2/public/getmarketsummaries";
+const QString apiBleutradeTrades = "https://bleutrade.com/api/v2/public/getmarkethistory?market=BTC_VCN";
+const QString apiBleutradeOrders = "https://bleutrade.com/api/v2/public/getorderbook?market=VCN_BTC&type=ALL";
+
 QString dequote(QString s) {
     string str(s.toStdString());
     sregex nums = sregex::compile( ":\\\"(-?\\d*(\\.\\d+))\\\"" );
@@ -60,12 +68,11 @@ tradingDialog::tradingDialog(QWidget *parent) :
     ui->VCNAvailableLabel->setPalette(sample_palette);
     ui->BtcAvailableLbl_2->setPalette(sample_palette);
     //Set tabs to inactive
-    ui->TradingTabWidget->setTabEnabled(0,false);
-    ui->TradingTabWidget->setTabEnabled(1,false);
+    ui->TradingTabWidget->setTabEnabled(3,false);
     ui->TradingTabWidget->setTabEnabled(4,false);
     ui->TradingTabWidget->setTabEnabled(5,false);
     ui->TradingTabWidget->setTabEnabled(6,false);
-
+    ui->TradingTabWidget->setTabEnabled(7,false);
 
     /*OrderBook Table Init*/
     CreateOrderBookTables(*ui->BidsTable,QStringList() << "Total(BTC)"<< "VCN(SIZE)" << "Bid(BTC)");
@@ -126,6 +133,28 @@ tradingDialog::tradingDialog(QWidget *parent) :
     ui->OpenOrdersTable->setColumnHidden(12,true);
     ui->OpenOrdersTable->setColumnHidden(13,true);
 
+    //Create charts
+    // ui->qCustomPlotBleutradeTrades->addGraph();
+    ui->qCustomPlotBleutradeTrades->setBackground(QBrush(QColor("#edf1f7")));
+
+    // create candlestick chart:
+    ui->qCustomPlotBleutradeTrades->xAxis->setBasePen(Qt::NoPen);
+    ui->qCustomPlotBleutradeTrades->xAxis->setTickLabels(false);
+    ui->qCustomPlotBleutradeTrades->xAxis->setTicks(false); // only want vertical grid in main axis rect, so hide xAxis backbone, ticks, and labels
+    ui->qCustomPlotBleutradeTrades->xAxis->setAutoTickStep(false);
+    ui->qCustomPlotBleutradeTrades->xAxis->setTickStep(3600); // 1 hour day tickstep
+    ui->qCustomPlotBleutradeTrades->rescaleAxes();
+    ui->qCustomPlotBleutradeTrades->xAxis->scaleRange(1.025, ui->qCustomPlotBleutradeTrades->xAxis->range().center());
+    ui->qCustomPlotBleutradeTrades->yAxis->scaleRange(1.1, ui->qCustomPlotBleutradeTrades->yAxis->range().center());
+
+
+    // Order Depth Graph
+    ui->qCustomPlotBleutradeOrderDepth->setBackground(QBrush(QColor("#edf1f7")));
+
+    //One time primer
+    // pollAPIs();
+    // QObject::connect(&m_nam, SIGNAL(finished(QNetworkReply*)), this, SLOT(parseNetworkResponse(QNetworkReply*)), Qt::AutoConnection);
+
     connect (ui->OpenOrdersTable, SIGNAL(cellClicked(int,int)), this, SLOT(CancelOrderSlot(int, int)));
     /*Open Orders Table*/
 
@@ -154,7 +183,7 @@ void tradingDialog::InitTrading()
             //Timer is not set,lets create one.
             this->timer = new QTimer(this);
             connect(timer, SIGNAL(timeout()), this, SLOT(UpdaterFunction()));
-            this->timer->start(5000);
+            this->timer->start(50000);
             this->timerid = this->timer->timerId();
         }
 }
@@ -180,6 +209,43 @@ QString tradingDialog::GetNonce()
     qint64 nonce = currentDateTime.currentMSecsSinceEpoch();
     QString Response = str.setNum(nonce / 1000);
     return Response;
+}
+
+QString tradingDialog::GetCandles() {
+    /*
+    /public/getcandles
+    Obtains candles format historical trades of a specific market.
+    Required parameters:
+    market
+    period (1m, 2m, 3m, 4m, 5m, 6m, 10m, 12m, 15m, 20m, 30m, 1h, 2h, 3h, 4h, 6h, 8h, 12h, 1d)
+    count (default: 1000, max: 999999)
+    lasthours (default:24, max: 720)
+
+        {
+            "success":"true",
+            "message":"",
+            "result":[{
+              "TimeStamp":"2014-07-31 10:15:00",
+              "Open":"0.00000048",
+              "High":"0.00000050",
+              "Low":"0.00000048",
+              "Close":"0.00000049",
+              "Volume":"594804.73036048",
+              "BaseVolume":"0.11510368"
+            },{
+              "TimeStamp":"2014-07-31 10:00:00",
+              "Open":"0.00000037",
+              "High":"0.00000048",
+              "Low":"0.00000035",
+              "Close":"0.00000048",
+              "Volume":"623490.14936407",
+              "BaseVolume":"0.13101303"
+            }
+            ]
+        }
+    */
+    QString Response = sendRequest("https://bleutrade.com/api/v2/public/getcandles?market=VCN_BTC&period=1h&count=50&lasthours=720");
+    return dequote(Response);
 }
 
 QString tradingDialog::GetMarketSummary()
@@ -646,9 +712,9 @@ void tradingDialog::ParseAndPopulateOrderBookTables(QString OrderBook)
 void tradingDialog::ParseAndPopulateMarketHistoryTable(QString Response)
 {
 
-    int itteration = 0, RowCount = 0;
-    QJsonArray    jsonArray    = GetResultArrayFromJSONObject(Response);
-    QJsonObject   obj;
+    int counter = 0, RowCount = 0;
+    QJsonArray jsonArray = GetResultArrayFromJSONObject(Response);
+    QJsonObject obj;
 
     ui->MarketHistoryTable->setRowCount(0);
 
@@ -660,104 +726,282 @@ void tradingDialog::ParseAndPopulateMarketHistoryTable(QString Response)
             RowCount = ui->MarketHistoryTable->rowCount();
 
             ui->MarketHistoryTable->insertRow(RowCount);
-            ui->MarketHistoryTable->setItem(itteration, 0, new QTableWidgetItem(BittrexTimeStampToReadable(obj["TimeStamp"].toString())));
-            ui->MarketHistoryTable->setItem(itteration, 1, new QTableWidgetItem(obj["OrderType"].toString()));
-            ui->MarketHistoryTable->setItem(itteration, 2, new QTableWidgetItem(str.number(obj["Price"].toDouble(),'i',8)));
-            ui->MarketHistoryTable->setItem(itteration, 3, new QTableWidgetItem(str.number(obj["Quantity"].toDouble(),'i',8)));
-            ui->MarketHistoryTable->setItem(itteration, 4, new QTableWidgetItem(str.number(obj["Total"].toDouble(),'i',8)));
-            ui->MarketHistoryTable->item(itteration,1)->setBackgroundColor((obj["OrderType"] == QStringLiteral("BUY")) ? (QColor (0, 205, 0, 127)) : ( QColor (255, 99, 71, 127)));
-            itteration++;
+            ui->MarketHistoryTable->setItem(counter, 0, new QTableWidgetItem(BittrexTimeStampToReadable(obj["TimeStamp"].toString())));
+            ui->MarketHistoryTable->setItem(counter, 1, new QTableWidgetItem(obj["OrderType"].toString()));
+            ui->MarketHistoryTable->setItem(counter, 2, new QTableWidgetItem(str.number(obj["Price"].toDouble(),'i',8)));
+            ui->MarketHistoryTable->setItem(counter, 3, new QTableWidgetItem(str.number(obj["Quantity"].toDouble(),'i',8)));
+            ui->MarketHistoryTable->setItem(counter, 4, new QTableWidgetItem(str.number(obj["Total"].toDouble(),'i',8)));
+            ui->MarketHistoryTable->item(counter,1)->setBackgroundColor((obj["OrderType"] == QStringLiteral("BUY")) ? (QColor (0, 205, 0, 127)) : ( QColor (255, 99, 71, 127)));
+            counter++;
         }
        obj.empty();
 }
 
-void tradingDialog::ActionsOnSwitch(int index = -1)
+void tradingDialog::ParseAndPopulateOHLCChart(QString Response)
+    {
+    QJsonArray jsonArray = GetResultArrayFromJSONObject(Response);
+    QJsonObject obj;
+    double counter = 0;
+    // double trades = jsonArray.count();
+    double binSize = 3600*24; // bin data in 1 day intervals
+    // QVector<double> tV(trades), oV(trades), hV(trades), lV(trades), cV(trades), nV(trades), pV(trades);
+
+    // create candlestick chart:
+    QCPFinancial *candlesticks = new QCPFinancial(ui->qCustomPlotBleutradeTrades->xAxis, ui->qCustomPlotBleutradeTrades->yAxis);
+    // create ohlc chart:
+    // QCPFinancial *ohlc = new QCPFinancial(ui->qCustomPlotBleutradeTrades->xAxis, ui->qCustomPlotBleutradeTrades->yAxis);
+
+    // create bottom axis rect for volume bar chart:
+    QCPAxisRect *volumeAxisRect = new QCPAxisRect(ui->qCustomPlotBleutradeTrades);
+    QCPBars *volumePos = new QCPBars(volumeAxisRect->axis(QCPAxis::atBottom), volumeAxisRect->axis(QCPAxis::atLeft));
+    QCPBars *volumeNeg = new QCPBars(volumeAxisRect->axis(QCPAxis::atBottom), volumeAxisRect->axis(QCPAxis::atLeft));
+
+    foreach (const QJsonValue & value, jsonArray)
+    {
+        QString str = "";
+        obj = value.toObject();
+
+        // QString datestamp = BittrexTimeStampToReadable(obj["TimeStamp"].toString());
+        // double b = obj["BaseVolume"].toDouble();
+        double datetimestamp = BittrexTimeStampToSeconds(obj["TimeStamp"].toString());
+        double o = obj["Open"].toDouble();
+        double h = obj["High"].toDouble();
+        double l = obj["Low"].toDouble();
+        double c = obj["Close"].toDouble();
+        double v = obj["Volume"].toDouble();
+        candlesticks->addData(QCPFinancialData(datetimestamp, o, h, l, c));
+        // ohlc->addData(QCPFinancialData(datetimestamp, o, h, l, c));
+        (v < 0 ? volumePos : volumeNeg)->addData(QCPBarData(datetimestamp, qAbs(v))); // add data to either volumeNeg or volumePos, depending on sign of v
+        counter++;
+    }
+    obj.empty();
+
+    // QCPFinancialDataMap trades = QCPFinancial::timeSeriesToOhlc(timeV, tradesV, binSize, startTime);
+    // candlesticks->setData(&trades, true);
+
+    // QCPFinancialDataMap ohlcdata = QCPFinancial::timeSeriesToOhlc(timeV, ohlcV, binSize/3.0, startTime); // divide binSize by 3 just to make the ohlc bars a bit denser
+    // ohlc->setData(&ohlcdata, true);
+
+    ui->qCustomPlotBleutradeTrades->addPlottable(candlesticks);
+    candlesticks->setName("Candlestick");
+    candlesticks->setChartStyle(QCPFinancial::csCandlestick);
+    candlesticks->setTwoColored(true);
+    // candlesticks->setBrushPositive(QColor(245, 245, 245));
+    // candlesticks->setBrushNegative(QColor(0, 0, 0));
+    candlesticks->setBrushPositive(QColor(15, 208, 32));
+    candlesticks->setBrushNegative(QColor(245, 40, 40));
+    candlesticks->setPenPositive(QPen(QColor(0, 0, 0)));
+    candlesticks->setPenNegative(QPen(QColor(0, 0, 0)));
+    candlesticks->setWidth(binSize*0.1);
+
+    /*
+    ui->qCustomPlotBleutradeTrades->addPlottable(ohlc);
+    ohlc->setName("OHLC");
+    ohlc->setChartStyle(QCPFinancial::csOhlc);
+    ohlc->setTwoColored(true);
+    ohlc->setWidth(binSize*0.2);
+    */
+    ui->qCustomPlotBleutradeTrades->setAutoAddPlottableToLegend(false);
+    ui->qCustomPlotBleutradeTrades->addPlottable(volumePos);
+    ui->qCustomPlotBleutradeTrades->addPlottable(volumeNeg);
+    volumePos->setWidth(3600*1.5);
+    volumePos->setPen(Qt::NoPen);
+    volumePos->setBrush(QColor(15, 208, 32));
+    volumeNeg->setWidth(3600*1.5);
+    volumeNeg->setPen(Qt::NoPen);
+    volumeNeg->setBrush(QColor(245, 40, 40));
+
+    // create bottom axis rect for volume bar chart:
+    ui->qCustomPlotBleutradeTrades->plotLayout()->addElement(1, 0, volumeAxisRect);
+    volumeAxisRect->setMaximumSize(QSize(QWIDGETSIZE_MAX, 100));
+    volumeAxisRect->axis(QCPAxis::atBottom)->setLayer("axes");
+    volumeAxisRect->axis(QCPAxis::atBottom)->grid()->setLayer("grid");
+    // bring bottom and main axis rect closer together:
+    ui->qCustomPlotBleutradeTrades->plotLayout()->setRowSpacing(0);
+    volumeAxisRect->setAutoMargins(QCP::msLeft|QCP::msRight|QCP::msBottom);
+    volumeAxisRect->setMargins(QMargins(0, 0, 0, 0));
+
+    // interconnect x axis ranges of main and bottom axis rects:
+    connect(ui->qCustomPlotBleutradeTrades->xAxis, SIGNAL(rangeChanged(QCPRange)), volumeAxisRect->axis(QCPAxis::atBottom), SLOT(setRange(QCPRange)));
+    connect(volumeAxisRect->axis(QCPAxis::atBottom), SIGNAL(rangeChanged(QCPRange)), ui->qCustomPlotBleutradeTrades->xAxis, SLOT(setRange(QCPRange)));
+    // configure axes of both main and bottom axis rect:
+    volumeAxisRect->axis(QCPAxis::atBottom)->setAutoTickStep(false);
+    volumeAxisRect->axis(QCPAxis::atBottom)->setTickStep(3600*24); // 1 day tickstep
+    volumeAxisRect->axis(QCPAxis::atBottom)->setTickLabelType(QCPAxis::ltDateTime);
+    volumeAxisRect->axis(QCPAxis::atBottom)->setDateTimeSpec(Qt::UTC);
+    volumeAxisRect->axis(QCPAxis::atBottom)->setDateTimeFormat("dd MMM");
+    volumeAxisRect->axis(QCPAxis::atBottom)->setTickLabelRotation(35);
+    volumeAxisRect->axis(QCPAxis::atLeft)->setAutoTickCount(3);
+
+    // make axis rects' left side line up:
+    QCPMarginGroup *group = new QCPMarginGroup(ui->qCustomPlotBleutradeTrades);
+    ui->qCustomPlotBleutradeTrades->axisRect()->setMarginGroup(QCP::msLeft|QCP::msRight, group);
+    volumeAxisRect->setMarginGroup(QCP::msLeft|QCP::msRight, group);
+
+}
+
+void tradingDialog::ParseAndPopulateDepthChart(QString Response)
 {
+    double high = 0;
+    double low = 100000;
+    double sumBuys = 0;
+    double sumSells = 0;
+    double sumHighest = 0;
+    QJsonObject obj;
+    QString str;
+    QJsonObject ResultObject = GetResultObjectFromJSONObject(Response);
+
+    int buyi = 0, selli = 0;
+
+    QJsonArray  BuyArray  = ResultObject.value("buy").toArray();                //get buy/sell object from result object
+    QJsonArray  SellArray = ResultObject.value("sell").toArray();               //get buy/sell object from result object
+
+    int nsells = SellArray.count();
+    int nbuys = BuyArray.count();
+    QVector<double> xAxisBuys(nbuys), yAxisBuys(nbuys);
+    QVector<double> xAxisSells(nsells), yAxisSells(nsells);
+    double srate = 0, brate = 0, bquantity = 0, squantity = 0;
+    foreach (const QJsonValue & value, SellArray)
+    {
+        obj = value.toObject();
+
+        srate = obj["Rate"].toDouble(); //would like to use int64 here
+        squantity = obj["Quantity"].toDouble();
+
+        sumSells += squantity;
+        xAxisSells[selli] = srate * 100000000;
+        yAxisSells[selli] = sumSells;
+
+        high = srate > high ? srate : high;
+        low = srate < low ? srate : low;
+        selli++;
+     }
+    obj.empty();
+
+    foreach (const QJsonValue & value, BuyArray)
+    {
+        obj = value.toObject();
+
+        brate = obj["Rate"].toDouble(); //would like to use int64 here
+        bquantity = obj["Quantity"].toDouble();
+
+        sumBuys += bquantity;
+        xAxisBuys[buyi] = brate * 100000000;
+        yAxisBuys[buyi] = sumBuys;
+
+        high = brate > high ? brate : high;
+        low = brate < low ? brate : low;
+        buyi++;
+     }
+    obj.empty();
+
+    high *=  100000000;
+    low *=  100000000;
+
+    sumHighest = sumBuys > sumSells ? sumBuys : sumBuys < sumSells ? sumSells : sumBuys;
+    ui->qCustomPlotBleutradeOrderDepth->addGraph();
+    ui->qCustomPlotBleutradeOrderDepth->addGraph();
+    ui->qCustomPlotBleutradeOrderDepth->graph(0)->setData(xAxisBuys, yAxisBuys);
+    ui->qCustomPlotBleutradeOrderDepth->graph(1)->setData(xAxisSells, yAxisSells);
+    ui->qCustomPlotBleutradeOrderDepth->graph(0)->setPen(QPen(QColor(34, 177, 76)));
+    ui->qCustomPlotBleutradeOrderDepth->graph(0)->setBrush(QBrush(QColor(34, 177, 76, 20)));
+    ui->qCustomPlotBleutradeOrderDepth->graph(1)->setPen(QPen(QColor(237, 24, 35)));
+    ui->qCustomPlotBleutradeOrderDepth->graph(1)->setBrush(QBrush(QColor(237, 24, 35, 20)));
+    ui->qCustomPlotBleutradeOrderDepth->xAxis->setRange(low, high);
+    ui->qCustomPlotBleutradeOrderDepth->yAxis->setRange(low, sumHighest);
+    ui->qCustomPlotBleutradeOrderDepth->replot();
+}
+
+void tradingDialog::ActionsOnSwitch(int index = -1) {
 
     QString Response = "";
 
-    if(index == -1){
+    if (index == -1)
        index = ui->TradingTabWidget->currentIndex();
-    }
 
-    switch (index){
-                case 0:    //buy tab is active
-                           Response = GetMarketSummary();
-                           if(Response.size() > 0 && Response != "Error"){
+    switch (index) {
+        case 0: // Chart tab is the current tab - update the info
+               Response = GetCandles();
+               if(Response.size() > 0 && Response != "Error"){
+                  ParseAndPopulateOHLCChart(Response);
+               }
+               Response = GetOrderBook();
+               if(Response.size() > 0 && Response != "Error"){
+                  ParseAndPopulateDepthChart(Response);
+               }
+        break;
 
-                               QString balance = GetBalance("BTC");
+        case 1: // Order book tab is the current tab - update the info
+               Response = GetOrderBook();
+               if(Response.size() > 0 && Response != "Error"){
+                  ParseAndPopulateOrderBookTables(Response);
+               }
+        break;
 
-                               QString str;
-                               QJsonObject ResultObject =  GetResultObjectFromJSONObject(balance);
+        case 2: // Market history tab
+               Response = GetMarketHistory();
+                   if(Response.size() > 0 && Response != "Error"){
+                      ParseAndPopulateMarketHistoryTable(Response);
+                 }
+        break;
 
-                               ui->BtcAvailableLbl->setText(str.number(ResultObject["Available"].toDouble(),'i',8));
-                             }
+        case 3: // Open orders tab
+               Response = GetOpenOrders();
+                 if(Response.size() > 0 && Response != "Error"){
+                    ParseAndPopulateOpenOrdersTable(Response);
+                 }
+        break;
 
-                break;
+        case 4: // Account history tab
+               Response = GetAccountHistory();
+                 if(Response.size() > 0 && Response != "Error"){
+                    ParseAndPopulateAccountHistoryTable(Response);
+                 }
+        break;
 
-                case 1: //sell tab active
-                                   //Sell tab is active
-                                   Response = GetMarketSummary();
-                                   if(Response.size() > 0 && Response != "Error"){
+        case 5: // Buy tab is active
+               Response = GetMarketSummary();
+               if(Response.size() > 0 && Response != "Error"){
 
-                                       QString balance = GetBalance("VCN");
-                                       QString str;
-                                       QJsonObject ResultObject =  GetResultObjectFromJSONObject(balance);
+                   QString balance = GetBalance("BTC");
 
-                                       ui->VCNAvailableLabel->setText(str.number(ResultObject["Available"].toDouble(),'i',8));
-                                     }
+                   QString str;
+                   QJsonObject ResultObject =  GetResultObjectFromJSONObject(balance);
 
-                break;
+                   ui->BtcAvailableLbl->setText(str.number(ResultObject["Available"].toDouble(),'i',8));
+                 }
+        break;
 
-                case 2: //Order book tab is the current tab - update the info
-                       Response = GetOrderBook();
-                       if(Response.size() > 0 && Response != "Error"){
-                          ParseAndPopulateOrderBookTables(Response);
-                       }
+        case 6: // Sell tab is active
+               Response = GetMarketSummary();
+               if(Response.size() > 0 && Response != "Error"){
 
-                break;
+                   QString balance = GetBalance("VCN");
+                   QString str;
+                   QJsonObject ResultObject =  GetResultObjectFromJSONObject(balance);
 
-                case 3://market history tab
-                       Response = GetMarketHistory();
-                           if(Response.size() > 0 && Response != "Error"){
-                              ParseAndPopulateMarketHistoryTable(Response);
-                         }
-                break;
+                   ui->VCNAvailableLabel->setText(str.number(ResultObject["Available"].toDouble(),'i',8));
+                 }
+        break;
 
-                case 4: //open orders tab
-                       Response = GetOpenOrders();
-                         if(Response.size() > 0 && Response != "Error"){
-                            ParseAndPopulateOpenOrdersTable(Response);
-                         }
+        case 7: // Show balance tab
+               Response = GetBalance("BTC");
+               if(Response.size() > 0 && Response != "Error"){
+                   DisplayBalance(*ui->BitcoinBalanceLabel,*ui->BitcoinAvailableLabel,*ui->BitcoinPendingLabel, QString::fromUtf8("BTC"),Response);
+               }
 
-                break;
+               Response = GetBalance("VCN");
 
-                case 5://account history tab
-                       Response = GetAccountHistory();
-                         if(Response.size() > 0 && Response != "Error"){
-                            ParseAndPopulateAccountHistoryTable(Response);
-                         }
-                break;
+               if(Response.size() > 0 && Response != "Error"){
+                   DisplayBalance(*ui->VCNBalanceLabel,*ui->VCNAvailableLabel,*ui->VCNPendingLabel, QString::fromUtf8("VCN"),Response);
+               }
+        break;
 
-                case 6://show balance tab
-                       Response = GetBalance("BTC");
-                         if(Response.size() > 0 && Response != "Error"){
-                          DisplayBalance(*ui->BitcoinBalanceLabel,*ui->BitcoinAvailableLabel,*ui->BitcoinPendingLabel, QString::fromUtf8("BTC"),Response);
-                         }
+        case 8:
 
-                         Response = GetBalance("VCN");
+        break;
 
-                       if(Response.size() > 0 && Response != "Error"){
-                         DisplayBalance(*ui->VCNBalanceLabel,*ui->VCNAvailableLabel,*ui->VCNPendingLabel, QString::fromUtf8("VCN"),Response);
-                        }
-                break;
-
-                case 7:
-
-                break;
-
-              }
-
+      }
 }
 
 void tradingDialog::on_TradingTabWidget_tabBarClicked(int index)
@@ -833,6 +1077,12 @@ QString tradingDialog::BittrexTimeStampToReadable(QString DateTime)
     QString DisplayDate = Date.toString("dd/MM/yyyy") + " " + Time.toString("hh:mm:ss A"); //formats to convert to
 
     return DisplayDate;
+}
+
+qint64 tradingDialog::BittrexTimeStampToSeconds(QString DateTime)
+{
+    QDateTime date = QDateTime::fromString(DateTime,"yyyy-MM-dd hh:mm:ss"); //format to convert from
+    return date.toTime_t();
 }
 
 void tradingDialog::CalculateBuyCostLabel()
@@ -1177,4 +1427,3 @@ tradingDialog::~tradingDialog()
 {
     delete ui;
 }
-
