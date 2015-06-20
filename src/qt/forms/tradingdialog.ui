@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>780</width>
-    <height>480</height>
+    <height>476</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,8 +35,309 @@
     <enum>QTabWidget::North</enum>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
+   <widget class="QWidget" name="Charts">
+    <attribute name="title">
+     <string>Charts</string>
+    </attribute>
+    <widget class="QWidget" name="qWidgetBleutradeGraphs" native="true">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>741</width>
+       <height>391</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <widget class="QFrame" name="qWidgetBleutradeGraphsMain">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>731</width>
+        <height>391</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">Font-family:Myriad Pro;font-size:12px;</string>
+      </property>
+      <widget class="QScrollArea" name="scrollAreaBleutrade">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>0</y>
+         <width>711</width>
+         <height>381</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QScrollBar:horizontal {background: white;height: 15px;margin: 0px 0px 0 0px;}QScrollBar::handle:horizontal {background: #95a5a6;min-width: 20px;}QScrollBar::add-line:horizontal {width: 0px;subcontrol-position: top right;}QScrollBar::sub-line:horizontal {width: 0px;subcontrol-position: top right;}QScrollBar:left-arrow:horizontal, QScrollBar::right-arrow:horizontal {width: 0px;height: 0px;}QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {background: none;}</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOn</enum>
+       </property>
+       <property name="widgetResizable">
+        <bool>true</bool>
+       </property>
+       <widget class="QWidget" name="scrollAreaWidgetContentsBleutrade">
+        <property name="geometry">
+         <rect>
+          <x>-10</x>
+          <y>0</y>
+          <width>1420</width>
+          <height>363</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>1420</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <widget class="QCustomPlot" name="qCustomPlotBleutradeTrades" native="true">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>10</y>
+           <width>721</width>
+           <height>311</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+        </widget>
+        <widget class="QCustomPlot" name="qCustomPlotBleutradeOrderDepth" native="true">
+         <property name="geometry">
+          <rect>
+           <x>740</x>
+           <y>10</y>
+           <width>631</width>
+           <height>311</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+        </widget>
+       </widget>
+      </widget>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="OrderBook">
+    <attribute name="title">
+     <string>Order Book</string>
+    </attribute>
+    <widget class="QTableWidget" name="BidsTable">
+     <property name="geometry">
+      <rect>
+       <x>12</x>
+       <y>60</y>
+       <width>350</width>
+       <height>321</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+    </widget>
+    <widget class="QTableWidget" name="AsksTable">
+     <property name="geometry">
+      <rect>
+       <x>396</x>
+       <y>60</y>
+       <width>350</width>
+       <height>321</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+    </widget>
+    <widget class="QLabel" name="BidsCount">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>91</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Bids</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="AsksCount">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>10</y>
+       <width>91</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Asks</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="VCNSupply">
+     <property name="geometry">
+      <rect>
+       <x>570</x>
+       <y>10</y>
+       <width>150</width>
+       <height>15</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>label</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="VCNDemand">
+     <property name="geometry">
+      <rect>
+       <x>200</x>
+       <y>10</y>
+       <width>150</width>
+       <height>15</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>label</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="BtcDemand">
+     <property name="geometry">
+      <rect>
+       <x>200</x>
+       <y>30</y>
+       <width>150</width>
+       <height>15</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="BtcSupply">
+     <property name="geometry">
+      <rect>
+       <x>570</x>
+       <y>30</y>
+       <width>150</width>
+       <height>15</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="Line" name="line">
+     <property name="geometry">
+      <rect>
+       <x>370</x>
+       <y>60</y>
+       <width>20</width>
+       <height>321</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="MarketHistory">
+    <attribute name="title">
+     <string>Market History</string>
+    </attribute>
+    <widget class="QTableWidget" name="MarketHistoryTable">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>740</width>
+       <height>371</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="OpenOrders">
+    <attribute name="title">
+     <string>Open Orders</string>
+    </attribute>
+    <widget class="QTableWidget" name="OpenOrdersTable">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>40</y>
+       <width>740</width>
+       <height>341</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="AdvancedView">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>101</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Advanced View</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="TradeHistory">
+    <attribute name="title">
+     <string>Trade history</string>
+    </attribute>
+    <widget class="QTableWidget" name="TradeHistoryTable">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>10</y>
+       <width>751</width>
+       <height>361</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
    <widget class="QWidget" name="BuyTab">
     <attribute name="title">
      <string>Buy</string>
@@ -46,7 +347,7 @@
       <rect>
        <x>30</x>
        <y>330</y>
-       <width>121</width>
+       <width>131</width>
        <height>23</height>
       </rect>
      </property>
@@ -1167,8 +1468,8 @@
     <widget class="QLabel" name="label_24">
      <property name="geometry">
       <rect>
-       <x>410</x>
-       <y>260</y>
+       <x>460</x>
+       <y>300</y>
        <width>281</width>
        <height>81</height>
       </rect>
@@ -2311,8 +2612,8 @@
     <widget class="QLabel" name="label_23">
      <property name="geometry">
       <rect>
-       <x>410</x>
-       <y>260</y>
+       <x>460</x>
+       <y>300</y>
        <width>281</width>
        <height>81</height>
       </rect>
@@ -2322,206 +2623,6 @@
      </property>
      <property name="pixmap">
       <pixmap resource="../bitcoin.qrc">:/images/bleutrade</pixmap>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="OrderBook">
-    <attribute name="title">
-     <string>Order Book</string>
-    </attribute>
-    <widget class="QTableWidget" name="BidsTable">
-     <property name="geometry">
-      <rect>
-       <x>12</x>
-       <y>60</y>
-       <width>350</width>
-       <height>321</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>9</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-    </widget>
-    <widget class="QTableWidget" name="AsksTable">
-     <property name="geometry">
-      <rect>
-       <x>396</x>
-       <y>60</y>
-       <width>350</width>
-       <height>321</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>9</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-    </widget>
-    <widget class="QLabel" name="BidsCount">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>91</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Bids</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="AsksCount">
-     <property name="geometry">
-      <rect>
-       <x>380</x>
-       <y>10</y>
-       <width>91</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Asks</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="VCNSupply">
-     <property name="geometry">
-      <rect>
-       <x>570</x>
-       <y>10</y>
-       <width>150</width>
-       <height>15</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>label</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="VCNDemand">
-     <property name="geometry">
-      <rect>
-       <x>200</x>
-       <y>10</y>
-       <width>150</width>
-       <height>15</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>label</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="BtcDemand">
-     <property name="geometry">
-      <rect>
-       <x>200</x>
-       <y>30</y>
-       <width>150</width>
-       <height>15</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="BtcSupply">
-     <property name="geometry">
-      <rect>
-       <x>570</x>
-       <y>30</y>
-       <width>150</width>
-       <height>15</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="Line" name="line">
-     <property name="geometry">
-      <rect>
-       <x>370</x>
-       <y>60</y>
-       <width>20</width>
-       <height>321</height>
-      </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="MarketHistory">
-    <attribute name="title">
-     <string>Market History</string>
-    </attribute>
-    <widget class="QTableWidget" name="MarketHistoryTable">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>740</width>
-       <height>371</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="OpenOrders">
-    <attribute name="title">
-     <string>Open Orders</string>
-    </attribute>
-    <widget class="QTableWidget" name="OpenOrdersTable">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>740</width>
-       <height>341</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="AdvancedView">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>101</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Advanced View</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="TradeHistory">
-    <attribute name="title">
-     <string>Trade history</string>
-    </attribute>
-    <widget class="QTableWidget" name="TradeHistoryTable">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>10</y>
-       <width>751</width>
-       <height>361</height>
-      </rect>
      </property>
     </widget>
    </widget>
@@ -2849,8 +2950,8 @@
     <widget class="QLabel" name="label_8">
      <property name="geometry">
       <rect>
-       <x>410</x>
-       <y>260</y>
+       <x>460</x>
+       <y>300</y>
        <width>281</width>
        <height>81</height>
       </rect>
@@ -2862,6 +2963,169 @@
       <pixmap resource="../bitcoin.qrc">:/images/bleutrade</pixmap>
      </property>
     </widget>
+    <widget class="QWidget" name="widgetConversion" native="true">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>250</y>
+       <width>751</width>
+       <height>43</height>
+      </rect>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>43</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <widget class="QPushButton" name="btnUpdateMarketData">
+      <property name="geometry">
+       <rect>
+        <x>575</x>
+        <y>0</y>
+        <width>111</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="font">
+       <font>
+        <family>calibri</family>
+        <pointsize>-1</pointsize>
+        <weight>75</weight>
+        <italic>true</italic>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">margin:0px;text-align:center;padding:2px;border-radius:3px;font-style:italic;width:100px;font-size:14px;font-family:calibri;font-weight:600;</string>
+      </property>
+      <property name="text">
+       <string>Update</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>150</width>
+        <height>35</height>
+       </size>
+      </property>
+      <property name="autoDefault">
+       <bool>true</bool>
+      </property>
+      <property name="default">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lblConvertVCoin">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>10</y>
+        <width>131</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Convert VCoin:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txtConvertVCoinQty">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>10</y>
+        <width>100</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>100</width>
+        <height>23</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>100</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border: 1px solid #61696c;margin-left:4px;</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btnConvertVCoin">
+      <property name="geometry">
+       <rect>
+        <x>260</x>
+        <y>10</y>
+        <width>51</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>23</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border:1px solid #61696c;background:white;font-weight:600;</string>
+      </property>
+      <property name="text">
+       <string>=</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lblConvertVCoinResults">
+      <property name="geometry">
+       <rect>
+        <x>330</x>
+        <y>0</y>
+        <width>201</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>$0.0000 / B0.00000000</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="iconOverviewUpdateWait">
+      <property name="geometry">
+       <rect>
+        <x>670</x>
+        <y>10</y>
+        <width>24</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap resource="../bitcoin.qrc">:/icons/transaction_1</pixmap>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </widget>
    </widget>
    <widget class="QWidget" name="ApiSettings">
     <attribute name="title">
@@ -2870,8 +3134,8 @@
     <widget class="QLabel" name="bleutrade">
      <property name="geometry">
       <rect>
-       <x>400</x>
-       <y>240</y>
+       <x>460</x>
+       <y>300</y>
        <width>281</width>
        <height>81</height>
       </rect>
@@ -3053,6 +3317,14 @@
    </widget>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qt/qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../bitcoin.qrc"/>
  </resources>
