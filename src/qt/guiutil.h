@@ -29,6 +29,8 @@ class QUrl;
 class QWidget;
 QT_END_NAMESPACE
 
+const int defaultConfirmTarget = 25;
+
 /** Utility functions used by the Bitcoin Qt UI.
  */
 namespace GUIUtil
