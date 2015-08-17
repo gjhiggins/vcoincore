@@ -63,6 +63,7 @@ public:
     QString getStatusBarWarnings() const;
 
     QString formatFullVersion() const;
+    QString formatSubVersion() const;
     QString formatBuildDate() const;
     bool isReleaseVersion() const;
     QString clientName() const;
@@ -82,7 +83,7 @@ private:
     void subscribeToCoreSignals();
     void unsubscribeFromCoreSignals();
 
-signals:
+Q_SIGNALS:
     void numConnectionsChanged(int count);
     void numBlocksChanged(int count, const QDateTime& blockDate);
     void alertsChanged(const QString &warnings);
@@ -94,7 +95,7 @@ signals:
     // Show progress dialog e.g. for verifychain
     void showProgress(const QString &title, int nProgress);
 
-public slots:
+public Q_SLOTS:
     void updateTimer();
     void updateNumConnections(int numConnections);
     void updateAlert(const QString &hash, int status);

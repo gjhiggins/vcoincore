@@ -3,6 +3,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include "chain.h"
 #include "primitives/block.h"
 #include "primitives/transaction.h"
 #include "main.h"
@@ -20,7 +21,7 @@
 
 using namespace std;
 
-static const int MAX_GETUTXOS_OUTPOINTS = 15; //allow a max of 15 outpoints to be queried at once
+static const size_t MAX_GETUTXOS_OUTPOINTS = 15; //allow a max of 15 outpoints to be queried at once
 
 enum RetFormat {
     RF_UNDEF,
@@ -64,7 +65,10 @@ public:
 
 extern void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry);
 extern UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool txDetails = false);
+extern UniValue mempoolInfoToJSON();
+extern UniValue mempoolToJSON(bool fVerbose = false);
 extern void ScriptPubKeyToJSON(const CScript& scriptPubKey, UniValue& out, bool fIncludeHex);
+extern UniValue blockheaderToJSON(const CBlockIndex* blockindex);
 
 static RestErr RESTERR(enum HTTPStatusCode status, string message)
 {
@@ -134,14 +138,14 @@ static bool rest_headers(AcceptedConnection* conn,
     if (!ParseHashStr(hashStr, hash))
         throw RESTERR(HTTP_BAD_REQUEST, "Invalid hash: " + hashStr);
 
-    std::vector<CBlockHeader> headers;
+    std::vector<const CBlockIndex *> headers;
     headers.reserve(count);
     {
         LOCK(cs_main);
         BlockMap::const_iterator it = mapBlockIndex.find(hash);
         const CBlockIndex *pindex = (it != mapBlockIndex.end()) ? it->second : NULL;
         while (pindex != NULL && chainActive.Contains(pindex)) {
-            headers.push_back(pindex->GetBlockHeader());
+            headers.push_back(pindex);
             if (headers.size() == (unsigned long)count)
                 break;
             pindex = chainActive.Next(pindex);
@@ -149,8 +153,8 @@ static bool rest_headers(AcceptedConnection* conn,
     }
 
     CDataStream ssHeader(SER_NETWORK, PROTOCOL_VERSION);
-    BOOST_FOREACH(const CBlockHeader &header, headers) {
-        ssHeader << header;
+    BOOST_FOREACH(const CBlockIndex *pindex, headers) {
+        ssHeader << pindex->GetBlockHeader();
     }
 
     switch (rf) {
@@ -163,6 +167,16 @@ static bool rest_headers(AcceptedConnection* conn,
     case RF_HEX: {
         string strHex = HexStr(ssHeader.begin(), ssHeader.end()) + "\n";
         conn->stream() << HTTPReply(HTTP_OK, strHex, fRun, false, "text/plain") << std::flush;
+        return true;
+    }
+
+    case RF_JSON: {
+        UniValue jsonHeaders(UniValue::VARR);
+        BOOST_FOREACH(const CBlockIndex *pindex, headers) {
+            jsonHeaders.push_back(blockheaderToJSON(pindex));
+        }
+        string strJSON = jsonHeaders.write() + "\n";
+        conn->stream() << HTTPReply(HTTP_OK, strJSON, fRun) << std::flush;
         return true;
     }
 
@@ -269,6 +283,58 @@ static bool rest_chaininfo(AcceptedConnection* conn,
         UniValue rpcParams(UniValue::VARR);
         UniValue chainInfoObject = getblockchaininfo(rpcParams, false);
         string strJSON = chainInfoObject.write() + "\n";
+        conn->stream() << HTTPReply(HTTP_OK, strJSON, fRun) << std::flush;
+        return true;
+    }
+    default: {
+        throw RESTERR(HTTP_NOT_FOUND, "output format not found (available: json)");
+    }
+    }
+
+    // not reached
+    return true; // continue to process further HTTP reqs on this cxn
+}
+
+static bool rest_mempool_info(AcceptedConnection* conn,
+                              const std::string& strURIPart,
+                              const std::string& strRequest,
+                              const std::map<std::string, std::string>& mapHeaders,
+                              bool fRun)
+{
+    vector<string> params;
+    const RetFormat rf = ParseDataFormat(params, strURIPart);
+
+    switch (rf) {
+    case RF_JSON: {
+        UniValue mempoolInfoObject = mempoolInfoToJSON();
+
+        string strJSON = mempoolInfoObject.write() + "\n";
+        conn->stream() << HTTPReply(HTTP_OK, strJSON, fRun) << std::flush;
+        return true;
+    }
+    default: {
+        throw RESTERR(HTTP_NOT_FOUND, "output format not found (available: json)");
+    }
+    }
+
+    // not reached
+    return true; // continue to process further HTTP reqs on this cxn
+}
+
+static bool rest_mempool_contents(AcceptedConnection* conn,
+                                  const std::string& strURIPart,
+                                  const std::string& strRequest,
+                                  const std::map<std::string, std::string>& mapHeaders,
+                                  bool fRun)
+{
+    vector<string> params;
+    const RetFormat rf = ParseDataFormat(params, strURIPart);
+
+    switch (rf) {
+    case RF_JSON: {
+        UniValue mempoolObject = mempoolToJSON(true);
+
+        string strJSON = mempoolObject.write() + "\n";
         conn->stream() << HTTPReply(HTTP_OK, strJSON, fRun) << std::flush;
         return true;
     }
@@ -541,6 +607,8 @@ static const struct {
       {"/rest/block/notxdetails/", rest_block_notxdetails},
       {"/rest/block/", rest_block_extended},
       {"/rest/chaininfo", rest_chaininfo},
+      {"/rest/mempool/info", rest_mempool_info},
+      {"/rest/mempool/contents", rest_mempool_contents},
       {"/rest/headers/", rest_headers},
       {"/rest/getutxos", rest_getutxos},
 };
