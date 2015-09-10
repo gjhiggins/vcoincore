@@ -101,7 +101,7 @@ public:
         pchMessageStart[1] = 0x05;
         pchMessageStart[2] = 0xb5;
         pchMessageStart[3] = 0x05;
-        vAlertPubKey = ParseHex("0x0");
+        vAlertPubKey = ParseHex("0x04ddf6acee2cdba487e3bb2ec67ba96abd5bcc06ab62e79d00f745d9021d38b3739b2001bfc13055150047bd6b6a958e797be065fe05c9a8c1486605c169c5a12e");
         nDefaultPort = 5530;
         nMinerThreads = 0;
         nPruneAfterHeight = 100000;
@@ -171,14 +171,20 @@ public:
 
         vSeeds.push_back(CDNSSeedData("Minkiz", "minkiz.co"));
 
-        // base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,0);
-        // base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,5);
-        // base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,128);
         base58Prefixes[PUBKEY_ADDRESS] = boost::assign::list_of(70);
         base58Prefixes[SCRIPT_ADDRESS] = boost::assign::list_of(30);
-        base58Prefixes[SECRET_KEY] =     boost::assign::list_of(224);
+        base58Prefixes[SECRET_KEY]     = boost::assign::list_of(224);
         base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >();
         base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xAD)(0xE4).convert_to_container<std::vector<unsigned char> >();
+
+        /*
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,70); // ‘V’  (P2PKH address)
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30); // ‘D’ (P2SH address) multisig begins with D ??? (Maybe 133, ‘v’?)
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,224); // [PUBKEY_ADDRESS] (70) + 128 = 198
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB0)(0x1E); // 'xpub'
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xA0)(0xE4); // 'xpriv'
+        // base58Prefixes[EXT_COIN_TYPE]  = boost::assign::list_of(0x80000025); // BIP44 coin type is '25'
+        */
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
 
@@ -282,14 +288,20 @@ public:
         vSeeds.clear();
         vSeeds.push_back(CDNSSeedData("MinkizT", "minkiz.co"));
 
-        // base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,111);
-        // base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,196);
-        // base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
-        base58Prefixes[PUBKEY_ADDRESS] = boost::assign::list_of(130);
+        base58Prefixes[PUBKEY_ADDRESS] = boost::assign::list_of(127);
         base58Prefixes[SCRIPT_ADDRESS] = boost::assign::list_of(30);
-        base58Prefixes[SECRET_KEY]     = boost::assign::list_of(239);
+        base58Prefixes[SECRET_KEY]     = boost::assign::list_of(255);
         base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
         base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
+
+        /*
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,130); // ‘u’ (P2PKH address)
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30); // ‘D’ (P2SH address)
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,258); // [PUBKEY_ADDRESS] (130) + 128 = 258 Private key (WIF, compressed pubkey)
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x81)(0xCF); // 'tpub'
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x80)(0x94); // 'tpriv'
+        // base58Prefixes[EXT_COIN_TYPE]  = boost::assign::list_of(0x80000025); // BIP44 coin type is '25'
+        */
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
 

@@ -985,7 +985,7 @@ UniValue sendmany(const UniValue& params, bool fHelp)
     {
         CBitcoinAddress address(name_);
         if (!address.IsValid())
-            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid VCoin address: ")+name_);
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid VCoin address: ")+s.name_);
 
         if (setAddress.count(address))
             throw JSONRPCError(RPC_INVALID_PARAMETER, string("Invalid parameter, duplicated address: ")+name_);
