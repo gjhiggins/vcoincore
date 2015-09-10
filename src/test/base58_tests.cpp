@@ -124,7 +124,6 @@ public:
 // Goal: check that parsed keys match test payload
 BOOST_AUTO_TEST_CASE(base58_keys_valid_parse)
 {
-    /* FIXME error
     Array tests = read_json(std::string(json_tests::base58_keys_valid, json_tests::base58_keys_valid + sizeof(json_tests::base58_keys_valid)));
     std::vector<unsigned char> result;
     CBitcoinSecret secret;
@@ -179,7 +178,6 @@ BOOST_AUTO_TEST_CASE(base58_keys_valid_parse)
             BOOST_CHECK_MESSAGE(!secret.IsValid(), "IsValid pubkey as privkey:" + strTest);
         }
     }
-    */
 }
 
 // Goal: check that generated keys match test vectors
@@ -213,9 +211,7 @@ BOOST_AUTO_TEST_CASE(base58_keys_valid_gen)
             assert(key.IsValid());
             CBitcoinSecret secret;
             secret.SetKey(key);
-            /* FIXME: error
             BOOST_CHECK_MESSAGE(secret.ToString() == exp_base58string, "result mismatch: " + strTest);
-            */
         }
         else
         {
@@ -240,9 +236,7 @@ BOOST_AUTO_TEST_CASE(base58_keys_valid_gen)
             }
             CBitcoinAddress addrOut;
             BOOST_CHECK_MESSAGE(addrOut.Set(dest), "encode dest: " + strTest);
-            /* FIXME: error
             BOOST_CHECK_MESSAGE(addrOut.ToString() == exp_base58string, "mismatch: " + strTest);
-            */
         }
     }
 
