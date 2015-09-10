@@ -29,8 +29,6 @@ class QUrl;
 class QWidget;
 QT_END_NAMESPACE
 
-const int defaultConfirmTarget = 25;
-
 /** Utility functions used by the Bitcoin Qt UI.
  */
 namespace GUIUtil
@@ -171,7 +169,7 @@ namespace GUIUtil
             void setViewHeaderResizeMode(int logicalIndex, QHeaderView::ResizeMode resizeMode);
             void resizeColumn(int nColumnIndex, int width);
 
-        private slots:
+        private Q_SLOTS:
             void on_sectionResized(int logicalIndex, int oldSize, int newSize);
             void on_geometriesChanged();
     };

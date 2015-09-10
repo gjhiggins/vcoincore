@@ -12,6 +12,7 @@
 class ClientModel;
 class TransactionFilterProxy;
 class TxViewDelegate;
+class PlatformStyle;
 class WalletModel;
 
 namespace Ui {
@@ -28,7 +29,7 @@ class OverviewPage : public QWidget
     Q_OBJECT
 
 public:
-    explicit OverviewPage(QWidget *parent = 0);
+    explicit OverviewPage(const PlatformStyle *platformStyle, QWidget *parent = 0);
     ~OverviewPage();
 
     void setClientModel(ClientModel *clientModel);
@@ -36,11 +37,11 @@ public:
     void showOutOfSyncWarning(bool fShow);
     void updatePlot(int count);
 
-public slots:
+public Q_SLOTS:
     void setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance,
                     const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance);
 
-signals:
+Q_SIGNALS:
     void transactionClicked(const QModelIndex &index);
 
 private:
@@ -60,7 +61,7 @@ private:
     TxViewDelegate *txdelegate;
     TransactionFilterProxy *filter;
 
-private slots:
+private Q_SLOTS:
     void updateDisplayUnit();
     void handleTransactionClicked(const QModelIndex &index);
     void updateAlerts(const QString &warnings);

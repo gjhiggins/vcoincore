@@ -33,6 +33,9 @@ QT_TRANSLATE_NOOP("vcoin-core", ""
 "Cannot obtain a lock on data directory %s. Bitcoin Core is probably already "
 "running."),
 QT_TRANSLATE_NOOP("vcoin-core", ""
+"Continuously rate-limit free transactions to <n>*1000 bytes per minute "
+"(default: %u)"),
+QT_TRANSLATE_NOOP("vcoin-core", ""
 "Create new files with system default permissions, instead of umask 077 (only "
 "effective with disabled wallet functionality)"),
 QT_TRANSLATE_NOOP("vcoin-core", ""
@@ -44,6 +47,9 @@ QT_TRANSLATE_NOOP("vcoin-core", ""
 QT_TRANSLATE_NOOP("vcoin-core", ""
 "Distributed under the MIT software license, see the accompanying file "
 "COPYING or <http://www.opensource.org/licenses/mit-license.php>."),
+QT_TRANSLATE_NOOP("vcoin-core", ""
+"Enter regression test mode, which uses a special chain in which blocks can "
+"be solved instantly."),
 QT_TRANSLATE_NOOP("vcoin-core", ""
 "Error: Listening for incoming connections failed (listen returned error %s)"),
 QT_TRANSLATE_NOOP("vcoin-core", ""
@@ -62,13 +68,24 @@ QT_TRANSLATE_NOOP("vcoin-core", ""
 "Fees (in BTC/Kb) smaller than this are considered zero fee for relaying "
 "(default: %s)"),
 QT_TRANSLATE_NOOP("vcoin-core", ""
+"Fees (in VCN/Kb) smaller than this are considered zero fee for transaction "
+"creation (default: %s)"),
+QT_TRANSLATE_NOOP("vcoin-core", ""
+"Flush database activity from memory pool to disk log every <n> megabytes "
+"(default: %u)"),
+QT_TRANSLATE_NOOP("vcoin-core", ""
 "How thorough the block verification of -checkblocks is (0-4, default: %u)"),
 QT_TRANSLATE_NOOP("vcoin-core", ""
 "If paytxfee is not set, include enough fee so transactions begin "
 "confirmation on average within n blocks (default: %u)"),
 QT_TRANSLATE_NOOP("vcoin-core", ""
+"In this mode -genproclimit controls how many blocks are generated "
+"immediately."),
+QT_TRANSLATE_NOOP("vcoin-core", ""
 "Invalid amount for -maxtxfee=<amount>: '%s' (must be at least the minrelay "
 "fee of %s to prevent stuck transactions)"),
+QT_TRANSLATE_NOOP("vcoin-core", ""
+"Log transaction priority and fee per kB when mining blocks (default: %u)"),
 QT_TRANSLATE_NOOP("vcoin-core", ""
 "Maintain a full transaction index, used by the getrawtransaction rpc call "
 "(default: %u)"),
@@ -96,6 +113,8 @@ QT_TRANSLATE_NOOP("vcoin-core", ""
 "Reverting this setting requires re-downloading the entire blockchain. "
 "(default: 0 = disable pruning blocks, >%u = target size in MiB to use for "
 "block files)"),
+QT_TRANSLATE_NOOP("vcoin-core", ""
+"Require high priority for relaying free or low-fee transactions (default: %u)"),
 QT_TRANSLATE_NOOP("vcoin-core", ""
 "Set maximum size of high-priority/low-fee transactions in bytes (default: %d)"),
 QT_TRANSLATE_NOOP("vcoin-core", ""
@@ -132,12 +151,6 @@ QT_TRANSLATE_NOOP("vcoin-core", ""
 QT_TRANSLATE_NOOP("vcoin-core", ""
 "Use separate SOCKS5 proxy to reach peers via Tor hidden services (default: "
 "%s)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
-"WARNING: abnormally high number of blocks generated, %d blocks received in "
-"the last %d hours (%d expected)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
-"WARNING: check your network connection, %d blocks received in the last %d "
-"hours (%d expected)"),
 QT_TRANSLATE_NOOP("vcoin-core", ""
 "Warning: -maxtxfee is set very high! Fees this large could be paid on a "
 "single transaction."),
