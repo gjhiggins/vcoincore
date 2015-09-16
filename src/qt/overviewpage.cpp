@@ -6,20 +6,27 @@
 #include "ui_overviewpage.h"
 
 #include "bitcoinunits.h"
+#include "chain.h"
 #include "clientmodel.h"
 #include "guiconstants.h"
 #include "guiutil.h"
+#include "main.h"
 #include "optionsmodel.h"
 #include "platformstyle.h"
 #include "transactionfilterproxy.h"
 #include "transactiontablemodel.h"
 #include "walletmodel.h"
+#include "univalue/univalue.h"
+#include "util.h"
 
 #include <QAbstractItemDelegate>
 #include <QPainter>
 
 #define DECORATION_SIZE 54
 #define NUM_ITEMS 5
+
+extern UniValue GetNetworkHashPS(int lookup, int height);
+// extern UniValue getnetworkhashps(const UniValue& params, bool fHelp);
 
 class TxViewDelegate : public QAbstractItemDelegate
 {

@@ -315,6 +315,13 @@ void WalletView::usedSendingAddresses()
     usedSendingAddressesPage->activateWindow();
 }
 
+void WalletView::updatePlot(int count)
+{
+    if(!walletModel)
+        return;
+    overviewPage->updatePlot(count);
+}
+
 void WalletView::usedReceivingAddresses()
 {
     if(!walletModel)

@@ -7,6 +7,7 @@
 
 #include "util.h"
 #include "utilstrencodings.h"
+#include "arith_uint256.h"
 
 #include <assert.h>
 
@@ -49,7 +50,8 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
     const char* pszTimestamp = "vcoin sn";
-    const CScript genesisOutputScript = CScript() << ParseHex("04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f") << OP_CHECKSIG;
+    // const CScript genesisOutputScript = CScript() << ParseHex("04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f") << OP_CHECKSIG;
+    const CScript genesisOutputScript = CScript() << ParseHex("") << OP_CHECKSIG;
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
 
@@ -89,7 +91,7 @@ public:
         nDefaultPort = 5530;
         nPruneAfterHeight = 100000;
 
-        genesis = CreateGenesisBlock(1431517588, 1486592, 0x1d0000ff, 1, 1 * COIN);
+        genesis = CreateGenesisBlock(1431517588, 1486592, 0x1e0fffff, 1, 1 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock == uint256S("0x00000b7e804f0de87e7752550ff04d7686a4599509897feefd7f03904eb45633"));
         assert(genesis.hashMerkleRoot == uint256S("0x1576ef41775095b26a8f8f2bb65b693ec12230608a425aa84ee462381cae00e6"));
@@ -146,18 +148,50 @@ public:
         pchMessageStart[1] = 0xfe;
         pchMessageStart[2] = 0xfe;
         pchMessageStart[3] = 0x05;
-        vAlertPubKey = ParseHex("0x");
+        // vAlertPubKey = ParseHex("0x");
         nDefaultPort = 55534;
         nPruneAfterHeight = 1000;
 
-
-        genesis = CreateGenesisBlock(1374901773, 1211565, 0x1d0000ff, 1, 1 * COIN);
+        genesis = CreateGenesisBlock(1441062000, 1173545, 0x1e0fffff, 1, 1 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x00000b62077c6e53a2c7ada6e14feb5dfdeecd6001cc83d3a281145572112b17"));
-        assert(genesis.hashMerkleRoot == uint256S("0x0"));
-        LogPrintf("testnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
-        LogPrintf("testnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        LogPrintf("testnet: %x\n", consensus.powLimit.ToString().c_str());
+
+        /*
+        // calculate Genesis Block
+        if (true && (genesis.GetHash() != consensus.hashGenesisBlock)) {
+            LogPrintf("Calculating Genesis Block:\n");
+
+            arith_uint256 hashTarget = arith_uint256().SetCompact(genesis.nBits);
+            uint256 hash;
+            genesis.nNonce = 0;
+
+            // This will figure out a valid hash and Nonce if you're
+            // creating a different genesis block:
+            // uint256 hashTarget = CBigNum().SetCompact(genesis.nBits).getuint256();
+            // hashTarget.SetCompact(genesis.nBits, &fNegative, &fOverflow).getuint256();
+            // while (genesis.GetHash() > hashTarget)
+            while (UintToArith256(genesis.GetHash()) > hashTarget)
+            {
+                ++genesis.nNonce;
+                if (genesis.nNonce == 0)
+                {
+                    LogPrintf("NONCE WRAPPED, incrementing time");
+                    ++genesis.nTime;
+                }
+                if (genesis.nNonce % 10000 == 0)
+                {
+                    LogPrintf("nonce %08u: hash = %s \n", genesis.nNonce, genesis.GetHash().ToString().c_str());
+                }
+            }
+        }
+
+        LogPrintf("testnet:nonce %08u\n", genesis.nNonce);
+        LogPrintf("testnet:hash %s\n", genesis.GetHash().ToString().c_str());
+        LogPrintf("testnet:merkle %s\n", genesis.hashMerkleRoot.ToString().c_str());
+        LogPrintf("testnet:nbits %x\n", consensus.powLimit.ToString().c_str());
+        */
+
+        assert(consensus.hashGenesisBlock == uint256S("0x000007e14c52364cee2d4d9483541d473e3e73c896df75882273b91313b44816"));
+        assert(genesis.hashMerkleRoot == uint256S("0x1576ef41775095b26a8f8f2bb65b693ec12230608a425aa84ee462381cae00e6"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
@@ -184,7 +218,7 @@ public:
 
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
-            ( 0, uint256S("0x0")),
+            ( 0, uint256S("0x000007e14c52364cee2d4d9483541d473e3e73c896df75882273b91313b44816")),
             1374901773,
             0,
             2880

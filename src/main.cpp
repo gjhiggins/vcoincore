@@ -1078,16 +1078,28 @@ bool ReadBlockFromDisk(CBlock& block, const CBlockIndex* pindex)
     return true;
 }
 
+static const CAmount nStartSubsidy = 50 * COIN;
+static const CAmount nMinSubsidy = 1 * COIN;
+
 CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 {
+    CAmount nSubsidy = nStartSubsidy;
     int halvings = nHeight / consensusParams.nSubsidyHalvingInterval;
     // Force block reward to zero when right shift is undefined.
     if (halvings >= 64)
         return 0;
 
-    CAmount nSubsidy = 1000 * COIN;
-    // Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
+    // Mining phase: Subsidy is cut in half every SubsidyHalvingInterval
     nSubsidy >>= halvings;
+    
+    // Inflation phase: Subsidy reaches minimum subsidy
+    // Network is rewarded for transaction processing with transaction fees and 
+    // the inflationary subsidy
+    if (nSubsidy < nMinSubsidy)
+    {
+        nSubsidy = nMinSubsidy;
+    }
+
     return nSubsidy;
 }
 

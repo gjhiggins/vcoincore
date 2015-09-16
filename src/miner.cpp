@@ -418,7 +418,7 @@ static bool ProcessBlockFound(const CBlock* pblock, const CChainParams& chainpar
     {
         LOCK(cs_main);
         if (pblock->hashPrevBlock != chainActive.Tip()->GetBlockHash())
-            return error("VCoinMiner : generated block is stale");
+            return error("VCoinMiner: generated block is stale");
     }
 
     // Inform about the new block

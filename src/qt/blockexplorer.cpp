@@ -4,6 +4,7 @@
 #include <set>
 #include "blockexplorer.h"
 #include "ui_blockexplorer.h"
+#include "utilstrencodings.h"
 #include "main.h"
 #include "net.h"
 #include "txdb.h"

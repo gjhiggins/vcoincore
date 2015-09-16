@@ -22,7 +22,7 @@ private:
     Ui::StatsExplorer *ui;
     QTimer updateTimer;
 
-private slots:
+private Q_SLOTS:
     virtual void updateTimer_timeout();
     void on_recomputeButton_clicked();
 };

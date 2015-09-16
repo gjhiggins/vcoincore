@@ -1489,7 +1489,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
             MilliSleep(10);
     }
 
-    // ********************************************************* Step 10: start node
+    // ********************************************************* Step 11: start node
 
     if (!CheckDiskSpace())
         return false;
