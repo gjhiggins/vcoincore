@@ -8,7 +8,6 @@
 #include "guiconstants.h"
 #include "guiutil.h"
 
-#include "net.h"
 #include "sync.h"
 
 #include <QDebug>
@@ -63,7 +62,7 @@ public:
 #if QT_VERSION >= 0x040700
             cachedNodeStats.reserve(vNodes.size());
 #endif
-            foreach (CNode* pnode, vNodes)
+            Q_FOREACH (CNode* pnode, vNodes)
             {
                 CNodeCombinedStats stats;
                 stats.nodeStateStats.nMisbehavior = 0;
@@ -92,22 +91,21 @@ public:
         // build index map
         mapNodeRows.clear();
         int row = 0;
-        foreach (const CNodeCombinedStats& stats, cachedNodeStats)
+        Q_FOREACH (const CNodeCombinedStats& stats, cachedNodeStats)
             mapNodeRows.insert(std::pair<NodeId, int>(stats.nodeStats.nodeid, row++));
     }
 
-    int size()
+    int size() const
     {
         return cachedNodeStats.size();
     }
 
     CNodeCombinedStats *index(int idx)
     {
-        if(idx >= 0 && idx < cachedNodeStats.size()) {
+        if (idx >= 0 && idx < cachedNodeStats.size())
             return &cachedNodeStats[idx];
-        } else {
-            return 0;
-        }
+
+        return 0;
     }
 };
 
@@ -171,7 +169,7 @@ QVariant PeerTableModel::data(const QModelIndex &index, int role) const
         }
     } else if (role == Qt::TextAlignmentRole) {
         if (index.column() == Ping)
-            return (int)(Qt::AlignRight | Qt::AlignVCenter);
+            return (QVariant)(Qt::AlignRight | Qt::AlignVCenter);
     }
 
     return QVariant();
@@ -204,13 +202,8 @@ QModelIndex PeerTableModel::index(int row, int column, const QModelIndex &parent
     CNodeCombinedStats *data = priv->index(row);
 
     if (data)
-    {
         return createIndex(row, column, data);
-    }
-    else
-    {
-        return QModelIndex();
-    }
+    return QModelIndex();
 }
 
 const CNodeCombinedStats *PeerTableModel::getNodeStats(int idx)
@@ -220,9 +213,9 @@ const CNodeCombinedStats *PeerTableModel::getNodeStats(int idx)
 
 void PeerTableModel::refresh()
 {
-    emit layoutAboutToBeChanged();
+    Q_EMIT layoutAboutToBeChanged();
     priv->refreshPeers();
-    emit layoutChanged();
+    Q_EMIT layoutChanged();
 }
 
 int PeerTableModel::getRowByNodeId(NodeId nodeid)

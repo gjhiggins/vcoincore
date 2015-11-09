@@ -5,8 +5,8 @@ CURDIR=$(cd $(dirname "$0"); pwd)
 # Get BUILDDIR and REAL_BITCOIND
 . "${CURDIR}/tests-config.sh"
 
-export BITCOINCLI=${BUILDDIR}/qa/pull-tester/run-bitcoin-cli
 export BITCOIND=${REAL_BITCOIND}
+export BITCOINCLI=${REAL_BITCOINCLI}
 
 if [ "x${EXEEXT}" = "x.exe" ]; then
   echo "Win tests currently disabled"
@@ -19,8 +19,8 @@ testScripts=(
     'wallet.py'
     'listtransactions.py'
     'mempool_resurrect_test.py'
-    'txn_doublespend.py'
     'txn_doublespend.py --mineblock'
+    'txn_clone.py'
     'getchaintips.py'
     'rawtransactions.py'
     'rest.py'
@@ -30,29 +30,39 @@ testScripts=(
     'zapwallettxes.py'
     'proxy_test.py'
     'merkle_blocks.py'
+    'fundrawtransaction.py'
     'signrawtransactions.py'
     'walletbackup.py'
+    'nodehandling.py'
+    'reindex.py'
+    'decodescript.py'
+    'p2p-fullblocktest.py'
 );
 testScriptsExt=(
     'bipdersig-p2p.py'
     'bipdersig.py'
     'getblocktemplate_longpoll.py'
     'getblocktemplate_proposals.py'
+    'txn_doublespend.py'
+    'txn_clone.py --mineblock'
     'pruning.py'
     'forknotify.py'
     'invalidateblock.py'
     'keypool.py'
     'receivedby.py'
-    'reindex.py'
     'rpcbind_test.py'
 #   'script_test.py'
     'smartfees.py'
     'maxblocksinflight.py'
     'invalidblockrequest.py'
-    'rawtransactions.py'
 #    'forknotify.py'
     'p2p-acceptblock.py'
+    'mempool_packages.py'
 );
+
+#if [ "x$ENABLE_ZMQ" = "x1" ]; then
+#  testScripts+=('zmq_test.py')
+#fi
 
 extArg="-extended"
 passOn=${@#$extArg}
