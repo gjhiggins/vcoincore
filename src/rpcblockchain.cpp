@@ -20,7 +20,7 @@
 
 #include <stdint.h>
 
-#include "univalue/univalue.h"
+#include <univalue.h>
 
 using namespace std;
 
@@ -539,13 +539,15 @@ UniValue gettxout(const UniValue& params, bool fHelp)
 
 UniValue verifychain(const UniValue& params, bool fHelp)
 {
+    int nCheckLevel = GetArg("-checklevel", DEFAULT_CHECKLEVEL);
+    int nCheckDepth = GetArg("-checkblocks", DEFAULT_CHECKBLOCKS);
     if (fHelp || params.size() > 2)
         throw runtime_error(
             "verifychain ( checklevel numblocks )\n"
             "\nVerifies blockchain database.\n"
             "\nArguments:\n"
-            "1. checklevel   (numeric, optional, 0-4, default=3) How thorough the block verification is.\n"
-            "2. numblocks    (numeric, optional, default=288, 0=all) The number of blocks to check.\n"
+            "1. checklevel   (numeric, optional, 0-4, default=" + strprintf("%d", nCheckLevel) + ") How thorough the block verification is.\n"
+            "2. numblocks    (numeric, optional, default=" + strprintf("%d", nCheckDepth) + ", 0=all) The number of blocks to check.\n"
             "\nResult:\n"
             "true|false       (boolean) Verified or not\n"
             "\nExamples:\n"
@@ -555,8 +557,6 @@ UniValue verifychain(const UniValue& params, bool fHelp)
 
     LOCK(cs_main);
 
-    int nCheckLevel = GetArg("-checklevel", 3);
-    int nCheckDepth = GetArg("-checkblocks", 288);
     if (params.size() > 0)
         nCheckLevel = params[0].get_int();
     if (params.size() > 1)
@@ -648,6 +648,7 @@ UniValue getblockchaininfo(const UniValue& params, bool fHelp)
     UniValue softforks(UniValue::VARR);
     softforks.push_back(SoftForkDesc("bip34", 2, tip, consensusParams));
     softforks.push_back(SoftForkDesc("bip66", 3, tip, consensusParams));
+    softforks.push_back(SoftForkDesc("bip65", 4, tip, consensusParams));
     obj.push_back(Pair("softforks",             softforks));
 
     if (fPruneMode)
@@ -772,6 +773,9 @@ UniValue mempoolInfoToJSON()
     ret.push_back(Pair("size", (int64_t) mempool.size()));
     ret.push_back(Pair("bytes", (int64_t) mempool.GetTotalTxSize()));
     ret.push_back(Pair("usage", (int64_t) mempool.DynamicMemoryUsage()));
+    size_t maxmempool = GetArg("-maxmempool", DEFAULT_MAX_MEMPOOL_SIZE) * 1000000;
+    ret.push_back(Pair("maxmempool", (int64_t) maxmempool));
+    ret.push_back(Pair("mempoolminfee", ValueFromAmount(mempool.GetMinFee(maxmempool).GetFeePerK())));
 
     return ret;
 }

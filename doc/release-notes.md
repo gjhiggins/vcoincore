@@ -89,7 +89,7 @@ caching. A sample config for apache2 could look like:
         # optional enable digest auth
         # AuthType Digest
         # ...
-        
+
         # optional bypass bitcoind rpc basic auth
         # RequestHeader set Authorization "Basic <hash>"
         # get the <hash> from the shell with: base64 <<< bitcoinrpc:<password>
@@ -148,6 +148,16 @@ In this version, it is only enforced for peers that send protocol versions
 removed. It is recommended to update SPV clients to check for the `NODE_BLOOM`
 service bit for nodes that report versions newer than 70011.
 
+Any sequence of pushdatas in OP_RETURN outputs now allowed
+----------------------------------------------------------
+
+Previously OP_RETURN outputs with a payload were only relayed and mined if they
+had a single pushdata. This restriction has been lifted to allow any
+combination of data pushes and numeric constant opcodes (OP_1 to OP_16). The
+limit on OP_RETURN output size is now applied to the entire serialized
+scriptPubKey, 83 bytes by default. (the previous 80 byte default plus three
+bytes overhead)
+
 Merkle branches removed from wallet
 -----------------------------------
 
@@ -156,6 +166,33 @@ presence in blocks. This wasn't being used for more than an expensive
 sanity check. Since 0.12, these are no longer stored. When loading a
 0.12 wallet into an older version, it will automatically rescan to avoid
 failed checks.
+
+BIP65 - CHECKLOCKTIMEVERIFY
+---------------------------
+
+Previously it was impossible to create a transaction output that was guaranteed
+to be unspendable until a specific date in the future. CHECKLOCKTIMEVERIFY is a
+new opcode that allows a script to check if a specific block height or time has
+been reached, failing the script otherwise. This enables a wide variety of new
+functionality such as time-locked escrows, secure payment channels, etc.
+
+BIP65 implements CHECKLOCKTIMEVERIFY by introducing block version 4, which adds
+additional restrictions to the NOP2 opcode. The same miner-voting mechanism as
+in BIP34 and BIP66 is used: when 751 out of a sequence of 1001 blocks have
+version number 4 or higher, the new consensus rule becomes active for those
+blocks. When 951 out of a sequence of 1001 blocks have version number 4 or
+higher, it becomes mandatory for all blocks and blocks with versions less than
+4 are rejected.
+
+Bitcoin Core's block templates are now for version 4 blocks only, and any
+mining software relying on its `getblocktemplate` must be updated in parallel
+to use either libblkmaker version FIXME or any version from 0.5.1 onward. If
+you are solo mining, this will affect you the moment you upgrade Bitcoin Core,
+which must be done prior to BIP65 achieving its 951/1001 status.  If you are
+mining with the stratum mining protocol: this does not affect you.  If you are
+mining with the getblocktemplate protocol to a pool: this will affect you at
+the pool operator's discretion, which must be no later than BIP65 achieving its
+951/1001 status.
 
 0.12.0 Change log
 =================
@@ -214,3 +251,11 @@ configured specifically to process scriptPubKey and not scriptSig scripts.
 
 - Removed bitrpc.py from contrib
 
+Addition of ZMQ-based Notifications
+==================================
+
+Bitcoind can now (optionally) asynchronously notify clients through a
+ZMQ-based PUB socket of the arrival of new transactions and blocks.
+This feature requires installation of the ZMQ C API library 4.x and
+configuring its use through the command line or configuration file.
+Please see docs/zmq.md for details of operation.

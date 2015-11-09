@@ -21,8 +21,7 @@ CZMQNotificationInterface::CZMQNotificationInterface() : pcontext(NULL)
 
 CZMQNotificationInterface::~CZMQNotificationInterface()
 {
-    // ensure Shutdown if Initialize is called
-    assert(!pcontext);
+    Shutdown();
 
     for (std::list<CZMQAbstractNotifier*>::iterator i=notifiers.begin(); i!=notifiers.end(); ++i)
     {
@@ -59,6 +58,12 @@ CZMQNotificationInterface* CZMQNotificationInterface::CreateWithArguments(const 
     {
         notificationInterface = new CZMQNotificationInterface();
         notificationInterface->notifiers = notifiers;
+
+        if (!notificationInterface->Initialize())
+        {
+            delete notificationInterface;
+            notificationInterface = NULL;
+        }
     }
 
     return notificationInterface;
@@ -99,7 +104,7 @@ bool CZMQNotificationInterface::Initialize()
         return false;
     }
 
-    return false;
+    return true;
 }
 
 // Called during shutdown sequence
@@ -120,12 +125,12 @@ void CZMQNotificationInterface::Shutdown()
     }
 }
 
-void CZMQNotificationInterface::UpdatedBlockTip(const uint256 &hash)
+void CZMQNotificationInterface::UpdatedBlockTip(const CBlockIndex *pindex)
 {
     for (std::list<CZMQAbstractNotifier*>::iterator i = notifiers.begin(); i!=notifiers.end(); )
     {
         CZMQAbstractNotifier *notifier = *i;
-        if (notifier->NotifyBlock(hash))
+        if (notifier->NotifyBlock(pindex))
         {
             i++;
         }

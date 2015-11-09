@@ -50,7 +50,7 @@ The developer [mailing list](https://lists.linuxfoundation.org/mailman/listinfo/
 should be used to discuss complicated or controversial changes before working
 on a patch set.
 
-Developer IRC can be found on Freenode at #bitcoin-dev.
+Developer IRC can be found on Freenode at #bitcoin-core-dev.
 
 Testing
 -------
@@ -67,7 +67,7 @@ submit new unit tests for old code. Unit tests can be compiled and run (assuming
 
 There are also regression and integration tests of the RPC interface, written
 in Python, that are run automatically on the build server.
-These tests can be run with: `qa/pull-tester/rpc-tests.sh`
+These tests can be run with: `qa/pull-tester/rpc-tests.py`
 
 Every pull request is built for both Windows and Linux on a dedicated server,
 and unit and sanity tests are automatically run. The binaries produced may be

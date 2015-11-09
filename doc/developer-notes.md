@@ -1,5 +1,5 @@
-Coding Standards
-================
+Developer Notes
+===============
 
 Various coding styles have been used during the history of the codebase,
 and the result is not very consistent. However, we're now trying to converge to
@@ -57,7 +57,7 @@ As Doxygen recognizes the comments by the delimiters (`/**` and `*/` in this cas
 
 To describe a class use the same construct above the class definition:
 ```c++
-/** 
+/**
  * Alerts are for notifying old versions if they become too obsolete and
  * need to upgrade. The message is displayed in the status bar.
  * @see GetWarnings()
@@ -171,3 +171,36 @@ Threads
 - BitcoinMiner : Generates bitcoins (if wallet is enabled).
 
 - Shutdown : Does an orderly shutdown of everything.
+
+Ignoring IDE/editor files
+--------------------------
+
+In closed-source environments in which everyone uses the same IDE it is common
+to add temporary files it produces to the project-wide `.gitignore` file.
+
+However, in open source software such as Bitcoin Core, where everyone uses
+their own editors/IDE/tools, it is less common. Only you know what files your
+editor produces and this may change from version to version. The canonical way
+to do this is thus to create your local gitignore. Add this to `~/.gitconfig`:
+
+```
+[core]
+        excludesfile = /home/.../.gitignore_global
+```
+
+(alternatively, type the command `git config --global core.excludesfile ~/.gitignore_global`
+on a terminal)
+
+Then put your favourite tool's temporary filenames in that file, e.g.
+```
+# NetBeans
+nbproject/
+```
+
+Another option is to create a per-repository excludes file `.git/info/exclude`.
+These are not committed but apply only to one repository.
+
+If a set of tools is used by the build system or scripts the repository (for
+example, lcov) it is perfectly acceptable to add its files to `.gitignore`
+and commit them.
+

@@ -19,7 +19,7 @@
 
 #include <boost/foreach.hpp>
 
-#include "univalue/univalue.h"
+#include <univalue.h>
 
 using namespace std;
 
@@ -29,7 +29,7 @@ UniValue getconnectioncount(const UniValue& params, bool fHelp)
         throw runtime_error(
             "getconnectioncount\n"
             "\nReturns the number of connections to other nodes.\n"
-            "\nbResult:\n"
+            "\nResult:\n"
             "n          (numeric) The connection count\n"
             "\nExamples:\n"
             + HelpExampleCli("getconnectioncount", "")
@@ -83,7 +83,7 @@ UniValue getpeerinfo(const UniValue& params, bool fHelp)
         throw runtime_error(
             "getpeerinfo\n"
             "\nReturns data about each connected network node as a json array of objects.\n"
-            "\nbResult:\n"
+            "\nResult:\n"
             "[\n"
             "  {\n"
             "    \"id\": n,                   (numeric) Peer index\n"
@@ -379,6 +379,15 @@ UniValue getnettotals(const UniValue& params, bool fHelp)
     obj.push_back(Pair("totalbytesrecv", CNode::GetTotalBytesRecv()));
     obj.push_back(Pair("totalbytessent", CNode::GetTotalBytesSent()));
     obj.push_back(Pair("timemillis", GetTimeMillis()));
+
+    UniValue outboundLimit(UniValue::VOBJ);
+    outboundLimit.push_back(Pair("timeframe", CNode::GetMaxOutboundTimeframe()));
+    outboundLimit.push_back(Pair("target", CNode::GetMaxOutboundTarget()));
+    outboundLimit.push_back(Pair("target_reached", CNode::OutboundTargetReached(false)));
+    outboundLimit.push_back(Pair("serve_historical_blocks", !CNode::OutboundTargetReached(true)));
+    outboundLimit.push_back(Pair("bytes_left_in_cycle", CNode::GetOutboundTargetBytesLeft()));
+    outboundLimit.push_back(Pair("time_left_in_cycle", CNode::GetMaxOutboundTimeLeftInCycle()));
+    obj.push_back(Pair("uploadtarget", outboundLimit));
     return obj;
 }
 
