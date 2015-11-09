@@ -46,11 +46,11 @@ TransactionView::TransactionView(const PlatformStyle *platformStyle, QWidget *pa
     hlayout->setContentsMargins(0,0,0,0);
 
     if (platformStyle->getUseExtraSpacing()) {
-    hlayout->setSpacing(5);
-    hlayout->addSpacing(26);
+        hlayout->setSpacing(5);
+        hlayout->addSpacing(26);
     } else {
-    hlayout->setSpacing(0);
-    hlayout->addSpacing(23);
+        hlayout->setSpacing(0);
+        hlayout->addSpacing(23);
     }
 
     watchOnlyWidget = new QComboBox(this);
@@ -62,9 +62,9 @@ TransactionView::TransactionView(const PlatformStyle *platformStyle, QWidget *pa
 
     dateWidget = new QComboBox(this);
     if (platformStyle->getUseExtraSpacing()) {
-    dateWidget->setFixedWidth(121);
+        dateWidget->setFixedWidth(121);
     } else {
-    dateWidget->setFixedWidth(120);
+        dateWidget->setFixedWidth(120);
     }
     dateWidget->addItem(tr("All"), All);
     dateWidget->addItem(tr("Today"), Today);
@@ -77,9 +77,9 @@ TransactionView::TransactionView(const PlatformStyle *platformStyle, QWidget *pa
 
     typeWidget = new QComboBox(this);
     if (platformStyle->getUseExtraSpacing()) {
-    typeWidget->setFixedWidth(121);
+        typeWidget->setFixedWidth(121);
     } else {
-    typeWidget->setFixedWidth(120);
+        typeWidget->setFixedWidth(120);
     }
 
     typeWidget->addItem(tr("All"), TransactionFilterProxy::ALL_TYPES);
@@ -104,9 +104,9 @@ TransactionView::TransactionView(const PlatformStyle *platformStyle, QWidget *pa
     amountWidget->setPlaceholderText(tr("Min amount"));
 #endif
     if (platformStyle->getUseExtraSpacing()) {
-    amountWidget->setFixedWidth(97);
+        amountWidget->setFixedWidth(97);
     } else {
-    amountWidget->setFixedWidth(100);
+        amountWidget->setFixedWidth(100);
     }
     amountWidget->setValidator(new QDoubleValidator(0, 1e20, 8, this));
     hlayout->addWidget(amountWidget);
@@ -123,9 +123,9 @@ TransactionView::TransactionView(const PlatformStyle *platformStyle, QWidget *pa
     int width = view->verticalScrollBar()->sizeHint().width();
     // Cover scroll bar width with spacing
     if (platformStyle->getUseExtraSpacing()) {
-    hlayout->addSpacing(width+2);
+        hlayout->addSpacing(width+2);
     } else {
-    hlayout->addSpacing(width);
+        hlayout->addSpacing(width);
     }
     // Always show scroll bar
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);

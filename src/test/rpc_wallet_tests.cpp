@@ -14,7 +14,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/test/unit_test.hpp>
 
-#include "univalue/univalue.h"
+#include <univalue.h>
 
 using namespace std;
 
@@ -76,16 +76,16 @@ BOOST_AUTO_TEST_CASE(rpc_wallet)
 
         demoPubkey = pwalletMain->GenerateNewKey();
         demoAddress = CBitcoinAddress(CTxDestination(demoPubkey.GetID()));
-    string strPurpose = "receive";
-    BOOST_CHECK_NO_THROW({ /*Initialize Wallet with an account */
-        CWalletDB walletdb(pwalletMain->strWalletFile);
-        CAccount account;
-        account.vchPubKey = demoPubkey;
-        pwalletMain->SetAddressBook(account.vchPubKey.GetID(), strAccount, strPurpose);
-        walletdb.WriteAccount(strAccount, account);
-    });
+        string strPurpose = "receive";
+        BOOST_CHECK_NO_THROW({ /*Initialize Wallet with an account */
+            CWalletDB walletdb(pwalletMain->strWalletFile);
+            CAccount account;
+            account.vchPubKey = demoPubkey;
+            pwalletMain->SetAddressBook(account.vchPubKey.GetID(), strAccount, strPurpose);
+            walletdb.WriteAccount(strAccount, account);
+        });
 
-    CPubKey setaccountDemoPubkey = pwalletMain->GenerateNewKey();
+        CPubKey setaccountDemoPubkey = pwalletMain->GenerateNewKey();
         setaccountDemoAddress = CBitcoinAddress(CTxDestination(setaccountDemoPubkey.GetID()));
     }
     /*********************************

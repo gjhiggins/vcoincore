@@ -85,10 +85,10 @@ public:
     size_type max_size(size_type s)
     {
         assert(s > 0);
-            while (map.size() > s) {
-                map.erase(rmap.begin()->second);
-                rmap.erase(rmap.begin());
-            }
+        while (map.size() > s) {
+            map.erase(rmap.begin()->second);
+            rmap.erase(rmap.begin());
+        }
         nMaxSize = s;
         return nMaxSize;
     }
