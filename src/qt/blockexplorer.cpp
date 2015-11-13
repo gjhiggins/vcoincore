@@ -13,6 +13,7 @@
 #include "bitcoinunits.h"
 #include "clientmodel.h"
 #include "chainparams.h"
+#include "core_io.h"
 #include "consensus/params.h"
 
 extern double GetDifficulty(const CBlockIndex* blockindex = NULL);
@@ -64,7 +65,7 @@ static std::string ScriptToString(const CScript& Script, bool Long = false, bool
             return makeHRef(Address.ToString());
     }
     else
-        return Long? "<pre>" + Script.ToString() + "</pre>" : _("Non-standard script");
+        return Long? "<pre>" + FormatScript(Script) + "</pre>" : _("Non-standard script");
 }
 
 static std::string TimeToString(uint64_t Time)

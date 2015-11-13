@@ -213,6 +213,7 @@ QString Serveur::parseCommande(QString comm,bool serveur)
                 return "PART "+destChan+" "+msg;
 
             conversations.remove(destChan);
+            return "";
         }
         else if(pref=="kick")
         {
