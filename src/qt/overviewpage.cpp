@@ -16,7 +16,7 @@
 #include "transactionfilterproxy.h"
 #include "transactiontablemodel.h"
 #include "walletmodel.h"
-#include "univalue/univalue.h"
+#include "univalue.h"
 #include "util.h"
 
 #include <QAbstractItemDelegate>
