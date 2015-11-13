@@ -190,7 +190,7 @@ BOOST_AUTO_TEST_CASE(AlertNotify)
     BOOST_CHECK_EQUAL(r[3], "'Evil Alert; /bin/ls; echo ' ");
 #endif
     boost::filesystem::remove(temp);
-    */
+
     SetMockTime(0);
 }
 
