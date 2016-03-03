@@ -4,7 +4,7 @@
 #include "wallet/wallet.h"
 #include "guiutil.h"
 #include "guiconstants.h"
-
+#include "chainparams.h"
 #include "init.h"
 #include "main.h"
 
@@ -182,7 +182,7 @@ void StatsExplorer::loadStakeChart(bool firstRun)
 
             // Read the block in and check if the coinstake is ours
             CBlock block;
-            ReadBlockFromDisk(block, pindex);
+            ReadBlockFromDisk(block, pindex, Params().GetConsensus());
 
             // if(block.IsProofOfStake()) // this should always be true here
             if(true) // this should always be true here

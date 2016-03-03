@@ -166,7 +166,7 @@ CTxOut getPrevOut(const COutPoint &out)
 {
     CTransaction tx;
     uint256 hashBlock;
-    if (GetTransaction(out.hash, tx, hashBlock, true))
+    if (GetTransaction(out.hash, tx, Params().GetConsensus(), hashBlock, true))
         return tx.vout[out.n];
     return CTxOut();
 }
@@ -206,7 +206,7 @@ std::string BlockToString(CBlockIndex* pBlock)
         return "";
 
     CBlock block;
-    ReadBlockFromDisk(block, pBlock);
+    ReadBlockFromDisk(block, pBlock, Params().GetConsensus());
 
     int64_t Fees = 0;
     int64_t OutVolume = 0;
@@ -537,7 +537,7 @@ bool BlockExplorer::switchTo(const QString& query)
     // If the query is neither an integer nor a block hash, assume a transaction hash
     CTransaction tx;
     uint256 hashBlock = uint256S("0");
-    if (GetTransaction(hash, tx, hashBlock, true))
+    if (GetTransaction(hash, tx, Params().GetConsensus(), hashBlock, true))
     {
         setContent(TxToString(hashBlock, tx));
         return true;
