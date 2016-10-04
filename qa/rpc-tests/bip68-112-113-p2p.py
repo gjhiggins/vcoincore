@@ -94,11 +94,19 @@ def all_rlt_txs(txarray):
 
 class BIP68_112_113Test(ComparisonTestFramework):
     def __init__(self):
+<<<<<<< HEAD
+=======
+        super().__init__()
+>>>>>>> official/0.13
         self.num_nodes = 1
 
     def setup_network(self):
         # Must set the blockversion for this test
+<<<<<<< HEAD
         self.nodes = start_nodes(1, self.options.tmpdir,
+=======
+        self.nodes = start_nodes(self.num_nodes, self.options.tmpdir,
+>>>>>>> official/0.13
                                  extra_args=[['-debug', '-whitelist=127.0.0.1', '-blockversion=4']],
                                  binary=[self.options.testbinary])
 

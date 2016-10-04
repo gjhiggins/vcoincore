@@ -7,7 +7,7 @@
     </message>
     <message>
         <source>Create a new address</source>
-        <translation>Crea una nueva direCrea una nueva direccióncción</translation>
+        <translation>Crea una nueva dirección</translation>
     </message>
     <message>
         <source>&amp;New</source>
@@ -26,10 +26,6 @@
         <translation>C y perder</translation>
     </message>
     <message>
-        <source>&amp;Copy Address</source>
-        <translation>&amp;Copia dirección</translation>
-    </message>
-    <message>
         <source>Delete the currently selected address from the list</source>
         <translation>Eliminar la dirección seleccionada de la lista</translation>
     </message>
@@ -45,6 +41,7 @@
         <source>&amp;Delete</source>
         <translation>&amp;Borrar</translation>
     </message>
+<<<<<<< HEAD:src/qt/locale/vcoin_es_CL.ts
     <message>
         <source>Choose the address to send coins to</source>
         <translation>Selecciona la direccion para enviar coins</translation>
@@ -96,6 +93,8 @@
         <source>(no label)</source>
         <translation>(sin etiqueta)</translation>
     </message>
+=======
+>>>>>>> official/0.13:src/qt/locale/bitcoin_es_CL.ts
 </context>
 <context>
     <name>AskPassphraseDialog</name>
@@ -110,82 +109,6 @@
     <message>
         <source>Repeat new passphrase</source>
         <translation>Repite nueva contraseña</translation>
-    </message>
-    <message>
-        <source>Encrypt wallet</source>
-        <translation>Codificar billetera</translation>
-    </message>
-    <message>
-        <source>This operation needs your wallet passphrase to unlock the wallet.</source>
-        <translation>Esta operación necesita la contraseña para desbloquear la billetera.</translation>
-    </message>
-    <message>
-        <source>Unlock wallet</source>
-        <translation>Desbloquea billetera</translation>
-    </message>
-    <message>
-        <source>This operation needs your wallet passphrase to decrypt the wallet.</source>
-        <translation>Esta operación necesita la contraseña para decodificar la billetara.</translation>
-    </message>
-    <message>
-        <source>Decrypt wallet</source>
-        <translation>Decodificar cartera</translation>
-    </message>
-    <message>
-        <source>Change passphrase</source>
-        <translation>Cambia contraseña</translation>
-    </message>
-    <message>
-        <source>Confirm wallet encryption</source>
-        <translation>Confirma la codificación de cartera</translation>
-    </message>
-    <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR BITCOINS&lt;/b&gt;!</source>
-        <translation>Atención: ¡Si codificas tu billetera y pierdes la contraseña perderás &lt;b&gt;TODOS TUS BITCOINS&lt;/b&gt;!</translation>
-    </message>
-    <message>
-        <source>Are you sure you wish to encrypt your wallet?</source>
-        <translation>¿Seguro que quieres seguir codificando la billetera?</translation>
-    </message>
-    <message>
-        <source>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. For security reasons, previous backups of the unencrypted wallet file will become useless as soon as you start using the new, encrypted wallet.</source>
-        <translation>IMPORTANTE: Cualquier versión anterior que hayas realizado de tu archivo de billetera será reemplazada por el nuevo archivo de billetera encriptado. Por razones de seguridad, los respaldos anteriores de los archivos de billetera se volverán inútiles en tanto comiences a usar la nueva billetera encriptada.</translation>
-    </message>
-    <message>
-        <source>Warning: The Caps Lock key is on!</source>
-        <translation>Precaucion: Mayúsculas Activadas</translation>
-    </message>
-    <message>
-        <source>Wallet encrypted</source>
-        <translation>Billetera codificada</translation>
-    </message>
-    <message>
-        <source>Wallet encryption failed</source>
-        <translation>Falló la codificación de la billetera</translation>
-    </message>
-    <message>
-        <source>Wallet encryption failed due to an internal error. Your wallet was not encrypted.</source>
-        <translation>La codificación de la billetera falló debido a un error interno. Tu billetera no ha sido codificada.</translation>
-    </message>
-    <message>
-        <source>The supplied passphrases do not match.</source>
-        <translation>Las contraseñas no coinciden.</translation>
-    </message>
-    <message>
-        <source>Wallet unlock failed</source>
-        <translation>Ha fallado el desbloqueo de la billetera</translation>
-    </message>
-    <message>
-        <source>The passphrase entered for the wallet decryption was incorrect.</source>
-        <translation>La contraseña introducida para decodificar la billetera es incorrecta.</translation>
-    </message>
-    <message>
-        <source>Wallet decryption failed</source>
-        <translation>Ha fallado la decodificación de la billetera</translation>
-    </message>
-    <message>
-        <source>Wallet passphrase was successfully changed.</source>
-        <translation>La contraseña de billetera ha sido cambiada con éxito.</translation>
     </message>
 </context>
 <context>
@@ -226,6 +149,10 @@
         <translation>Salir del programa</translation>
     </message>
     <message>
+        <source>&amp;About %1</source>
+        <translation>S&amp;obre %1</translation>
+    </message>
+    <message>
         <source>About &amp;Qt</source>
         <translation>Acerca de</translation>
     </message>
@@ -252,6 +179,7 @@
     <message>
         <source>&amp;Sending addresses...</source>
         <translation>Mandando direcciones</translation>
+<<<<<<< HEAD:src/qt/locale/vcoin_es_CL.ts
     </message>
     <message>
         <source>&amp;Receiving addresses...</source>
@@ -260,10 +188,16 @@
     <message>
         <source>Open &amp;URI...</source>
         <translation>Abrir y url...</translation>
+=======
+>>>>>>> official/0.13:src/qt/locale/bitcoin_es_CL.ts
     </message>
     <message>
-        <source>Bitcoin Core client</source>
-        <translation>cliente bitcoin core</translation>
+        <source>&amp;Receiving addresses...</source>
+        <translation>Recibiendo direcciones</translation>
+    </message>
+    <message>
+        <source>Open &amp;URI...</source>
+        <translation>Abrir y url...</translation>
     </message>
     <message>
         <source>Reindexing blocks on disk...</source>
@@ -338,8 +272,12 @@
         <translation>Barra de pestañas</translation>
     </message>
     <message>
-        <source>Bitcoin Core</source>
-        <translation>bitcoin core</translation>
+        <source>Request payments (generates QR codes and bitcoin: URIs)</source>
+        <translation>Pide pagos (genera codigos QR and bitcoin: URls)</translation>
+    </message>
+    <message>
+        <source>%1 and %2</source>
+        <translation>%1 y %2</translation>
     </message>
     <message>
         <source>Request payments (generates QR codes and bitcoin: URIs)</source>
@@ -395,13 +333,6 @@
     </message>
 </context>
 <context>
-    <name>ClientModel</name>
-    <message>
-        <source>Network Alert</source>
-        <translation>Alerta de Red</translation>
-    </message>
-</context>
-<context>
     <name>CoinControlDialog</name>
     <message>
         <source>Amount:</source>
@@ -436,6 +367,7 @@
         <source>Priority</source>
         <translation>prioridad</translation>
     </message>
+<<<<<<< HEAD:src/qt/locale/vcoin_es_CL.ts
     <message>
         <source>Copy address</source>
         <translation>Copia dirección</translation>
@@ -481,6 +413,9 @@
         <translation>(sin etiqueta)</translation>
     </message>
     </context>
+=======
+</context>
+>>>>>>> official/0.13:src/qt/locale/bitcoin_es_CL.ts
 <context>
     <name>EditAddressDialog</name>
     <message>
@@ -495,38 +430,6 @@
         <source>&amp;Address</source>
         <translation>&amp;Dirección</translation>
     </message>
-    <message>
-        <source>New receiving address</source>
-        <translation>Nueva dirección para recibir</translation>
-    </message>
-    <message>
-        <source>New sending address</source>
-        <translation>Nueva dirección para enviar</translation>
-    </message>
-    <message>
-        <source>Edit receiving address</source>
-        <translation>Editar dirección de recepción</translation>
-    </message>
-    <message>
-        <source>Edit sending address</source>
-        <translation>Editar dirección de envio</translation>
-    </message>
-    <message>
-        <source>The entered address "%1" is already in the address book.</source>
-        <translation>La dirección introducida "%1" ya esta guardada en la libreta de direcciones.</translation>
-    </message>
-    <message>
-        <source>The entered address "%1" is not a valid Bitcoin address.</source>
-        <translation>La dirección introducida "%1" no es una dirección Bitcoin valida.</translation>
-    </message>
-    <message>
-        <source>Could not unlock wallet.</source>
-        <translation>No se pudo desbloquear la billetera.</translation>
-    </message>
-    <message>
-        <source>New key generation failed.</source>
-        <translation>La generación de nueva clave falló.</translation>
-    </message>
 </context>
 <context>
     <name>FreespaceChecker</name>
@@ -537,10 +440,6 @@
     </context>
 <context>
     <name>HelpMessageDialog</name>
-    <message>
-        <source>Bitcoin Core</source>
-        <translation>bitcoin core</translation>
-    </message>
     <message>
         <source>version</source>
         <translation>versión</translation>
@@ -559,10 +458,6 @@
     <message>
         <source>Welcome</source>
         <translation>bienvenido</translation>
-    </message>
-    <message>
-        <source>Bitcoin Core</source>
-        <translation>bitcoin core</translation>
     </message>
     <message>
         <source>Error</source>
@@ -680,13 +575,6 @@
     </message>
     </context>
 <context>
-    <name>PaymentServer</name>
-    <message>
-        <source>Payment acknowledged</source>
-        <translation>Pago completado</translation>
-    </message>
-    </context>
-<context>
     <name>PeerTableModel</name>
     </context>
 <context>
@@ -701,22 +589,7 @@
     </message>
     </context>
 <context>
-    <name>QRImageWidget</name>
-    <message>
-        <source>&amp;Save Image...</source>
-        <translation>Guardar imagen...</translation>
-    </message>
-    <message>
-        <source>&amp;Copy Image</source>
-        <translation>Copiar Imagen</translation>
-    </message>
-    </context>
-<context>
     <name>RPCConsole</name>
-    <message>
-        <source>Client name</source>
-        <translation>Nombre del cliente</translation>
-    </message>
     <message>
         <source>N/A</source>
         <translation>N/A</translation>
@@ -793,15 +666,7 @@
         <source>&amp;Message:</source>
         <translation>&amp;mensaje</translation>
     </message>
-    <message>
-        <source>Copy label</source>
-        <translation>Copia etiqueta</translation>
-    </message>
-    <message>
-        <source>Copy amount</source>
-        <translation>Copiar Cantidad</translation>
-    </message>
-</context>
+    </context>
 <context>
     <name>ReceiveRequestDialog</name>
     <message>
@@ -816,46 +681,7 @@
         <source>&amp;Save Image...</source>
         <translation>Guardar imagen...</translation>
     </message>
-    <message>
-        <source>Address</source>
-        <translation>Dirección</translation>
-    </message>
-    <message>
-        <source>Amount</source>
-        <translation>Cantidad</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation>Etiqueta</translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation>Mensaje</translation>
-    </message>
-    </context>
-<context>
-    <name>RecentRequestsTableModel</name>
-    <message>
-        <source>Date</source>
-        <translation>Fecha</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation>Etiqueta</translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation>Mensaje</translation>
-    </message>
-    <message>
-        <source>Amount</source>
-        <translation>Cantidad</translation>
-    </message>
-    <message>
-        <source>(no label)</source>
-        <translation>(sin etiqueta)</translation>
-    </message>
-    </context>
+</context>
 <context>
     <name>SendCoinsDialog</name>
     <message>
@@ -869,6 +695,36 @@
     <message>
         <source>Amount:</source>
         <translation>Cantidad:</translation>
+    </message>
+    <message>
+        <source>Priority:</source>
+        <translation>prioridad:</translation>
+    </message>
+    <message>
+        <source>Fee:</source>
+        <translation>comisión:
+</translation>
+    </message>
+    <message>
+        <source>Transaction Fee:</source>
+        <translation>Comisión transacción:</translation>
+    </message>
+    <message>
+        <source>normal</source>
+        <translation>normal</translation>
+    </message>
+    <message>
+<<<<<<< HEAD:src/qt/locale/vcoin_es_CL.ts
+        <source>Insufficient funds!</source>
+        <translation>Fondos insuficientes</translation>
+    </message>
+    <message>
+        <source>Amount:</source>
+        <translation>Cantidad:</translation>
+=======
+        <source>fast</source>
+        <translation>rapido</translation>
+>>>>>>> official/0.13:src/qt/locale/bitcoin_es_CL.ts
     </message>
     <message>
         <source>Priority:</source>
@@ -915,6 +771,7 @@
         <source>S&amp;end</source>
         <translation>&amp;Envía</translation>
     </message>
+<<<<<<< HEAD:src/qt/locale/vcoin_es_CL.ts
     <message>
         <source>Confirm send coins</source>
         <translation>Confirmar el envio de monedas</translation>
@@ -952,6 +809,9 @@
         <translation>(sin etiqueta)</translation>
     </message>
     </context>
+=======
+</context>
+>>>>>>> official/0.13:src/qt/locale/bitcoin_es_CL.ts
 <context>
     <name>SendCoinsEntry</name>
     <message>
@@ -961,10 +821,6 @@
     <message>
         <source>Pay &amp;To:</source>
         <translation>&amp;Pagar a:</translation>
-    </message>
-    <message>
-        <source>Enter a label for this address to add it to your address book</source>
-        <translation>Introduce una etiqueta a esta dirección para añadirla a tu guia</translation>
     </message>
     <message>
         <source>&amp;Label:</source>
@@ -1040,6 +896,7 @@
         <source>Verify &amp;Message</source>
         <translation>&amp;Firmar Mensaje</translation>
     </message>
+<<<<<<< HEAD:src/qt/locale/vcoin_es_CL.ts
     <message>
         <source>Click "Sign Message" to generate signature</source>
         <translation>Click en "Firmar Mensage" para conseguir firma</translation>
@@ -1069,12 +926,11 @@
         <translation>Mensaje comprobado</translation>
     </message>
 </context>
+=======
+    </context>
+>>>>>>> official/0.13:src/qt/locale/bitcoin_es_CL.ts
 <context>
     <name>SplashScreen</name>
-    <message>
-        <source>Bitcoin Core</source>
-        <translation>bitcoin core</translation>
-    </message>
     <message>
         <source>[testnet]</source>
         <translation>[red-de-pruebas]</translation>
@@ -1088,112 +944,14 @@
     </message>
 </context>
 <context>
-    <name>TransactionDesc</name>
-    <message>
-        <source>Open until %1</source>
-        <translation>Abierto hasta %1</translation>
-    </message>
-    <message>
-        <source>%1/offline</source>
-        <translation>%1/fuera de linea</translation>
-    </message>
-    <message>
-        <source>%1/unconfirmed</source>
-        <translation>%1/no confirmado</translation>
-    </message>
-    <message>
-        <source>%1 confirmations</source>
-        <translation>%1 confirmaciónes</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation>Estado</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation>Fecha</translation>
-    </message>
-    <message>
-        <source>Generated</source>
-        <translation>Generado</translation>
-    </message>
-    <message>
-        <source>From</source>
-        <translation>De</translation>
-    </message>
-    <message>
-        <source>To</source>
-        <translation>A</translation>
-    </message>
-    <message>
-        <source>own address</source>
-        <translation>propia dirección</translation>
-    </message>
-    <message>
-        <source>label</source>
-        <translation>etiqueta</translation>
-    </message>
-    <message>
-        <source>Credit</source>
-        <translation>Credito</translation>
-    </message>
-    <message>
-        <source>not accepted</source>
-        <translation>no aceptada</translation>
-    </message>
-    <message>
-        <source>Debit</source>
-        <translation>Debito</translation>
-    </message>
-    <message>
-        <source>Transaction fee</source>
-        <translation>Comisión transacción</translation>
-    </message>
-    <message>
-        <source>Net amount</source>
-        <translation>Cantidad total</translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation>Mensaje</translation>
-    </message>
-    <message>
-        <source>Comment</source>
-        <translation>Comentario</translation>
-    </message>
-    <message>
-        <source>Transaction ID</source>
-        <translation>ID de Transacción</translation>
-    </message>
-    <message>
-        <source>Transaction</source>
-        <translation>Transacción</translation>
-    </message>
-    <message>
-        <source>Amount</source>
-        <translation>Cantidad</translation>
-    </message>
-    <message>
-        <source>, has not been successfully broadcast yet</source>
-        <translation>, no ha sido emitido satisfactoriamente todavía</translation>
-    </message>
-    <message>
-        <source>unknown</source>
-        <translation>desconocido</translation>
-    </message>
-</context>
-<context>
     <name>TransactionDescDialog</name>
-    <message>
-        <source>Transaction details</source>
-        <translation>Detalles de transacción</translation>
-    </message>
     <message>
         <source>This pane shows a detailed description of the transaction</source>
         <translation>Esta ventana muestra información detallada sobre la transacción</translation>
     </message>
 </context>
 <context>
+<<<<<<< HEAD:src/qt/locale/vcoin_es_CL.ts
     <name>TransactionTableModel</name>
     <message>
         <source>Date</source>
@@ -1392,40 +1150,9 @@
     </message>
 </context>
 <context>
+=======
+>>>>>>> official/0.13:src/qt/locale/bitcoin_es_CL.ts
     <name>UnitDisplayStatusBarControl</name>
-    </context>
-<context>
-    <name>WalletFrame</name>
-    </context>
-<context>
-    <name>WalletModel</name>
-    <message>
-        <source>Send Coins</source>
-        <translation>Enviar monedas</translation>
-    </message>
-</context>
-<context>
-    <name>WalletView</name>
-    <message>
-        <source>&amp;Export</source>
-        <translation>y exportar</translation>
-    </message>
-    <message>
-        <source>Export the data in the current tab to a file</source>
-        <translation>Exportar los datos de la pestaña actual a un archivo</translation>
-    </message>
-    <message>
-        <source>Backup Wallet</source>
-        <translation>Respaldar billetera</translation>
-    </message>
-    <message>
-        <source>Wallet Data (*.dat)</source>
-        <translation>Datos de billetera (*.dat)</translation>
-    </message>
-    <message>
-        <source>Backup Failed</source>
-        <translation>Ha fallado el respaldo</translation>
-    </message>
     </context>
 <context>
     <name>bitcoin-core</name>
@@ -1448,6 +1175,10 @@
         <source>Run in the background as a daemon and accept commands</source>
         <translation>Correr como demonio y acepta comandos
 </translation>
+    </message>
+    <message>
+        <source>Bitcoin Core</source>
+        <translation>bitcoin core</translation>
     </message>
     <message>
         <source>Connect only to the specified node(s)</source>
@@ -1492,17 +1223,8 @@
         <translation>Atención</translation>
     </message>
     <message>
-        <source>wallet.dat corrupt, salvage failed</source>
-        <translation>wallet.dat corrompió, guardado fallido</translation>
-    </message>
-    <message>
         <source>Password for JSON-RPC connections</source>
         <translation>Contraseña para las conexiones JSON-RPC
-</translation>
-    </message>
-    <message>
-        <source>This help message</source>
-        <translation>Este mensaje de ayuda
 </translation>
     </message>
     <message>
@@ -1515,28 +1237,8 @@
         <translation>Cargando direcciónes...</translation>
     </message>
     <message>
-        <source>Error loading wallet.dat: Wallet corrupted</source>
-        <translation>Error cargando wallet.dat: Billetera corrupta</translation>
-    </message>
-    <message>
-        <source>Error loading wallet.dat</source>
-        <translation>Error cargando wallet.dat</translation>
-    </message>
-    <message>
         <source>Invalid -proxy address: '%s'</source>
         <translation>Dirección -proxy invalida: '%s'</translation>
-    </message>
-    <message>
-        <source>Cannot resolve -bind address: '%s'</source>
-        <translation>No se pudo resolver la dirección fija: '%s'</translation>
-    </message>
-    <message>
-        <source>Cannot resolve -externalip address: '%s'</source>
-        <translation>No se pudo resolver la dirección ip: '%s'</translation>
-    </message>
-    <message>
-        <source>Invalid amount for -paytxfee=&lt;amount&gt;: '%s'</source>
-        <translation>Cantidad inválida para -paytxfee=&lt;amount&gt;: '%s'</translation>
     </message>
     <message>
         <source>Insufficient funds</source>

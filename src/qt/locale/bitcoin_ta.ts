@@ -18,10 +18,13 @@
         <translation>&amp;மூடு</translation>
     </message>
     <message>
+<<<<<<< HEAD
         <source>&amp;Copy Address</source>
         <translation>&amp;முகவரியை நகலெடு</translation>
     </message>
     <message>
+=======
+>>>>>>> official/0.13
         <source>&amp;Export</source>
         <translation>&amp;ஏற்றுமதி</translation>
     </message>
@@ -29,6 +32,7 @@
         <source>&amp;Delete</source>
         <translation>&amp;அழி</translation>
     </message>
+<<<<<<< HEAD
     <message>
         <source>C&amp;hoose</source>
         <translation>&amp;தேர்ந்தெடு</translation>
@@ -67,6 +71,11 @@
         <source>Decrypt wallet</source>
         <translation>டிக்ரிப்ட் பணப்பை</translation>
     </message>
+=======
+</context>
+<context>
+    <name>AskPassphraseDialog</name>
+>>>>>>> official/0.13
     </context>
 <context>
     <name>BanTableModel</name>
@@ -145,10 +154,13 @@
         <source>&amp;Help</source>
         <translation>&amp;உதவி</translation>
     </message>
+<<<<<<< HEAD
     <message>
         <source>Bitcoin Core</source>
         <translation>Bitcoin மையம்</translation>
     </message>
+=======
+>>>>>>> official/0.13
     <message numerus="yes">
         <source>%n hour(s)</source>
         <translation><numerusform>%n மணி</numerusform><numerusform>%n மணி</numerusform></translation>
@@ -203,6 +215,7 @@
     </message>
     </context>
 <context>
+<<<<<<< HEAD
     <name>ClientModel</name>
     <message>
         <source>Network Alert</source>
@@ -210,6 +223,8 @@
     </message>
 </context>
 <context>
+=======
+>>>>>>> official/0.13
     <name>CoinControlDialog</name>
     <message>
         <source>Quantity:</source>
@@ -255,6 +270,7 @@
         <source>Priority</source>
         <translation>முன்னுரிமை</translation>
     </message>
+<<<<<<< HEAD
     <message>
         <source>Copy address</source>
         <translation>பிரதியை முகவரியை</translation>
@@ -276,6 +292,9 @@
         <translation>இல்லை</translation>
     </message>
     </context>
+=======
+</context>
+>>>>>>> official/0.13
 <context>
     <name>EditAddressDialog</name>
     </context>
@@ -288,6 +307,7 @@
     </context>
 <context>
     <name>HelpMessageDialog</name>
+<<<<<<< HEAD
     <message>
         <source>Bitcoin Core</source>
         <translation>Bitcoin மையம்</translation>
@@ -296,6 +316,8 @@
         <source>About Bitcoin Core</source>
         <translation>Bitcoin மையம் பற்றி</translation>
     </message>
+=======
+>>>>>>> official/0.13
     </context>
 <context>
     <name>Intro</name>
@@ -304,10 +326,13 @@
         <translation>நல்வரவு</translation>
     </message>
     <message>
+<<<<<<< HEAD
         <source>Bitcoin Core</source>
         <translation>Bitcoin மையம்</translation>
     </message>
     <message>
+=======
+>>>>>>> official/0.13
         <source>Error</source>
         <translation>தவறு</translation>
     </message>
@@ -414,9 +439,12 @@
     </message>
     </context>
 <context>
+<<<<<<< HEAD
     <name>PaymentServer</name>
     </context>
 <context>
+=======
+>>>>>>> official/0.13
     <name>PeerTableModel</name>
     <message>
         <source>User Agent</source>
@@ -455,6 +483,7 @@
     </message>
 </context>
 <context>
+<<<<<<< HEAD
     <name>QRImageWidget</name>
     <message>
         <source>&amp;Save Image...</source>
@@ -480,6 +509,10 @@
         <translation>வாடிக்கையாளர் பெயர்</translation>
     </message>
     <message>
+=======
+    <name>RPCConsole</name>
+    <message>
+>>>>>>> official/0.13
         <source>N/A</source>
         <translation>N/A</translation>
     </message>
@@ -638,6 +671,7 @@
         <source>Remove</source>
         <translation>நீக்கு</translation>
     </message>
+<<<<<<< HEAD
     <message>
         <source>Copy message</source>
         <translation>நகலை செய்தி</translation>
@@ -646,6 +680,8 @@
         <source>Copy amount</source>
         <translation>நகலை தொகை</translation>
     </message>
+=======
+>>>>>>> official/0.13
 </context>
 <context>
     <name>ReceiveRequestDialog</name>
@@ -665,6 +701,7 @@
         <source>&amp;Save Image...</source>
         <translation>&amp;படத்தை சேமி...</translation>
     </message>
+<<<<<<< HEAD
     <message>
         <source>URI</source>
         <translation>URI</translation>
@@ -705,6 +742,9 @@
         <translation>விலை</translation>
     </message>
     </context>
+=======
+</context>
+>>>>>>> official/0.13
 <context>
     <name>SendCoinsDialog</name>
     <message>
@@ -755,6 +795,7 @@
         <source>S&amp;end</source>
         <translation>&amp;அனுப்பு</translation>
     </message>
+<<<<<<< HEAD
     <message>
         <source>%1 to %2</source>
         <translation>%1 to %2</translation>
@@ -768,6 +809,9 @@
         <translation>அல்லது</translation>
     </message>
     </context>
+=======
+</context>
+>>>>>>> official/0.13
 <context>
     <name>SendCoinsEntry</name>
     <message>
@@ -811,10 +855,13 @@
     </context>
 <context>
     <name>SplashScreen</name>
+<<<<<<< HEAD
     <message>
         <source>Bitcoin Core</source>
         <translation>Bitcoin மையம்</translation>
     </message>
+=======
+>>>>>>> official/0.13
     </context>
 <context>
     <name>TrafficGraphWidget</name>
@@ -824,6 +871,7 @@
     </message>
 </context>
 <context>
+<<<<<<< HEAD
     <name>TransactionDesc</name>
     <message>
         <source>Status</source>
@@ -1005,6 +1053,19 @@
     </context>
 <context>
     <name>bitcoin-core</name>
+=======
+    <name>TransactionDescDialog</name>
+    </context>
+<context>
+    <name>UnitDisplayStatusBarControl</name>
+    </context>
+<context>
+    <name>bitcoin-core</name>
+    <message>
+        <source>Bitcoin Core</source>
+        <translation>Bitcoin மையம்</translation>
+    </message>
+>>>>>>> official/0.13
     <message>
         <source>(default: %u)</source>
         <translation>(default: %u)</translation>

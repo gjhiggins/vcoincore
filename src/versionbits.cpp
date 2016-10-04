@@ -14,6 +14,13 @@ const struct BIP9DeploymentInfo VersionBitsDeploymentInfo[Consensus::MAX_VERSION
     {
         /*.name =*/ "csv",
         /*.gbt_force =*/ true,
+<<<<<<< HEAD
+=======
+    },
+    {
+        /*.name =*/ "segwit",
+        /*.gbt_force =*/ false,
+>>>>>>> official/0.13
     }
 };
 
@@ -38,7 +45,11 @@ ThresholdState AbstractThresholdConditionChecker::GetStateFor(const CBlockIndex*
             break;
         }
         if (pindexPrev->GetMedianTimePast() < nTimeStart) {
+<<<<<<< HEAD
             // Optimizaton: don't recompute down further, as we know every earlier block will be before the start time
+=======
+            // Optimization: don't recompute down further, as we know every earlier block will be before the start time
+>>>>>>> official/0.13
             cache[pindexPrev] = THRESHOLD_DEFINED;
             break;
         }

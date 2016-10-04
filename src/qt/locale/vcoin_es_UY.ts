@@ -12,6 +12,7 @@
     <message>
         <source>&amp;New</source>
         <translation>Nuevo</translation>
+<<<<<<< HEAD:src/qt/locale/vcoin_es_UY.ts
     </message>
     <message>
         <source>Copy the currently selected address to the system clipboard</source>
@@ -69,17 +70,28 @@
     </context>
 <context>
     <name>AddressTableModel</name>
-    <message>
-        <source>Label</source>
-        <translation>Etiqueta</translation>
+=======
     </message>
     <message>
-        <source>Address</source>
-        <translation>Direccion </translation>
+        <source>Copy the currently selected address to the system clipboard</source>
+        <translation>Copia la dirección seleccionada al portapapeles del sistema</translation>
     </message>
     <message>
-        <source>(no label)</source>
-        <translation>(Sin etiqueta)</translation>
+        <source>&amp;Copy</source>
+        <translation>Copiar</translation>
+    </message>
+>>>>>>> official/0.13:src/qt/locale/bitcoin_es_UY.ts
+    <message>
+        <source>C&amp;lose</source>
+        <translation>Cerrar</translation>
+    </message>
+    <message>
+        <source>&amp;Export</source>
+        <translation>Exportar</translation>
+    </message>
+    <message>
+        <source>&amp;Delete</source>
+        <translation>&amp;Borrar</translation>
     </message>
 </context>
 <context>
@@ -96,6 +108,7 @@
         <source>Repeat new passphrase</source>
         <translation>Repetir nueva contraseña</translation>
     </message>
+<<<<<<< HEAD:src/qt/locale/vcoin_es_UY.ts
     <message>
         <source>Encrypt wallet</source>
         <translation>Monedero cifrado</translation>
@@ -161,6 +174,9 @@
         <translation>Fallo en el descifrado del monedero</translation>
     </message>
     </context>
+=======
+</context>
+>>>>>>> official/0.13:src/qt/locale/bitcoin_es_UY.ts
 <context>
     <name>BanTableModel</name>
     </context>
@@ -220,7 +236,11 @@
     </message>
     <message>
         <source>Send coins to a Bitcoin address</source>
+<<<<<<< HEAD:src/qt/locale/vcoin_es_UY.ts
         <translation>Enviar monedas a una dirección BItCoin</translation>
+=======
+        <translation>Enviar monedas a una dirección Bitcoin</translation>
+>>>>>>> official/0.13:src/qt/locale/bitcoin_es_UY.ts
     </message>
     <message>
         <source>Change the passphrase used for wallet encryption</source>
@@ -303,13 +323,11 @@
     </message>
 </context>
 <context>
-    <name>ClientModel</name>
-    </context>
-<context>
     <name>CoinControlDialog</name>
     <message>
         <source>Quantity:</source>
         <translation>Cantidad:</translation>
+<<<<<<< HEAD:src/qt/locale/vcoin_es_UY.ts
     </message>
     <message>
         <source>Bytes:</source>
@@ -342,8 +360,38 @@
     <message>
         <source>(no label)</source>
         <translation>(Sin etiqueta)</translation>
+=======
     </message>
-    </context>
+    <message>
+        <source>Bytes:</source>
+        <translation>Bytes:</translation>
+>>>>>>> official/0.13:src/qt/locale/bitcoin_es_UY.ts
+    </message>
+    <message>
+        <source>Amount:</source>
+        <translation>AMonto:</translation>
+    </message>
+    <message>
+        <source>Priority:</source>
+        <translation>Prioridad:</translation>
+    </message>
+    <message>
+        <source>Change:</source>
+        <translation>Cambio:</translation>
+    </message>
+    <message>
+        <source>Date</source>
+        <translation>Fecha</translation>
+    </message>
+    <message>
+        <source>Confirmed</source>
+        <translation>Confirmado</translation>
+    </message>
+    <message>
+        <source>Priority</source>
+        <translation>Prioridad</translation>
+    </message>
+</context>
 <context>
     <name>EditAddressDialog</name>
     <message>
@@ -351,40 +399,21 @@
         <translation>Editar dirección</translation>
     </message>
     <message>
-        <source>&amp;Label</source>
-        <translation>&amp;Etiqueta</translation>
-    </message>
-    <message>
-        <source>&amp;Address</source>
-        <translation>&amp;Direccion </translation>
-    </message>
-    <message>
-        <source>New receiving address</source>
-        <translation>Nueva dirección de recepción </translation>
-    </message>
-    <message>
-        <source>New sending address</source>
-        <translation>Nueva dirección de envío </translation>
-    </message>
-    <message>
-        <source>Edit receiving address</source>
-        <translation>Editar dirección de recepcion </translation>
-    </message>
-    <message>
-        <source>Edit sending address</source>
-        <translation>Editar dirección de envío </translation>
-    </message>
-    <message>
+<<<<<<< HEAD:src/qt/locale/vcoin_es_UY.ts
         <source>The entered address "%1" is already in the address book.</source>
         <translation>La dirección introducida "%1" ya está en la libreta de direcciones.</translation>
     </message>
     <message>
         <source>Could not unlock wallet.</source>
         <translation>No se puede abrir el monedero.</translation>
+=======
+        <source>&amp;Label</source>
+        <translation>&amp;Etiqueta</translation>
+>>>>>>> official/0.13:src/qt/locale/bitcoin_es_UY.ts
     </message>
     <message>
-        <source>New key generation failed.</source>
-        <translation>Fallo en la nueva clave generada.</translation>
+        <source>&amp;Address</source>
+        <translation>&amp;Direccion </translation>
     </message>
 </context>
 <context>
@@ -422,16 +451,10 @@
     </message>
     </context>
 <context>
-    <name>PaymentServer</name>
-    </context>
-<context>
     <name>PeerTableModel</name>
     </context>
 <context>
     <name>QObject</name>
-    </context>
-<context>
-    <name>QRImageWidget</name>
     </context>
 <context>
     <name>RPCConsole</name>
@@ -452,6 +475,7 @@
     <message>
         <source>Copy &amp;Address</source>
         <translation>Copiar Dirección</translation>
+<<<<<<< HEAD:src/qt/locale/vcoin_es_UY.ts
     </message>
     <message>
         <source>Address</source>
@@ -460,21 +484,8 @@
     <message>
         <source>Label</source>
         <translation>Etiqueta</translation>
-    </message>
-    </context>
-<context>
-    <name>RecentRequestsTableModel</name>
-    <message>
-        <source>Date</source>
-        <translation>Fecha</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation>Etiqueta</translation>
-    </message>
-    <message>
-        <source>(no label)</source>
-        <translation>(Sin etiqueta)</translation>
+=======
+>>>>>>> official/0.13:src/qt/locale/bitcoin_es_UY.ts
     </message>
     </context>
 <context>
@@ -482,6 +493,26 @@
     <message>
         <source>Send Coins</source>
         <translation>Enviar monedas</translation>
+    </message>
+    <message>
+        <source>Quantity:</source>
+        <translation>Cantidad:</translation>
+    </message>
+    <message>
+        <source>Bytes:</source>
+        <translation>Bytes:</translation>
+    </message>
+    <message>
+        <source>Amount:</source>
+        <translation>AMonto:</translation>
+    </message>
+    <message>
+        <source>Priority:</source>
+        <translation>Prioridad:</translation>
+    </message>
+    <message>
+        <source>Change:</source>
+        <translation>Cambio:</translation>
     </message>
     <message>
         <source>Quantity:</source>
@@ -515,18 +546,6 @@
         <source>Confirm the send action</source>
         <translation>Confirmar el envío</translation>
     </message>
-    <message>
-        <source>Confirm send coins</source>
-        <translation>Confirmar el envio de monedas</translation>
-    </message>
-    <message>
-        <source>The amount to pay must be larger than 0.</source>
-        <translation>La cantidad a pagar debe ser mayor que 0.</translation>
-    </message>
-    <message>
-        <source>(no label)</source>
-        <translation>(Sin etiqueta)</translation>
-    </message>
     </context>
 <context>
     <name>SendCoinsEntry</name>
@@ -537,10 +556,6 @@
     <message>
         <source>Pay &amp;To:</source>
         <translation>Pagar &amp;A:</translation>
-    </message>
-    <message>
-        <source>Enter a label for this address to add it to your address book</source>
-        <translation>Introduzca una etiqueta para esta dirección para añadirla a su libreta de direcciones</translation>
     </message>
     <message>
         <source>&amp;Label:</source>
@@ -592,6 +607,7 @@
     <name>TrafficGraphWidget</name>
     </context>
 <context>
+<<<<<<< HEAD:src/qt/locale/vcoin_es_UY.ts
     <name>TransactionDesc</name>
     <message>
         <source>Open until %1</source>
@@ -611,26 +627,17 @@
     </message>
 </context>
 <context>
+=======
+>>>>>>> official/0.13:src/qt/locale/bitcoin_es_UY.ts
     <name>TransactionDescDialog</name>
     </context>
 <context>
-    <name>TransactionTableModel</name>
-    <message>
-        <source>Date</source>
-        <translation>Fecha</translation>
-    </message>
-    <message>
-        <source>Open until %1</source>
-        <translation>Abrir hasta %1</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation>Etiqueta</translation>
-    </message>
+    <name>UnitDisplayStatusBarControl</name>
     </context>
 <context>
-    <name>TransactionView</name>
+    <name>bitcoin-core</name>
     <message>
+<<<<<<< HEAD:src/qt/locale/vcoin_es_UY.ts
         <source>Exporting Failed</source>
         <translation>Exportación fallida</translation>
     </message>
@@ -645,29 +652,25 @@
     <message>
         <source>Date</source>
         <translation>Fecha</translation>
+=======
+        <source>Options:</source>
+        <translation>Opciones:</translation>
     </message>
     <message>
-        <source>Label</source>
-        <translation>Etiqueta</translation>
+        <source>Information</source>
+        <translation>Información</translation>
+>>>>>>> official/0.13:src/qt/locale/bitcoin_es_UY.ts
     </message>
     <message>
-        <source>Address</source>
-        <translation>Direccion </translation>
+        <source>Warning</source>
+        <translation>Alerta</translation>
     </message>
-    </context>
-<context>
-    <name>UnitDisplayStatusBarControl</name>
-    </context>
-<context>
-    <name>WalletFrame</name>
-    </context>
-<context>
-    <name>WalletModel</name>
     <message>
-        <source>Send Coins</source>
-        <translation>Enviar monedas</translation>
+        <source>Error</source>
+        <translation>Error</translation>
     </message>
 </context>
+<<<<<<< HEAD:src/qt/locale/vcoin_es_UY.ts
 <context>
     <name>WalletView</name>
     <message>
@@ -694,4 +697,6 @@
         <translation>Error</translation>
     </message>
 </context>
+=======
+>>>>>>> official/0.13:src/qt/locale/bitcoin_es_UY.ts
 </TS>
