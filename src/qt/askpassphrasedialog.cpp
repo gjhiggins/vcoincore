@@ -2,10 +2,6 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#if defined(HAVE_CONFIG_H)
-#include "config/bitcoin-config.h"
-#endif
-
 #include "askpassphrasedialog.h"
 #include "ui_askpassphrasedialog.h"
 
@@ -77,7 +73,10 @@ AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget *parent) :
 
 AskPassphraseDialog::~AskPassphraseDialog()
 {
-    secureClearPassFields();
+    // Attempt to overwrite text so that they do not linger around in memory
+    ui->passEdit1->setText(QString(" ").repeated(ui->passEdit1->text().size()));
+    ui->passEdit2->setText(QString(" ").repeated(ui->passEdit2->text().size()));
+    ui->passEdit3->setText(QString(" ").repeated(ui->passEdit3->text().size()));
     delete ui;
 }
 
@@ -100,8 +99,6 @@ void AskPassphraseDialog::accept()
     newpass1.assign(ui->passEdit2->text().toStdString().c_str());
     newpass2.assign(ui->passEdit3->text().toStdString().c_str());
 
-    secureClearPassFields();
-
     switch(mode)
     {
     case Encrypt: {
@@ -122,15 +119,9 @@ void AskPassphraseDialog::accept()
                 {
                     QMessageBox::warning(this, tr("Wallet encrypted"),
                                          "<qt>" +
-<<<<<<< HEAD
                                          tr("VCoin Core will close now to finish the encryption process. "
                                          "Remember that encrypting your wallet cannot fully protect "
                                          "your vcoins from being stolen by malware infecting your computer.") +
-=======
-                                         tr("%1 will close now to finish the encryption process. "
-                                         "Remember that encrypting your wallet cannot fully protect "
-                                         "your bitcoins from being stolen by malware infecting your computer.").arg(tr(PACKAGE_NAME)) +
->>>>>>> official/0.13
                                          "<br><br><b>" +
                                          tr("IMPORTANT: Any previous backups you have made of your wallet file "
                                          "should be replaced with the newly generated, encrypted wallet file. "
@@ -264,18 +255,4 @@ bool AskPassphraseDialog::eventFilter(QObject *object, QEvent *event)
         }
     }
     return QDialog::eventFilter(object, event);
-}
-
-static void SecureClearQLineEdit(QLineEdit* edit)
-{
-    // Attempt to overwrite text so that they do not linger around in memory
-    edit->setText(QString(" ").repeated(edit->text().size()));
-    edit->clear();
-}
-
-void AskPassphraseDialog::secureClearPassFields()
-{
-    SecureClearQLineEdit(ui->passEdit1);
-    SecureClearQLineEdit(ui->passEdit2);
-    SecureClearQLineEdit(ui->passEdit3);
 }

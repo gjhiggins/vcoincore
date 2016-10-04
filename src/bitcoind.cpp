@@ -3,20 +3,16 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#if defined(HAVE_CONFIG_H)
-#include "config/bitcoin-config.h"
-#endif
-
 #include "chainparams.h"
 #include "clientversion.h"
-#include "rpc/server.h"
+#include "rpcserver.h"
 #include "init.h"
 #include "noui.h"
 #include "scheduler.h"
 #include "util.h"
 #include "httpserver.h"
 #include "httprpc.h"
-#include "utilstrencodings.h"
+#include "rpcserver.h"
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem.hpp>
@@ -78,24 +74,16 @@ bool AppInit(int argc, char* argv[])
     // Process help and version before taking care about datadir
     if (mapArgs.count("-?") || mapArgs.count("-h") ||  mapArgs.count("-help") || mapArgs.count("-version"))
     {
-<<<<<<< HEAD
         std::string strUsage = _("VCoin Core Daemon") + " " + _("version") + " " + FormatFullVersion() + "\n";
-=======
-        std::string strUsage = strprintf(_("%s Daemon"), _(PACKAGE_NAME)) + " " + _("version") + " " + FormatFullVersion() + "\n";
->>>>>>> official/0.13
 
         if (mapArgs.count("-version"))
         {
-            strUsage += FormatParagraph(LicenseInfo());
+            strUsage += LicenseInfo();
         }
         else
         {
             strUsage += "\n" + _("Usage:") + "\n" +
-<<<<<<< HEAD
                   "  vcoind [options]                     " + _("Start VCoin Core Daemon") + "\n";
-=======
-                  "  bitcoind [options]                     " + strprintf(_("Start %s Daemon"), _(PACKAGE_NAME)) + "\n";
->>>>>>> official/0.13
 
             strUsage += "\n" + HelpMessage(HMM_BITCOIND);
         }

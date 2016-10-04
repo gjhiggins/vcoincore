@@ -26,9 +26,6 @@
 #include <QScrollBar>
 #include <QSettings>
 #include <QTextDocument>
-#include <QTimer>
-
-#define SEND_CONFIRM_DELAY   3
 
 SendCoinsDialog::SendCoinsDialog(const PlatformStyle *platformStyle, QWidget *parent) :
     QDialog(parent),
@@ -107,6 +104,8 @@ SendCoinsDialog::SendCoinsDialog(const PlatformStyle *platformStyle, QWidget *pa
         settings.setValue("nTransactionFee", (qint64)DEFAULT_TRANSACTION_FEE);
     if (!settings.contains("fPayOnlyMinFee"))
         settings.setValue("fPayOnlyMinFee", false);
+    if (!settings.contains("fSendFreeTransactions"))
+        settings.setValue("fSendFreeTransactions", false);
     ui->groupFee->setId(ui->radioSmartFee, 0);
     ui->groupFee->setId(ui->radioCustomFee, 1);
     ui->groupFee->button((int)std::max(0, std::min(1, settings.value("nFeeRadio").toInt())))->setChecked(true);
@@ -116,6 +115,7 @@ SendCoinsDialog::SendCoinsDialog(const PlatformStyle *platformStyle, QWidget *pa
     ui->sliderSmartFee->setValue(settings.value("nSmartFeeSliderPosition").toInt());
     ui->customFee->setValue(settings.value("nTransactionFee").toLongLong());
     ui->checkBoxMinimumFee->setChecked(settings.value("fPayOnlyMinFee").toBool());
+    ui->checkBoxFreeTx->setChecked(settings.value("fSendFreeTransactions").toBool());
     minimizeFeeSection(settings.value("fFeeSectionMinimized").toBool());
 }
 
@@ -124,7 +124,7 @@ void SendCoinsDialog::setClientModel(ClientModel *clientModel)
     this->clientModel = clientModel;
 
     if (clientModel) {
-        connect(clientModel, SIGNAL(numBlocksChanged(int,QDateTime,double,bool)), this, SLOT(updateSmartFeeLabel()));
+        connect(clientModel, SIGNAL(numBlocksChanged(int,QDateTime,double)), this, SLOT(updateSmartFeeLabel()));
     }
 }
 
@@ -170,6 +170,8 @@ void SendCoinsDialog::setModel(WalletModel *model)
         connect(ui->checkBoxMinimumFee, SIGNAL(stateChanged(int)), this, SLOT(updateFeeSectionControls()));
         connect(ui->checkBoxMinimumFee, SIGNAL(stateChanged(int)), this, SLOT(updateGlobalFeeVariables()));
         connect(ui->checkBoxMinimumFee, SIGNAL(stateChanged(int)), this, SLOT(coinControlUpdateLabels()));
+        connect(ui->checkBoxFreeTx, SIGNAL(stateChanged(int)), this, SLOT(updateGlobalFeeVariables()));
+        connect(ui->checkBoxFreeTx, SIGNAL(stateChanged(int)), this, SLOT(coinControlUpdateLabels()));
         ui->customFee->setSingleStep(CWallet::GetRequiredFee(1000));
         updateFeeSectionControls();
         updateMinFeeLabel();
@@ -187,6 +189,7 @@ SendCoinsDialog::~SendCoinsDialog()
     settings.setValue("nSmartFeeSliderPosition", ui->sliderSmartFee->value());
     settings.setValue("nTransactionFee", (qint64)ui->customFee->value());
     settings.setValue("fPayOnlyMinFee", ui->checkBoxMinimumFee->isChecked());
+    settings.setValue("fSendFreeTransactions", ui->checkBoxFreeTx->isChecked());
 
     delete ui;
 }
@@ -314,10 +317,10 @@ void SendCoinsDialog::on_sendButton_clicked()
     questionString.append(QString("<span style='font-size:10pt;font-weight:normal;'><br />(=%2)</span>")
         .arg(alternativeUnits.join(" " + tr("or") + "<br />")));
 
-    SendConfirmationDialog confirmationDialog(tr("Confirm send coins"),
-        questionString.arg(formatted.join("<br />")), SEND_CONFIRM_DELAY, this);
-    confirmationDialog.exec();
-    QMessageBox::StandardButton retval = (QMessageBox::StandardButton)confirmationDialog.result();
+    QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm send coins"),
+        questionString.arg(formatted.join("<br />")),
+        QMessageBox::Yes | QMessageBox::Cancel,
+        QMessageBox::Cancel);
 
     if(retval != QMessageBox::Yes)
     {
@@ -592,9 +595,6 @@ void SendCoinsDialog::updateGlobalFeeVariables()
     {
         nTxConfirmTarget = defaultConfirmTarget - ui->sliderSmartFee->value();
         payTxFee = CFeeRate(0);
-
-        // set nMinimumTotalFee to 0 to not accidentally pay a custom fee
-        CoinControlDialog::coinControl->nMinimumTotalFee = 0;
     }
     else
     {
@@ -605,6 +605,8 @@ void SendCoinsDialog::updateGlobalFeeVariables()
         // set nMinimumTotalFee to 0 in case of user has selected that the fee is per KB
         CoinControlDialog::coinControl->nMinimumTotalFee = ui->radioCustomAtLeast->isChecked() ? ui->customFee->value() : 0;
     }
+
+    fSendFreeTransactions = ui->checkBoxFreeTx->isChecked();
 }
 
 void SendCoinsDialog::updateFeeMinimizedLabel()
@@ -789,11 +791,11 @@ void SendCoinsDialog::coinControlUpdateLabels()
 
     if (model->getOptionsModel()->getCoinControlFeatures())
     {
-        // enable minimum absolute fee UI controls
+        // enable minium absolute fee UI controls
         ui->radioCustomAtLeast->setVisible(true);
 
         // only enable the feature if inputs are selected
-        ui->radioCustomAtLeast->setEnabled(ui->radioCustomFee->isChecked() && !ui->checkBoxMinimumFee->isChecked() &&CoinControlDialog::coinControl->HasSelected());
+        ui->radioCustomAtLeast->setEnabled(CoinControlDialog::coinControl->HasSelected());
     }
     else
     {
@@ -832,47 +834,5 @@ void SendCoinsDialog::coinControlUpdateLabels()
         ui->labelCoinControlAutomaticallySelected->show();
         ui->widgetCoinControl->hide();
         ui->labelCoinControlInsuffFunds->hide();
-    }
-}
-
-SendConfirmationDialog::SendConfirmationDialog(const QString &title, const QString &text, int secDelay,
-    QWidget *parent) :
-    QMessageBox(QMessageBox::Question, title, text, QMessageBox::Yes | QMessageBox::Cancel, parent), secDelay(secDelay)
-{
-    setDefaultButton(QMessageBox::Cancel);
-    yesButton = button(QMessageBox::Yes);
-    updateYesButton();
-    connect(&countDownTimer, SIGNAL(timeout()), this, SLOT(countDown()));
-}
-
-int SendConfirmationDialog::exec()
-{
-    updateYesButton();
-    countDownTimer.start(1000);
-    return QMessageBox::exec();
-}
-
-void SendConfirmationDialog::countDown()
-{
-    secDelay--;
-    updateYesButton();
-
-    if(secDelay <= 0)
-    {
-        countDownTimer.stop();
-    }
-}
-
-void SendConfirmationDialog::updateYesButton()
-{
-    if(secDelay > 0)
-    {
-        yesButton->setEnabled(false);
-        yesButton->setText(tr("Yes") + " (" + QString::number(secDelay) + ")");
-    }
-    else
-    {
-        yesButton->setEnabled(true);
-        yesButton->setText(tr("Yes"));
     }
 }

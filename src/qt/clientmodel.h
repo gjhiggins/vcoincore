@@ -72,9 +72,10 @@ public:
 
     QString formatFullVersion() const;
     QString formatSubVersion() const;
+    QString formatBuildDate() const;
     bool isReleaseVersion() const;
+    QString clientName() const;
     QString formatClientStartupTime() const;
-    QString dataDir() const;
 
 private:
     OptionsModel *optionsModel;
@@ -88,7 +89,7 @@ private:
 
 Q_SIGNALS:
     void numConnectionsChanged(int count);
-    void numBlocksChanged(int count, const QDateTime& blockDate, double nVerificationProgress, bool header);
+    void numBlocksChanged(int count, const QDateTime& blockDate, double nVerificationProgress);
     void mempoolSizeChanged(long count, size_t mempoolSizeInBytes);
     void alertsChanged(const QString &warnings);
     void bytesChanged(quint64 totalBytesIn, quint64 totalBytesOut);
@@ -102,7 +103,7 @@ Q_SIGNALS:
 public Q_SLOTS:
     void updateTimer();
     void updateNumConnections(int numConnections);
-    void updateAlert();
+    void updateAlert(const QString &hash, int status);
     void updateBanlist();
 };
 

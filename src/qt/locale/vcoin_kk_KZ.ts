@@ -25,6 +25,25 @@
         <source>&amp;Delete</source>
         <translation>Жою</translation>
     </message>
+    <message>
+        <source>Comma separated file (*.csv)</source>
+        <translation>Үтірмен бөлінген текст (*.csv)</translation>
+    </message>
+    </context>
+<context>
+    <name>AddressTableModel</name>
+    <message>
+        <source>Label</source>
+        <translation>таңба</translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation>Адрес</translation>
+    </message>
+    <message>
+        <source>(no label)</source>
+        <translation>(таңбасыз)</translation>
+    </message>
 </context>
 <context>
     <name>AskPassphraseDialog</name>
@@ -40,7 +59,31 @@
         <source>Repeat new passphrase</source>
         <translation>Жаңа құпия сөзді қайта енгізу</translation>
     </message>
-</context>
+    <message>
+        <source>Encrypt wallet</source>
+        <translation>Әмиянді шифрлау</translation>
+    </message>
+    <message>
+        <source>This operation needs your wallet passphrase to unlock the wallet.</source>
+        <translation>Бұл операциясы бойынша сіздің әмиянізді қоршаудан шығару үшін әмиянның құпия сөзі керек</translation>
+    </message>
+    <message>
+        <source>Unlock wallet</source>
+        <translation>Әмиянізді қоршаудан шығару</translation>
+    </message>
+    <message>
+        <source>This operation needs your wallet passphrase to decrypt the wallet.</source>
+        <translation>Бұл операциясы бойынша сіздің әмиянізді шифрлап тастау үшін әмиянның құпия сөзі керек</translation>
+    </message>
+    <message>
+        <source>Decrypt wallet</source>
+        <translation>Әмиянізді шифрлап тастау</translation>
+    </message>
+    <message>
+        <source>Change passphrase</source>
+        <translation>Құпия сөзді өзгерту</translation>
+    </message>
+    </context>
 <context>
     <name>BanTableModel</name>
     </context>
@@ -132,6 +175,9 @@
     </message>
     </context>
 <context>
+    <name>ClientModel</name>
+    </context>
+<context>
     <name>CoinControlDialog</name>
     <message>
         <source>Amount:</source>
@@ -173,7 +219,15 @@
         <source>Priority</source>
         <translation>Басымдық</translation>
     </message>
-</context>
+    <message>
+        <source>no</source>
+        <translation>жоқ</translation>
+    </message>
+    <message>
+        <source>(no label)</source>
+        <translation>(таңбасыз)</translation>
+    </message>
+    </context>
 <context>
     <name>EditAddressDialog</name>
     <message>
@@ -184,7 +238,7 @@
         <source>&amp;Address</source>
         <translation>Адрес</translation>
     </message>
-</context>
+    </context>
 <context>
     <name>FreespaceChecker</name>
     </context>
@@ -212,6 +266,9 @@
     <name>OverviewPage</name>
     </context>
 <context>
+    <name>PaymentServer</name>
+    </context>
+<context>
     <name>PeerTableModel</name>
     </context>
 <context>
@@ -222,6 +279,9 @@
     </message>
     </context>
 <context>
+    <name>QRImageWidget</name>
+    </context>
+<context>
     <name>RPCConsole</name>
     <message>
         <source>&amp;Information</source>
@@ -230,7 +290,6 @@
     </context>
 <context>
     <name>ReceiveCoinsDialog</name>
-<<<<<<< HEAD:src/qt/locale/vcoin_kk_KZ.ts
     <message>
         <source>&amp;Amount:</source>
         <translation>Саны</translation>
@@ -242,15 +301,33 @@
         <source>Address</source>
         <translation>Адрес</translation>
     </message>
-=======
->>>>>>> official/0.13:src/qt/locale/bitcoin_kk_KZ.ts
     <message>
-        <source>&amp;Amount:</source>
+        <source>Amount</source>
         <translation>Саны</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation>таңба</translation>
     </message>
     </context>
 <context>
-    <name>ReceiveRequestDialog</name>
+    <name>RecentRequestsTableModel</name>
+    <message>
+        <source>Date</source>
+        <translation>Күні</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation>таңба</translation>
+    </message>
+    <message>
+        <source>Amount</source>
+        <translation>Саны</translation>
+    </message>
+    <message>
+        <source>(no label)</source>
+        <translation>(таңбасыз)</translation>
+    </message>
     </context>
 <context>
     <name>SendCoinsDialog</name>
@@ -274,6 +351,10 @@
         <source>Dust:</source>
         <translation>Шаң</translation>
     </message>
+    <message>
+        <source>(no label)</source>
+        <translation>(таңбасыз)</translation>
+    </message>
     </context>
 <context>
     <name>SendCoinsEntry</name>
@@ -295,10 +376,68 @@
     <name>TrafficGraphWidget</name>
     </context>
 <context>
+    <name>TransactionDesc</name>
+    <message>
+        <source>Date</source>
+        <translation>Күні</translation>
+    </message>
+    <message>
+        <source>Amount</source>
+        <translation>Саны</translation>
+    </message>
+    </context>
+<context>
     <name>TransactionDescDialog</name>
     </context>
 <context>
+    <name>TransactionTableModel</name>
+    <message>
+        <source>Date</source>
+        <translation>Күні</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation>таңба</translation>
+    </message>
+    </context>
+<context>
+    <name>TransactionView</name>
+    <message>
+        <source>Comma separated file (*.csv)</source>
+        <translation>Үтірмен бөлінген файл (*.csv)</translation>
+    </message>
+    <message>
+        <source>Confirmed</source>
+        <translation>Растық</translation>
+    </message>
+    <message>
+        <source>Date</source>
+        <translation>Күні</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation>таңба</translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation>Адрес</translation>
+    </message>
+    </context>
+<context>
     <name>UnitDisplayStatusBarControl</name>
+    </context>
+<context>
+    <name>WalletFrame</name>
+    </context>
+<context>
+    <name>WalletModel</name>
+    </context>
+<context>
+    <name>WalletView</name>
+    <message>
+        <source>&amp;Export</source>
+        <translation>Экспорт</translation>
+    </message>
     </context>
 <context>
     <name>bitcoin-core</name>

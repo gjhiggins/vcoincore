@@ -26,13 +26,10 @@
         <translation>C&amp;errar</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <source>&amp;Copy Address</source>
         <translation>&amp;Copiar dirección</translation>
     </message>
     <message>
-=======
->>>>>>> official/0.13
         <source>Delete the currently selected address from the list</source>
         <translation>Borrar la dirección actualmente seleccionada de la lista</translation>
     </message>
@@ -44,7 +41,6 @@
         <source>&amp;Delete</source>
         <translation>&amp;Borrar</translation>
     </message>
-<<<<<<< HEAD
     <message>
         <source>Choose the address to send coins to</source>
         <translation>Escoje la dirección para enviar monedas a</translation>
@@ -113,8 +109,6 @@ Estas son las direcciones de Bitcoin para enviar pagos . Siempre verifique la ca
         <source>(no label)</source>
         <translation>(ninguna dirección)</translation>
     </message>
-=======
->>>>>>> official/0.13
 </context>
 <context>
     <name>AskPassphraseDialog</name>
@@ -134,7 +128,6 @@ Estas son las direcciones de Bitcoin para enviar pagos . Siempre verifique la ca
         <source>Repeat new passphrase</source>
         <translation>Repetir nueva contraseña</translation>
     </message>
-<<<<<<< HEAD
     <message>
         <source>Encrypt wallet</source>
         <translation>Billetera Encriptada</translation>
@@ -219,8 +212,6 @@ Estas son las direcciones de Bitcoin para enviar pagos . Siempre verifique la ca
         <source>Wallet passphrase was successfully changed.</source>
         <translation>La contraseña de la billetera a sido cambiada exitosamente.</translation>
     </message>
-=======
->>>>>>> official/0.13
 </context>
 <context>
     <name>BanTableModel</name>
@@ -288,7 +279,6 @@ Estas son las direcciones de Bitcoin para enviar pagos . Siempre verifique la ca
         <translation>Abrir &amp;URL...</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <source>Bitcoin Core client</source>
         <translation>Bitcoin Core cliente</translation>
     </message>
@@ -297,8 +287,6 @@ Estas son las direcciones de Bitcoin para enviar pagos . Siempre verifique la ca
         <translation>Importando bloques desde el disco...</translation>
     </message>
     <message>
-=======
->>>>>>> official/0.13
         <source>Send coins to a Bitcoin address</source>
         <translation>Enviando monedas a una dirección de Bitcoin</translation>
     </message>
@@ -335,13 +323,10 @@ Estas son las direcciones de Bitcoin para enviar pagos . Siempre verifique la ca
         <translation>&amp;Recibir</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <source>Show information about Bitcoin Core</source>
         <translation>Mostrar información sobre Bitcoin Core</translation>
     </message>
     <message>
-=======
->>>>>>> official/0.13
         <source>&amp;Show / Hide</source>
         <translation>&amp;Mostrar / Ocultar</translation>
     </message>
@@ -362,19 +347,15 @@ Estas son las direcciones de Bitcoin para enviar pagos . Siempre verifique la ca
         <translation>&amp;Ayuda</translation>
     </message>
     <message>
-<<<<<<< HEAD
         <source>Bitcoin Core</source>
         <translation>Bitcoin Core</translation>
     </message>
     <message>
-=======
->>>>>>> official/0.13
         <source>Error</source>
         <translation>Error</translation>
     </message>
     </context>
 <context>
-<<<<<<< HEAD
     <name>ClientModel</name>
     </context>
 <context>
@@ -383,9 +364,6 @@ Estas son las direcciones de Bitcoin para enviar pagos . Siempre verifique la ca
         <source>(no label)</source>
         <translation>(ninguna dirección)</translation>
     </message>
-=======
-    <name>CoinControlDialog</name>
->>>>>>> official/0.13
     </context>
 <context>
     <name>EditAddressDialog</name>
@@ -395,24 +373,16 @@ Estas son las direcciones de Bitcoin para enviar pagos . Siempre verifique la ca
     </context>
 <context>
     <name>HelpMessageDialog</name>
-<<<<<<< HEAD
     <message>
         <source>Bitcoin Core</source>
         <translation>Bitcoin Core</translation>
     </message>
-=======
->>>>>>> official/0.13
     </context>
 <context>
     <name>Intro</name>
     <message>
-<<<<<<< HEAD
         <source>Bitcoin Core</source>
         <translation>Bitcoin Core</translation>
-=======
-        <source>Welcome</source>
-        <translation>bienvenido</translation>
->>>>>>> official/0.13
     </message>
     <message>
         <source>Error</source>
@@ -429,24 +399,18 @@ Estas son las direcciones de Bitcoin para enviar pagos . Siempre verifique la ca
     <name>OverviewPage</name>
     </context>
 <context>
-<<<<<<< HEAD
     <name>PaymentServer</name>
     </context>
 <context>
-=======
->>>>>>> official/0.13
     <name>PeerTableModel</name>
     </context>
 <context>
     <name>QObject</name>
     </context>
 <context>
-<<<<<<< HEAD
     <name>QRImageWidget</name>
     </context>
 <context>
-=======
->>>>>>> official/0.13
     <name>RPCConsole</name>
     </context>
 <context>
@@ -454,7 +418,6 @@ Estas son las direcciones de Bitcoin para enviar pagos . Siempre verifique la ca
     </context>
 <context>
     <name>ReceiveRequestDialog</name>
-<<<<<<< HEAD
     <message>
         <source>Address</source>
         <translation>Dirección</translation>
@@ -481,11 +444,6 @@ Estas son las direcciones de Bitcoin para enviar pagos . Siempre verifique la ca
         <source>(no label)</source>
         <translation>(ninguna dirección)</translation>
     </message>
-=======
-    </context>
-<context>
-    <name>SendCoinsDialog</name>
->>>>>>> official/0.13
     </context>
 <context>
     <name>SendCoinsEntry</name>
@@ -498,19 +456,15 @@ Estas son las direcciones de Bitcoin para enviar pagos . Siempre verifique la ca
     </context>
 <context>
     <name>SplashScreen</name>
-<<<<<<< HEAD
     <message>
         <source>Bitcoin Core</source>
         <translation>Bitcoin Core</translation>
     </message>
-=======
->>>>>>> official/0.13
     </context>
 <context>
     <name>TrafficGraphWidget</name>
     </context>
 <context>
-<<<<<<< HEAD
     <name>TransactionDesc</name>
     </context>
 <context>
@@ -560,19 +514,6 @@ Estas son las direcciones de Bitcoin para enviar pagos . Siempre verifique la ca
     </context>
 <context>
     <name>bitcoin-core</name>
-=======
-    <name>TransactionDescDialog</name>
-    </context>
-<context>
-    <name>UnitDisplayStatusBarControl</name>
-    </context>
-<context>
-    <name>bitcoin-core</name>
-    <message>
-        <source>Bitcoin Core</source>
-        <translation>Bitcoin Core</translation>
-    </message>
->>>>>>> official/0.13
     <message>
         <source>Insufficient funds</source>
         <translation>Fondos Insuficientes</translation>

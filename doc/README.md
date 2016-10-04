@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 Bitcoin Core 0.12.0
-=======
-Bitcoin Core 0.13.0
->>>>>>> official/0.13
 =====================
 
 Setup
@@ -15,10 +11,16 @@ The following are some helpful notes on how to run Bitcoin on your native platfo
 
 ### Unix
 
+You need the Qt4 run-time libraries to run Bitcoin-Qt. On Debian or Ubuntu:
+
+	sudo apt-get install libqtgui4
+
 Unpack the files into a directory and run:
 
-- `bin/bitcoin-qt` (GUI) or
-- `bin/bitcoind` (headless)
+- bin/32/bitcoin-qt (GUI, 32-bit) or bin/32/bitcoind (headless, 32-bit)
+- bin/64/bitcoin-qt (GUI, 64-bit) or bin/64/bitcoind (headless, 64-bit)
+
+
 
 ### Windows
 
@@ -47,7 +49,7 @@ The following are developer notes on how to build Bitcoin on your native platfor
 
 Development
 ---------------------
-The Bitcoin repo's [root README](/README.md) contains relevant information on the development process and automated testing.
+The Bitcoin repo's [root README](https://github.com/bitcoin/bitcoin/blob/master/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
 - [Multiwallet Qt Development](multiwallet-qt.md)
@@ -61,7 +63,6 @@ The Bitcoin repo's [root README](/README.md) contains relevant information on th
 - [Shared Libraries](shared-libraries.md)
 - [BIPS](bips.md)
 - [Dnsseed Policy](dnsseed-policy.md)
-- [Benchmarking](benchmarking.md)
 
 ### Resources
 * Discuss on the [BitcoinTalk](https://bitcointalk.org/) forums, in the [Development & Technical Discussion board](https://bitcointalk.org/index.php?board=6.0).

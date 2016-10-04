@@ -2,10 +2,6 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#if defined(HAVE_CONFIG_H)
-#include "config/bitcoin-config.h"
-#endif
-
 #include "intro.h"
 #include "ui_intro.h"
 
@@ -122,20 +118,11 @@ Intro::Intro(QWidget *parent) :
     signalled(false)
 {
     ui->setupUi(this);
-<<<<<<< HEAD
-=======
-    ui->welcomeLabel->setText(ui->welcomeLabel->text().arg(tr(PACKAGE_NAME)));
-    ui->storageLabel->setText(ui->storageLabel->text().arg(tr(PACKAGE_NAME)));
->>>>>>> official/0.13
     uint64_t pruneTarget = std::max<int64_t>(0, GetArg("-prune", 0));
     requiredSpace = BLOCK_CHAIN_SIZE;
     if (pruneTarget)
         requiredSpace = CHAIN_STATE_SIZE + std::ceil(pruneTarget * 1024 * 1024.0 / GB_BYTES);
-<<<<<<< HEAD
     ui->sizeWarningLabel->setText(ui->sizeWarningLabel->text().arg(requiredSpace));
-=======
-    ui->sizeWarningLabel->setText(ui->sizeWarningLabel->text().arg(tr(PACKAGE_NAME)).arg(requiredSpace));
->>>>>>> official/0.13
     startThread();
 }
 
@@ -172,20 +159,20 @@ QString Intro::getDefaultDataDirectory()
     return GUIUtil::boostPathToQString(GetDefaultDataDir());
 }
 
-bool Intro::pickDataDirectory()
+void Intro::pickDataDirectory()
 {
     namespace fs = boost::filesystem;
     QSettings settings;
     /* If data directory provided on command line, no need to look at settings
        or show a picking dialog */
     if(!GetArg("-datadir", "").empty())
-        return true;
+        return;
     /* 1) Default data directory for operating system */
     QString dataDir = getDefaultDataDirectory();
     /* 2) Allow QSettings to override default dir */
     dataDir = settings.value("strDataDir", dataDir).toString();
 
-    if(!fs::exists(GUIUtil::qstringToBoostPath(dataDir)) || GetBoolArg("-choosedatadir", DEFAULT_CHOOSE_DATADIR) || settings.value("fReset", false).toBool() || GetBoolArg("-resetguisettings", false))
+    if(!fs::exists(GUIUtil::qstringToBoostPath(dataDir)) || GetBoolArg("-choosedatadir", DEFAULT_CHOOSE_DATADIR))
     {
         /* If current default data directory does not exist, let the user choose one */
         Intro intro;
@@ -197,25 +184,20 @@ bool Intro::pickDataDirectory()
             if(!intro.exec())
             {
                 /* Cancel clicked */
-                return false;
+                exit(0);
             }
             dataDir = intro.getDataDirectory();
             try {
                 TryCreateDirectory(GUIUtil::qstringToBoostPath(dataDir));
                 break;
             } catch (const fs::filesystem_error&) {
-<<<<<<< HEAD
                 QMessageBox::critical(0, tr("VCoin Core"),
-=======
-                QMessageBox::critical(0, tr(PACKAGE_NAME),
->>>>>>> official/0.13
                     tr("Error: Specified data directory \"%1\" cannot be created.").arg(dataDir));
                 /* fall through, back to choosing screen */
             }
         }
 
         settings.setValue("strDataDir", dataDir);
-        settings.setValue("fReset", false);
     }
     /* Only override -datadir if different from the default, to make it possible to
      * override -datadir in the bitcoin.conf file in the default data directory
@@ -223,7 +205,6 @@ bool Intro::pickDataDirectory()
      */
     if(dataDir != getDefaultDataDirectory())
         SoftSetArg("-datadir", GUIUtil::qstringToBoostPath(dataDir).string()); // use OS locale for path setting
-    return true;
 }
 
 void Intro::setStatus(int status, const QString &message, quint64 bytesAvailable)

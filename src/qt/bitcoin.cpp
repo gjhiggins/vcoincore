@@ -26,7 +26,7 @@
 #endif
 
 #include "init.h"
-#include "rpc/server.h"
+#include "rpcserver.h"
 #include "scheduler.h"
 #include "ui_interface.h"
 #include "util.h"
@@ -370,7 +370,6 @@ void BitcoinApplication::createSplashScreen(const NetworkStyle *networkStyle)
     splash->setAttribute(Qt::WA_DeleteOnClose);
     splash->show();
     connect(this, SIGNAL(splashFinished(QWidget*)), splash, SLOT(slotFinish(QWidget*)));
-    connect(this, SIGNAL(requestedShutdown()), splash, SLOT(close()));
 }
 
 void BitcoinApplication::startThread()
@@ -533,9 +532,6 @@ int main(int argc, char *argv[])
     // Generate high-dpi pixmaps
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 #endif
-#if QT_VERSION >= 0x050600
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-#endif
 #ifdef Q_OS_MAC
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
@@ -578,29 +574,20 @@ int main(int argc, char *argv[])
 
     /// 5. Now that settings and translations are available, ask user for data directory
     // User language is set up: pick a data directory
-    if (!Intro::pickDataDirectory())
-        return 0;
+    Intro::pickDataDirectory();
 
     /// 6. Determine availability of data directory and parse bitcoin.conf
     /// - Do not call GetDataDir(true) before this step finishes
     if (!boost::filesystem::is_directory(GetDataDir(false)))
     {
-<<<<<<< HEAD
         QMessageBox::critical(0, QObject::tr("VCoin Core"),
-=======
-        QMessageBox::critical(0, QObject::tr(PACKAGE_NAME),
->>>>>>> official/0.13
                               QObject::tr("Error: Specified data directory \"%1\" does not exist.").arg(QString::fromStdString(mapArgs["-datadir"])));
         return 1;
     }
     try {
         ReadConfigFile(mapArgs, mapMultiArgs);
     } catch (const std::exception& e) {
-<<<<<<< HEAD
         QMessageBox::critical(0, QObject::tr("VCoin Core"),
-=======
-        QMessageBox::critical(0, QObject::tr(PACKAGE_NAME),
->>>>>>> official/0.13
                               QObject::tr("Error: Cannot parse configuration file: %1. Only use key=value syntax.").arg(e.what()));
         return false;
     }
@@ -615,11 +602,7 @@ int main(int argc, char *argv[])
     try {
         SelectParams(ChainNameFromCommandLine());
     } catch(std::exception &e) {
-<<<<<<< HEAD
         QMessageBox::critical(0, QObject::tr("VCoin Core"), QObject::tr("Error: %1").arg(e.what()));
-=======
-        QMessageBox::critical(0, QObject::tr(PACKAGE_NAME), QObject::tr("Error: %1").arg(e.what()));
->>>>>>> official/0.13
         return 1;
     }
 #ifdef ENABLE_WALLET
@@ -679,11 +662,7 @@ int main(int argc, char *argv[])
         app.createWindow(networkStyle.data());
         app.requestInitialize();
 #if defined(Q_OS_WIN) && QT_VERSION >= 0x050000
-<<<<<<< HEAD
         WinShutdownMonitor::registerShutdownBlockReason(QObject::tr("VCoin Core didn't yet exit safely..."), (HWND)app.getMainWinId());
-=======
-        WinShutdownMonitor::registerShutdownBlockReason(QObject::tr("%1 didn't yet exit safely...").arg(QObject::tr(PACKAGE_NAME)), (HWND)app.getMainWinId());
->>>>>>> official/0.13
 #endif
         app.exec();
         app.requestShutdown();

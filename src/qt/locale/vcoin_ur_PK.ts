@@ -26,6 +26,10 @@
         <translation>بند</translation>
     </message>
     <message>
+        <source>&amp;Copy Address</source>
+        <translation>کاپی پتہ</translation>
+    </message>
+    <message>
         <source>Delete the currently selected address from the list</source>
         <translation>سلیکٹڈ پتے کو مٹائیں</translation>
     </message>
@@ -40,6 +44,37 @@
     <message>
         <source>&amp;Delete</source>
         <translation>مٹا</translation>
+    </message>
+    <message>
+        <source>Choose the address to send coins to</source>
+        <translation>کوئین وصول کرنے والے کا پتہ</translation>
+    </message>
+    <message>
+        <source>Choose the address to receive coins with</source>
+        <translation>کوئین بھیجنے  والے کا پتہ</translation>
+    </message>
+    <message>
+        <source>C&amp;hoose</source>
+        <translation>چننا</translation>
+    </message>
+    <message>
+        <source>Sending addresses</source>
+        <translation>جس پتے پر بھیجنے ہیں</translation>
+    </message>
+    </context>
+<context>
+    <name>AddressTableModel</name>
+    <message>
+        <source>Label</source>
+        <translation>چٹ</translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation> پتہ</translation>
+    </message>
+    <message>
+        <source>(no label)</source>
+        <translation>چٹ کے بغیر</translation>
     </message>
 </context>
 <context>
@@ -56,7 +91,23 @@
         <source>Repeat new passphrase</source>
         <translation>نیا پاس فریز دہرائیں</translation>
     </message>
-</context>
+    <message>
+        <source>Encrypt wallet</source>
+        <translation>بٹوے کی رمزنگاری</translation>
+    </message>
+    <message>
+        <source>Unlock wallet</source>
+        <translation>بٹوا ان لاک</translation>
+    </message>
+    <message>
+        <source>Decrypt wallet</source>
+        <translation>خفیہ کشائی کر یںبٹوے کے</translation>
+    </message>
+    <message>
+        <source>Change passphrase</source>
+        <translation>پاس فریز تبدیل کریں</translation>
+    </message>
+    </context>
 <context>
     <name>BanTableModel</name>
     </context>
@@ -66,6 +117,9 @@
         <source>Error</source>
         <translation>نقص</translation>
     </message>
+    </context>
+<context>
+    <name>ClientModel</name>
     </context>
 <context>
     <name>CoinControlDialog</name>
@@ -81,6 +135,10 @@
         <source>Date</source>
         <translation>تاریخ</translation>
     </message>
+    <message>
+        <source>(no label)</source>
+        <translation>چٹ کے بغیر</translation>
+    </message>
     </context>
 <context>
     <name>EditAddressDialog</name>
@@ -92,11 +150,7 @@
         <source>&amp;Address</source>
         <translation> پتہ</translation>
     </message>
-<<<<<<< HEAD:src/qt/locale/vcoin_ur_PK.ts
     </context>
-=======
-</context>
->>>>>>> official/0.13:src/qt/locale/bitcoin_ur_PK.ts
 <context>
     <name>FreespaceChecker</name>
     </context>
@@ -120,6 +174,9 @@
     <name>OverviewPage</name>
     </context>
 <context>
+    <name>PaymentServer</name>
+    </context>
+<context>
     <name>PeerTableModel</name>
     </context>
 <context>
@@ -128,6 +185,9 @@
         <source>Amount</source>
         <translation>رقم</translation>
     </message>
+    </context>
+<context>
+    <name>QRImageWidget</name>
     </context>
 <context>
     <name>RPCConsole</name>
@@ -140,7 +200,6 @@
     <message>
         <source>Copy &amp;Address</source>
         <translation>کاپی پتہ</translation>
-<<<<<<< HEAD:src/qt/locale/vcoin_ur_PK.ts
     </message>
     <message>
         <source>Address</source>
@@ -153,8 +212,25 @@
     <message>
         <source>Label</source>
         <translation>چٹ</translation>
-=======
->>>>>>> official/0.13:src/qt/locale/bitcoin_ur_PK.ts
+    </message>
+    </context>
+<context>
+    <name>RecentRequestsTableModel</name>
+    <message>
+        <source>Date</source>
+        <translation>تاریخ</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation>چٹ</translation>
+    </message>
+    <message>
+        <source>Amount</source>
+        <translation>رقم</translation>
+    </message>
+    <message>
+        <source>(no label)</source>
+        <translation>چٹ کے بغیر</translation>
     </message>
     </context>
 <context>
@@ -168,16 +244,12 @@
         <translation>رقم:</translation>
     </message>
     <message>
-        <source>Insufficient funds!</source>
-        <translation>ناکافی فنڈز</translation>
-    </message>
-    <message>
-        <source>Amount:</source>
-        <translation>رقم:</translation>
-    </message>
-    <message>
         <source>Balance:</source>
         <translation>بیلنس:</translation>
+    </message>
+    <message>
+        <source>(no label)</source>
+        <translation>چٹ کے بغیر</translation>
     </message>
     </context>
 <context>
@@ -196,13 +268,119 @@
     <name>TrafficGraphWidget</name>
     </context>
 <context>
+    <name>TransactionDesc</name>
+    <message>
+        <source>Date</source>
+        <translation>تاریخ</translation>
+    </message>
+    <message>
+        <source>Amount</source>
+        <translation>رقم</translation>
+    </message>
+    </context>
+<context>
     <name>TransactionDescDialog</name>
+    </context>
+<context>
+    <name>TransactionTableModel</name>
+    <message>
+        <source>Date</source>
+        <translation>تاریخ</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation>ٹائپ</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation>چٹ</translation>
+    </message>
+    <message>
+        <source>Sent to</source>
+        <translation>کو بھیجا</translation>
+    </message>
+    <message>
+        <source>(n/a)</source>
+        <translation>(N / A)</translation>
+    </message>
+    </context>
+<context>
+    <name>TransactionView</name>
+    <message>
+        <source>All</source>
+        <translation>تمام</translation>
+    </message>
+    <message>
+        <source>Today</source>
+        <translation>آج</translation>
+    </message>
+    <message>
+        <source>This week</source>
+        <translation>اس ہفتے</translation>
+    </message>
+    <message>
+        <source>This month</source>
+        <translation>اس مہینے</translation>
+    </message>
+    <message>
+        <source>Last month</source>
+        <translation>پچھلے مہینے</translation>
+    </message>
+    <message>
+        <source>This year</source>
+        <translation>اس سال</translation>
+    </message>
+    <message>
+        <source>Range...</source>
+        <translation>دیگر</translation>
+    </message>
+    <message>
+        <source>Sent to</source>
+        <translation>کو بھیجا</translation>
+    </message>
+    <message>
+        <source>Date</source>
+        <translation>تاریخ</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation>ٹائپ</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation>چٹ</translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation> پتہ</translation>
+    </message>
     </context>
 <context>
     <name>UnitDisplayStatusBarControl</name>
     </context>
 <context>
+    <name>WalletFrame</name>
+    </context>
+<context>
+    <name>WalletModel</name>
+    </context>
+<context>
+    <name>WalletView</name>
+    <message>
+        <source>&amp;Export</source>
+        <translation>برآمد</translation>
+    </message>
+    <message>
+        <source>Export the data in the current tab to a file</source>
+        <translation>موجودہ ڈیٹا کو فائیل میں محفوظ کریں</translation>
+    </message>
+    </context>
+<context>
     <name>bitcoin-core</name>
+    <message>
+        <source>This help message</source>
+        <translation>یہ مدد کا پیغام</translation>
+    </message>
     <message>
         <source>Insufficient funds</source>
         <translation>ناکافی فنڈز</translation>

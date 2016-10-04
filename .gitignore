@@ -113,9 +113,9 @@ share/BitcoindComparisonTool.jar
 
 /doc/doxygen/
 
+libbitcoinconsensus.pc
 /libvcoinconsensus.pc
 /vcoin-cli
 /vcoin-qt
 /vcoin-tx
 /vcoind
-contrib/devtools/split-debug.sh

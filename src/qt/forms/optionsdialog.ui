@@ -30,17 +30,10 @@
        <item>
         <widget class="QCheckBox" name="bitcoinAtStartup">
          <property name="toolTip">
-<<<<<<< HEAD
           <string>Automatically start VCoin Core after logging in to the system.</string>
          </property>
          <property name="text">
           <string>&amp;Start VCoin Core on system login</string>
-=======
-          <string>Automatically start %1 after logging in to the system.</string>
-         </property>
-         <property name="text">
-          <string>&amp;Start %1 on system login</string>
->>>>>>> official/0.13
          </property>
         </widget>
        </item>
@@ -512,16 +505,6 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_Window">
        <item>
-        <widget class="QCheckBox" name="hideTrayIcon">
-         <property name="toolTip">
-          <string>&amp;Hide the icon from the system tray.</string>
-         </property>
-         <property name="text">
-          <string>Hide tray icon</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QCheckBox" name="minimizeToTray">
          <property name="toolTip">
           <string>Show only a tray icon after minimizing the window.</string>
@@ -579,11 +562,7 @@
          <item>
           <widget class="QValueComboBox" name="lang">
            <property name="toolTip">
-<<<<<<< HEAD
             <string>The user interface language can be set here. This setting will take effect after restarting VCoin Core.</string>
-=======
-            <string>The user interface language can be set here. This setting will take effect after restarting %1.</string>
->>>>>>> official/0.13
            </property>
           </widget>
          </item>

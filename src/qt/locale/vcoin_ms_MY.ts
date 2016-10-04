@@ -18,13 +18,8 @@
         <translation>&amp;Salin</translation>
     </message>
     <message>
-        <source>Delete the currently selected address from the list</source>
-        <translation>Padam alamat semasa yang dipilih dari senaraiyang dipilih dari senarai</translation>
-    </message>
-    <message>
-        <source>Export the data in the current tab to a file</source>
-        <translation>
-Alihkan fail data ke dalam tab semasa</translation>
+        <source>&amp;Copy Address</source>
+        <translation>&amp;Salin Alamat</translation>
     </message>
     <message>
         <source>&amp;Export</source>
@@ -34,7 +29,30 @@ Alihkan fail data ke dalam tab semasa</translation>
         <source>&amp;Delete</source>
         <translation>&amp;Padam</translation>
     </message>
-</context>
+    <message>
+        <source>Choose the address to send coins to</source>
+        <translation>Pilih alamat untuk menghantar syiling</translation>
+    </message>
+    <message>
+        <source>Choose the address to receive coins with</source>
+        <translation>Pilih alamat untuk menerima syiling</translation>
+    </message>
+    <message>
+        <source>C&amp;hoose</source>
+        <translation>&amp;Pilih</translation>
+    </message>
+    <message>
+        <source>Comma separated file (*.csv)</source>
+        <translation>Fail yang dipisahkan dengan koma</translation>
+    </message>
+    </context>
+<context>
+    <name>AddressTableModel</name>
+    <message>
+        <source>Address</source>
+        <translation>Alamat</translation>
+    </message>
+    </context>
 <context>
     <name>AskPassphraseDialog</name>
     </context>
@@ -49,6 +67,9 @@ Alihkan fail data ke dalam tab semasa</translation>
     </message>
     </context>
 <context>
+    <name>ClientModel</name>
+    </context>
+<context>
     <name>CoinControlDialog</name>
     </context>
 <context>
@@ -61,7 +82,7 @@ Alihkan fail data ke dalam tab semasa</translation>
         <source>&amp;Address</source>
         <translation>Alamat</translation>
     </message>
-</context>
+    </context>
 <context>
     <name>FreespaceChecker</name>
     </context>
@@ -81,10 +102,16 @@ Alihkan fail data ke dalam tab semasa</translation>
     <name>OverviewPage</name>
     </context>
 <context>
+    <name>PaymentServer</name>
+    </context>
+<context>
     <name>PeerTableModel</name>
     </context>
 <context>
     <name>QObject</name>
+    </context>
+<context>
+    <name>QRImageWidget</name>
     </context>
 <context>
     <name>RPCConsole</name>
@@ -97,14 +124,14 @@ Alihkan fail data ke dalam tab semasa</translation>
     <message>
         <source>Copy &amp;Address</source>
         <translation>&amp;Salin Alamat</translation>
-<<<<<<< HEAD:src/qt/locale/vcoin_ms_MY.ts
     </message>
     <message>
         <source>Address</source>
         <translation>Alamat</translation>
-=======
->>>>>>> official/0.13:src/qt/locale/bitcoin_ms_MY.ts
     </message>
+    </context>
+<context>
+    <name>RecentRequestsTableModel</name>
     </context>
 <context>
     <name>SendCoinsDialog</name>
@@ -129,10 +156,40 @@ Alihkan fail data ke dalam tab semasa</translation>
     <name>TrafficGraphWidget</name>
     </context>
 <context>
+    <name>TransactionDesc</name>
+    </context>
+<context>
     <name>TransactionDescDialog</name>
     </context>
 <context>
+    <name>TransactionTableModel</name>
+    </context>
+<context>
+    <name>TransactionView</name>
+    <message>
+        <source>Comma separated file (*.csv)</source>
+        <translation>Fail yang dipisahkan dengan koma</translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation>Alamat</translation>
+    </message>
+    </context>
+<context>
     <name>UnitDisplayStatusBarControl</name>
+    </context>
+<context>
+    <name>WalletFrame</name>
+    </context>
+<context>
+    <name>WalletModel</name>
+    </context>
+<context>
+    <name>WalletView</name>
+    <message>
+        <source>&amp;Export</source>
+        <translation>&amp;Eksport</translation>
+    </message>
     </context>
 <context>
     <name>bitcoin-core</name>

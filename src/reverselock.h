@@ -15,12 +15,10 @@ public:
 
     explicit reverse_lock(Lock& lock) : lock(lock) {
         lock.unlock();
-        lock.swap(templock);
     }
 
     ~reverse_lock() {
-        templock.lock();
-        templock.swap(lock);
+        lock.lock();
     }
 
 private:
@@ -28,7 +26,6 @@ private:
     reverse_lock& operator=(reverse_lock const&);
 
     Lock& lock;
-    Lock templock;
 };
 
 #endif // BITCOIN_REVERSELOCK_H

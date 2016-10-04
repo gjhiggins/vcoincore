@@ -1,12 +1,10 @@
-#!/usr/bin/env python3
-# Copyright (c) 2015-2016 The Bitcoin Core developers
-# Distributed under the MIT software license, see the accompanying
-# file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
 #
 # script.py
 #
 # This file is modified from python-bitcoinlib.
+#
+# Distributed under the MIT/X11 software license, see the accompanying
+# file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #
 
 """Scripts
@@ -14,15 +12,10 @@
 Functionality to build scripts, as well as SignatureHash().
 """
 
+from __future__ import absolute_import, division, print_function, unicode_literals
 
-<<<<<<< HEAD
 from .mininode import CTransaction, CTxOut, hash256
 from binascii import hexlify
-=======
-from .mininode import CTransaction, CTxOut, sha256, hash256, uint256_from_str, ser_uint256, ser_string
-from binascii import hexlify
-import hashlib
->>>>>>> official/0.13
 
 import sys
 bchr = chr
@@ -41,10 +34,6 @@ MAX_SCRIPT_ELEMENT_SIZE = 520
 MAX_SCRIPT_OPCODES = 201
 
 OPCODE_NAMES = {}
-
-def hash160(s):
-    return hashlib.new('ripemd160', sha256(s)).digest()
-
 
 _opcode_instances = []
 class CScriptOp(int):
@@ -238,11 +227,7 @@ OP_CHECKMULTISIGVERIFY = CScriptOp(0xaf)
 # expansion
 OP_NOP1 = CScriptOp(0xb0)
 OP_CHECKLOCKTIMEVERIFY = CScriptOp(0xb1)
-<<<<<<< HEAD
 OP_NOP3 = CScriptOp(0xb2)
-=======
-OP_CHECKSEQUENCEVERIFY = CScriptOp(0xb2)
->>>>>>> official/0.13
 OP_NOP4 = CScriptOp(0xb3)
 OP_NOP5 = CScriptOp(0xb4)
 OP_NOP6 = CScriptOp(0xb5)
@@ -369,11 +354,7 @@ VALID_OPCODES = {
 
     OP_NOP1,
     OP_CHECKLOCKTIMEVERIFY,
-<<<<<<< HEAD
     OP_NOP3,
-=======
-    OP_CHECKSEQUENCEVERIFY,
->>>>>>> official/0.13
     OP_NOP4,
     OP_NOP5,
     OP_NOP6,
@@ -492,11 +473,7 @@ OPCODE_NAMES.update({
     OP_CHECKMULTISIGVERIFY : 'OP_CHECKMULTISIGVERIFY',
     OP_NOP1 : 'OP_NOP1',
     OP_CHECKLOCKTIMEVERIFY : 'OP_CHECKLOCKTIMEVERIFY',
-<<<<<<< HEAD
     OP_NOP3 : 'OP_NOP3',
-=======
-    OP_CHECKSEQUENCEVERIFY : 'OP_CHECKSEQUENCEVERIFY',
->>>>>>> official/0.13
     OP_NOP4 : 'OP_NOP4',
     OP_NOP5 : 'OP_NOP5',
     OP_NOP6 : 'OP_NOP6',
@@ -615,11 +592,7 @@ OPCODES_BY_NAME = {
     'OP_CHECKMULTISIGVERIFY' : OP_CHECKMULTISIGVERIFY,
     'OP_NOP1' : OP_NOP1,
     'OP_CHECKLOCKTIMEVERIFY' : OP_CHECKLOCKTIMEVERIFY,
-<<<<<<< HEAD
     'OP_NOP3' : OP_NOP3,
-=======
-    'OP_CHECKSEQUENCEVERIFY' : OP_CHECKSEQUENCEVERIFY,
->>>>>>> official/0.13
     'OP_NOP4' : OP_NOP4,
     'OP_NOP5' : OP_NOP5,
     'OP_NOP6' : OP_NOP6,
@@ -656,7 +629,7 @@ class CScriptNum(object):
         neg = obj.value < 0
         absvalue = -obj.value if neg else obj.value
         while (absvalue):
-            r.append(absvalue & 0xff)
+            r.append(chr(absvalue & 0xff))
             absvalue >>= 8
         if r[-1] & 0x80:
             r.append(0x80 if neg else 0)
@@ -685,7 +658,7 @@ class CScript(bytes):
                 other = bchr(CScriptOp(OP_0))
             else:
                 other = CScriptNum.encode(other)
-        elif isinstance(other, int):
+        elif isinstance(other, (int, long)):
             if 0 <= other <= 16:
                 other = bytes(bchr(CScriptOp.encode_op_n(other)))
             elif other == -1:
@@ -804,11 +777,7 @@ class CScript(bytes):
         # need to change
         def _repr(o):
             if isinstance(o, bytes):
-<<<<<<< HEAD
                 return "x('%s')" % hexlify(o).decode('utf8')
-=======
-                return b"x('%s')" % hexlify(o).decode('ascii')
->>>>>>> official/0.13
             else:
                 return repr(o)
 
@@ -907,7 +876,7 @@ def SignatureHash(script, txTo, inIdx, hashtype):
         tmp = txtmp.vout[outIdx]
         txtmp.vout = []
         for i in range(outIdx):
-            txtmp.vout.append(CTxOut(-1))
+            txtmp.vout.append(CTxOut())
         txtmp.vout.append(tmp)
 
         for i in range(len(txtmp.vin)):
@@ -925,48 +894,3 @@ def SignatureHash(script, txTo, inIdx, hashtype):
     hash = hash256(s)
 
     return (hash, None)
-
-# TODO: Allow cached hashPrevouts/hashSequence/hashOutputs to be provided.
-# Performance optimization probably not necessary for python tests, however.
-# Note that this corresponds to sigversion == 1 in EvalScript, which is used
-# for version 0 witnesses.
-def SegwitVersion1SignatureHash(script, txTo, inIdx, hashtype, amount):
-
-    hashPrevouts = 0
-    hashSequence = 0
-    hashOutputs = 0
-
-    if not (hashtype & SIGHASH_ANYONECANPAY):
-        serialize_prevouts = bytes()
-        for i in txTo.vin:
-            serialize_prevouts += i.prevout.serialize()
-        hashPrevouts = uint256_from_str(hash256(serialize_prevouts))
-
-    if (not (hashtype & SIGHASH_ANYONECANPAY) and (hashtype & 0x1f) != SIGHASH_SINGLE and (hashtype & 0x1f) != SIGHASH_NONE):
-        serialize_sequence = bytes()
-        for i in txTo.vin:
-            serialize_sequence += struct.pack("<I", i.nSequence)
-        hashSequence = uint256_from_str(hash256(serialize_sequence))
-
-    if ((hashtype & 0x1f) != SIGHASH_SINGLE and (hashtype & 0x1f) != SIGHASH_NONE):
-        serialize_outputs = bytes()
-        for o in txTo.vout:
-            serialize_outputs += o.serialize()
-        hashOutputs = uint256_from_str(hash256(serialize_outputs))
-    elif ((hashtype & 0x1f) == SIGHASH_SINGLE and inIdx < len(txTo.vout)):
-        serialize_outputs = txTo.vout[inIdx].serialize()
-        hashOutputs = uint256_from_str(hash256(serialize_outputs))
-
-    ss = bytes()
-    ss += struct.pack("<i", txTo.nVersion)
-    ss += ser_uint256(hashPrevouts)
-    ss += ser_uint256(hashSequence)
-    ss += txTo.vin[inIdx].prevout.serialize()
-    ss += ser_string(script)
-    ss += struct.pack("<q", amount)
-    ss += struct.pack("<I", txTo.vin[inIdx].nSequence)
-    ss += ser_uint256(hashOutputs)
-    ss += struct.pack("<i", txTo.nLockTime)
-    ss += struct.pack("<I", hashtype)
-
-    return hash256(ss)

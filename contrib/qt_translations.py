@@ -1,7 +1,4 @@
 #!/usr/bin/env python
-# Copyright (c) 2011 The Bitcoin Core developers
-# Distributed under the MIT software license, see the accompanying
-# file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 # Helpful little script that spits out a comma-separated list of
 # language codes for Qt icons that should be included

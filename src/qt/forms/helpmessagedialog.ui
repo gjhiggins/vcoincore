@@ -10,12 +10,9 @@
     <height>400</height>
    </rect>
   </property>
-<<<<<<< HEAD
   <property name="windowTitle">
    <string notr="true">VCoin Core - Command-line options</string>
   </property>
-=======
->>>>>>> official/0.13
   <layout class="QHBoxLayout" name="horizontalLayout_2">
    <property name="spacing">
     <number>0</number>
