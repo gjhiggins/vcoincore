@@ -74,21 +74,12 @@ static bool AppInitRPC(int argc, char* argv[])
     //
     ParseParameters(argc, argv);
     if (argc<2 || mapArgs.count("-?") || mapArgs.count("-h") || mapArgs.count("-help") || mapArgs.count("-version")) {
-<<<<<<< HEAD
-        std::string strUsage = _("VCoin Core RPC client version") + " " + FormatFullVersion() + "\n";
-        if (!mapArgs.count("-version")) {
-            strUsage += "\n" + _("Usage:") + "\n" +
-                  "  vcoin-cli [options] <command> [params]  " + _("Send command to VCoin Core") + "\n" +
-                  "  vcoin-cli [options] help                " + _("List commands") + "\n" +
-                  "  vcoin-cli [options] help <command>      " + _("Get help for a command") + "\n";
-=======
         std::string strUsage = strprintf(_("%s RPC client version"), _(PACKAGE_NAME)) + " " + FormatFullVersion() + "\n";
         if (!mapArgs.count("-version")) {
             strUsage += "\n" + _("Usage:") + "\n" +
-                  "  bitcoin-cli [options] <command> [params]  " + strprintf(_("Send command to %s"), _(PACKAGE_NAME)) + "\n" +
-                  "  bitcoin-cli [options] help                " + _("List commands") + "\n" +
-                  "  bitcoin-cli [options] help <command>      " + _("Get help for a command") + "\n";
->>>>>>> official/0.13
+                  "  vcore-cli [options] <command> [params]  " + strprintf(_("Send command to %s"), _(PACKAGE_NAME)) + "\n" +
+                  "  vcore-cli [options] help                " + _("List commands") + "\n" +
+                  "  vcore-cli [options] help <command>      " + _("Get help for a command") + "\n";
 
             strUsage += "\n" + HelpMessageCli();
         }

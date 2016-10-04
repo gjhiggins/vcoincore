@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-#!/usr/bin/env python2
-# Copyright (c) 2014-2015 The Bitcoin Core developers
-=======
 #!/usr/bin/env python3
 # Copyright (c) 2014-2016 The Bitcoin Core developers
->>>>>>> official/0.13
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -16,25 +11,11 @@
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
 from struct import *
-<<<<<<< HEAD
-import binascii
-import StringIO
-
-try:
-    import http.client as httplib
-except ImportError:
-    import httplib
-try:
-    import urllib.parse as urlparse
-except ImportError:
-    import urlparse
-=======
 from io import BytesIO
 from codecs import encode
 
 import http.client
 import urllib.parse
->>>>>>> official/0.13
 
 def deser_uint256(f):
     r = 0
@@ -154,15 +135,9 @@ class RESTTest (BitcoinTestFramework):
         bb_hash = self.nodes[0].getbestblockhash()
 
         binaryRequest = b'\x01\x02'
-<<<<<<< HEAD
-        binaryRequest += binascii.unhexlify(txid)
-        binaryRequest += pack("i", n)
-        binaryRequest += binascii.unhexlify(vintx)
-=======
         binaryRequest += hex_str_to_bytes(txid)
         binaryRequest += pack("i", n)
         binaryRequest += hex_str_to_bytes(vintx)
->>>>>>> official/0.13
         binaryRequest += pack("i", 0)
 
         bin_response = http_post_call(url.hostname, url.port, '/rest/getutxos'+self.FORMAT_SEPARATOR+'bin', binaryRequest)
@@ -271,11 +246,7 @@ class RESTTest (BitcoinTestFramework):
         # compare with json block header
         response_header_json = http_get_call(url.hostname, url.port, '/rest/headers/1/'+bb_hash+self.FORMAT_SEPARATOR+"json", True)
         assert_equal(response_header_json.status, 200)
-<<<<<<< HEAD
-        response_header_json_str = response_header_json.read()
-=======
         response_header_json_str = response_header_json.read().decode('utf-8')
->>>>>>> official/0.13
         json_obj = json.loads(response_header_json_str, parse_float=Decimal)
         assert_equal(len(json_obj), 1) #ensure that there is one header in the json response
         assert_equal(json_obj[0]['hash'], bb_hash) #request/response hash should be the same

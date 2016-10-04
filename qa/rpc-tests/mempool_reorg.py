@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-#!/usr/bin/env python2
-# Copyright (c) 2014-2015 The Bitcoin Core developers
-=======
 #!/usr/bin/env python3
 # Copyright (c) 2014-2016 The Bitcoin Core developers
->>>>>>> official/0.13
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -33,17 +28,6 @@ class MempoolCoinbaseTest(BitcoinTestFramework):
         connect_nodes(self.nodes[1], 0)
         self.is_network_split = False
         self.sync_all()
-<<<<<<< HEAD
-
-    def create_tx(self, from_txid, to_address, amount):
-        inputs = [{ "txid" : from_txid, "vout" : 0}]
-        outputs = { to_address : amount }
-        rawtx = self.nodes[0].createrawtransaction(inputs, outputs)
-        signresult = self.nodes[0].signrawtransaction(rawtx)
-        assert_equal(signresult["complete"], True)
-        return signresult["hex"]
-=======
->>>>>>> official/0.13
 
     def run_test(self):
         start_count = self.nodes[0].getblockcount()

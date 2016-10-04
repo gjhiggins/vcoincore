@@ -6,13 +6,8 @@ SetCompressor /SOLID lzma
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
 !define VERSION @CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@
-<<<<<<< HEAD
-!define COMPANY "Bitcoin Core project"
-!define URL https://bitcoincore.org/
-=======
 !define COMPANY "@PACKAGE_NAME@ project"
 !define URL @PACKAGE_URL@
->>>>>>> official/0.13
 
 # MUI Symbol Definitions
 !define MUI_ICON "@abs_top_srcdir@/share/pixmaps/bitcoin.ico"

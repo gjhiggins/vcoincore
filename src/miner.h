@@ -130,11 +130,6 @@ struct update_for_parent_inclusion
     CTxMemPool::txiter iter;
 };
 
-<<<<<<< HEAD
-/** Run the miner threads */
-void GenerateVCoins(bool fGenerate, int nThreads, const CChainParams& chainparams);
-=======
->>>>>>> official/0.13
 /** Generate a new block, without valid proof-of-work */
 class BlockAssembler
 {

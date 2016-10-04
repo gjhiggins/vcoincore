@@ -40,20 +40,6 @@ class RejectResult(object):
     def __repr__(self):
         return '%i:%s' % (self.code,self.reason or '*')
 
-class RejectResult(object):
-    '''
-    Outcome that expects rejection of a transaction or block.
-    '''
-    def __init__(self, code, reason=''):
-        self.code = code
-        self.reason = reason
-    def match(self, other):
-        if self.code != other.code:
-            return False
-        return other.reason.startswith(self.reason)
-    def __repr__(self):
-        return '%i:%s' % (self.code,self.reason or '*')
-
 class TestNode(NodeConnCB):
 
     def __init__(self, block_store, tx_store):
@@ -110,15 +96,9 @@ class TestNode(NodeConnCB):
             raise AssertionError("Got pong for unknown ping [%s]" % repr(message))
 
     def on_reject(self, conn, message):
-<<<<<<< HEAD
-        if message.message == 'tx':
-            self.tx_reject_map[message.data] = RejectResult(message.code, message.reason)
-        if message.message == 'block':
-=======
         if message.message == b'tx':
             self.tx_reject_map[message.data] = RejectResult(message.code, message.reason)
         if message.message == b'block':
->>>>>>> official/0.13
             self.block_reject_map[message.data] = RejectResult(message.code, message.reason)
 
     def send_inv(self, obj):
@@ -278,17 +258,10 @@ class TestManager(object):
                     if c.cb.bestblockhash == blockhash:
                         return False
                     if blockhash not in c.cb.block_reject_map:
-<<<<<<< HEAD
-                        print 'Block not in reject map: %064x' % (blockhash)
-                        return False
-                    if not outcome.match(c.cb.block_reject_map[blockhash]):
-                        print 'Block rejected with %s instead of expected %s: %064x' % (c.cb.block_reject_map[blockhash], outcome, blockhash)
-=======
                         print('Block not in reject map: %064x' % (blockhash))
                         return False
                     if not outcome.match(c.cb.block_reject_map[blockhash]):
                         print('Block rejected with %s instead of expected %s: %064x' % (c.cb.block_reject_map[blockhash], outcome, blockhash))
->>>>>>> official/0.13
                         return False
                 elif ((c.cb.bestblockhash == blockhash) != outcome):
                     # print c.cb.bestblockhash, blockhash, outcome
@@ -313,17 +286,10 @@ class TestManager(object):
                     if txhash in c.cb.lastInv:
                         return False
                     if txhash not in c.cb.tx_reject_map:
-<<<<<<< HEAD
-                        print 'Tx not in reject map: %064x' % (txhash)
-                        return False
-                    if not outcome.match(c.cb.tx_reject_map[txhash]):
-                        print 'Tx rejected with %s instead of expected %s: %064x' % (c.cb.tx_reject_map[txhash], outcome, txhash)
-=======
                         print('Tx not in reject map: %064x' % (txhash))
                         return False
                     if not outcome.match(c.cb.tx_reject_map[txhash]):
                         print('Tx rejected with %s instead of expected %s: %064x' % (c.cb.tx_reject_map[txhash], outcome, txhash))
->>>>>>> official/0.13
                         return False
                 elif ((txhash in c.cb.lastInv) != outcome):
                     # print c.rpc.getrawmempool(), c.cb.lastInv

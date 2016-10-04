@@ -15,11 +15,7 @@
 
 //! These need to be macros, as clientversion.cpp's and bitcoin*-res.rc's voodoo requires it
 #define CLIENT_VERSION_MAJOR 0
-<<<<<<< HEAD
-#define CLIENT_VERSION_MINOR 12
-=======
 #define CLIENT_VERSION_MINOR 13
->>>>>>> official/0.13
 #define CLIENT_VERSION_REVISION 0
 #define CLIENT_VERSION_BUILD 0
 
@@ -41,13 +37,8 @@
 #define STRINGIZE(X) DO_STRINGIZE(X)
 #define DO_STRINGIZE(X) #X
 
-<<<<<<< HEAD
-// Copyright string used in Windows .rc files
-#define COPYRIGHT_STR "2009-" STRINGIZE(COPYRIGHT_YEAR) " The VCoin Core Developers"
-=======
 //! Copyright string used in Windows .rc files
 #define COPYRIGHT_STR "2009-" STRINGIZE(COPYRIGHT_YEAR) " " COPYRIGHT_HOLDERS_FINAL
->>>>>>> official/0.13
 
 /**
  * bitcoind-res.rc includes this file, but it cannot cope with real c++ code.

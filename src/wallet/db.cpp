@@ -210,13 +210,9 @@ bool CDBEnv::Salvage(const std::string& strFile, bool fAggressive, std::vector<C
     std::string keyHex, valueHex;
     while (!strDump.eof() && keyHex != DATA_END) {
         getline(strDump, keyHex);
-<<<<<<< HEAD
-        if (keyHex != "DATA=END") {
-=======
         if (keyHex != DATA_END) {
             if (strDump.eof())
                 break;
->>>>>>> official/0.13
             getline(strDump, valueHex);
             if (valueHex == DATA_END) {
                 LogPrintf("CDBEnv::Salvage: WARNING: Number of keys in data does not match number of values.\n");

@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-144.76.64.49:5350
-=======
 5.2.145.201:8333
 5.22.142.214:8333
 5.53.172.197:8333
@@ -938,4 +935,3 @@ uws7itep7o3yinxo.onion:8333
 vk3qjdehyy4dwcxw.onion:8333
 vqpye2k5rcqvj5mq.onion:8333
 wpi7rpvhnndl52ee.onion:8333
->>>>>>> official/0.13

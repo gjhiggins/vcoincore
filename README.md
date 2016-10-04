@@ -1,42 +1,43 @@
-VCoin Core integration/staging tree
-========================================================
+V Core integration/staging tree
+===============================
 
+[![Build Status](https://travis-ci.org/vcore/vcore.svg?branch=master)](https://travis-ci.org/vcore/vcore)
 
-https://bitcoincore.org
+https://vcore.org
 
-What is VCoin?
+What is V Core?
 ----------------
 
-VCoin is an experimental new digital currency that enables instant payments to
-anyone, anywhere in the world. VCoin uses peer-to-peer technology to operate
+V Core is an experimental digital currency that enables instant payments to
+anyone, anywhere in the world. V uses peer-to-peer technology to operate
 with no central authority: managing transactions and issuing money are carried
-out collectively by the network. VCoin Core is the name of open source
+out collectively by the network. V Core is the name of open source
 software which enables the use of this currency.
 
 For more information, as well as an immediately useable, binary version of
-the VCoin Core software, see https://vcoin.org/en/download, or read the
-[original whitepaper](https://bitcoincore.org/bitcoin.pdf).
+the V Core software, see https://vcore.org/en/download, or read the
+[original Bitcoin whitepaper](https://bitcoincore.org/bitcoin.pdf).
 
 License
 -------
 
-VCoin Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
-information or see http://opensource.org/licenses/MIT.
+V Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
+information or see https://opensource.org/licenses/MIT.
 
 Development Process
 -------------------
 
 The `master` branch is regularly built and tested, but is not guaranteed to be
-completely stable. [Tags](https://github.com/bitcoin/bitcoin/tags) are created
-regularly to indicate new official, stable release versions of VCoin Core.
+completely stable. [Tags](https://github.com/vcore/vcore/tags) are created
+regularly to indicate new official, stable release versions of V Core.
 
 The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
 
-The developer [mailing list](https://lists.linuxfoundation.org/mailman/listinfo/bitcoin-dev)
+The developer [mailing list](https://lists.linuxfoundation.org/mailman/listinfo/vcore-dev)
 should be used to discuss complicated or controversial changes before working
 on a patch set.
 
-Developer IRC can be found on Freenode at #bitcoin-core-dev.
+Developer IRC can be found on Freenode at #vcore-dev.
 
 Testing
 -------
@@ -69,7 +70,7 @@ Translations
 ------------
 
 Changes to translations as well as new translations can be submitted to
-[Bitcoin Core's Transifex page](https://www.transifex.com/projects/p/bitcoin/).
+[V Core's Transifex page](https://www.transifex.com/projects/p/vcore/).
 
 Translations are periodically pulled from Transifex and merged into the git repository. See the
 [translation process](doc/translation_process.md) for details on how this works.
@@ -77,4 +78,4 @@ Translations are periodically pulled from Transifex and merged into the git repo
 **Important**: We do not accept translation changes as GitHub pull requests because the next
 pull from Transifex would automatically overwrite them again.
 
-Translators should also subscribe to the [mailing list](https://groups.google.com/forum/#!forum/bitcoin-translators).
+Translators should also subscribe to the [mailing list](https://groups.google.com/forum/#!forum/vcore-translators).

@@ -16,14 +16,14 @@ BEGIN
     BEGIN
         BLOCK "040904E4" // U.S. English - multilingual (hex)
         BEGIN
-            VALUE "CompanyName",        "VCoin"
-            VALUE "FileDescription",    "vcoind (VCoin node with a JSON-RPC server)"
+            VALUE "CompanyName",        "V"
+            VALUE "FileDescription",    "vcored (V node with a JSON-RPC server)"
             VALUE "FileVersion",        VER_FILEVERSION_STR
-            VALUE "InternalName",       "vcoind"
+            VALUE "InternalName",       "vcored"
             VALUE "LegalCopyright",     COPYRIGHT_STR
             VALUE "LegalTrademarks1",   "Distributed under the MIT software license, see the accompanying file COPYING or http://www.opensource.org/licenses/mit-license.php."
-            VALUE "OriginalFilename",   "vcoind.exe"
-            VALUE "ProductName",        "vcoind"
+            VALUE "OriginalFilename",   "vcored.exe"
+            VALUE "ProductName",        "vcored"
             VALUE "ProductVersion",     VER_PRODUCTVERSION_STR
         END
     END

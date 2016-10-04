@@ -37,11 +37,7 @@ HelpMessageDialog::HelpMessageDialog(QWidget *parent, bool about) :
 {
     ui->setupUi(this);
 
-<<<<<<< HEAD
-    QString version = tr("VCoin Core") + " " + tr("version") + " " + QString::fromStdString(FormatFullVersion());
-=======
     QString version = tr(PACKAGE_NAME) + " " + tr("version") + " " + QString::fromStdString(FormatFullVersion());
->>>>>>> official/0.13
     /* On x86 add a bit specifier to the version so that users can distinguish between
      * 32 and 64 bit builds. On other architectures, 32/64 bit may be more ambigious.
      */
@@ -53,11 +49,7 @@ HelpMessageDialog::HelpMessageDialog(QWidget *parent, bool about) :
 
     if (about)
     {
-<<<<<<< HEAD
-        setWindowTitle(tr("About VCoin Core"));
-=======
         setWindowTitle(tr("About %1").arg(tr(PACKAGE_NAME)));
->>>>>>> official/0.13
 
         /// HTML-format the license message from the core
         QString licenseInfo = QString::fromStdString(LicenseInfo());
@@ -174,11 +166,7 @@ ShutdownWindow::ShutdownWindow(QWidget *parent, Qt::WindowFlags f):
 {
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(new QLabel(
-<<<<<<< HEAD
-        tr("VCoin Core is shutting down...") + "<br /><br />" +
-=======
         tr("%1 is shutting down...").arg(tr(PACKAGE_NAME)) + "<br /><br />" +
->>>>>>> official/0.13
         tr("Do not shut down the computer until this window disappears.")));
     setLayout(layout);
 }

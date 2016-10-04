@@ -854,7 +854,7 @@ DBErrors CWalletDB::ZapWalletTx(CWallet* pwallet, vector<CWalletTx>& vWtx)
 void ThreadFlushWalletDB(const string& strFile)
 {
     // Make this thread recognisable as the wallet flushing thread
-    RenameThread("vcoin-wallet");
+    RenameThread("vcore-wallet");
 
     static bool fOneThread;
     if (fOneThread)
@@ -977,11 +977,7 @@ bool CWalletDB::Recover(CDBEnv& dbenv, const std::string& filename, bool fOnlyKe
                 fReadOK = ReadKeyValue(&dummyWallet, ssKey, ssValue,
                                         wss, strType, strErr);
             }
-<<<<<<< HEAD
-            if (!IsKeyType(strType))
-=======
             if (!IsKeyType(strType) && strType != "hdchain")
->>>>>>> official/0.13
                 continue;
             if (!fReadOK)
             {

@@ -33,15 +33,9 @@ CTxMemPoolEntry::CTxMemPoolEntry(const CTransaction& _tx, const CAmount& _nFee,
     nUsageSize = RecursiveDynamicUsage(*tx) + memusage::DynamicUsage(tx);
 
     nCountWithDescendants = 1;
-<<<<<<< HEAD
-    nSizeWithDescendants = nTxSize;
-    nModFeesWithDescendants = nFee;
-    CAmount nValueIn = tx.GetValueOut()+nFee;
-=======
     nSizeWithDescendants = GetTxSize();
     nModFeesWithDescendants = nFee;
     CAmount nValueIn = _tx.GetValueOut()+nFee;
->>>>>>> official/0.13
     assert(inChainInputValue <= nValueIn);
 
     feeDelta = 0;
@@ -70,10 +64,7 @@ CTxMemPoolEntry::GetPriority(unsigned int currentHeight) const
 void CTxMemPoolEntry::UpdateFeeDelta(int64_t newFeeDelta)
 {
     nModFeesWithDescendants += newFeeDelta - feeDelta;
-<<<<<<< HEAD
-=======
     nModFeesWithAncestors += newFeeDelta - feeDelta;
->>>>>>> official/0.13
     feeDelta = newFeeDelta;
 }
 
@@ -339,30 +330,15 @@ void CTxMemPool::UpdateForRemoveFromMempool(const setEntries &entriesToRemove, b
 
 void CTxMemPoolEntry::UpdateDescendantState(int64_t modifySize, CAmount modifyFee, int64_t modifyCount)
 {
-<<<<<<< HEAD
-    nCountWithDescendants = 0;
-    nSizeWithDescendants = nTxSize;
-    nModFeesWithDescendants = GetModifiedFee();
-=======
     nSizeWithDescendants += modifySize;
     assert(int64_t(nSizeWithDescendants) > 0);
     nModFeesWithDescendants += modifyFee;
     nCountWithDescendants += modifyCount;
     assert(int64_t(nCountWithDescendants) > 0);
->>>>>>> official/0.13
 }
 
 void CTxMemPoolEntry::UpdateAncestorState(int64_t modifySize, CAmount modifyFee, int64_t modifyCount, int modifySigOps)
 {
-<<<<<<< HEAD
-    if (!IsDirty()) {
-        nSizeWithDescendants += modifySize;
-        assert(int64_t(nSizeWithDescendants) > 0);
-        nModFeesWithDescendants += modifyFee;
-        nCountWithDescendants += modifyCount;
-        assert(int64_t(nCountWithDescendants) > 0);
-    }
-=======
     nSizeWithAncestors += modifySize;
     assert(int64_t(nSizeWithAncestors) > 0);
     nModFeesWithAncestors += modifyFee;
@@ -370,7 +346,6 @@ void CTxMemPoolEntry::UpdateAncestorState(int64_t modifySize, CAmount modifyFee,
     assert(int64_t(nCountWithAncestors) > 0);
     nSigOpCostWithAncestors += modifySigOps;
     assert(int(nSigOpCostWithAncestors) >= 0);
->>>>>>> official/0.13
 }
 
 CTxMemPool::CTxMemPool(const CFeeRate& _minReasonableRelayFee) :
@@ -463,10 +438,7 @@ bool CTxMemPool::addUnchecked(const uint256& hash, const CTxMemPoolEntry &entry,
         }
     }
     UpdateAncestorsOf(true, newit, setAncestors);
-<<<<<<< HEAD
-=======
     UpdateEntryForAncestors(newit, setAncestors);
->>>>>>> official/0.13
 
     nTransactionsUpdated++;
     totalTxSize += entry.GetTxSize();
@@ -749,36 +721,17 @@ void CTxMemPool::check(const CCoinsViewCache *pcoins) const
         CTxMemPool::setEntries setChildrenCheck;
         auto iter = mapNextTx.lower_bound(COutPoint(it->GetTx().GetHash(), 0));
         int64_t childSizes = 0;
-<<<<<<< HEAD
-        CAmount childModFee = 0;
-        for (; iter != mapNextTx.end() && iter->first.hash == it->GetTx().GetHash(); ++iter) {
-            txiter childit = mapTx.find(iter->second.ptx->GetHash());
-            assert(childit != mapTx.end()); // mapNextTx points to in-mempool transactions
-            if (setChildrenCheck.insert(childit).second) {
-                childSizes += childit->GetTxSize();
-                childModFee += childit->GetModifiedFee();
-=======
         for (; iter != mapNextTx.end() && iter->first->hash == it->GetTx().GetHash(); ++iter) {
             txiter childit = mapTx.find(iter->second->GetHash());
             assert(childit != mapTx.end()); // mapNextTx points to in-mempool transactions
             if (setChildrenCheck.insert(childit).second) {
                 childSizes += childit->GetTxSize();
->>>>>>> official/0.13
             }
         }
         assert(setChildrenCheck == GetMemPoolChildren(it));
         // Also check to make sure size is greater than sum with immediate children.
         // just a sanity check, not definitive that this calc is correct...
-<<<<<<< HEAD
-        if (!it->IsDirty()) {
-            assert(it->GetSizeWithDescendants() >= childSizes + it->GetTxSize());
-        } else {
-            assert(it->GetSizeWithDescendants() == it->GetTxSize());
-            assert(it->GetModFeesWithDescendants() == it->GetModifiedFee());
-        }
-=======
         assert(it->GetSizeWithDescendants() >= childSizes + it->GetTxSize());
->>>>>>> official/0.13
 
         if (fDependsWait)
             waitingOnDependants.push_back(&(*it));

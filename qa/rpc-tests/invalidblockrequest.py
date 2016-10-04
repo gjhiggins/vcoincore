@@ -95,11 +95,7 @@ class InvalidBlockRequestTest(ComparisonTestFramework):
         assert(block2_orig.vtx != block2.vtx)
 
         self.tip = block2.sha256
-<<<<<<< HEAD
-        yield TestInstance([[block2, RejectResult(16,'bad-txns-duplicate')], [block2_orig, True]])
-=======
         yield TestInstance([[block2, RejectResult(16, b'bad-txns-duplicate')], [block2_orig, True]])
->>>>>>> official/0.13
         height += 1
 
         '''
@@ -114,11 +110,7 @@ class InvalidBlockRequestTest(ComparisonTestFramework):
         block3.rehash()
         block3.solve()
 
-<<<<<<< HEAD
-        yield TestInstance([[block3, RejectResult(16,'bad-cb-amount')]])
-=======
         yield TestInstance([[block3, RejectResult(16, b'bad-cb-amount')]])
->>>>>>> official/0.13
 
 
 if __name__ == '__main__':

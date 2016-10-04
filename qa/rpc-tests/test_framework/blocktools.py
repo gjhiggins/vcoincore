@@ -4,13 +4,8 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-<<<<<<< HEAD
-from mininode import *
-from script import CScript, OP_TRUE, OP_CHECKSIG
-=======
 from .mininode import *
 from .script import CScript, OP_TRUE, OP_CHECKSIG, OP_RETURN
->>>>>>> official/0.13
 
 # Create a block (with regtest difficulty)
 def create_block(hashprev, coinbase, nTime=None):

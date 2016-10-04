@@ -435,7 +435,7 @@ static std::string FormatException(const std::exception* pex, const char* pszThr
     char pszModule[MAX_PATH] = "";
     GetModuleFileNameA(NULL, pszModule, sizeof(pszModule));
 #else
-    const char* pszModule = "vcoin";
+    const char* pszModule = "vcore";
 #endif
     if (pex)
         return strprintf(
@@ -455,13 +455,13 @@ void PrintExceptionContinue(const std::exception* pex, const char* pszThread)
 boost::filesystem::path GetDefaultDataDir()
 {
     namespace fs = boost::filesystem;
-    // Windows < Vista: C:\Documents and Settings\Username\Application Data\VCoin
-    // Windows >= Vista: C:\Users\Username\AppData\Roaming\VCoin
-    // Mac: ~/Library/Application Support/VCoin
-    // Unix: ~/.vcoin
+    // Windows < Vista: C:\Documents and Settings\Username\Application Data\V Core
+    // Windows >= Vista: C:\Users\Username\AppData\Roaming\V Core
+    // Mac: ~/Library/Application Support/V Core
+    // Unix: ~/.vcore
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "VCoin";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "V Core";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -471,16 +471,10 @@ boost::filesystem::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-<<<<<<< HEAD
-    pathRet /= "Library/Application Support";
-    TryCreateDirectory(pathRet);
-    return pathRet / "VCoin";
-=======
-    return pathRet / "Library/Application Support/Bitcoin";
->>>>>>> official/0.13
+    return pathRet / "Library/Application Support/V Core";
 #else
     // Unix
-    return pathRet / ".vcoin";
+    return pathRet / ".vcore";
 #endif
 #endif
 }
@@ -539,7 +533,7 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
 {
     boost::filesystem::ifstream streamConfig(GetConfigFile());
     if (!streamConfig.good())
-        return; // No vcoin.conf file is OK
+        return; // No vcore.conf file is OK
 
     set<string> setOptions;
     setOptions.insert("*");

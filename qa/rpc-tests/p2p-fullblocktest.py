@@ -9,12 +9,8 @@ from test_framework.comptool import TestManager, TestInstance, RejectResult
 from test_framework.blocktools import *
 import time
 from test_framework.key import CECKey
-<<<<<<< HEAD
-from test_framework.script import CScript, SignatureHash, SIGHASH_ALL, OP_TRUE, OP_FALSE
-=======
 from test_framework.script import *
 import struct
->>>>>>> official/0.13
 
 class PreviousSpendableOutput(object):
     def __init__(self, tx = CTransaction(), n = -1):
@@ -157,31 +153,11 @@ class FullBlockTest(ComparisonTestFramework):
                 return TestInstance([[self.tip, False]])
             else:
                 return TestInstance([[self.tip, reject]])
-<<<<<<< HEAD
-       
-=======
 
->>>>>>> official/0.13
         # move the tip back to a previous block
         def tip(number):
             self.tip = self.blocks[number]
 
-<<<<<<< HEAD
-        # add transactions to a block produced by next_block
-        def update_block(block_number, new_transactions):
-            block = self.blocks[block_number]
-            old_hash = block.sha256
-            self.add_transactions_to_block(block, new_transactions)
-            block.solve()
-            # Update the internal state just like in next_block
-            self.tip = block
-            self.block_heights[block.sha256] = self.block_heights[old_hash]
-            del self.block_heights[old_hash]
-            self.blocks[block_number] = block
-            return block
-
-        # creates a new block and advances the tip to that block
-=======
         # adds transactions to the block and updates state
         def update_block(block_number, new_transactions):
             block = self.blocks[block_number]
@@ -198,7 +174,6 @@ class FullBlockTest(ComparisonTestFramework):
             return block
 
         # shorthand for functions
->>>>>>> official/0.13
         block = self.next_block
         create_tx = self.create_tx
         create_and_sign_tx = self.create_and_sign_transaction
@@ -216,11 +191,7 @@ class FullBlockTest(ComparisonTestFramework):
         # Now we need that block to mature so we can spend the coinbase.
         test = TestInstance(sync_every_block=False)
         for i in range(99):
-<<<<<<< HEAD
-            block(1000 + i)
-=======
             block(5000 + i)
->>>>>>> official/0.13
             test.blocks_and_transactions.append([self.tip, True])
             save_spendable_output()
         yield test
@@ -237,12 +208,7 @@ class FullBlockTest(ComparisonTestFramework):
         save_spendable_output()
         yield accepted()
 
-<<<<<<< HEAD
-        out1 = get_spendable_output()
-        b2 = block(2, spend=out1)
-=======
         block(2, spend=out[1])
->>>>>>> official/0.13
         yield accepted()
         save_spendable_output()
 
@@ -253,13 +219,8 @@ class FullBlockTest(ComparisonTestFramework):
         #
         # Nothing should happen at this point. We saw b2 first so it takes priority.
         tip(1)
-<<<<<<< HEAD
-        b3 = block(3, spend=out1)
-        txout_b3 = PreviousSpendableOutput(b3.vtx[1], 1)
-=======
         b3 = block(3, spend=out[1])
         txout_b3 = PreviousSpendableOutput(b3.vtx[1], 0)
->>>>>>> official/0.13
         yield rejected()
 
 
@@ -298,13 +259,8 @@ class FullBlockTest(ComparisonTestFramework):
         #                                                    \-> b9 (4)
         #                      \-> b3 (1) -> b4 (2)
         tip(6)
-<<<<<<< HEAD
-        block(9, spend=out4, additional_coinbase_value=1)
-        yield rejected(RejectResult(16, 'bad-cb-amount'))
-=======
         block(9, spend=out[4], additional_coinbase_value=1)
         yield rejected(RejectResult(16, b'bad-cb-amount'))
->>>>>>> official/0.13
 
         # Create a fork that ends in a block with too much fee (the one that causes the reorg)
         #     genesis -> b1 (0) -> b2 (1) -> b5 (2) -> b6  (3)
@@ -314,13 +270,8 @@ class FullBlockTest(ComparisonTestFramework):
         block(10, spend=out[3])
         yield rejected()
 
-<<<<<<< HEAD
-        block(11, spend=out4, additional_coinbase_value=1)
-        yield rejected(RejectResult(16, 'bad-cb-amount'))
-=======
         block(11, spend=out[4], additional_coinbase_value=1)
         yield rejected(RejectResult(16, b'bad-cb-amount'))
->>>>>>> official/0.13
 
 
         # Try again, but with a valid fork first
@@ -348,11 +299,7 @@ class FullBlockTest(ComparisonTestFramework):
         #     genesis -> b1 (0) -> b2 (1) -> b5 (2) -> b6  (3)
         #                                          \-> b12 (3) -> b13 (4) -> b15 (5) -> b16 (6)
         #                      \-> b3 (1) -> b4 (2)
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> official/0.13
         # Test that a block with a lot of checksigs is okay
         lots_of_checksigs = CScript([OP_CHECKSIG] * (MAX_BLOCK_SIGOPS - 1))
         tip(13)
@@ -362,16 +309,9 @@ class FullBlockTest(ComparisonTestFramework):
 
 
         # Test that a block with too many checksigs is rejected
-<<<<<<< HEAD
-        out6 = get_spendable_output()
-        too_many_checksigs = CScript([OP_CHECKSIG] * (1000000 / 50))
-        block(16, spend=out6, script=too_many_checksigs)
-        yield rejected(RejectResult(16, 'bad-blk-sigops'))
-=======
         too_many_checksigs = CScript([OP_CHECKSIG] * (MAX_BLOCK_SIGOPS))
         block(16, spend=out[6], script=too_many_checksigs)
         yield rejected(RejectResult(16, b'bad-blk-sigops'))
->>>>>>> official/0.13
 
 
         # Attempt to spend a transaction created on a different fork
@@ -380,11 +320,7 @@ class FullBlockTest(ComparisonTestFramework):
         #                      \-> b3 (1) -> b4 (2)
         tip(15)
         block(17, spend=txout_b3)
-<<<<<<< HEAD
-        yield rejected(RejectResult(16, 'bad-txns-inputs-missingorspent'))
-=======
         yield rejected(RejectResult(16, b'bad-txns-inputs-missingorspent'))
->>>>>>> official/0.13
 
         # Attempt to spend a transaction created on a different fork (on a fork this time)
         #     genesis -> b1 (0) -> b2 (1) -> b5 (2) -> b6  (3)
@@ -395,9 +331,6 @@ class FullBlockTest(ComparisonTestFramework):
         block(18, spend=txout_b3)
         yield rejected()
 
-<<<<<<< HEAD
-        block(19, spend=out6)
-=======
         block(19, spend=out[6])
         yield rejected()
 
@@ -668,7 +601,6 @@ class FullBlockTest(ComparisonTestFramework):
         #
         tip(39)
         block(42, spend=out[12])
->>>>>>> official/0.13
         yield rejected()
         save_spendable_output()
 
@@ -1355,98 +1287,6 @@ class FullBlockTest(ComparisonTestFramework):
 
             chain1_tip += 2
 
-        # Attempt to spend a coinbase at depth too low
-        #     genesis -> b1 (0) -> b2 (1) -> b5 (2) -> b6  (3)
-        #                                          \-> b12 (3) -> b13 (4) -> b15 (5) -> b20 (7)
-        #                      \-> b3 (1) -> b4 (2)
-        tip(15)
-        out7 = get_spendable_output()
-        block(20, spend=out7)
-        yield rejected(RejectResult(16, 'bad-txns-premature-spend-of-coinbase'))
-
-        # Attempt to spend a coinbase at depth too low (on a fork this time)
-        #     genesis -> b1 (0) -> b2 (1) -> b5 (2) -> b6  (3)
-        #                                          \-> b12 (3) -> b13 (4) -> b15 (5)
-        #                                                                \-> b21 (6) -> b22 (5)
-        #                      \-> b3 (1) -> b4 (2)
-        tip(13)
-        block(21, spend=out6)
-        yield rejected()
-
-        block(22, spend=out5)
-        yield rejected()
-
-        # Create a block on either side of MAX_BLOCK_SIZE and make sure its accepted/rejected
-        #     genesis -> b1 (0) -> b2 (1) -> b5 (2) -> b6  (3)
-        #                                          \-> b12 (3) -> b13 (4) -> b15 (5) -> b23 (6)
-        #                                                                           \-> b24 (6) -> b25 (7)
-        #                      \-> b3 (1) -> b4 (2)
-        tip(15)
-        b23 = block(23, spend=out6)
-        old_hash = b23.sha256
-        tx = CTransaction()
-        script_length = MAX_BLOCK_SIZE - len(b23.serialize()) - 69
-        script_output = CScript([chr(0)*script_length])
-        tx.vout.append(CTxOut(0, script_output))
-        tx.vin.append(CTxIn(COutPoint(b23.vtx[1].sha256, 1)))
-        b23 = update_block(23, [tx])
-        # Make sure the math above worked out to produce a max-sized block
-        assert_equal(len(b23.serialize()), MAX_BLOCK_SIZE)
-        yield accepted()
-
-        # Make the next block one byte bigger and check that it fails
-        tip(15)
-        b24 = block(24, spend=out6)
-        script_length = MAX_BLOCK_SIZE - len(b24.serialize()) - 69
-        script_output = CScript([chr(0)*(script_length+1)])
-        tx.vout = [CTxOut(0, script_output)]
-        b24 = update_block(24, [tx])
-        assert_equal(len(b24.serialize()), MAX_BLOCK_SIZE+1)
-        yield rejected(RejectResult(16, 'bad-blk-length'))
-
-        b25 = block(25, spend=out7)
-        yield rejected()
-
-        # Create blocks with a coinbase input script size out of range
-        #     genesis -> b1 (0) -> b2 (1) -> b5 (2) -> b6  (3)
-        #                                          \-> b12 (3) -> b13 (4) -> b15 (5) -> b23 (6) -> b30 (7)
-        #                                                                           \-> ... (6) -> ... (7)
-        #                      \-> b3 (1) -> b4 (2)
-        tip(15)
-        b26 = block(26, spend=out6)
-        b26.vtx[0].vin[0].scriptSig = chr(0)
-        b26.vtx[0].rehash()
-        # update_block causes the merkle root to get updated, even with no new
-        # transactions, and updates the required state.
-        b26 = update_block(26, [])
-        yield rejected(RejectResult(16, 'bad-cb-length'))
-
-        # Extend the b26 chain to make sure bitcoind isn't accepting b26
-        b27 = block(27, spend=out7)
-        yield rejected()
-
-        # Now try a too-large-coinbase script
-        tip(15)
-        b28 = block(28, spend=out6)
-        b28.vtx[0].vin[0].scriptSig = chr(0)*101
-        b28.vtx[0].rehash()
-        b28 = update_block(28, [])
-        yield rejected(RejectResult(16, 'bad-cb-length'))
-
-        # Extend the b28 chain to make sure bitcoind isn't accepted b28
-        b29 = block(29, spend=out7)
-        # TODO: Should get a reject message back with "bad-prevblk", except
-        # there's a bug that prevents this from being detected.  Just note
-        # failure for now, and add the reject result later.
-        yield rejected()
-
-        # b30 has a max-sized coinbase scriptSig.
-        tip(23)
-        b30 = block(30)
-        b30.vtx[0].vin[0].scriptSig = chr(0)*100
-        b30.vtx[0].rehash()
-        b30 = update_block(30, [])
-        yield accepted()
 
 
 if __name__ == '__main__':

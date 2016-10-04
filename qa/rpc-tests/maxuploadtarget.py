@@ -80,12 +80,6 @@ class TestNode(NodeConnCB):
         return success
 
 class MaxUploadTest(BitcoinTestFramework):
-<<<<<<< HEAD
-    def __init__(self):
-        self.utxo = []
-        self.txouts = gen_return_txouts()
-=======
->>>>>>> official/0.13
  
     def add_options(self, parser):
         parser.add_option("--testbinary", dest="testbinary",

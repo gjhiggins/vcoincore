@@ -284,11 +284,7 @@ UniValue getaddednodeinfo(const UniValue& params, bool fHelp)
             "    \"connected\" : true|false,          (boolean) If connected\n"
             "    \"addresses\" : [                    (list of objects) Only when connected = true\n"
             "       {\n"
-<<<<<<< HEAD:src/rpcnet.cpp
-            "         \"address\" : \"192.168.0.201:5530\",  (string) The VCoin server host and port\n"
-=======
-            "         \"address\" : \"192.168.0.201:8333\",  (string) The bitcoin server IP and port we're connected to\n"
->>>>>>> official/0.13:src/rpc/net.cpp
+            "         \"address\" : \"192.168.0.201:5530\",  (string) The V Core server IP and port we're connected to\n"
             "         \"connected\" : \"outbound\"           (string) connection, inbound or outbound\n"
             "       }\n"
             "     ]\n"

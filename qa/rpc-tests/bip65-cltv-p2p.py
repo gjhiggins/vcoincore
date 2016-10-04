@@ -9,12 +9,7 @@ from test_framework.mininode import CTransaction, NetworkThread
 from test_framework.blocktools import create_coinbase, create_block
 from test_framework.comptool import TestInstance, TestManager
 from test_framework.script import CScript, OP_1NEGATE, OP_CHECKLOCKTIMEVERIFY, OP_DROP
-<<<<<<< HEAD
-from binascii import unhexlify
-import cStringIO
-=======
 from io import BytesIO
->>>>>>> official/0.13
 import time
 
 def cltv_invalidate(tx):
