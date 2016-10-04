@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-# Copyright (c) 2014-2015 The Bitcoin Core developers
-=======
 #!/usr/bin/env python3
 # Copyright (c) 2014-2016 The Bitcoin Core developers
->>>>>>> official/0.13
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -163,13 +159,8 @@ def initialize_datadir(dirname, n):
     rpc_u, rpc_p = rpc_auth_pair(n)
     with open(os.path.join(datadir, "bitcoin.conf"), 'w') as f:
         f.write("regtest=1\n")
-<<<<<<< HEAD
-        f.write("rpcuser=rt\n")
-        f.write("rpcpassword=rt\n")
-=======
         f.write("rpcuser=" + rpc_u + "\n")
         f.write("rpcpassword=" + rpc_p + "\n")
->>>>>>> official/0.13
         f.write("port="+str(p2p_port(n))+"\n")
         f.write("rpcport="+str(rpc_port(n))+"\n")
         f.write("listenonion=0\n")
@@ -321,12 +312,7 @@ def start_node(i, dirname, extra_args=None, rpchost=None, timewait=None, binary=
     datadir = os.path.join(dirname, "node"+str(i))
     if binary is None:
         binary = os.getenv("BITCOIND", "bitcoind")
-<<<<<<< HEAD
-    # RPC tests still depend on free transactions
-    args = [ binary, "-datadir="+datadir, "-server", "-keypool=1", "-discover=0", "-rest", "-blockprioritysize=50000" ]
-=======
     args = [ binary, "-datadir="+datadir, "-server", "-keypool=1", "-discover=0", "-rest", "-mocktime="+str(get_mocktime()) ]
->>>>>>> official/0.13
     if extra_args is not None: args.extend(extra_args)
     bitcoind_processes[i] = subprocess.Popen(args)
     if os.getenv("PYTHON_DEBUG", ""):
@@ -539,11 +525,7 @@ def assert_is_hex_string(string):
             "Couldn't interpret %r as hexadecimal; raised: %s" % (string, e))
 
 def assert_is_hash_string(string, length=64):
-<<<<<<< HEAD
-    if not isinstance(string, basestring):
-=======
     if not isinstance(string, str):
->>>>>>> official/0.13
         raise AssertionError("Expected a string, got type %r" % type(string))
     elif length and len(string) != length:
         raise AssertionError(
@@ -552,11 +534,6 @@ def assert_is_hash_string(string, length=64):
         raise AssertionError(
             "String %r contains invalid characters for a hash." % string)
 
-<<<<<<< HEAD
-def satoshi_round(amount):
-    return  Decimal(amount).quantize(Decimal('0.00000001'), rounding=ROUND_DOWN)
-
-=======
 def assert_array_result(object_array, to_match, expected, should_not_find = False):
     """
         Pass in array of JSON objects, a dictionary with key/value pairs
@@ -591,7 +568,6 @@ def satoshi_round(amount):
 
 # Helper to create at least "count" utxos
 # Pass in a fee that is sufficient for relay and mining new transactions.
->>>>>>> official/0.13
 def create_confirmed_utxos(fee, node, count):
     node.generate(int(0.5*count)+101)
     utxos = node.listunspent()
@@ -600,11 +576,7 @@ def create_confirmed_utxos(fee, node, count):
     addr2 = node.getnewaddress()
     if iterations <= 0:
         return utxos
-<<<<<<< HEAD
-    for i in xrange(iterations):
-=======
     for i in range(iterations):
->>>>>>> official/0.13
         t = utxos.pop()
         inputs = []
         inputs.append({ "txid" : t["txid"], "vout" : t["vout"]})
@@ -623,29 +595,18 @@ def create_confirmed_utxos(fee, node, count):
     assert(len(utxos) >= count)
     return utxos
 
-<<<<<<< HEAD
-=======
 # Create large OP_RETURN txouts that can be appended to a transaction
 # to make it large (helper for constructing large transactions).
->>>>>>> official/0.13
 def gen_return_txouts():
     # Some pre-processing to create a bunch of OP_RETURN txouts to insert into transactions we create
     # So we have big transactions (and therefore can't fit very many into each block)
     # create one script_pubkey
     script_pubkey = "6a4d0200" #OP_RETURN OP_PUSH2 512 bytes
-<<<<<<< HEAD
-    for i in xrange (512):
-        script_pubkey = script_pubkey + "01"
-    # concatenate 128 txouts of above script_pubkey which we'll insert before the txout for change
-    txouts = "81"
-    for k in xrange(128):
-=======
     for i in range (512):
         script_pubkey = script_pubkey + "01"
     # concatenate 128 txouts of above script_pubkey which we'll insert before the txout for change
     txouts = "81"
     for k in range(128):
->>>>>>> official/0.13
         # add txout value
         txouts = txouts + "0000000000000000"
         # add length of script_pubkey
@@ -654,12 +615,6 @@ def gen_return_txouts():
         txouts = txouts + script_pubkey
     return txouts
 
-<<<<<<< HEAD
-def create_lots_of_big_transactions(node, txouts, utxos, fee):
-    addr = node.getnewaddress()
-    txids = []
-    for i in xrange(len(utxos)):
-=======
 def create_tx(node, coinbase, to_address, amount):
     inputs = [{ "txid" : coinbase, "vout" : 0}]
     outputs = { to_address : amount }
@@ -674,7 +629,6 @@ def create_lots_of_big_transactions(node, txouts, utxos, fee):
     addr = node.getnewaddress()
     txids = []
     for i in range(len(utxos)):
->>>>>>> official/0.13
         t = utxos.pop()
         inputs = []
         inputs.append({ "txid" : t["txid"], "vout" : t["vout"]})
@@ -689,10 +643,7 @@ def create_lots_of_big_transactions(node, txouts, utxos, fee):
         txid = node.sendrawtransaction(signresult["hex"], True)
         txids.append(txid)
     return txids
-<<<<<<< HEAD
-=======
 
 def get_bip9_status(node, key):
     info = node.getblockchaininfo()
     return info['bip9_softforks'][key]
->>>>>>> official/0.13

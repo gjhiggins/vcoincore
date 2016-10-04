@@ -49,13 +49,7 @@ def make_utxo(node, amount, confirmed=True, scriptPubKey=CScript([1])):
     tx2.vout = [CTxOut(amount, scriptPubKey)]
     tx2.rehash()
 
-<<<<<<< HEAD
-    binascii.hexlify(tx2.serialize()).decode('utf-8')
-
-    signed_tx = node.signrawtransaction(binascii.hexlify(tx2.serialize()).decode('utf-8'))
-=======
     signed_tx = node.signrawtransaction(txToHex(tx2))
->>>>>>> official/0.13
 
     txid = node.sendrawtransaction(signed_tx['hex'], True)
 
@@ -117,17 +111,10 @@ class ReplaceByFeeTest(BitcoinTestFramework):
         print("Running test opt-in...")
         self.test_opt_in()
 
-<<<<<<< HEAD
-        print "Running test prioritised transactions..."
-        self.test_prioritised_transactions()
-
-        print "Passed\n"
-=======
         print("Running test prioritised transactions...")
         self.test_prioritised_transactions()
 
         print("Passed\n")
->>>>>>> official/0.13
 
     def test_simple_doublespend(self):
         """Simple doublespend"""
@@ -537,11 +524,7 @@ class ReplaceByFeeTest(BitcoinTestFramework):
         # correctly used by replacement logic
 
         # 1. Check that feeperkb uses modified fees
-<<<<<<< HEAD
-        tx0_outpoint = make_utxo(self.nodes[0], 1.1*COIN)
-=======
         tx0_outpoint = make_utxo(self.nodes[0], int(1.1*COIN))
->>>>>>> official/0.13
 
         tx1a = CTransaction()
         tx1a.vin = [CTxIn(tx0_outpoint, nSequence=0)]
@@ -552,11 +535,7 @@ class ReplaceByFeeTest(BitcoinTestFramework):
         # Higher fee, but the actual fee per KB is much lower.
         tx1b = CTransaction()
         tx1b.vin = [CTxIn(tx0_outpoint, nSequence=0)]
-<<<<<<< HEAD
-        tx1b.vout = [CTxOut(0.001*COIN, CScript([b'a'*740000]))]
-=======
         tx1b.vout = [CTxOut(int(0.001*COIN), CScript([b'a'*740000]))]
->>>>>>> official/0.13
         tx1b_hex = txToHex(tx1b)
 
         # Verify tx1b cannot replace tx1a.
@@ -576,11 +555,7 @@ class ReplaceByFeeTest(BitcoinTestFramework):
         assert(tx1b_txid in self.nodes[0].getrawmempool())
 
         # 2. Check that absolute fee checks use modified fee.
-<<<<<<< HEAD
-        tx1_outpoint = make_utxo(self.nodes[0], 1.1*COIN)
-=======
         tx1_outpoint = make_utxo(self.nodes[0], int(1.1*COIN))
->>>>>>> official/0.13
 
         tx2a = CTransaction()
         tx2a.vin = [CTxIn(tx1_outpoint, nSequence=0)]
@@ -591,11 +566,7 @@ class ReplaceByFeeTest(BitcoinTestFramework):
         # Lower fee, but we'll prioritise it
         tx2b = CTransaction()
         tx2b.vin = [CTxIn(tx1_outpoint, nSequence=0)]
-<<<<<<< HEAD
-        tx2b.vout = [CTxOut(1.01*COIN, CScript([b'a']))]
-=======
         tx2b.vout = [CTxOut(int(1.01*COIN), CScript([b'a']))]
->>>>>>> official/0.13
         tx2b.rehash()
         tx2b_hex = txToHex(tx2b)
 

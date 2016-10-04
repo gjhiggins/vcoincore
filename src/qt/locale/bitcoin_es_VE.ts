@@ -41,72 +41,6 @@
         <source>&amp;Delete</source>
         <translation>&amp;Borrar</translation>
     </message>
-<<<<<<< HEAD
-    <message>
-        <source>Choose the address to send coins to</source>
-        <translation>Elige la dirección para enviar monedas</translation>
-    </message>
-    <message>
-        <source>Choose the address to receive coins with</source>
-        <translation>Elige la dirección para recibir monedas</translation>
-    </message>
-    <message>
-        <source>Sending addresses</source>
-        <translation>Envío de direcciones</translation>
-    </message>
-    <message>
-        <source>Receiving addresses</source>
-        <translation>Recepción de direcciones</translation>
-    </message>
-    <message>
-        <source>These are your Bitcoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Estas son tus direcciones Bitcoin para realizar pagos. Siempre checa el monto y la dirección de recepción antes de enviar monedas.</translation>
-    </message>
-    <message>
-        <source>These are your Bitcoin addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Estas son tus direcciones Bitcoin para recibir pagos. Es recomendable usar una nueva dirección para cada transacción.</translation>
-    </message>
-    <message>
-        <source>Copy &amp;Label</source>
-        <translation>Copiar &amp;Etiqueta</translation>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
-        <translation>&amp;Editar</translation>
-    </message>
-    <message>
-        <source>Export Address List</source>
-        <translation>Exportar lista de direcciones</translation>
-    </message>
-    <message>
-        <source>Comma separated file (*.csv)</source>
-        <translation>Archivo separado por comas (*.csv)</translation>
-    </message>
-    <message>
-        <source>Exporting Failed</source>
-        <translation>Exportación fallida</translation>
-    </message>
-    <message>
-        <source>There was an error trying to save the address list to %1. Please try again.</source>
-        <translation>Hubo un error intentando guardar la lista de direcciones al %1. Por favor intente nuevamente.</translation>
-    </message>
-</context>
-<context>
-    <name>AddressTableModel</name>
-    <message>
-        <source>Label</source>
-        <translation>Etiqueta</translation>
-    </message>
-    <message>
-        <source>Address</source>
-        <translation>Dirección</translation>
-    </message>
-    <message>
-        <source>(no label)</source>
-        <translation>(sin etiqueta)</translation>
-    </message>
-=======
->>>>>>> official/0.13
 </context>
 <context>
     <name>AskPassphraseDialog</name>
@@ -165,17 +99,8 @@
         <translation>Quitar aplicación</translation>
     </message>
     <message>
-<<<<<<< HEAD
-        <source>&amp;Receiving addresses...</source>
-        <translation>Recepción de direcciones</translation>
-    </message>
-    <message>
-        <source>Bitcoin Core client</source>
-        <translation>Cliente Bitcoin Core</translation>
-=======
         <source>&amp;Options...</source>
         <translation>&amp;Opciones...</translation>
->>>>>>> official/0.13
     </message>
     <message>
         <source>&amp;Receiving addresses...</source>
@@ -244,14 +169,6 @@
     <message>
         <source>&amp;Settings</source>
         <translation>&amp;Configuración</translation>
-    </message>
-    <message>
-        <source>&amp;Command-line options</source>
-        <translation>Opciones de línea de comandos</translation>
-    </message>
-    <message>
-        <source>&amp;About Bitcoin Core</source>
-        <translation>Acerca de Bitcoin Core</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -503,24 +420,18 @@
         <translation>&amp;Main</translation>
     </message>
     <message>
-<<<<<<< HEAD
-=======
         <source>&amp;Network</source>
         <translation>&amp;Red</translation>
     </message>
     <message>
->>>>>>> official/0.13
         <source>W&amp;allet</source>
         <translation>Billetera</translation>
     </message>
     <message>
-<<<<<<< HEAD
-=======
         <source>Expert</source>
         <translation>Experto</translation>
     </message>
     <message>
->>>>>>> official/0.13
         <source>none</source>
         <translation>ninguno</translation>
     </message>
@@ -548,45 +459,9 @@
     </context>
 <context>
     <name>RPCConsole</name>
-<<<<<<< HEAD
     <message>
         <source>&amp;Information</source>
         <translation>Información</translation>
-    </message>
-    </context>
-<context>
-    <name>ReceiveCoinsDialog</name>
-    <message>
-        <source>&amp;Amount:</source>
-        <translation>Monto:</translation>
-    </message>
-    <message>
-        <source>&amp;Label:</source>
-        <translation>&amp;Etiqueta:</translation>
-    </message>
-    <message>
-        <source>Copy label</source>
-        <translation>Copiar etiqueta</translation>
-    </message>
-    <message>
-        <source>Copy amount</source>
-        <translation>Copiar monto</translation>
-    </message>
-</context>
-<context>
-    <name>ReceiveRequestDialog</name>
-    <message>
-        <source>Copy &amp;Address</source>
-        <translation>&amp;Copiar Dirección</translation>
-    </message>
-    <message>
-        <source>Address</source>
-        <translation>Dirección</translation>
-=======
-    <message>
-        <source>&amp;Information</source>
-        <translation>Información</translation>
->>>>>>> official/0.13
     </message>
     <message>
         <source>In:</source>
@@ -662,20 +537,6 @@
     </message>
     </context>
 <context>
-<<<<<<< HEAD
-    <name>SendCoinsEntry</name>
-    <message>
-        <source>A&amp;mount:</source>
-        <translation>Monto:</translation>
-    </message>
-    <message>
-        <source>&amp;Label:</source>
-        <translation>&amp;Etiqueta:</translation>
-    </message>
-    </context>
-<context>
-=======
->>>>>>> official/0.13
     <name>ShutdownWindow</name>
     </context>
 <context>
@@ -688,66 +549,12 @@
     <name>TrafficGraphWidget</name>
     </context>
 <context>
-<<<<<<< HEAD
-    <name>TransactionDesc</name>
-    <message>
-        <source>Date</source>
-        <translation>Fecha</translation>
-    </message>
-    <message>
-        <source>Transaction</source>
-        <translation>Transacción</translation>
-    </message>
-    <message>
-        <source>Amount</source>
-        <translation>Monto</translation>
-    </message>
-    </context>
-<context>
-=======
->>>>>>> official/0.13
     <name>TransactionDescDialog</name>
     </context>
 <context>
     <name>UnitDisplayStatusBarControl</name>
     </context>
 <context>
-<<<<<<< HEAD
-    <name>WalletFrame</name>
-    </context>
-<context>
-    <name>WalletModel</name>
-    </context>
-<context>
-    <name>WalletView</name>
-    <message>
-        <source>&amp;Export</source>
-        <translation>&amp;Exportar</translation>
-    </message>
-    <message>
-        <source>Export the data in the current tab to a file</source>
-        <translation>Exportar los datos en la pestaña actual a un archivo</translation>
-    </message>
-    <message>
-        <source>Backup Failed</source>
-        <translation>Copia de seguridad fallida</translation>
-    </message>
-    <message>
-        <source>There was an error trying to save the wallet data to %1.</source>
-        <translation>Hubo un error intentando guardar los datos de la billetera al %1</translation>
-    </message>
-    <message>
-        <source>The wallet data was successfully saved to %1.</source>
-        <translation>Los datos de la billetera fueron guardados exitosamente al %1</translation>
-    </message>
-    <message>
-        <source>Backup Successful</source>
-        <translation>Copia de seguridad completada</translation>
-    </message>
-</context>
-<context>
-=======
->>>>>>> official/0.13
     <name>bitcoin-core</name>
     <message>
         <source>Options:</source>

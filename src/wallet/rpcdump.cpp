@@ -81,10 +81,10 @@ UniValue importprivkey(const UniValue& params, bool fHelp)
     
     if (fHelp || params.size() < 1 || params.size() > 3)
         throw runtime_error(
-            "importprivkey \"vcoinprivkey\" ( \"label\" rescan )\n"
+            "importprivkey \"vcoreprivkey\" ( \"label\" rescan )\n"
             "\nAdds a private key (as returned by dumpprivkey) to your wallet.\n"
             "\nArguments:\n"
-            "1. \"vcoinprivkey\"   (string, required) The private key (see dumpprivkey)\n"
+            "1. \"vcoreprivkey\"   (string, required) The private key (see dumpprivkey)\n"
             "2. \"label\"            (string, optional, default=\"\") An optional label\n"
             "3. rescan               (boolean, optional, default=true) Rescan the wallet for transactions\n"
             "\nNote: This call can take minutes to complete if rescan is true.\n"
@@ -523,11 +523,11 @@ UniValue dumpprivkey(const UniValue& params, bool fHelp)
     
     if (fHelp || params.size() != 1)
         throw runtime_error(
-            "dumpprivkey \"vcoinaddress\"\n"
-            "\nReveals the private key corresponding to 'vcoinaddress'.\n"
+            "dumpprivkey \"vcoreaddress\"\n"
+            "\nReveals the private key corresponding to 'vcoreaddress'.\n"
             "Then the importprivkey can be used with this output\n"
             "\nArguments:\n"
-            "1. \"vcoinaddress\"   (string, required) The vcoin address for the private key\n"
+            "1. \"vcoreaddress\"   (string, required) The V Core address for the private key\n"
             "\nResult:\n"
             "\"key\"                (string) The private key\n"
             "\nExamples:\n"
@@ -543,7 +543,7 @@ UniValue dumpprivkey(const UniValue& params, bool fHelp)
     string strAddress = params[0].get_str();
     CBitcoinAddress address;
     if (!address.SetString(strAddress))
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid VCoin address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid V Core address");
     CKeyID keyID;
     if (!address.GetKeyID(keyID))
         throw JSONRPCError(RPC_TYPE_ERROR, "Address does not refer to a key");
@@ -593,11 +593,7 @@ UniValue dumpwallet(const UniValue& params, bool fHelp)
     std::sort(vKeyBirth.begin(), vKeyBirth.end());
 
     // produce output
-<<<<<<< HEAD
-    file << strprintf("# Wallet dump created by VCoin %s (%s)\n", CLIENT_BUILD, CLIENT_DATE);
-=======
-    file << strprintf("# Wallet dump created by Bitcoin %s\n", CLIENT_BUILD);
->>>>>>> official/0.13
+    file << strprintf("# Wallet dump created by V Core %s\n", CLIENT_BUILD);
     file << strprintf("# * Created on %s\n", EncodeDumpTime(GetTime()));
     file << strprintf("# * Best block at time of backup was %i (%s),\n", chainActive.Height(), chainActive.Tip()->GetBlockHash().ToString());
     file << strprintf("#   mined on %s\n", EncodeDumpTime(chainActive.Tip()->GetBlockTime()));

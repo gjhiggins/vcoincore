@@ -11,11 +11,7 @@
     </message>
     <message>
         <source>&amp;New</source>
-<<<<<<< HEAD
-        <translation>&amp;Nou</translation>
-=======
         <translation>Nou</translation>
->>>>>>> official/0.13
     </message>
     <message>
         <source>Copy the currently selected address to the system clipboard</source>
@@ -23,23 +19,11 @@
     </message>
     <message>
         <source>&amp;Copy</source>
-<<<<<<< HEAD
-        <translation>&amp;Copiază</translation>
-    </message>
-    <message>
-        <source>C&amp;lose</source>
-        <translation>Î&amp;nchide</translation>
-    </message>
-    <message>
-        <source>&amp;Copy Address</source>
-        <translation>&amp;Copiază Adresa</translation>
-=======
         <translation>Copiază</translation>
     </message>
     <message>
         <source>C&amp;lose</source>
         <translation>Închide</translation>
->>>>>>> official/0.13
     </message>
     <message>
         <source>Delete the currently selected address from the list</source>
@@ -51,33 +35,6 @@
     </message>
     <message>
         <source>&amp;Export</source>
-<<<<<<< HEAD
-        <translation>&amp;Exportă</translation>
-    </message>
-    <message>
-        <source>Choose the address to send coins to</source>
-        <translation>Indică adresa de expediere a monedelor</translation>
-    </message>
-    <message>
-        <source>Choose the address to receive coins with</source>
-        <translation>Indică adresa de a primi monedele</translation>
-    </message>
-    </context>
-<context>
-    <name>AddressTableModel</name>
-    </context>
-<context>
-    <name>AskPassphraseDialog</name>
-    </context>
-<context>
-    <name>BanTableModel</name>
-    </context>
-<context>
-    <name>BitcoinGUI</name>
-    </context>
-<context>
-    <name>ClientModel</name>
-=======
         <translation>Exportă</translation>
     </message>
     <message>
@@ -121,7 +78,6 @@
         <source>&amp;Options...</source>
         <translation>&amp;Opțiuni...</translation>
     </message>
->>>>>>> official/0.13
     </context>
 <context>
     <name>CoinControlDialog</name>
@@ -148,24 +104,12 @@
     <name>OverviewPage</name>
     </context>
 <context>
-<<<<<<< HEAD
-    <name>PaymentServer</name>
-    </context>
-<context>
-=======
->>>>>>> official/0.13
     <name>PeerTableModel</name>
     </context>
 <context>
     <name>QObject</name>
     </context>
 <context>
-<<<<<<< HEAD
-    <name>QRImageWidget</name>
-    </context>
-<context>
-=======
->>>>>>> official/0.13
     <name>RPCConsole</name>
     </context>
 <context>
@@ -175,12 +119,6 @@
     <name>ReceiveRequestDialog</name>
     </context>
 <context>
-<<<<<<< HEAD
-    <name>RecentRequestsTableModel</name>
-    </context>
-<context>
-=======
->>>>>>> official/0.13
     <name>SendCoinsDialog</name>
     </context>
 <context>
@@ -199,47 +137,12 @@
     <name>TrafficGraphWidget</name>
     </context>
 <context>
-<<<<<<< HEAD
-    <name>TransactionDesc</name>
-    </context>
-<context>
-    <name>TransactionDescDialog</name>
-    </context>
-<context>
-    <name>TransactionTableModel</name>
-    </context>
-<context>
-    <name>TransactionView</name>
-    </context>
-<context>
-    <name>UnitDisplayStatusBarControl</name>
-    </context>
-<context>
-    <name>WalletFrame</name>
-    </context>
-<context>
-    <name>WalletModel</name>
-    </context>
-<context>
-    <name>WalletView</name>
-    <message>
-        <source>&amp;Export</source>
-        <translation>&amp;Exportă</translation>
-    </message>
-    <message>
-        <source>Export the data in the current tab to a file</source>
-        <translation>Exportă datele din tabul curent in fisier</translation>
-    </message>
-    </context>
-<context>
-=======
     <name>TransactionDescDialog</name>
     </context>
 <context>
     <name>UnitDisplayStatusBarControl</name>
     </context>
 <context>
->>>>>>> official/0.13
     <name>bitcoin-core</name>
     </context>
 </TS>

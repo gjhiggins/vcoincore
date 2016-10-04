@@ -220,11 +220,7 @@ AC_DEFUN([BITCOIN_QT_CONFIGURE],[
 
 
   dnl enable qt support
-<<<<<<< HEAD
-  AC_MSG_CHECKING(whether to build VCoin Core GUI)
-=======
   AC_MSG_CHECKING(whether to build ]AC_PACKAGE_NAME[ GUI)
->>>>>>> official/0.13
   BITCOIN_QT_CHECK([
     bitcoin_enable_qt=yes
     bitcoin_enable_qt_test=yes

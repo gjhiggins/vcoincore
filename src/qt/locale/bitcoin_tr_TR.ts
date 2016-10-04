@@ -54,12 +54,6 @@
         <source>&amp;Receiving addresses...</source>
         <translation>Alış adresleri</translation>
     </message>
-<<<<<<< HEAD
-    </context>
-<context>
-    <name>ClientModel</name>
-=======
->>>>>>> official/0.13
     </context>
 <context>
     <name>CoinControlDialog</name>
@@ -74,11 +68,7 @@
         <source>&amp;Address</source>
         <translation>Adres</translation>
     </message>
-<<<<<<< HEAD
-    </context>
-=======
 </context>
->>>>>>> official/0.13
 <context>
     <name>FreespaceChecker</name>
     </context>
@@ -114,28 +104,6 @@
     <message>
         <source>Copy &amp;Address</source>
         <translation>&amp;Adresi Kopyala</translation>
-<<<<<<< HEAD
-    </message>
-    <message>
-        <source>Address</source>
-        <translation>Adres</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation>Etiket</translation>
-    </message>
-    </context>
-<context>
-    <name>RecentRequestsTableModel</name>
-    <message>
-        <source>Label</source>
-        <translation>Etiket</translation>
-    </message>
-    <message>
-        <source>(no label)</source>
-        <translation>(etiket yok)</translation>
-=======
->>>>>>> official/0.13
     </message>
     </context>
 <context>

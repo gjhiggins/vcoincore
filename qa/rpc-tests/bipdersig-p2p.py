@@ -9,12 +9,7 @@ from test_framework.mininode import CTransaction, NetworkThread
 from test_framework.blocktools import create_coinbase, create_block
 from test_framework.comptool import TestInstance, TestManager
 from test_framework.script import CScript
-<<<<<<< HEAD
-from binascii import unhexlify
-import cStringIO
-=======
 from io import BytesIO
->>>>>>> official/0.13
 import time
 
 # A canonical signature consists of: 

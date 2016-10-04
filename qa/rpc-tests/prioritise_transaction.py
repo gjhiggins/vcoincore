@@ -14,19 +14,11 @@ from test_framework.mininode import COIN, MAX_BLOCK_SIZE
 class PrioritiseTransactionTest(BitcoinTestFramework):
 
     def __init__(self):
-<<<<<<< HEAD
-        self.txouts = gen_return_txouts()
-
-    def setup_chain(self):
-        print("Initializing test directory "+self.options.tmpdir)
-        initialize_chain_clean(self.options.tmpdir, 1)
-=======
         super().__init__()
         self.setup_clean_chain = True
         self.num_nodes = 1
 
         self.txouts = gen_return_txouts()
->>>>>>> official/0.13
 
     def setup_network(self):
         self.nodes = []
@@ -36,12 +28,8 @@ class PrioritiseTransactionTest(BitcoinTestFramework):
         self.relayfee = self.nodes[0].getnetworkinfo()['relayfee']
 
     def run_test(self):
-<<<<<<< HEAD
-        utxos = create_confirmed_utxos(self.relayfee, self.nodes[0], 90)
-=======
         utxo_count = 90
         utxos = create_confirmed_utxos(self.relayfee, self.nodes[0], utxo_count)
->>>>>>> official/0.13
         base_fee = self.relayfee*100 # our transactions are smaller than 100kb
         txids = []
 
@@ -49,9 +37,6 @@ class PrioritiseTransactionTest(BitcoinTestFramework):
         range_size = utxo_count // 3
         for i in range(3):
             txids.append([])
-<<<<<<< HEAD
-            txids[i] = create_lots_of_big_transactions(self.nodes[0], self.txouts, utxos[30*i:30*i+30], (i+1)*base_fee)
-=======
             start_range = i * range_size
             end_range = start_range + range_size
             txids[i] = create_lots_of_big_transactions(self.nodes[0], self.txouts, utxos[start_range:end_range], (i+1)*base_fee)
@@ -66,7 +51,6 @@ class PrioritiseTransactionTest(BitcoinTestFramework):
                 assert(j in mempool)
                 sizes[i] += mempool[j]['size']
             assert(sizes[i] > MAX_BLOCK_SIZE) # Fail => raise utxo_count
->>>>>>> official/0.13
 
         # add a fee delta to something in the cheapest bucket and make sure it gets mined
         # also check that a different entry in the cheapest bucket is NOT mined (lower
@@ -151,11 +135,7 @@ class PrioritiseTransactionTest(BitcoinTestFramework):
         # accepted.
         self.nodes[0].prioritisetransaction(tx2_id, 0, int(self.relayfee*COIN))
 
-<<<<<<< HEAD
-        print "Assert that prioritised free transaction is accepted to mempool"
-=======
         print("Assert that prioritised free transaction is accepted to mempool")
->>>>>>> official/0.13
         assert_equal(self.nodes[0].sendrawtransaction(tx2_hex), tx2_id)
         assert(tx2_id in self.nodes[0].getrawmempool())
 

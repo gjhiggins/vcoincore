@@ -105,8 +105,6 @@ QFont fixedPitchFont()
 #endif
     return font;
 #endif
-<<<<<<< HEAD
-=======
 }
 
 // Just some dummy data to generate an convincing random-looking (but consistent) address
@@ -124,7 +122,6 @@ static std::string DummyAddress(const CChainParams &params)
         sourcedata[sourcedata.size()-1] += 1;
     }
     return "";
->>>>>>> official/0.13
 }
 
 void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent)
@@ -135,12 +132,8 @@ void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent)
 #if QT_VERSION >= 0x040700
     // We don't want translators to use own addresses in translations
     // and this is the only place, where this address is supplied.
-<<<<<<< HEAD
-    widget->setPlaceholderText(QObject::tr("Enter a VCoin address (e.g. %1)").arg("1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L"));
-=======
-    widget->setPlaceholderText(QObject::tr("Enter a Bitcoin address (e.g. %1)").arg(
+    widget->setPlaceholderText(QObject::tr("Enter a V Core address (e.g. %1)").arg(
         QString::fromStdString(DummyAddress(Params()))));
->>>>>>> official/0.13
 #endif
     widget->setValidator(new BitcoinAddressEntryValidator(parent));
     widget->setCheckValidator(new BitcoinAddressCheckValidator(parent));
@@ -158,7 +151,7 @@ void setupAmountWidget(QLineEdit *widget, QWidget *parent)
 bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
     // return if URI is not valid or is no bitcoin: URI
-    if(!uri.isValid() || uri.scheme() != QString("vcoin"))
+    if(!uri.isValid() || uri.scheme() != QString("bitcoin"))
         return false;
 
     SendCoinsRecipient rv;
@@ -218,13 +211,13 @@ bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 
 bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
 {
-    // Convert vcoin:// to vcoin:
+    // Convert vcore:// to vcore:
     //
-    //    Cannot handle this later, because vcoin:// will cause Qt to see the part after // as host,
+    //    Cannot handle this later, because bitcoin:// will cause Qt to see the part after // as host,
     //    which will lower-case it (and thus invalidate the address).
-    if(uri.startsWith("vcoin://", Qt::CaseInsensitive))
+    if(uri.startsWith("vcore://", Qt::CaseInsensitive))
     {
-        uri.replace(0, std::string("vcoin://").length(), "vcoin:");
+        uri.replace(0, std::string("vcore://").length(), "vcore:");
     }
     QUrl uriInstance(uri);
     return parseBitcoinURI(uriInstance, out);
@@ -232,7 +225,7 @@ bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
 
 QString formatBitcoinURI(const SendCoinsRecipient &info)
 {
-    QString ret = QString("vcoin:%1").arg(info.address);
+    QString ret = QString("vcore:%1").arg(info.address);
     int paramCount = 0;
 
     if (info.amount)
@@ -616,15 +609,15 @@ boost::filesystem::path static StartupShortcutPath()
 {
     std::string chain = ChainNameFromCommandLine();
     if (chain == CBaseChainParams::MAIN)
-        return GetSpecialFolderPath(CSIDL_STARTUP) / "VCoin.lnk";
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "V Core.lnk";
     if (chain == CBaseChainParams::TESTNET) // Remove this special case when CBaseChainParams::TESTNET = "testnet4"
-        return GetSpecialFolderPath(CSIDL_STARTUP) / "VCoin (testnet).lnk";
-    return GetSpecialFolderPath(CSIDL_STARTUP) / strprintf("VCoin (%s).lnk", chain);
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "V Core (testnet).lnk";
+    return GetSpecialFolderPath(CSIDL_STARTUP) / strprintf("V Core (%s).lnk", chain);
 }
 
 bool GetStartOnSystemStartup()
 {
-    // check for VCoin*.lnk
+    // check for VCore*.lnk
     return boost::filesystem::exists(StartupShortcutPath());
 }
 
@@ -716,8 +709,8 @@ boost::filesystem::path static GetAutostartFilePath()
 {
     std::string chain = ChainNameFromCommandLine();
     if (chain == CBaseChainParams::MAIN)
-        return GetAutostartDir() / "vcoin.desktop";
-    return GetAutostartDir() / strprintf("vcoin-%s.lnk", chain);
+        return GetAutostartDir() / "bitcoin.desktop";
+    return GetAutostartDir() / strprintf("bitcoin-%s.lnk", chain);
 }
 
 bool GetStartOnSystemStartup()
@@ -760,9 +753,9 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         optionFile << "[Desktop Entry]\n";
         optionFile << "Type=Application\n";
         if (chain == CBaseChainParams::MAIN)
-            optionFile << "Name=VCoin\n";
+            optionFile << "Name=V Core\n";
         else
-            optionFile << strprintf("Name=VCoin (%s)\n", chain);
+            optionFile << strprintf("Name=V Core (%s)\n", chain);
         optionFile << "Exec=" << pszExePath << strprintf(" -min -testnet=%d -regtest=%d\n", GetBoolArg("-testnet", false), GetBoolArg("-regtest", false));
         optionFile << "Terminal=false\n";
         optionFile << "Hidden=false\n";
@@ -934,12 +927,9 @@ QString formatServicesStr(quint64 mask)
             case NODE_BLOOM:
                 strList.append("BLOOM");
                 break;
-<<<<<<< HEAD
-=======
             case NODE_WITNESS:
                 strList.append("WITNESS");
                 break;
->>>>>>> official/0.13
             default:
                 strList.append(QString("%1[%2]").arg("UNKNOWN").arg(check));
             }

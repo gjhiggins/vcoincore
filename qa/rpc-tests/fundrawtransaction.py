@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-#!/usr/bin/env python2
-# Copyright (c) 2014-2015 The Bitcoin Core developers
-=======
 #!/usr/bin/env python3
 # Copyright (c) 2014-2016 The Bitcoin Core developers
->>>>>>> official/0.13
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -135,18 +130,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         #########################################################################
         # test a fundrawtransaction with a VIN greater than the required amount #
         #########################################################################
-<<<<<<< HEAD
-        utx = False
-        listunspent = self.nodes[2].listunspent()
-        for aUtx in listunspent:
-            if aUtx['amount'] == 5.0:
-                utx = aUtx
-                break
-
-        assert_equal(utx!=False, True)
-=======
         utx = get_unspent(self.nodes[2].listunspent(), 5)
->>>>>>> official/0.13
 
         inputs  = [ {'txid' : utx['txid'], 'vout' : utx['vout']}]
         outputs = { self.nodes[0].getnewaddress() : 1.0 }
@@ -167,18 +151,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         #####################################################################
         # test a fundrawtransaction with which will not get a change output #
         #####################################################################
-<<<<<<< HEAD
-        utx = False
-        listunspent = self.nodes[2].listunspent()
-        for aUtx in listunspent:
-            if aUtx['amount'] == 5.0:
-                utx = aUtx
-                break
-
-        assert_equal(utx!=False, True)
-=======
         utx = get_unspent(self.nodes[2].listunspent(), 5)
->>>>>>> official/0.13
 
         inputs  = [ {'txid' : utx['txid'], 'vout' : utx['vout']}]
         outputs = { self.nodes[0].getnewaddress() : Decimal(5.0) - fee - feeTolerance }
@@ -260,18 +233,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         #########################################################################
         # test a fundrawtransaction with a VIN smaller than the required amount #
         #########################################################################
-<<<<<<< HEAD
-        utx = False
-        listunspent = self.nodes[2].listunspent()
-        for aUtx in listunspent:
-            if aUtx['amount'] == 1.0:
-                utx = aUtx
-                break
-
-        assert_equal(utx!=False, True)
-=======
         utx = get_unspent(self.nodes[2].listunspent(), 1)
->>>>>>> official/0.13
 
         inputs  = [ {'txid' : utx['txid'], 'vout' : utx['vout']}]
         outputs = { self.nodes[0].getnewaddress() : 1.0 }
@@ -372,17 +334,9 @@ class RawTransactionsTest(BitcoinTestFramework):
 
         try:
             rawtxfund = self.nodes[2].fundrawtransaction(rawtx)
-<<<<<<< HEAD
-        except JSONRPCException,e:
-            errorString = e.error['message']
-
-        assert("Insufficient" in errorString)
-
-=======
             raise AssertionError("Spent more than available")
         except JSONRPCException as e:
             assert("Insufficient" in e.error['message'])
->>>>>>> official/0.13
 
 
         ############################################################
@@ -518,11 +472,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         stop_nodes(self.nodes)
         wait_bitcoinds()
 
-<<<<<<< HEAD
-        self.nodes = start_nodes(4, self.options.tmpdir)
-=======
         self.nodes = start_nodes(self.num_nodes, self.options.tmpdir)
->>>>>>> official/0.13
         # This test is not meant to test fee estimation and we'd like
         # to be sure all txs are sent at a consistent desired feerate
         for node in self.nodes:
@@ -537,15 +487,9 @@ class RawTransactionsTest(BitcoinTestFramework):
 
         try:
             self.nodes[1].sendtoaddress(self.nodes[0].getnewaddress(), 1.2)
-<<<<<<< HEAD
-        except:
-            error = True
-        assert(error)
-=======
             raise AssertionError("Wallet unlocked without passphrase")
         except JSONRPCException as e:
             assert('walletpassphrase' in e.error['message'])
->>>>>>> official/0.13
 
         oldBalance = self.nodes[0].getbalance()
 
@@ -577,10 +521,6 @@ class RawTransactionsTest(BitcoinTestFramework):
 
         for i in range(0,20):
             self.nodes[0].sendtoaddress(self.nodes[1].getnewaddress(), 0.01)
-<<<<<<< HEAD
-        self.sync_all()
-=======
->>>>>>> official/0.13
         self.nodes[0].generate(1)
         self.sync_all()
 
@@ -611,10 +551,6 @@ class RawTransactionsTest(BitcoinTestFramework):
 
         for i in range(0,20):
             self.nodes[0].sendtoaddress(self.nodes[1].getnewaddress(), 0.01)
-<<<<<<< HEAD
-        self.sync_all()
-=======
->>>>>>> official/0.13
         self.nodes[0].generate(1)
         self.sync_all()
 

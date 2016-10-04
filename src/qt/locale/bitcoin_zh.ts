@@ -73,10 +73,6 @@
         <translation>余额不足</translation>
     </message>
     <message>
-        <source>Insufficient funds!</source>
-        <translation>余额不足</translation>
-    </message>
-    <message>
         <source>Choose...</source>
         <translation>选择...</translation>
     </message>

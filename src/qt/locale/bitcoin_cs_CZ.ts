@@ -16,21 +16,6 @@
     <message>
         <source>Delete the currently selected address from the list</source>
         <translation>Odstraní aktuálně vybrané adresy ze seznamu</translation>
-<<<<<<< HEAD
-    </message>
-    <message>
-        <source>Export the data in the current tab to a file</source>
-        <translation>Exportovat aktuální pohled do souboru</translation>
-    </message>
-    <message>
-        <source>&amp;Export</source>
-        <translation>&amp;Exportovat</translation>
-    </message>
-    <message>
-        <source>&amp;Delete</source>
-        <translation>&amp;Odstranit</translation>
-=======
->>>>>>> official/0.13
     </message>
     <message>
         <source>Export the data in the current tab to a file</source>
@@ -236,81 +221,20 @@
     <message>
         <source>&amp;Label:</source>
         <translation>&amp;Popisek:</translation>
-<<<<<<< HEAD
     </message>
     <message>
         <source>&amp;Message:</source>
         <translation>Zpráva:</translation>
     </message>
-    <message>
-        <source>Copy label</source>
-        <translation>Kopírovat popis</translation>
-    </message>
     </context>
 <context>
     <name>ReceiveRequestDialog</name>
-    <message>
-        <source>Address</source>
-        <translation>Adresa</translation>
-    </message>
-    <message>
-        <source>Amount</source>
-        <translation>Množství</translation>
-=======
->>>>>>> official/0.13
-    </message>
-    <message>
-        <source>&amp;Message:</source>
-        <translation>Zpráva:</translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation>Zpráva</translation>
-    </message>
-    </context>
-<context>
-<<<<<<< HEAD
-    <name>RecentRequestsTableModel</name>
-    <message>
-        <source>Date</source>
-        <translation>Datum</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation>Popis</translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation>Zpráva</translation>
-    </message>
-    <message>
-        <source>Amount</source>
-        <translation>Množství</translation>
-    </message>
-    <message>
-        <source>(no label)</source>
-        <translation>(bez popisu)</translation>
-    </message>
-=======
-    <name>ReceiveRequestDialog</name>
->>>>>>> official/0.13
     </context>
 <context>
     <name>SendCoinsDialog</name>
     <message>
         <source>Amount:</source>
         <translation>Množství:</translation>
-<<<<<<< HEAD
-    </message>
-    <message>
-        <source>Balance:</source>
-        <translation>Zůstatek:</translation>
-    </message>
-    <message>
-        <source>The amount to pay must be larger than 0.</source>
-        <translation>Částka k zaplacení musí být větší než 0.</translation>
-=======
->>>>>>> official/0.13
     </message>
     <message>
         <source>Balance:</source>
@@ -345,40 +269,6 @@
     <name>TrafficGraphWidget</name>
     </context>
 <context>
-<<<<<<< HEAD
-    <name>TransactionDesc</name>
-    <message>
-        <source>%1/unconfirmed</source>
-        <translation>%1 potvrzeno</translation>
-    </message>
-    <message>
-        <source>%1 confirmations</source>
-        <translation>%1 potvrzení</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation>Stav</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation>Datum</translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation>Zpráva</translation>
-    </message>
-    <message>
-        <source>Transaction</source>
-        <translation>Transakce</translation>
-    </message>
-    <message>
-        <source>Amount</source>
-        <translation>Množství</translation>
-    </message>
-    </context>
-<context>
-=======
->>>>>>> official/0.13
     <name>TransactionDescDialog</name>
     <message>
         <source>This pane shows a detailed description of the transaction</source>
@@ -389,26 +279,6 @@
     <name>UnitDisplayStatusBarControl</name>
     </context>
 <context>
-<<<<<<< HEAD
-    <name>WalletFrame</name>
-    </context>
-<context>
-    <name>WalletModel</name>
-    </context>
-<context>
-    <name>WalletView</name>
-    <message>
-        <source>&amp;Export</source>
-        <translation>&amp;Exportovat</translation>
-    </message>
-    <message>
-        <source>Export the data in the current tab to a file</source>
-        <translation>Exportovat aktuální pohled do souboru</translation>
-    </message>
-    </context>
-<context>
-=======
->>>>>>> official/0.13
     <name>bitcoin-core</name>
     <message>
         <source>Options:</source>

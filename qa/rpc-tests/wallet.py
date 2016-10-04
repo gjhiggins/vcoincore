@@ -1,17 +1,8 @@
-<<<<<<< HEAD
-#!/usr/bin/env python2
-# Copyright (c) 2014-2015 The Bitcoin Core developers
-# Distributed under the MIT software license, see the accompanying
-# file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
-
-=======
 #!/usr/bin/env python3
 # Copyright (c) 2014-2016 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
->>>>>>> official/0.13
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
 
@@ -269,10 +260,6 @@ class WalletTest (BitcoinTestFramework):
         else:
             raise AssertionError("Must not parse invalid amounts")
 
-<<<<<<< HEAD
-        assert_equal("Invalid amount" in errorString, True)
-=======
->>>>>>> official/0.13
 
         try:
             self.nodes[0].generate("2")
@@ -302,37 +289,10 @@ class WalletTest (BitcoinTestFramework):
         priv_key = self.nodes[2].dumpprivkey(address_to_import)
         self.nodes[1].importprivkey(priv_key)
 
-<<<<<<< HEAD
-        assert_equal("not an integer" in errorString, True)
-
-        #check if wallet or blochchain maintenance changes the balance
-        self.sync_all()
-        self.nodes[0].generate(1)
-        self.sync_all()
-        balance_nodes = [self.nodes[i].getbalance() for i in range(3)]
-
-        maintenance = [
-            '-rescan',
-            '-reindex',
-            '-zapwallettxes=1',
-            '-zapwallettxes=2',
-            '-salvagewallet',
-        ]
-        for m in maintenance:
-            stop_nodes(self.nodes)
-            wait_bitcoinds()
-            self.nodes = start_nodes(3, self.options.tmpdir, [[m]] * 3)
-            connect_nodes_bi(self.nodes,0,1)
-            connect_nodes_bi(self.nodes,1,2)
-            connect_nodes_bi(self.nodes,0,2)
-            self.sync_all()
-            assert_equal(balance_nodes, [self.nodes[i].getbalance() for i in range(3)])
-=======
         # 6. Check that the unspents are now spendable on node1
         assert_array_result(self.nodes[1].listunspent(),
                            {"address": address_to_import},
                            {"spendable": True})
->>>>>>> official/0.13
 
         # Mine a block from node0 to an address from node1
         cbAddr = self.nodes[1].getnewaddress()

@@ -1,5 +1,5 @@
-Building VCoin
+Building V Core
 
-See doc/build-*.md for instructions on building vcoind,
+See doc/build-*.md for instructions on building vcored,
 the intended-for-services, no-graphical-interface, reference
-implementation of VCoin.
+implementation of V Core.

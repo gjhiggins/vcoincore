@@ -8,14 +8,10 @@ Before every release candidate:
 Before every minor and major release:
 
 * Update [bips.md](bips.md) to account for changes since the last release.
-<<<<<<< HEAD
-* Update hardcoded [seeds](/contrib/seeds)
-=======
 * Update version in sources (see below)
 * Write release notes (see below)
 
 Before every major release:
->>>>>>> official/0.13
 
 * Update hardcoded [seeds](/contrib/seeds/README.md), see [this pull request](https://github.com/bitcoin/bitcoin/pull/7415) for an example.
 
@@ -31,17 +27,7 @@ Check out the source code in the following directory hierarchy.
 
 ### Bitcoin maintainers/release engineers, update version in sources
 
-<<<<<<< HEAD
-	pushd ./bitcoin
-	contrib/verifysfbinaries/verify.sh
-	configure.ac
-	doc/README*
-	doc/Doxyfile
-	contrib/gitian-descriptors/*.yml
-	src/clientversion.h (change CLIENT_VERSION_IS_RELEASE to true)
-=======
 Update the following:
->>>>>>> official/0.13
 
 - `configure.ac`:
     - `_CLIENT_VERSION_MAJOR`
@@ -70,16 +56,7 @@ Generate list of authors:
 
 Tag version (or release candidate) in git
 
-<<<<<<< HEAD
-	pushd ./bitcoin
-	export SIGNER=(your Gitian key, ie bluematt, sipa, etc)
-	export VERSION=(new version, e.g. 0.8.0)
-	git fetch
-	git checkout v${VERSION}
-	popd
-=======
     git tag -s v(new version, e.g. 0.8.0)
->>>>>>> official/0.13
 
 ### Setup and perform Gitian builds
 
@@ -132,23 +109,6 @@ NOTE: Offline builds must use the --url flag to ensure Gitian fetches only from 
 
 The gbuild invocations below <b>DO NOT DO THIS</b> by default.
 
-<<<<<<< HEAD
-###Build and sign Bitcoin Core for Linux, Windows, and OS X:
-
-	./bin/gbuild --commit bitcoin=v${VERSION} ../bitcoin/contrib/gitian-descriptors/gitian-linux.yml
-	./bin/gsign --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../bitcoin/contrib/gitian-descriptors/gitian-linux.yml
-    mv build/out/bitcoin-*.tar.gz build/out/src/bitcoin-*.tar.gz ../
-
-	./bin/gbuild --commit bitcoin=v${VERSION} ../bitcoin/contrib/gitian-descriptors/gitian-win.yml
-	./bin/gsign --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../bitcoin/contrib/gitian-descriptors/gitian-win.yml
-    mv build/out/bitcoin-*-win-unsigned.tar.gz inputs/bitcoin-win-unsigned.tar.gz
-    mv build/out/bitcoin-*.zip build/out/bitcoin-*.exe ../
-
-	./bin/gbuild --commit bitcoin=v${VERSION} ../bitcoin/contrib/gitian-descriptors/gitian-osx.yml
-	./bin/gsign --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../bitcoin/contrib/gitian-descriptors/gitian-osx.yml
-    mv build/out/bitcoin-*-osx-unsigned.tar.gz inputs/bitcoin-osx-unsigned.tar.gz
-    mv build/out/bitcoin-*.tar.gz build/out/bitcoin-*.dmg ../
-=======
 ### Build and sign Bitcoin Core for Linux, Windows, and OS X:
 
     pushd ./gitian-builder
@@ -178,29 +138,11 @@ Build output expected:
 ### Verify other gitian builders signatures to your own. (Optional)
 
 Add other gitian builders keys to your gpg keyring
->>>>>>> official/0.13
 
     gpg --import bitcoin/contrib/gitian-keys/*.pgp
 
 Verify the signatures
 
-<<<<<<< HEAD
-###Verify other gitian builders signatures to your own. (Optional)
-
-  Add other gitian builders keys to your gpg keyring
-
-	gpg --import ../bitcoin/contrib/gitian-downloader/*.pgp
-
-  Verify the signatures
-
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../bitcoin/contrib/gitian-descriptors/gitian-linux.yml
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../bitcoin/contrib/gitian-descriptors/gitian-win.yml
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../bitcoin/contrib/gitian-descriptors/gitian-osx.yml
-
-	popd
-
-###Next steps:
-=======
     pushd ./gitian-builder
     ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../bitcoin/contrib/gitian-descriptors/gitian-linux.yml
     ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../bitcoin/contrib/gitian-descriptors/gitian-win.yml
@@ -208,7 +150,6 @@ Verify the signatures
     popd
 
 ### Next steps:
->>>>>>> official/0.13
 
 Commit your signature to gitian.sigs:
 
@@ -220,16 +161,10 @@ Commit your signature to gitian.sigs:
     git push  # Assuming you can push to the gitian.sigs tree
     popd
 
-<<<<<<< HEAD
-  Wait for Windows/OS X detached signatures:
-	Once the Windows/OS X builds each have 3 matching signatures, they will be signed with their respective release keys.
-	Detached signatures will then be committed to the [bitcoin-detached-sigs](https://github.com/bitcoin/bitcoin-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
-=======
 Wait for Windows/OS X detached signatures:
 
 - Once the Windows/OS X builds each have 3 matching signatures, they will be signed with their respective release keys.
 - Detached signatures will then be committed to the [bitcoin-detached-sigs](https://github.com/bitcoin-core/bitcoin-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
->>>>>>> official/0.13
 
 Create (and optionally verify) the signed OS X binary:
 

@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-#!/usr/bin/env python2
-# Copyright (c) 2014-2015 The Bitcoin Core developers
-=======
 #!/usr/bin/env python3
 # Copyright (c) 2014-2016 The Bitcoin Core developers
->>>>>>> official/0.13
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -80,18 +75,10 @@ for arg in sys.argv[1:]:
         opts.add(arg)
 
 #Set env vars
-<<<<<<< HEAD
-buildDir = BUILDDIR
-if "BITCOIND" not in os.environ:
-    os.environ["BITCOIND"] = buildDir + '/src/bitcoind' + EXEEXT
-if "BITCOINCLI" not in os.environ:
-    os.environ["BITCOINCLI"] = buildDir + '/src/bitcoin-cli' + EXEEXT
-=======
 if "BITCOIND" not in os.environ:
     os.environ["BITCOIND"] = BUILDDIR + '/src/bitcoind' + EXEEXT
 if "BITCOINCLI" not in os.environ:
     os.environ["BITCOINCLI"] = BUILDDIR + '/src/bitcoin-cli' + EXEEXT
->>>>>>> official/0.13
 
 if EXEEXT == ".exe" and "-win" not in opts:
     # https://github.com/bitcoin/bitcoin/commit/d52802551752140cf41f0d9a225a43e84404d3e9
@@ -150,8 +137,6 @@ testScripts = [
     'invalidblockrequest.py',
     'invalidtxrequest.py',
     'abandonconflict.py',
-<<<<<<< HEAD
-=======
     'p2p-versionbits-warning.py',
     'p2p-segwit.py',
     'segwit.py',
@@ -159,7 +144,6 @@ testScripts = [
     'signmessages.py',
     'p2p-compactblocks.py',
     'nulldummy.py',
->>>>>>> official/0.13
 ]
 if ENABLE_ZMQ:
     testScripts.append('zmq_test.py')

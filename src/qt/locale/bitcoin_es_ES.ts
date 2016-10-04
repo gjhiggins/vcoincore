@@ -164,11 +164,7 @@
         <source>&amp;Address</source>
         <translation>Dirección</translation>
     </message>
-<<<<<<< HEAD
-    </context>
-=======
 </context>
->>>>>>> official/0.13
 <context>
     <name>FreespaceChecker</name>
     </context>
@@ -204,28 +200,6 @@
     <message>
         <source>Copy &amp;Address</source>
         <translation>&amp;Copiar Direccón</translation>
-<<<<<<< HEAD
-    </message>
-    <message>
-        <source>Address</source>
-        <translation>Dirección</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation>Etiqueta</translation>
-    </message>
-    </context>
-<context>
-    <name>RecentRequestsTableModel</name>
-    <message>
-        <source>Label</source>
-        <translation>Etiqueta</translation>
-    </message>
-    <message>
-        <source>(no label)</source>
-        <translation>(sin etiqueta)</translation>
-=======
->>>>>>> official/0.13
     </message>
     </context>
 <context>

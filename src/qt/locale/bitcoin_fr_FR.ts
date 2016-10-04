@@ -882,29 +882,12 @@
         <translation>&amp;Pairs</translation>
     </message>
     <message>
-<<<<<<< HEAD
-        <source>&amp;Amount:</source>
-        <translation>Montant :</translation>
-    </message>
-    <message>
-        <source>&amp;Label:</source>
-        <translation>&amp;Étiquette :</translation>
-    </message>
-    <message>
-        <source>&amp;Message:</source>
-        <translation>Message :</translation>
-    </message>
-    <message>
-        <source>Copy label</source>
-        <translation>Copier l'étiquette</translation>
-=======
         <source>Banned peers</source>
         <translation>Pairs bannis</translation>
     </message>
     <message>
         <source>Whitelisted</source>
         <translation>Autorisé par la liste</translation>
->>>>>>> official/0.13
     </message>
     <message>
         <source>Direction</source>
@@ -955,17 +938,8 @@
         <translation>Attente du ping</translation>
     </message>
     <message>
-<<<<<<< HEAD
-        <source>Insufficient funds!</source>
-        <translation>Fonds insuffisants</translation>
-    </message>
-    <message>
-        <source>Amount:</source>
-        <translation>Montant :</translation>
-=======
         <source>&amp;Open</source>
         <translation>&amp;Ouvert</translation>
->>>>>>> official/0.13
     </message>
     <message>
         <source>&amp;Console</source>
@@ -1027,19 +1001,6 @@
         <source>%1 MB</source>
         <translation>%1 MO</translation>
     </message>
-<<<<<<< HEAD
-    <message>
-        <source>Pay To:</source>
-        <translation>Payer à :</translation>
-    </message>
-    </context>
-<context>
-    <name>ShutdownWindow</name>
-    </context>
-<context>
-    <name>SignVerifyMessageDialog</name>
-=======
->>>>>>> official/0.13
     <message>
         <source>%1 GB</source>
         <translation>%1 GO</translation>
@@ -1060,16 +1021,6 @@
         <source>No</source>
         <translation>Non</translation>
     </message>
-<<<<<<< HEAD
-    <message>
-        <source>Sign &amp;Message</source>
-        <translation>&amp;Signer le message</translation>
-    </message>
-    </context>
-<context>
-    <name>SplashScreen</name>
-=======
->>>>>>> official/0.13
     <message>
         <source>Unknown</source>
         <translation>Inconnu</translation>

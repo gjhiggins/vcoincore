@@ -97,11 +97,7 @@ def check_ELF_RELRO(executable):
         raise IOError('Error opening file')
     for line in stdout.split(b'\n'):
         tokens = line.split()
-<<<<<<< HEAD
-        if len(tokens)>1 and tokens[1] == '(BIND_NOW)' or (len(tokens)>2 and tokens[1] == '(FLAGS)' and 'BIND_NOW' in tokens[2]):
-=======
         if len(tokens)>1 and tokens[1] == b'(BIND_NOW)' or (len(tokens)>2 and tokens[1] == b'(FLAGS)' and b'BIND_NOW' in tokens[2]):
->>>>>>> official/0.13
             have_bindnow = True
     return have_gnu_relro and have_bindnow
 

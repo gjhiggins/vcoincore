@@ -174,17 +174,6 @@
     </context>
 <context>
     <name>HelpMessageDialog</name>
-<<<<<<< HEAD
-    <message>
-        <source>Bitcoin Core</source>
-        <translation>Биткойн ядро</translation>
-    </message>
-    <message>
-        <source>About Bitcoin Core</source>
-        <translation>За Биткойн ядрото</translation>
-    </message>
-=======
->>>>>>> official/0.13
     </context>
 <context>
     <name>Intro</name>

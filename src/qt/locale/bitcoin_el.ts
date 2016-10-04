@@ -56,22 +56,7 @@
         <source>&amp;Address</source>
         <translation>Διεύθυνση</translation>
     </message>
-<<<<<<< HEAD
-    </context>
-<context>
-    <name>EditAddressDialog</name>
-    <message>
-        <source>&amp;Label</source>
-        <translation>Ετικέτα</translation>
-    </message>
-    <message>
-        <source>&amp;Address</source>
-        <translation>Διεύθυνση</translation>
-    </message>
-    </context>
-=======
 </context>
->>>>>>> official/0.13
 <context>
     <name>FreespaceChecker</name>
     </context>
@@ -131,10 +116,6 @@
     </context>
 <context>
     <name>SendCoinsDialog</name>
-    <message>
-        <source>Insufficient funds!</source>
-        <translation>Κεφάλαια μη επαρκή</translation>
-    </message>
     <message>
         <source>Insufficient funds!</source>
         <translation>Κεφάλαια μη επαρκή</translation>
