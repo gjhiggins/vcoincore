@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2014 The Bitcoin Core developers
+// Copyright (c) 2011-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,9 +11,11 @@
 #include "core_io.h"
 #include "key.h"
 #include "keystore.h"
-#include "main.h"
+#include "main.h" // For CheckTransaction
+#include "policy/policy.h"
 #include "script/script.h"
 #include "script/script_error.h"
+#include "utilstrencodings.h"
 
 #include <map>
 #include <string>
@@ -24,7 +26,7 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/assign/list_of.hpp>
 
-#include "univalue/univalue.h"
+#include <univalue.h>
 
 using namespace std;
 
@@ -41,7 +43,8 @@ static std::map<string, unsigned int> mapFlagNames = boost::assign::map_list_of
     (string("MINIMALDATA"), (unsigned int)SCRIPT_VERIFY_MINIMALDATA)
     (string("NULLDUMMY"), (unsigned int)SCRIPT_VERIFY_NULLDUMMY)
     (string("DISCOURAGE_UPGRADABLE_NOPS"), (unsigned int)SCRIPT_VERIFY_DISCOURAGE_UPGRADABLE_NOPS)
-    (string("CLEANSTACK"), (unsigned int)SCRIPT_VERIFY_CLEANSTACK);
+    (string("CLEANSTACK"), (unsigned int)SCRIPT_VERIFY_CLEANSTACK)
+    (string("CHECKLOCKTIMEVERIFY"), (unsigned int)SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY);
 
 unsigned int ParseScriptFlags(string strFlags)
 {
@@ -307,14 +310,6 @@ BOOST_AUTO_TEST_CASE(test_Get)
 
     BOOST_CHECK(AreInputsStandard(t1, coins));
     BOOST_CHECK_EQUAL(coins.GetValueIn(t1), (50+21+22)*CENT);
-
-    // Adding extra junk to the scriptSig should make it non-standard:
-    t1.vin[0].scriptSig << OP_11;
-    BOOST_CHECK(!AreInputsStandard(t1, coins));
-
-    // ... as should not having enough:
-    t1.vin[0].scriptSig = CScript();
-    BOOST_CHECK(!AreInputsStandard(t1, coins));
 }
 
 BOOST_AUTO_TEST_CASE(test_IsStandard)
@@ -339,21 +334,53 @@ BOOST_AUTO_TEST_CASE(test_IsStandard)
     string reason;
     BOOST_CHECK(IsStandardTx(t, reason));
 
-    t.vout[0].nValue = 501; // dust
+    // Check dust with default relay fee:
+    CAmount nDustThreshold = 182 * minRelayTxFee.GetFeePerK()/1000 * 3;
+    BOOST_CHECK_EQUAL(nDustThreshold, 546);
+    // dust:
+    t.vout[0].nValue = nDustThreshold - 1;
     BOOST_CHECK(!IsStandardTx(t, reason));
-
-    t.vout[0].nValue = 601; // not dust
+    // not dust:
+    t.vout[0].nValue = nDustThreshold;
     BOOST_CHECK(IsStandardTx(t, reason));
+
+    // Check dust with odd relay fee to verify rounding:
+    // nDustThreshold = 182 * 1234 / 1000 * 3
+    minRelayTxFee = CFeeRate(1234);
+    // dust:
+    t.vout[0].nValue = 672 - 1;
+    BOOST_CHECK(!IsStandardTx(t, reason));
+    // not dust:
+    t.vout[0].nValue = 672;
+    BOOST_CHECK(IsStandardTx(t, reason));
+    minRelayTxFee = CFeeRate(DEFAULT_MIN_RELAY_TX_FEE);
 
     t.vout[0].scriptPubKey = CScript() << OP_1;
     BOOST_CHECK(!IsStandardTx(t, reason));
 
-    // 80-byte TX_NULL_DATA (standard)
+    // MAX_OP_RETURN_RELAY-byte TX_NULL_DATA (standard)
     t.vout[0].scriptPubKey = CScript() << OP_RETURN << ParseHex("04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef3804678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38");
+    BOOST_CHECK_EQUAL(MAX_OP_RETURN_RELAY, t.vout[0].scriptPubKey.size());
     BOOST_CHECK(IsStandardTx(t, reason));
 
-    // 81-byte TX_NULL_DATA (non-standard)
+    // MAX_OP_RETURN_RELAY+1-byte TX_NULL_DATA (non-standard)
     t.vout[0].scriptPubKey = CScript() << OP_RETURN << ParseHex("04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef3804678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef3800");
+    BOOST_CHECK_EQUAL(MAX_OP_RETURN_RELAY + 1, t.vout[0].scriptPubKey.size());
+    BOOST_CHECK(!IsStandardTx(t, reason));
+
+    // Data payload can be encoded in any way...
+    t.vout[0].scriptPubKey = CScript() << OP_RETURN << ParseHex("");
+    BOOST_CHECK(IsStandardTx(t, reason));
+    t.vout[0].scriptPubKey = CScript() << OP_RETURN << ParseHex("00") << ParseHex("01");
+    BOOST_CHECK(IsStandardTx(t, reason));
+    // OP_RESERVED *is* considered to be a PUSHDATA type opcode by IsPushOnly()!
+    t.vout[0].scriptPubKey = CScript() << OP_RETURN << OP_RESERVED << -1 << 0 << ParseHex("01") << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 << 12 << 13 << 14 << 15 << 16;
+    BOOST_CHECK(IsStandardTx(t, reason));
+    t.vout[0].scriptPubKey = CScript() << OP_RETURN << 0 << ParseHex("01") << 2 << ParseHex("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+    BOOST_CHECK(IsStandardTx(t, reason));
+
+    // ...so long as it only contains PUSHDATA's
+    t.vout[0].scriptPubKey = CScript() << OP_RETURN << OP_RETURN;
     BOOST_CHECK(!IsStandardTx(t, reason));
 
     // TX_NULL_DATA w/o PUSHDATA

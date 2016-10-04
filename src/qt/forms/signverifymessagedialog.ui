@@ -258,7 +258,7 @@
          <item>
           <widget class="QValidatedLineEdit" name="addressIn_VM">
            <property name="toolTip">
-            <string>The Bitcoin address the message was signed with</string>
+            <string>The VCoin address the message was signed with</string>
            </property>
           </widget>
          </item>

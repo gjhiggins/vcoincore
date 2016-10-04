@@ -1,0 +1,5 @@
+# List of fixed seed nodes for testnet
+144.76.64.49:55534
+# Onion nodes
+thfsmmn2jbitcoin.onion
+

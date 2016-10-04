@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2014 The Bitcoin Core developers
+// Copyright (c) 2009-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -43,7 +43,7 @@ void CDBEnv::EnvShutdown()
     if (ret != 0)
         LogPrintf("CDBEnv::EnvShutdown: Error %d shutting down database environment: %s\n", ret, DbEnv::strerror(ret));
     if (!fMockDb)
-        DbEnv(0).remove(path.string().c_str(), 0);
+        DbEnv(0).remove(strPath.c_str(), 0);
 }
 
 void CDBEnv::Reset()
@@ -78,14 +78,14 @@ bool CDBEnv::Open(const boost::filesystem::path& pathIn)
 
     boost::this_thread::interruption_point();
 
-    path = pathIn;
-    boost::filesystem::path pathLogDir = path / "database";
+    strPath = pathIn.string();
+    boost::filesystem::path pathLogDir = pathIn / "database";
     TryCreateDirectory(pathLogDir);
-    boost::filesystem::path pathErrorFile = path / "db.log";
+    boost::filesystem::path pathErrorFile = pathIn / "db.log";
     LogPrintf("CDBEnv::Open: LogDir=%s ErrorFile=%s\n", pathLogDir.string(), pathErrorFile.string());
 
     unsigned int nEnvFlags = 0;
-    if (GetBoolArg("-privdb", true))
+    if (GetBoolArg("-privdb", DEFAULT_WALLET_PRIVDB))
         nEnvFlags |= DB_PRIVATE;
 
     dbenv->set_lg_dir(pathLogDir.string().c_str());
@@ -98,7 +98,7 @@ bool CDBEnv::Open(const boost::filesystem::path& pathIn)
     dbenv->set_flags(DB_AUTO_COMMIT, 1);
     dbenv->set_flags(DB_TXN_WRITE_NOSYNC, 1);
     dbenv->log_set_config(DB_LOG_AUTO_REMOVE, 1);
-    int ret = dbenv->open(path.string().c_str(),
+    int ret = dbenv->open(strPath.c_str(),
                          DB_CREATE |
                              DB_INIT_LOCK |
                              DB_INIT_LOG |
@@ -205,7 +205,7 @@ bool CDBEnv::Salvage(const std::string& strFile, bool fAggressive, std::vector<C
     std::string keyHex, valueHex;
     while (!strDump.eof() && keyHex != "DATA=END") {
         getline(strDump, keyHex);
-        if (keyHex != "DATA_END") {
+        if (keyHex != "DATA=END") {
             getline(strDump, valueHex);
             vResult.push_back(make_pair(ParseHex(keyHex), ParseHex(valueHex)));
         }
@@ -293,7 +293,7 @@ void CDB::Flush()
     if (fReadOnly)
         nMinutes = 1;
 
-    bitdb.dbenv->txn_checkpoint(nMinutes ? GetArg("-dblogsize", 100) * 1024 : 0, nMinutes, 0);
+    bitdb.dbenv->txn_checkpoint(nMinutes ? GetArg("-dblogsize", DEFAULT_WALLET_DBLOGSIZE) * 1024 : 0, nMinutes, 0);
 }
 
 void CDB::Close()
@@ -455,7 +455,7 @@ void CDBEnv::Flush(bool fShutdown)
                 dbenv->log_archive(&listp, DB_ARCH_REMOVE);
                 Close();
                 if (!fMockDb)
-                    boost::filesystem::remove_all(path / "database");
+                    boost::filesystem::remove_all(boost::filesystem::path(strPath) / "database");
             }
         }
     }

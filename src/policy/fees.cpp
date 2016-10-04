@@ -4,6 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "policy/fees.h"
+#include "policy/policy.h"
 
 #include "amount.h"
 #include "primitives/transaction.h"
@@ -249,7 +250,7 @@ unsigned int TxConfirmStats::NewTx(unsigned int nBlockHeight, double val)
     unsigned int bucketindex = bucketMap.lower_bound(val)->second;
     unsigned int blockIndex = nBlockHeight % unconfTxs.size();
     unconfTxs[blockIndex][bucketindex]++;
-    LogPrint("estimatefee", "adding to %s\n", dataTypeString);
+    LogPrint("estimatefee", "adding to %s", dataTypeString);
     return bucketindex;
 }
 
@@ -261,7 +262,7 @@ void TxConfirmStats::removeTx(unsigned int entryHeight, unsigned int nBestSeenHe
         blocksAgo = 0;
     if (blocksAgo < 0) {
         LogPrint("estimatefee", "Blockpolicy error, blocks ago is negative for mempool tx\n");
-        return;  //This can't happen becasue we call this with our best seen height, no entries can have higher
+        return;  //This can't happen because we call this with our best seen height, no entries can have higher
     }
 
     if (blocksAgo >= (int)unconfTxs.size()) {
@@ -390,8 +391,9 @@ void CBlockPolicyEstimator::processTransaction(const CTxMemPoolEntry& entry, boo
         mapMemPoolTxs[hash].bucketIndex = feeStats.NewTx(txHeight, (double)feeRate.GetFeePerK());
     }
     else {
-        LogPrint("estimatefee", "not adding\n");
+        LogPrint("estimatefee", "not adding");
     }
+    LogPrint("estimatefee", "\n");
 }
 
 void CBlockPolicyEstimator::processBlockTx(unsigned int nBlockHeight, const CTxMemPoolEntry& entry)
@@ -503,6 +505,33 @@ CFeeRate CBlockPolicyEstimator::estimateFee(int confTarget)
     return CFeeRate(median);
 }
 
+CFeeRate CBlockPolicyEstimator::estimateSmartFee(int confTarget, int *answerFoundAtTarget, const CTxMemPool& pool)
+{
+    if (answerFoundAtTarget)
+        *answerFoundAtTarget = confTarget;
+    // Return failure if trying to analyze a target we're not tracking
+    if (confTarget <= 0 || (unsigned int)confTarget > feeStats.GetMaxConfirms())
+        return CFeeRate(0);
+
+    double median = -1;
+    while (median < 0 && (unsigned int)confTarget <= feeStats.GetMaxConfirms()) {
+        median = feeStats.EstimateMedianVal(confTarget++, SUFFICIENT_FEETXS, MIN_SUCCESS_PCT, true, nBestSeenHeight);
+    }
+
+    if (answerFoundAtTarget)
+        *answerFoundAtTarget = confTarget - 1;
+
+    // If mempool is limiting txs , return at least the min fee from the mempool
+    CAmount minPoolFee = pool.GetMinFee(GetArg("-maxmempool", DEFAULT_MAX_MEMPOOL_SIZE) * 1000000).GetFeePerK();
+    if (minPoolFee > 0 && minPoolFee > median)
+        return CFeeRate(minPoolFee);
+
+    if (median < 0)
+        return CFeeRate(0);
+
+    return CFeeRate(median);
+}
+
 double CBlockPolicyEstimator::estimatePriority(int confTarget)
 {
     // Return failure if trying to analyze a target we're not tracking
@@ -510,6 +539,30 @@ double CBlockPolicyEstimator::estimatePriority(int confTarget)
         return -1;
 
     return priStats.EstimateMedianVal(confTarget, SUFFICIENT_PRITXS, MIN_SUCCESS_PCT, true, nBestSeenHeight);
+}
+
+double CBlockPolicyEstimator::estimateSmartPriority(int confTarget, int *answerFoundAtTarget, const CTxMemPool& pool)
+{
+    if (answerFoundAtTarget)
+        *answerFoundAtTarget = confTarget;
+    // Return failure if trying to analyze a target we're not tracking
+    if (confTarget <= 0 || (unsigned int)confTarget > priStats.GetMaxConfirms())
+        return -1;
+
+    // If mempool is limiting txs, no priority txs are allowed
+    CAmount minPoolFee = pool.GetMinFee(GetArg("-maxmempool", DEFAULT_MAX_MEMPOOL_SIZE) * 1000000).GetFeePerK();
+    if (minPoolFee > 0)
+        return INF_PRIORITY;
+
+    double median = -1;
+    while (median < 0 && (unsigned int)confTarget <= priStats.GetMaxConfirms()) {
+        median = priStats.EstimateMedianVal(confTarget++, SUFFICIENT_PRITXS, MIN_SUCCESS_PCT, true, nBestSeenHeight);
+    }
+
+    if (answerFoundAtTarget)
+        *answerFoundAtTarget = confTarget - 1;
+
+    return median;
 }
 
 void CBlockPolicyEstimator::Write(CAutoFile& fileout)
