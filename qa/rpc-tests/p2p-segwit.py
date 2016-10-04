@@ -168,8 +168,11 @@ class UTXO(object):
 
 
 class SegWitTest(BitcoinTestFramework):
-    def setup_chain(self):
-        initialize_chain_clean(self.options.tmpdir, 3)
+
+    def __init__(self):
+        super().__init__()
+        self.setup_clean_chain = True
+        self.num_nodes = 3
 
     def add_options(self, parser):
         parser.add_option("--oldbinary", dest="oldbinary",
@@ -1389,6 +1392,9 @@ class SegWitTest(BitcoinTestFramework):
         block = self.build_next_block()
         used_sighash_single_out_of_bounds = False
         for i in range(NUM_TESTS):
+            # Ping regularly to keep the connection alive
+            if (not i % 100):
+                self.test_node.sync_with_ping()
             # Choose random number of inputs to use.
             num_inputs = random.randint(1, 10)
             # Create a slight bias for producing more utxos

@@ -44,7 +44,7 @@ UniValue getinfo(const UniValue& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getinfo\n"
-            "Returns an object containing various state info.\n"
+            "\nDEPRECATED. Returns an object containing various state info.\n"
             "\nResult:\n"
             "{\n"
             "  \"version\": xxxxx,           (numeric) the server version\n"
@@ -89,7 +89,8 @@ UniValue getinfo(const UniValue& params, bool fHelp)
 #endif
     obj.push_back(Pair("blocks",        (int)chainActive.Height()));
     obj.push_back(Pair("timeoffset",    GetTimeOffset()));
-    obj.push_back(Pair("connections",   (int)vNodes.size()));
+    if(g_connman)
+        obj.push_back(Pair("connections",   (int)g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL)));
     obj.push_back(Pair("proxy",         (proxy.IsValid() ? proxy.proxy.ToStringIPPort() : string())));
     obj.push_back(Pair("difficulty",    (double)GetDifficulty()));
     obj.push_back(Pair("testnet",       Params().TestnetToBeDeprecatedFieldRPC()));
@@ -434,14 +435,16 @@ UniValue setmocktime(const UniValue& params, bool fHelp)
     // atomically with the time change to prevent peers from being
     // disconnected because we think we haven't communicated with them
     // in a long time.
-    LOCK2(cs_main, cs_vNodes);
+    LOCK(cs_main);
 
     RPCTypeCheck(params, boost::assign::list_of(UniValue::VNUM));
     SetMockTime(params[0].get_int64());
 
     uint64_t t = GetTime();
-    BOOST_FOREACH(CNode* pnode, vNodes) {
-        pnode->nLastSend = pnode->nLastRecv = t;
+    if(g_connman) {
+        g_connman->ForEachNode([t](CNode* pnode) {
+            pnode->nLastSend = pnode->nLastRecv = t;
+        });
     }
 
     return NullUniValue;
@@ -460,8 +463,8 @@ static const CRPCCommand commands[] =
     { "hidden",             "setmocktime",            &setmocktime,            true  },
 };
 
-void RegisterMiscRPCCommands(CRPCTable &tableRPC)
+void RegisterMiscRPCCommands(CRPCTable &t)
 {
     for (unsigned int vcidx = 0; vcidx < ARRAYLEN(commands); vcidx++)
-        tableRPC.appendCommand(commands[vcidx].name, &commands[vcidx]);
+        t.appendCommand(commands[vcidx].name, &commands[vcidx]);
 }

@@ -30,3 +30,12 @@ example, to run just the getarg_tests verbosely:
 
 Run `test_vcore --help` for the full list.
 
+### vcore-util-test.py
+
+The test directory also contains the vcore-util-test.py tool, which tests vcore utils (currently just vcore-tx). This test gets run automatically during the `make check` build process. It is also possible to run the test manually from the src directory:
+
+```
+test/vcore-util-test.py --srcdir=[current directory]
+>>>>>>> official/master
+
+```

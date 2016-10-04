@@ -10,7 +10,7 @@
 #ifndef BITCOIN_PROTOCOL_H
 #define BITCOIN_PROTOCOL_H
 
-#include "netbase.h"
+#include "netaddress.h"
 #include "serialize.h"
 #include "uint256.h"
 #include "version.h"
@@ -45,15 +45,15 @@ public:
         READWRITE(FLATDATA(pchMessageStart));
         READWRITE(FLATDATA(pchCommand));
         READWRITE(nMessageSize);
-        READWRITE(nChecksum);
+        READWRITE(FLATDATA(pchChecksum));
     }
 
     // TODO: make private (improves encapsulation)
 public:
     enum {
         COMMAND_SIZE = 12,
-        MESSAGE_SIZE_SIZE = sizeof(int),
-        CHECKSUM_SIZE = sizeof(int),
+        MESSAGE_SIZE_SIZE = 4,
+        CHECKSUM_SIZE = 4,
 
         MESSAGE_SIZE_OFFSET = MESSAGE_START_SIZE + COMMAND_SIZE,
         CHECKSUM_OFFSET = MESSAGE_SIZE_OFFSET + MESSAGE_SIZE_SIZE,
@@ -61,8 +61,8 @@ public:
     };
     char pchMessageStart[MESSAGE_START_SIZE];
     char pchCommand[COMMAND_SIZE];
-    unsigned int nMessageSize;
-    unsigned int nChecksum;
+    uint32_t nMessageSize;
+    uint8_t pchChecksum[CHECKSUM_SIZE];
 };
 
 /**
@@ -267,6 +267,9 @@ enum ServiceFlags : uint64_t {
     // Indicates that a node can be asked for blocks and transactions including
     // witness data.
     NODE_WITNESS = (1 << 3),
+    // NODE_XTHIN means the node supports Xtreme Thinblocks
+    // If this is turned off then the node will not service nor make xthin requests
+    NODE_XTHIN = (1 << 4),
 
     // Bits 24-31 are reserved for temporary experiments. Just pick a bit that
     // isn't getting used, or one not being used much, and notify the

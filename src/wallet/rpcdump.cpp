@@ -257,8 +257,7 @@ UniValue importprunedfunds(const UniValue& params, bool fHelp)
     if (!EnsureWalletIsAvailable(fHelp))
         return NullUniValue;
 
-    // 0.13.x: Silently accept up to 3 params, but ignore the third:
-    if (fHelp || params.size() < 2 || params.size() > 3)
+    if (fHelp || params.size() != 2)
         throw runtime_error(
             "importprunedfunds\n"
             "\nImports funds without rescan. Corresponding address or script must previously be included in wallet. Aimed towards pruned wallets. The end-user is responsible to import additional transactions that subsequently spend the imported outputs or rescan after the point in the blockchain the transaction is included.\n"
@@ -305,8 +304,7 @@ UniValue importprunedfunds(const UniValue& params, bool fHelp)
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
     if (pwalletMain->IsMine(tx)) {
-        CWalletDB walletdb(pwalletMain->strWalletFile, "r+", false);
-        pwalletMain->AddToWallet(wtx, false, &walletdb);
+        pwalletMain->AddToWallet(wtx, false);
         return NullUniValue;
     }
 
@@ -345,8 +343,6 @@ UniValue removeprunedfunds(const UniValue& params, bool fHelp)
     if(vHashOut.empty()) {
         throw JSONRPCError(RPC_INTERNAL_ERROR, "Transaction does not exist in wallet.");
     }
-
-    ThreadFlushWalletDB(pwalletMain->strWalletFile);
 
     return NullUniValue;
 }

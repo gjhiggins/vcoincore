@@ -77,8 +77,6 @@ for arg in sys.argv[1:]:
 #Set env vars
 if "BITCOIND" not in os.environ:
     os.environ["BITCOIND"] = BUILDDIR + '/src/bitcoind' + EXEEXT
-if "BITCOINCLI" not in os.environ:
-    os.environ["BITCOINCLI"] = BUILDDIR + '/src/bitcoin-cli' + EXEEXT
 
 if EXEEXT == ".exe" and "-win" not in opts:
     # https://github.com/bitcoin/bitcoin/commit/d52802551752140cf41f0d9a225a43e84404d3e9
@@ -106,12 +104,15 @@ testScripts = [
     'walletbackup.py',
     'bip68-112-113-p2p.py',
     'wallet.py',
+    'wallet-accounts.py',
     'wallet-hd.py',
     'wallet-dump.py',
     'listtransactions.py',
     'receivedby.py',
     'mempool_resurrect_test.py',
     'txn_doublespend.py --mineblock',
+    'p2p-segwit.py',
+    'segwit.py',
     'txn_clone.py',
     'getchaintips.py',
     'rawtransactions.py',
@@ -133,13 +134,12 @@ testScripts = [
     'disablewallet.py',
     'sendheaders.py',
     'keypool.py',
+    'p2p-mempool.py',
     'prioritise_transaction.py',
     'invalidblockrequest.py',
     'invalidtxrequest.py',
     'abandonconflict.py',
     'p2p-versionbits-warning.py',
-    'p2p-segwit.py',
-    'segwit.py',
     'importprunedfunds.py',
     'signmessages.py',
     'p2p-compactblocks.py',
@@ -195,6 +195,7 @@ def runtests():
         coverage = RPCCoverage()
         print("Initializing coverage directory at %s\n" % coverage.dir)
     flags = ["--srcdir=%s/src" % BUILDDIR] + passon_args
+    flags.append("--cachedir=%s/qa/cache" % BUILDDIR)
     if coverage:
         flags.append(coverage.flag)
 
@@ -215,8 +216,8 @@ def runtests():
         time_sum += duration
 
         print('\n' + BOLD[1] + name + BOLD[0] + ":")
-        print(stdout)
-        print('stderr:\n' if not stderr == '' else '', stderr)
+        print('' if passed else stdout + '\n', end='')
+        print('' if stderr == '' else 'stderr:\n' + stderr + '\n', end='')
         results += "%s | %s | %s s\n" % (name.ljust(max_len_name), str(passed).ljust(6), duration)
         print("Pass: %s%s%s, Duration: %s s\n" % (BOLD[1], passed, BOLD[0], duration))
     results += BOLD[1] + "\n%s | %s | %s s (accumulated)" % ("ALL".ljust(max_len_name), str(all_passed).ljust(6), time_sum) + BOLD[0]
