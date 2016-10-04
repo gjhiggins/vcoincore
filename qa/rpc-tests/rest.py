@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-# Copyright (c) 2014 The Bitcoin Core developers
+# Copyright (c) 2014-2015 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,9 +12,7 @@ from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
 from struct import *
 import binascii
-import json
 import StringIO
-import decimal
 
 try:
     import http.client as httplib
@@ -32,10 +30,20 @@ def deser_uint256(f):
         r += t << (i * 32)
     return r
 
-#allows simple http get calls with a request body
-def http_get_call(host, port, path, requestdata = '', response_object = 0):
+#allows simple http get calls
+def http_get_call(host, port, path, response_object = 0):
     conn = httplib.HTTPConnection(host, port)
-    conn.request('GET', path, requestdata)
+    conn.request('GET', path)
+
+    if response_object:
+        return conn.getresponse()
+
+    return conn.getresponse().read()
+
+#allows simple http post calls with a request body
+def http_post_call(host, port, path, requestdata = '', response_object = 0):
+    conn = httplib.HTTPConnection(host, port)
+    conn.request('POST', path, requestdata)
 
     if response_object:
         return conn.getresponse()
@@ -133,11 +141,11 @@ class RESTTest (BitcoinTestFramework):
 
         binaryRequest = b'\x01\x02'
         binaryRequest += binascii.unhexlify(txid)
-        binaryRequest += pack("i", n);
-        binaryRequest += binascii.unhexlify(vintx);
-        binaryRequest += pack("i", 0);
+        binaryRequest += pack("i", n)
+        binaryRequest += binascii.unhexlify(vintx)
+        binaryRequest += pack("i", 0)
 
-        bin_response = http_get_call(url.hostname, url.port, '/rest/getutxos'+self.FORMAT_SEPARATOR+'bin', binaryRequest)
+        bin_response = http_post_call(url.hostname, url.port, '/rest/getutxos'+self.FORMAT_SEPARATOR+'bin', binaryRequest)
         output = StringIO.StringIO()
         output.write(bin_response)
         output.seek(0)
@@ -175,14 +183,14 @@ class RESTTest (BitcoinTestFramework):
 
         #do some invalid requests
         json_request = '{"checkmempool'
-        response = http_get_call(url.hostname, url.port, '/rest/getutxos'+self.FORMAT_SEPARATOR+'json', json_request, True)
+        response = http_post_call(url.hostname, url.port, '/rest/getutxos'+self.FORMAT_SEPARATOR+'json', json_request, True)
         assert_equal(response.status, 500) #must be a 500 because we send a invalid json request
 
         json_request = '{"checkmempool'
-        response = http_get_call(url.hostname, url.port, '/rest/getutxos'+self.FORMAT_SEPARATOR+'bin', json_request, True)
+        response = http_post_call(url.hostname, url.port, '/rest/getutxos'+self.FORMAT_SEPARATOR+'bin', json_request, True)
         assert_equal(response.status, 500) #must be a 500 because we send a invalid bin request
 
-        response = http_get_call(url.hostname, url.port, '/rest/getutxos/checkmempool'+self.FORMAT_SEPARATOR+'bin', '', True)
+        response = http_post_call(url.hostname, url.port, '/rest/getutxos/checkmempool'+self.FORMAT_SEPARATOR+'bin', '', True)
         assert_equal(response.status, 500) #must be a 500 because we send a invalid bin request
 
         #test limits
@@ -190,17 +198,17 @@ class RESTTest (BitcoinTestFramework):
         for x in range(0, 20):
             json_request += txid+'-'+str(n)+'/'
         json_request = json_request.rstrip("/")
-        response = http_get_call(url.hostname, url.port, '/rest/getutxos'+json_request+self.FORMAT_SEPARATOR+'json', '', True)
+        response = http_post_call(url.hostname, url.port, '/rest/getutxos'+json_request+self.FORMAT_SEPARATOR+'json', '', True)
         assert_equal(response.status, 500) #must be a 500 because we exceeding the limits
 
         json_request = '/checkmempool/'
         for x in range(0, 15):
             json_request += txid+'-'+str(n)+'/'
-        json_request = json_request.rstrip("/");
-        response = http_get_call(url.hostname, url.port, '/rest/getutxos'+json_request+self.FORMAT_SEPARATOR+'json', '', True)
+        json_request = json_request.rstrip("/")
+        response = http_post_call(url.hostname, url.port, '/rest/getutxos'+json_request+self.FORMAT_SEPARATOR+'json', '', True)
         assert_equal(response.status, 200) #must be a 500 because we exceeding the limits
 
-        self.nodes[0].generate(1) #generate block to not affect upcomming tests
+        self.nodes[0].generate(1) #generate block to not affect upcoming tests
         self.sync_all()
 
         ################
@@ -208,27 +216,27 @@ class RESTTest (BitcoinTestFramework):
         ################
 
         # check binary format
-        response = http_get_call(url.hostname, url.port, '/rest/block/'+bb_hash+self.FORMAT_SEPARATOR+"bin", "", True)
+        response = http_get_call(url.hostname, url.port, '/rest/block/'+bb_hash+self.FORMAT_SEPARATOR+"bin", True)
         assert_equal(response.status, 200)
         assert_greater_than(int(response.getheader('content-length')), 80)
         response_str = response.read()
 
         # compare with block header
-        response_header = http_get_call(url.hostname, url.port, '/rest/headers/1/'+bb_hash+self.FORMAT_SEPARATOR+"bin", "", True)
+        response_header = http_get_call(url.hostname, url.port, '/rest/headers/1/'+bb_hash+self.FORMAT_SEPARATOR+"bin", True)
         assert_equal(response_header.status, 200)
         assert_equal(int(response_header.getheader('content-length')), 80)
         response_header_str = response_header.read()
         assert_equal(response_str[0:80], response_header_str)
 
         # check block hex format
-        response_hex = http_get_call(url.hostname, url.port, '/rest/block/'+bb_hash+self.FORMAT_SEPARATOR+"hex", "", True)
+        response_hex = http_get_call(url.hostname, url.port, '/rest/block/'+bb_hash+self.FORMAT_SEPARATOR+"hex", True)
         assert_equal(response_hex.status, 200)
         assert_greater_than(int(response_hex.getheader('content-length')), 160)
         response_hex_str = response_hex.read()
         assert_equal(response_str.encode("hex")[0:160], response_hex_str[0:160])
 
         # compare with hex block header
-        response_header_hex = http_get_call(url.hostname, url.port, '/rest/headers/1/'+bb_hash+self.FORMAT_SEPARATOR+"hex", "", True)
+        response_header_hex = http_get_call(url.hostname, url.port, '/rest/headers/1/'+bb_hash+self.FORMAT_SEPARATOR+"hex", True)
         assert_equal(response_header_hex.status, 200)
         assert_greater_than(int(response_header_hex.getheader('content-length')), 160)
         response_header_hex_str = response_header_hex.read()
@@ -241,10 +249,10 @@ class RESTTest (BitcoinTestFramework):
         assert_equal(block_json_obj['hash'], bb_hash)
 
         # compare with json block header
-        response_header_json = http_get_call(url.hostname, url.port, '/rest/headers/1/'+bb_hash+self.FORMAT_SEPARATOR+"json", "", True)
+        response_header_json = http_get_call(url.hostname, url.port, '/rest/headers/1/'+bb_hash+self.FORMAT_SEPARATOR+"json", True)
         assert_equal(response_header_json.status, 200)
         response_header_json_str = response_header_json.read()
-        json_obj = json.loads(response_header_json_str, parse_float=decimal.Decimal)
+        json_obj = json.loads(response_header_json_str, parse_float=Decimal)
         assert_equal(len(json_obj), 1) #ensure that there is one header in the json response
         assert_equal(json_obj[0]['hash'], bb_hash) #request/response hash should be the same
 
@@ -265,20 +273,20 @@ class RESTTest (BitcoinTestFramework):
         #see if we can get 5 headers in one response
         self.nodes[1].generate(5)
         self.sync_all()
-        response_header_json = http_get_call(url.hostname, url.port, '/rest/headers/5/'+bb_hash+self.FORMAT_SEPARATOR+"json", "", True)
+        response_header_json = http_get_call(url.hostname, url.port, '/rest/headers/5/'+bb_hash+self.FORMAT_SEPARATOR+"json", True)
         assert_equal(response_header_json.status, 200)
         response_header_json_str = response_header_json.read()
         json_obj = json.loads(response_header_json_str)
         assert_equal(len(json_obj), 5) #now we should have 5 header objects
 
         # do tx test
-        tx_hash = block_json_obj['tx'][0]['txid'];
+        tx_hash = block_json_obj['tx'][0]['txid']
         json_string = http_get_call(url.hostname, url.port, '/rest/tx/'+tx_hash+self.FORMAT_SEPARATOR+"json")
         json_obj = json.loads(json_string)
         assert_equal(json_obj['txid'], tx_hash)
 
         # check hex format response
-        hex_string = http_get_call(url.hostname, url.port, '/rest/tx/'+tx_hash+self.FORMAT_SEPARATOR+"hex", "", True)
+        hex_string = http_get_call(url.hostname, url.port, '/rest/tx/'+tx_hash+self.FORMAT_SEPARATOR+"hex", True)
         assert_equal(hex_string.status, 200)
         assert_greater_than(int(response.getheader('content-length')), 10)
 

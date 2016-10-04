@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2014 The Bitcoin Core developers
+// Copyright (c) 2011-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -47,14 +47,14 @@
 #endif
 
 const int BITCOIN_IPC_CONNECT_TIMEOUT = 1000; // milliseconds
-const QString BITCOIN_IPC_PREFIX("bitcoin:");
+const QString BITCOIN_IPC_PREFIX("vcoin:");
 // BIP70 payment protocol messages
 const char* BIP70_MESSAGE_PAYMENTACK = "PaymentACK";
 const char* BIP70_MESSAGE_PAYMENTREQUEST = "PaymentRequest";
 // BIP71 payment protocol media types
-const char* BIP71_MIMETYPE_PAYMENT = "application/bitcoin-payment";
-const char* BIP71_MIMETYPE_PAYMENTACK = "application/bitcoin-paymentack";
-const char* BIP71_MIMETYPE_PAYMENTREQUEST = "application/bitcoin-paymentrequest";
+const char* BIP71_MIMETYPE_PAYMENT = "application/vcoin-payment";
+const char* BIP71_MIMETYPE_PAYMENTACK = "application/vcoin-paymentack";
+const char* BIP71_MIMETYPE_PAYMENTREQUEST = "application/vcoin-paymentrequest";
 // BIP70 max payment request size in bytes (DoS protection)
 const qint64 BIP70_MAX_PAYMENTREQUEST_SIZE = 50000;
 
@@ -213,7 +213,7 @@ void PaymentServer::ipcParseCommandLine(int argc, char* argv[])
         // network as that would require fetching and parsing the payment request.
         // That means clicking such an URI which contains a testnet payment request
         // will start a mainnet instance and throw a "wrong network" error.
-        if (arg.startsWith(BITCOIN_IPC_PREFIX, Qt::CaseInsensitive)) // bitcoin: URI
+        if (arg.startsWith(BITCOIN_IPC_PREFIX, Qt::CaseInsensitive)) // vcoin: URI
         {
             savedPaymentRequests.append(arg);
 
@@ -326,7 +326,7 @@ PaymentServer::PaymentServer(QObject* parent, bool startLocalServer) :
         if (!uriServer->listen(name)) {
             // constructor is called early in init, so don't use "Q_EMIT message()" here
             QMessageBox::critical(0, tr("Payment request error"),
-                tr("Cannot start bitcoin: click-to-pay handler"));
+                tr("Cannot start vcoin: click-to-pay handler"));
         }
         else {
             connect(uriServer, SIGNAL(newConnection()), this, SLOT(handleURIConnection()));
@@ -407,7 +407,7 @@ void PaymentServer::handleURIOrFile(const QString& s)
         return;
     }
 
-    if (s.startsWith(BITCOIN_IPC_PREFIX, Qt::CaseInsensitive)) // bitcoin: URI
+    if (s.startsWith(BITCOIN_IPC_PREFIX, Qt::CaseInsensitive)) // vcoin: URI
     {
 #if QT_VERSION < 0x050000
         QUrl uri(s);
@@ -509,12 +509,7 @@ bool PaymentServer::readPaymentRequestFromFile(const QString& filename, PaymentR
     }
 
     // BIP70 DoS protection
-    if (f.size() > BIP70_MAX_PAYMENTREQUEST_SIZE) {
-        qWarning() << QString("PaymentServer::%1: Payment request %2 is too large (%3 bytes, allowed %4 bytes).")
-            .arg(__func__)
-            .arg(filename)
-            .arg(f.size())
-            .arg(BIP70_MAX_PAYMENTREQUEST_SIZE);
+    if (!verifySize(f.size())) {
         return false;
     }
 
@@ -685,14 +680,13 @@ void PaymentServer::netRequestFinished(QNetworkReply* reply)
     reply->deleteLater();
 
     // BIP70 DoS protection
-    if (reply->size() > BIP70_MAX_PAYMENTREQUEST_SIZE) {
-        QString msg = tr("Payment request %1 is too large (%2 bytes, allowed %3 bytes).")
-            .arg(reply->request().url().toString())
-            .arg(reply->size())
-            .arg(BIP70_MAX_PAYMENTREQUEST_SIZE);
-
-        qWarning() << QString("PaymentServer::%1:").arg(__func__) << msg;
-        Q_EMIT message(tr("Payment request DoS protection"), msg, CClientUIInterface::MSG_ERROR);
+    if (!verifySize(reply->size())) {
+        Q_EMIT message(tr("Payment request rejected"),
+            tr("Payment request %1 is too large (%2 bytes, allowed %3 bytes).")
+                .arg(reply->request().url().toString())
+                .arg(reply->size())
+                .arg(BIP70_MAX_PAYMENTREQUEST_SIZE),
+            CClientUIInterface::MSG_ERROR);
         return;
     }
 
@@ -762,7 +756,7 @@ void PaymentServer::setOptionsModel(OptionsModel *optionsModel)
 
 void PaymentServer::handlePaymentACK(const QString& paymentACKMsg)
 {
-    // currently we don't futher process or store the paymentACK message
+    // currently we don't further process or store the paymentACK message
     Q_EMIT message(tr("Payment acknowledged"), paymentACKMsg, CClientUIInterface::ICON_INFORMATION | CClientUIInterface::MODAL);
 }
 
@@ -786,6 +780,18 @@ bool PaymentServer::verifyExpired(const payments::PaymentDetails& requestDetails
         qWarning() << QString("PaymentServer::%1: Payment request expired \"%2\".")
             .arg(__func__)
             .arg(requestExpires);
+    }
+    return fVerified;
+}
+
+bool PaymentServer::verifySize(qint64 requestSize)
+{
+    bool fVerified = (requestSize <= BIP70_MAX_PAYMENTREQUEST_SIZE);
+    if (!fVerified) {
+        qWarning() << QString("PaymentServer::%1: Payment request too large (%2 bytes, allowed %3 bytes).")
+            .arg(__func__)
+            .arg(requestSize)
+            .arg(BIP70_MAX_PAYMENTREQUEST_SIZE);
     }
     return fVerified;
 }
