@@ -22,10 +22,13 @@
         <translation>&amp;Dupliseer</translation>
     </message>
     <message>
+<<<<<<< HEAD
         <source>&amp;Copy Address</source>
         <translation>&amp;Dupliseer Adres</translation>
     </message>
     <message>
+=======
+>>>>>>> official/0.13
         <source>Delete the currently selected address from the list</source>
         <translation>Verwyder die adres wat u gekies het van die lys</translation>
     </message>
@@ -41,6 +44,7 @@
         <source>&amp;Delete</source>
         <translation>&amp;Vee uit</translation>
     </message>
+<<<<<<< HEAD
     <message>
         <source>Choose the address to send coins to</source>
         <translation>Kies die adres waarheen u munte wil stuur</translation>
@@ -96,6 +100,8 @@
         <source>(no label)</source>
         <translation>(geen etiket)</translation>
     </message>
+=======
+>>>>>>> official/0.13
 </context>
 <context>
     <name>AskPassphraseDialog</name>
@@ -115,6 +121,7 @@
         <source>Repeat new passphrase</source>
         <translation>Herhaal nuwe wagwoord</translation>
     </message>
+<<<<<<< HEAD
     <message>
         <source>Encrypt wallet</source>
         <translation>Kodifiseer beursie</translation>
@@ -196,6 +203,9 @@
         <translation>U het die verkeerde wagwoord ingetik.</translation>
     </message>
     </context>
+=======
+</context>
+>>>>>>> official/0.13
 <context>
     <name>BanTableModel</name>
     <message>
@@ -258,6 +268,7 @@
         <translation>Oop &amp; URI...</translation>
     </message>
     <message>
+<<<<<<< HEAD
         <source>Bitcoin Core client</source>
         <translation>Bitcoin Kern klient</translation>
     </message>
@@ -266,6 +277,8 @@
         <translation>Besig om blokke vanaf die hardeskyf in te voer...</translation>
     </message>
     <message>
+=======
+>>>>>>> official/0.13
         <source>Reindexing blocks on disk...</source>
         <translation>Besig met herindeksering van blokke op hardeskyf...</translation>
     </message>
@@ -298,10 +311,13 @@
         <translation>&amp;Ontvang</translation>
     </message>
     <message>
+<<<<<<< HEAD
         <source>Show information about Bitcoin Core</source>
         <translation>Vertoon inligting oor Bitcoin Kern</translation>
     </message>
     <message>
+=======
+>>>>>>> official/0.13
         <source>Show or hide the main Window</source>
         <translation>Wys of versteek die hoofbladsy</translation>
     </message>
@@ -322,14 +338,18 @@
         <translation>&amp;Help</translation>
     </message>
     <message>
+<<<<<<< HEAD
         <source>Bitcoin Core</source>
         <translation>Bitcoin Kern</translation>
     </message>
     <message>
+=======
+>>>>>>> official/0.13
         <source>Request payments (generates QR codes and bitcoin: URIs)</source>
         <translation>Versoek betalings (genereer QR-kodes en bitcoin: URI's)</translation>
     </message>
     <message>
+<<<<<<< HEAD
         <source>&amp;About Bitcoin Core</source>
         <translation>&amp;Omtrent Bitcoin Kern</translation>
     </message>
@@ -338,6 +358,8 @@
         <translation>Verander konfigurasie-opsies vir Bitcoin Kern</translation>
     </message>
     <message>
+=======
+>>>>>>> official/0.13
         <source>Show the list of used sending addresses and labels</source>
         <translation>Vertoon die lys van gebruikte versendingsadresse en etikette</translation>
     </message>
@@ -351,6 +373,7 @@
     </message>
     </context>
 <context>
+<<<<<<< HEAD
     <name>ClientModel</name>
     </context>
 <context>
@@ -359,6 +382,9 @@
         <source>(no label)</source>
         <translation>(geen etiket)</translation>
     </message>
+=======
+    <name>CoinControlDialog</name>
+>>>>>>> official/0.13
     </context>
 <context>
     <name>EditAddressDialog</name>
@@ -368,6 +394,7 @@
     </context>
 <context>
     <name>HelpMessageDialog</name>
+<<<<<<< HEAD
     <message>
         <source>Bitcoin Core</source>
         <translation>Bitcoin Kern</translation>
@@ -383,6 +410,11 @@
         <source>Bitcoin Core</source>
         <translation>Bitcoin Kern</translation>
     </message>
+=======
+    </context>
+<context>
+    <name>Intro</name>
+>>>>>>> official/0.13
     </context>
 <context>
     <name>OpenURIDialog</name>
@@ -394,18 +426,24 @@
     <name>OverviewPage</name>
     </context>
 <context>
+<<<<<<< HEAD
     <name>PaymentServer</name>
     </context>
 <context>
+=======
+>>>>>>> official/0.13
     <name>PeerTableModel</name>
     </context>
 <context>
     <name>QObject</name>
     </context>
 <context>
+<<<<<<< HEAD
     <name>QRImageWidget</name>
     </context>
 <context>
+=======
+>>>>>>> official/0.13
     <name>RPCConsole</name>
     </context>
 <context>
@@ -413,6 +451,7 @@
     </context>
 <context>
     <name>ReceiveRequestDialog</name>
+<<<<<<< HEAD
     <message>
         <source>Address</source>
         <translation>Adres</translation>
@@ -431,6 +470,11 @@
         <source>(no label)</source>
         <translation>(geen etiket)</translation>
     </message>
+=======
+    </context>
+<context>
+    <name>SendCoinsDialog</name>
+>>>>>>> official/0.13
     </context>
 <context>
     <name>SendCoinsEntry</name>
@@ -443,15 +487,19 @@
     </context>
 <context>
     <name>SplashScreen</name>
+<<<<<<< HEAD
     <message>
         <source>Bitcoin Core</source>
         <translation>Bitcoin Kern</translation>
     </message>
+=======
+>>>>>>> official/0.13
     </context>
 <context>
     <name>TrafficGraphWidget</name>
     </context>
 <context>
+<<<<<<< HEAD
     <name>TransactionDesc</name>
     </context>
 <context>
@@ -500,6 +548,18 @@
     <message>
         <source>WARNING: check your network connection, %d blocks received in the last %d hours (%d expected)</source>
         <translation>WAARSKUWING:  toets die status van u netwerk, %d blokke ontvang in die laaste %d ure (%d verwag)</translation>
+=======
+    <name>TransactionDescDialog</name>
+    </context>
+<context>
+    <name>UnitDisplayStatusBarControl</name>
+    </context>
+<context>
+    <name>bitcoin-core</name>
+    <message>
+        <source>Bitcoin Core</source>
+        <translation>Bitcoin Kern</translation>
+>>>>>>> official/0.13
     </message>
     <message>
         <source>Do not keep transactions in the mempool longer than &lt;n&gt; hours (default: %u)</source>

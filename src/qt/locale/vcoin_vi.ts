@@ -18,31 +18,8 @@
         <translation>Sao chép</translation>
     </message>
     <message>
-        <source>&amp;Copy Address</source>
-        <translation>Sao chép địa chỉ</translation>
-    </message>
-    <message>
         <source>&amp;Delete</source>
         <translation>&amp;Xóa</translation>
-    </message>
-    <message>
-        <source>Comma separated file (*.csv)</source>
-        <translation>Tập tin tách biệt bởi dấu phẩy (*.csv)</translation>
-    </message>
-    </context>
-<context>
-    <name>AddressTableModel</name>
-    <message>
-        <source>Label</source>
-        <translation>Nhãn dữ liệu</translation>
-    </message>
-    <message>
-        <source>Address</source>
-        <translation>Địa chỉ</translation>
-    </message>
-    <message>
-        <source>(no label)</source>
-        <translation>(chưa có nhãn)</translation>
     </message>
 </context>
 <context>
@@ -55,21 +32,21 @@
     <name>BitcoinGUI</name>
     </context>
 <context>
-    <name>ClientModel</name>
-    </context>
-<context>
     <name>CoinControlDialog</name>
     <message>
         <source>Amount:</source>
         <translation>Số lượng:</translation>
+<<<<<<< HEAD:src/qt/locale/vcoin_vi.ts
     </message>
     <message>
         <source>Amount</source>
         <translation>Số lượng</translation>
+=======
+>>>>>>> official/0.13:src/qt/locale/bitcoin_vi.ts
     </message>
     <message>
-        <source>(no label)</source>
-        <translation>(chưa có nhãn)</translation>
+        <source>Amount</source>
+        <translation>Số lượng</translation>
     </message>
     </context>
 <context>
@@ -82,7 +59,11 @@
         <source>&amp;Address</source>
         <translation>Địa chỉ</translation>
     </message>
+<<<<<<< HEAD:src/qt/locale/vcoin_vi.ts
     </context>
+=======
+</context>
+>>>>>>> official/0.13:src/qt/locale/bitcoin_vi.ts
 <context>
     <name>FreespaceChecker</name>
     </context>
@@ -102,9 +83,6 @@
     <name>OverviewPage</name>
     </context>
 <context>
-    <name>PaymentServer</name>
-    </context>
-<context>
     <name>PeerTableModel</name>
     </context>
 <context>
@@ -113,9 +91,6 @@
         <source>Amount</source>
         <translation>Số lượng</translation>
     </message>
-    </context>
-<context>
-    <name>QRImageWidget</name>
     </context>
 <context>
     <name>RPCConsole</name>
@@ -128,6 +103,7 @@
     <message>
         <source>Copy &amp;Address</source>
         <translation>Sao chép địa chỉ</translation>
+<<<<<<< HEAD:src/qt/locale/vcoin_vi.ts
     </message>
     <message>
         <source>Address</source>
@@ -155,6 +131,8 @@
     <message>
         <source>(no label)</source>
         <translation>(chưa có nhãn)</translation>
+=======
+>>>>>>> official/0.13:src/qt/locale/bitcoin_vi.ts
     </message>
     </context>
 <context>
@@ -162,10 +140,13 @@
     <message>
         <source>Amount:</source>
         <translation>Số lượng:</translation>
+<<<<<<< HEAD:src/qt/locale/vcoin_vi.ts
     </message>
     <message>
         <source>(no label)</source>
         <translation>(chưa có nhãn)</translation>
+=======
+>>>>>>> official/0.13:src/qt/locale/bitcoin_vi.ts
     </message>
     </context>
 <context>
@@ -184,48 +165,10 @@
     <name>TrafficGraphWidget</name>
     </context>
 <context>
-    <name>TransactionDesc</name>
-    <message>
-        <source>Amount</source>
-        <translation>Số lượng</translation>
-    </message>
-    </context>
-<context>
     <name>TransactionDescDialog</name>
     </context>
 <context>
-    <name>TransactionTableModel</name>
-    <message>
-        <source>Label</source>
-        <translation>Nhãn dữ liệu</translation>
-    </message>
-    </context>
-<context>
-    <name>TransactionView</name>
-    <message>
-        <source>Comma separated file (*.csv)</source>
-        <translation>Tập tin tách biệt bởi dấu phẩy (*.csv)</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation>Nhãn dữ liệu</translation>
-    </message>
-    <message>
-        <source>Address</source>
-        <translation>Địa chỉ</translation>
-    </message>
-    </context>
-<context>
     <name>UnitDisplayStatusBarControl</name>
-    </context>
-<context>
-    <name>WalletFrame</name>
-    </context>
-<context>
-    <name>WalletModel</name>
-    </context>
-<context>
-    <name>WalletView</name>
     </context>
 <context>
     <name>bitcoin-core</name>

@@ -3,6 +3,10 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+<<<<<<< HEAD
+=======
+from test_framework.blockstore import BlockStore
+>>>>>>> official/0.13
 from test_framework.test_framework import ComparisonTestFramework
 from test_framework.util import *
 from test_framework.mininode import CTransaction, NetworkThread
@@ -31,10 +35,18 @@ test that enforcement has triggered
 class BIP9SoftForksTest(ComparisonTestFramework):
 
     def __init__(self):
+<<<<<<< HEAD
         self.num_nodes = 1
 
     def setup_network(self):
         self.nodes = start_nodes(1, self.options.tmpdir,
+=======
+        super().__init__()
+        self.num_nodes = 1
+
+    def setup_network(self):
+        self.nodes = start_nodes(self.num_nodes, self.options.tmpdir,
+>>>>>>> official/0.13
                                  extra_args=[['-debug', '-whitelist=127.0.0.1']],
                                  binary=[self.options.testbinary])
 
@@ -76,11 +88,15 @@ class BIP9SoftForksTest(ComparisonTestFramework):
 
     def get_bip9_status(self, key):
         info = self.nodes[0].getblockchaininfo()
+<<<<<<< HEAD
         for row in info['bip9_softforks']:
             if row['id'] == key:
                 return row
         raise IndexError ('key:"%s" not found' % key)
 
+=======
+        return info['bip9_softforks'][key]
+>>>>>>> official/0.13
 
     def test_BIP(self, bipName, activated_version, invalidate, invalidatePostSignature, bitno):
         # generate some coins for later
@@ -195,11 +211,19 @@ class BIP9SoftForksTest(ComparisonTestFramework):
         yield TestInstance([[block, False]])
 
         # Restart all
+<<<<<<< HEAD
+=======
+        self.test.block_store.close()
+>>>>>>> official/0.13
         stop_nodes(self.nodes)
         wait_bitcoinds()
         shutil.rmtree(self.options.tmpdir)
         self.setup_chain()
         self.setup_network()
+<<<<<<< HEAD
+=======
+        self.test.block_store = BlockStore(self.options.tmpdir)
+>>>>>>> official/0.13
         self.test.clear_all_connections()
         self.test.add_all_connections(self.nodes)
         NetworkThread().start() # Start up network handling in another thread

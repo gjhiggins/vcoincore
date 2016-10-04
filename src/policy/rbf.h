@@ -7,6 +7,15 @@
 
 #include "txmempool.h"
 
+<<<<<<< HEAD
+=======
+enum RBFTransactionState {
+    RBF_TRANSACTIONSTATE_UNKNOWN,
+    RBF_TRANSACTIONSTATE_REPLACEABLE_BIP125,
+    RBF_TRANSACTIONSTATE_FINAL
+};
+
+>>>>>>> official/0.13
 // Check whether the sequence numbers on this transaction are signaling
 // opt-in to replace-by-fee, according to BIP 125
 bool SignalsOptInRBF(const CTransaction &tx);
@@ -15,6 +24,10 @@ bool SignalsOptInRBF(const CTransaction &tx);
 // according to BIP 125
 // This involves checking sequence numbers of the transaction, as well
 // as the sequence numbers of all in-mempool ancestors.
+<<<<<<< HEAD
 bool IsRBFOptIn(const CTxMemPoolEntry &entry, CTxMemPool &pool);
+=======
+RBFTransactionState IsRBFOptIn(const CTransaction &tx, CTxMemPool &pool);
+>>>>>>> official/0.13
 
 #endif // BITCOIN_POLICY_RBF_H

@@ -26,10 +26,6 @@
         <translation>Închide</translation>
     </message>
     <message>
-        <source>&amp;Copy Address</source>
-        <translation>&amp;Copiază adresa</translation>
-    </message>
-    <message>
         <source>Delete the currently selected address from the list</source>
         <translation>Şterge adresele curent selectate din listă</translation>
     </message>
@@ -43,74 +39,7 @@
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation>Şterge</translation>
-    </message>
-    <message>
-        <source>Choose the address to send coins to</source>
-        <translation>Alegeţi adresa unde vreţi să trimiteţi monezile</translation>
-    </message>
-    <message>
-        <source>Choose the address to receive coins with</source>
-        <translation>Alegeţi adresa unde vreţi să primiţi monezile</translation>
-    </message>
-    <message>
-        <source>C&amp;hoose</source>
-        <translation>&amp;Alegeţi</translation>
-    </message>
-    <message>
-        <source>Sending addresses</source>
-        <translation>Adresa destinatarului</translation>
-    </message>
-    <message>
-        <source>Receiving addresses</source>
-        <translation>Adresa de primire</translation>
-    </message>
-    <message>
-        <source>These are your Bitcoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Acestea sînt adresele dumneavoastră Bitcoin pentru efectuarea plăţilor. Verificaţi întotdeauna cantitatea şi adresa de primire înainte de a trimite monezi.</translation>
-    </message>
-    <message>
-        <source>These are your Bitcoin addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Acestea sînt adresele dumneavoastră Bitcoin folosite pentru a primi plati. Este recomandat să folosiţi o adresă nouă de primire pentru fiecare tranzacţie în parte.</translation>
-    </message>
-    <message>
-        <source>Copy &amp;Label</source>
-        <translation>Copiază &amp;eticheta</translation>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
-        <translation>&amp;Editare</translation>
-    </message>
-    <message>
-        <source>Export Address List</source>
-        <translation>Exportă listă de adrese</translation>
-    </message>
-    <message>
-        <source>Comma separated file (*.csv)</source>
-        <translation>Fişier text cu valori separate prin virgulă (*.csv)</translation>
-    </message>
-    <message>
-        <source>Exporting Failed</source>
-        <translation>Export nereuşit</translation>
-    </message>
-    <message>
-        <source>There was an error trying to save the address list to %1. Please try again.</source>
-        <translation>A apărut o eroare la salvarea listei de adrese la %1. Vă rugăm să încercaţi din nou.</translation>
-    </message>
-</context>
-<context>
-    <name>AddressTableModel</name>
-    <message>
-        <source>Label</source>
-        <translation>Etichetă</translation>
-    </message>
-    <message>
-        <source>Address</source>
-        <translation>Adresă</translation>
-    </message>
-    <message>
-        <source>(no label)</source>
-        <translation>(fără etichetă)</translation>
+        <translation>&amp;Şterge</translation>
     </message>
 </context>
 <context>
@@ -131,94 +60,6 @@
         <source>Repeat new passphrase</source>
         <translation>Repetaţi noua frază de acces</translation>
     </message>
-    <message>
-        <source>Encrypt wallet</source>
-        <translation>Criptare portofel</translation>
-    </message>
-    <message>
-        <source>This operation needs your wallet passphrase to unlock the wallet.</source>
-        <translation>Această acţiune necesită fraza dvs. de acces pentru deblocarea portofelului.</translation>
-    </message>
-    <message>
-        <source>Unlock wallet</source>
-        <translation>Deblocare portofel</translation>
-    </message>
-    <message>
-        <source>This operation needs your wallet passphrase to decrypt the wallet.</source>
-        <translation>Această acţiune necesită fraza dvs. de acces pentru decriptarea portofelului.</translation>
-    </message>
-    <message>
-        <source>Decrypt wallet</source>
-        <translation>Decriptare portofel</translation>
-    </message>
-    <message>
-        <source>Change passphrase</source>
-        <translation>Schimbare frază de acces</translation>
-    </message>
-    <message>
-        <source>Confirm wallet encryption</source>
-        <translation>Confirmaţi criptarea portofelului</translation>
-    </message>
-    <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR BITCOINS&lt;/b&gt;!</source>
-        <translation>Atenţie: Dacă pierdeţi parola portofelului electronic după criptare, &lt;b&gt;VEŢI PIERDE ÎNTREAGA SUMĂ DE BITCOIN ACUMULATĂ&lt;/b&gt;!</translation>
-    </message>
-    <message>
-        <source>Are you sure you wish to encrypt your wallet?</source>
-        <translation>Sigur doriţi să criptaţi portofelul dvs.?</translation>
-    </message>
-    <message>
-        <source>Bitcoin Core will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your bitcoins from being stolen by malware infecting your computer.</source>
-        <translation>Bitcoin se va închide acum pentru a termina procesul de criptare. Ţineţi minte că criptarea portofelului nu vă poate proteja în totalitate de furtul monedelor de către programe dăunătoare care vă infectează calculatorul.</translation>
-    </message>
-    <message>
-        <source>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. For security reasons, previous backups of the unencrypted wallet file will become useless as soon as you start using the new, encrypted wallet.</source>
-        <translation>IMPORTANT: Orice copie de siguranţă făcută anterior portofelului dumneavoastră ar trebui înlocuită cu cea generată cel mai recent, fişier criptat al portofelului. Pentru siguranţă, copiile de siguranţă vechi ale portofelului ne-criptat vor deveni inutile imediat ce veţi începe folosirea noului fişier criptat al portofelului.</translation>
-    </message>
-    <message>
-        <source>Warning: The Caps Lock key is on!</source>
-        <translation>Atenţie! Caps Lock este pornit!</translation>
-    </message>
-    <message>
-        <source>Wallet encrypted</source>
-        <translation>Portofel criptat</translation>
-    </message>
-    <message>
-        <source>Enter the new passphrase to the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
-        <translation>Introduceţi noua parolă a portofelului electronic.&lt;br/&gt;Vă rugăm să folosiţi o parolă de&lt;b&gt;minimum 10 caractere aleatoare&lt;/b&gt;, sau &lt;b&gt;minimum 8 cuvinte&lt;/b&gt;.</translation>
-    </message>
-    <message>
-        <source>Enter the old passphrase and new passphrase to the wallet.</source>
-        <translation>Introduceţi vechea şi noua parolă pentru portofel.</translation>
-    </message>
-    <message>
-        <source>Wallet encryption failed</source>
-        <translation>Criptarea portofelului nu a reuşit</translation>
-    </message>
-    <message>
-        <source>Wallet encryption failed due to an internal error. Your wallet was not encrypted.</source>
-        <translation>Criptarea portofelului nu a reuşit din cauza unei erori interne. Portofelul dvs. nu a fost criptat.</translation>
-    </message>
-    <message>
-        <source>The supplied passphrases do not match.</source>
-        <translation>Frazele de acces introduse nu se potrivesc.</translation>
-    </message>
-    <message>
-        <source>Wallet unlock failed</source>
-        <translation>Deblocarea portofelului nu a reuşit</translation>
-    </message>
-    <message>
-        <source>The passphrase entered for the wallet decryption was incorrect.</source>
-        <translation>Fraza de acces introdusă pentru decriptarea portofelului a fost incorectă.</translation>
-    </message>
-    <message>
-        <source>Wallet decryption failed</source>
-        <translation>Decriptarea portofelului nu a reuşit</translation>
-    </message>
-    <message>
-        <source>Wallet passphrase was successfully changed.</source>
-        <translation>Parola portofelului electronic a fost schimbată.</translation>
-    </message>
 </context>
 <context>
     <name>BanTableModel</name>
@@ -232,6 +73,20 @@
     </message>
 </context>
 <context>
+<<<<<<< HEAD:src/qt/locale/vcoin_ro_RO.ts
+    <name>BanTableModel</name>
+    <message>
+        <source>IP/Netmask</source>
+        <translation>IP/Netmask</translation>
+    </message>
+    <message>
+        <source>Banned Until</source>
+        <translation>Banat până la</translation>
+    </message>
+</context>
+<context>
+=======
+>>>>>>> official/0.13:src/qt/locale/bitcoin_ro_RO.ts
     <name>BitcoinGUI</name>
     <message>
         <source>Sign &amp;message...</source>
@@ -306,14 +161,6 @@
         <translation>Deschide &amp;URI...</translation>
     </message>
     <message>
-        <source>Bitcoin Core client</source>
-        <translation>Clientul Bitcoin Core</translation>
-    </message>
-    <message>
-        <source>Importing blocks from disk...</source>
-        <translation>Import blocuri de pe disk...</translation>
-    </message>
-    <message>
         <source>Reindexing blocks on disk...</source>
         <translation>Se reindexează blocurile pe disc...</translation>
     </message>
@@ -358,10 +205,6 @@
         <translation>P&amp;rimeşte</translation>
     </message>
     <message>
-        <source>Show information about Bitcoin Core</source>
-        <translation>Arată informaţii despre Bitcoin Core</translation>
-    </message>
-    <message>
         <source>&amp;Show / Hide</source>
         <translation>Arată/Ascunde</translation>
     </message>
@@ -398,20 +241,8 @@
         <translation>Bara de unelte</translation>
     </message>
     <message>
-        <source>Bitcoin Core</source>
-        <translation>Nucleul Bitcoin</translation>
-    </message>
-    <message>
         <source>Request payments (generates QR codes and bitcoin: URIs)</source>
         <translation>Cereţi plăţi (generează coduri QR şi bitcoin-uri: URls)</translation>
-    </message>
-    <message>
-        <source>&amp;About Bitcoin Core</source>
-        <translation>&amp;Despre Nucleul Bitcoin</translation>
-    </message>
-    <message>
-        <source>Modify configuration options for Bitcoin Core</source>
-        <translation>Modifică opţiunile de configurare pentru Bitcoin</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -428,10 +259,6 @@
     <message>
         <source>&amp;Command-line options</source>
         <translation>Opţiuni linie de &amp;comandă</translation>
-    </message>
-    <message>
-        <source>Show the Bitcoin Core help message to get a list with possible Bitcoin command-line options</source>
-        <translation>Arată mesajul de ajutor Bitcoin Core pentru a obţine o listă cu opţiunile posibile de linii de comandă Bitcoin</translation>
     </message>
     <message numerus="yes">
         <source>%n active connection(s) to Bitcoin network</source>
@@ -545,17 +372,10 @@
     </message>
 </context>
 <context>
-    <name>ClientModel</name>
-    <message>
-        <source>Network Alert</source>
-        <translation>Alertă reţea</translation>
-    </message>
-</context>
-<context>
     <name>CoinControlDialog</name>
     <message>
         <source>Coin Selection</source>
-        <translation>Selectarea monezii</translation>
+        <translation>Selectarea monedei</translation>
     </message>
     <message>
         <source>Quantity:</source>
@@ -629,6 +449,7 @@
         <source>Priority</source>
         <translation>Prioritate</translation>
     </message>
+<<<<<<< HEAD:src/qt/locale/vcoin_ro_RO.ts
     <message>
         <source>Copy address</source>
         <translation>Copiază adresa</translation>
@@ -773,6 +594,8 @@
         <source>(change)</source>
         <translation>(rest)</translation>
     </message>
+=======
+>>>>>>> official/0.13:src/qt/locale/bitcoin_ro_RO.ts
 </context>
 <context>
     <name>EditAddressDialog</name>
@@ -795,38 +618,6 @@
     <message>
         <source>&amp;Address</source>
         <translation>&amp;Adresă</translation>
-    </message>
-    <message>
-        <source>New receiving address</source>
-        <translation>Noua adresă de primire</translation>
-    </message>
-    <message>
-        <source>New sending address</source>
-        <translation>Noua adresă de trimitere</translation>
-    </message>
-    <message>
-        <source>Edit receiving address</source>
-        <translation>Editează adresa de primire</translation>
-    </message>
-    <message>
-        <source>Edit sending address</source>
-        <translation>Editează adresa de trimitere</translation>
-    </message>
-    <message>
-        <source>The entered address "%1" is already in the address book.</source>
-        <translation>Adresa introdusă "%1" se află deja în lista de adrese.</translation>
-    </message>
-    <message>
-        <source>The entered address "%1" is not a valid Bitcoin address.</source>
-        <translation>Adresa introdusă "%1" nu este o adresă bitcoin validă.</translation>
-    </message>
-    <message>
-        <source>Could not unlock wallet.</source>
-        <translation>Portofelul nu a putut fi deblocat.</translation>
-    </message>
-    <message>
-        <source>New key generation failed.</source>
-        <translation>Generarea noii chei nu a reuşit.</translation>
     </message>
 </context>
 <context>
@@ -855,10 +646,6 @@
 <context>
     <name>HelpMessageDialog</name>
     <message>
-        <source>Bitcoin Core</source>
-        <translation>Nucleul Bitcoin</translation>
-    </message>
-    <message>
         <source>version</source>
         <translation>versiunea</translation>
     </message>
@@ -867,8 +654,8 @@
         <translation>(%1-bit)</translation>
     </message>
     <message>
-        <source>About Bitcoin Core</source>
-        <translation>Despre Nucleul Bitcoin</translation>
+        <source>About %1</source>
+        <translation>Despre %1</translation>
     </message>
     <message>
         <source>Command-line options</source>
@@ -882,6 +669,36 @@
         <source>command-line options</source>
         <translation>Opţiuni linie de comandă</translation>
     </message>
+<<<<<<< HEAD:src/qt/locale/vcoin_ro_RO.ts
+    <message>
+        <source>UI Options:</source>
+        <translation>Opţiuni UI:</translation>
+    </message>
+    <message>
+        <source>Choose data directory on startup (default: %u)</source>
+        <translation>Alege dosarul de date la pornire (implicit: %u)</translation>
+    </message>
+    <message>
+        <source>Set language, for example "de_DE" (default: system locale)</source>
+        <translation>Setează limba, de exemplu: "ro_RO" (implicit: sistem local)</translation>
+    </message>
+    <message>
+        <source>Start minimized</source>
+        <translation>Porniţi minimizat</translation>
+    </message>
+    <message>
+        <source>Set SSL root certificates for payment request (default: -system-)</source>
+        <translation>Setare rădăcină certificat SSL pentru cerere de plată (implicit: -sistem- )</translation>
+    </message>
+    <message>
+        <source>Show splash screen on startup (default: %u)</source>
+        <translation>Afişează ecran splash la pornire (implicit: %u)</translation>
+    </message>
+    </context>
+<context>
+    <name>Intro</name>
+=======
+>>>>>>> official/0.13:src/qt/locale/bitcoin_ro_RO.ts
     <message>
         <source>UI Options:</source>
         <translation>Opţiuni UI:</translation>
@@ -914,14 +731,6 @@
         <translation>Bun venit</translation>
     </message>
     <message>
-        <source>Welcome to Bitcoin Core.</source>
-        <translation>Bine aţi venit la Nucleul Bitcoin.</translation>
-    </message>
-    <message>
-        <source>As this is the first time the program is launched, you can choose where Bitcoin Core will store its data.</source>
-        <translation>Dacă aceasta este prima dată cînd programul este lansat, puteţi alege unde Nucleul Bitcoin va stoca datele.</translation>
-    </message>
-    <message>
         <source>Bitcoin Core will download and store a copy of the Bitcoin block chain. At least %1GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
         <translation>Nucleul Bitcoin se va descărca şi va stoca o copie a lanţului blocului Bitcoin. Cel puţin %1GB de date vor fi stocate în acest dosar şi se va mări în timp. Portofelul va fi, de asemenea, stocat în acest dosar.</translation>
     </message>
@@ -932,10 +741,6 @@
     <message>
         <source>Use a custom data directory:</source>
         <translation>Foloseşte un dosar de date personalizat:</translation>
-    </message>
-    <message>
-        <source>Bitcoin Core</source>
-        <translation>Nucleul Bitcoin</translation>
     </message>
     <message>
         <source>Error: Specified data directory "%1" cannot be created.</source>
@@ -971,10 +776,6 @@
     <message>
         <source>Select payment request file</source>
         <translation>Selectaţi fişierul cerere de plată</translation>
-    </message>
-    <message>
-        <source>Select payment request file to open</source>
-        <translation>Selectaţi fişierul cerere de plată pentru deschidere</translation>
     </message>
 </context>
 <context>
@@ -1016,10 +817,6 @@
         <translation>Minimizează fereastra în locul părăsirii programului în momentul închiderii ferestrei. Cînd acestă opţiune e activă, aplicaţia se va opri doar în momentul selectării comenzii 'Închide aplicaţia' din menu.</translation>
     </message>
     <message>
-        <source>The user interface language can be set here. This setting will take effect after restarting Bitcoin Core.</source>
-        <translation>Limba interfeţei utilizatorului poate fi setată aici. Această setare va avea efect după repornirea Nucleului Bitcoin.</translation>
-    </message>
-    <message>
         <source>Third party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items. %s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</source>
         <translation>URL-uri terţe părţi (de exemplu, un explorator de bloc), care apar în tab-ul tranzacţiilor ca elemente de meniu contextual. %s în URL este înlocuit cu hash de tranzacţie. URL-urile multiple sînt separate prin bară verticală |.</translation>
     </message>
@@ -1042,10 +839,6 @@
     <message>
         <source>&amp;Network</source>
         <translation>Reţea</translation>
-    </message>
-    <message>
-        <source>&amp;Start Bitcoin Core on system login</source>
-        <translation>Porneşte Nucleul Bitcoin la pornirea sistemului</translation>
     </message>
     <message>
         <source>(0 = auto, &lt;0 = leave that many cores free)</source>
@@ -1098,6 +891,18 @@
     <message>
         <source>Port of the proxy (e.g. 9050)</source>
         <translation>Portul proxy (de exemplu: 9050)</translation>
+    </message>
+    <message>
+        <source>IPv4</source>
+        <translation>IPv4</translation>
+    </message>
+    <message>
+        <source>IPv6</source>
+        <translation>IPv6</translation>
+    </message>
+    <message>
+        <source>Tor</source>
+        <translation>Tor</translation>
     </message>
     <message>
         <source>&amp;Window</source>
@@ -1248,52 +1053,56 @@
     </message>
 </context>
 <context>
-    <name>PaymentServer</name>
+    <name>PeerTableModel</name>
     <message>
-        <source>URI handling</source>
-        <translation>Gestionare URI</translation>
+        <source>User Agent</source>
+        <translation>Agent utilizator</translation>
     </message>
     <message>
-        <source>Invalid payment address %1</source>
-        <translation>Adresă pentru plată nevalidă %1</translation>
+        <source>Node/Service</source>
+        <translation>Nod/Serviciu</translation>
     </message>
     <message>
-        <source>Payment request rejected</source>
-        <translation>Cerere de plată refuzată</translation>
+        <source>Ping Time</source>
+        <translation>Timp ping</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <source>Amount</source>
+        <translation>Cantitate</translation>
     </message>
     <message>
-        <source>Payment request network doesn't match client network.</source>
-        <translation>Cererea de plată din reţea nu se potriveşte cu clientul din reţea</translation>
+        <source>Enter a Bitcoin address (e.g. %1)</source>
+        <translation>Introduceţi o adresă Bitcoin (de exemplu %1)</translation>
     </message>
     <message>
-        <source>Payment request is not initialized.</source>
-        <translation>Cererea de plată nu este iniţializată.</translation>
+        <source>%1 d</source>
+        <translation>%1 z</translation>
     </message>
     <message>
-        <source>Requested payment amount of %1 is too small (considered dust).</source>
-        <translation>Suma cerută de plată de %1 este prea mică (considerată praf).</translation>
+        <source>%1 h</source>
+        <translation>%1 h</translation>
     </message>
     <message>
-        <source>Payment request error</source>
-        <translation>Eroare la cererea de plată</translation>
+        <source>%1 m</source>
+        <translation>%1 m</translation>
     </message>
     <message>
-        <source>Cannot start bitcoin: click-to-pay handler</source>
-        <translation>Nu poate porni bitcoin: manipulator clic-pentru-plată</translation>
+        <source>%1 s</source>
+        <translation>%1 s</translation>
     </message>
     <message>
-        <source>Payment request fetch URL is invalid: %1</source>
-        <translation>URL-ul cererii de plată preluat nu este valid: %1</translation>
+        <source>None</source>
+        <translation>Niciuna</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Bitcoin address or malformed URI parameters.</source>
-        <translation>URI nu poate fi analizat! Acest lucru poate fi cauzat de o adresă Bitcoin nevalidă sau parametri URI deformaţi.</translation>
+        <source>N/A</source>
+        <translation>N/A</translation>
     </message>
     <message>
-        <source>Payment request file handling</source>
-        <translation>Manipulare fişier cerere de plată</translation>
-    </message>
-    <message>
+<<<<<<< HEAD:src/qt/locale/vcoin_ro_RO.ts
         <source>Payment request file cannot be read! This can be caused by an invalid payment request file.</source>
         <translation>Fişierul cerere de plată nu poate fi citit! Cauza poate fi un fişier cerere de plată nevalid.</translation>
     </message>
@@ -1416,7 +1225,14 @@
     <message>
         <source>Client name</source>
         <translation>Nume client</translation>
+=======
+        <source>%1 ms</source>
+        <translation>%1 ms</translation>
+>>>>>>> official/0.13:src/qt/locale/bitcoin_ro_RO.ts
     </message>
+</context>
+<context>
+    <name>RPCConsole</name>
     <message>
         <source>N/A</source>
         <translation>indisponibil</translation>
@@ -1436,10 +1252,6 @@
     <message>
         <source>General</source>
         <translation>General</translation>
-    </message>
-    <message>
-        <source>Using OpenSSL version</source>
-        <translation>Foloseşte OpenSSL versiunea</translation>
     </message>
     <message>
         <source>Using BerkeleyDB version</source>
@@ -1470,6 +1282,14 @@
         <translation>Numărul curent de blocuri</translation>
     </message>
     <message>
+        <source>Current number of transactions</source>
+        <translation>Numărul curent de tranzacţii</translation>
+    </message>
+    <message>
+        <source>Memory usage</source>
+        <translation>Memorie folosită</translation>
+    </message>
+    <message>
         <source>Received</source>
         <translation>Recepţionat</translation>
     </message>
@@ -1486,12 +1306,28 @@
         <translation>Selectaţi un partener pentru a vedea informaţiile detaliate.</translation>
     </message>
     <message>
+        <source>Whitelisted</source>
+        <translation>Whitelisted</translation>
+    </message>
+    <message>
         <source>Direction</source>
         <translation>Direcţie</translation>
     </message>
     <message>
         <source>Version</source>
         <translation>Versiune</translation>
+    </message>
+    <message>
+        <source>Starting Block</source>
+        <translation>Bloc de început</translation>
+    </message>
+    <message>
+        <source>Synced Headers</source>
+        <translation>Headere Sincronizate</translation>
+    </message>
+    <message>
+        <source>Synced Blocks</source>
+        <translation>Blocuri Sincronizate</translation>
     </message>
     <message>
         <source>User Agent</source>
@@ -1550,10 +1386,6 @@
         <translation>Ieşire:</translation>
     </message>
     <message>
-        <source>Build date</source>
-        <translation>Construit la data</translation>
-    </message>
-    <message>
         <source>Debug log file</source>
         <translation>Fişier jurnal depanare</translation>
     </message>
@@ -1562,8 +1394,24 @@
         <translation>Curăţă consola</translation>
     </message>
     <message>
-        <source>Welcome to the Bitcoin Core RPC console.</source>
-        <translation>Bun venit la consola Nucleului Bitcoin RPC.</translation>
+        <source>&amp;Disconnect Node</source>
+        <translation>&amp;Deconectare nod</translation>
+    </message>
+    <message>
+        <source>1 &amp;hour</source>
+        <translation>1 &amp;oră</translation>
+    </message>
+    <message>
+        <source>1 &amp;day</source>
+        <translation>1 &amp;zi</translation>
+    </message>
+    <message>
+        <source>1 &amp;week</source>
+        <translation>1 &amp;săptămână</translation>
+    </message>
+    <message>
+        <source>1 &amp;year</source>
+        <translation>1 &amp;an</translation>
     </message>
     <message>
         <source>Use up and down arrows to navigate history, and &lt;b&gt;Ctrl-L&lt;/b&gt; to clear screen.</source>
@@ -1604,6 +1452,14 @@
     <message>
         <source>Outbound</source>
         <translation>Ieşire</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>Da</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>Nu</translation>
     </message>
     <message>
         <source>Unknown</source>
@@ -1680,18 +1536,6 @@
         <source>Remove</source>
         <translation>Înlătură</translation>
     </message>
-    <message>
-        <source>Copy label</source>
-        <translation>Copiază eticheta</translation>
-    </message>
-    <message>
-        <source>Copy message</source>
-        <translation>Copiază mesajul</translation>
-    </message>
-    <message>
-        <source>Copy amount</source>
-        <translation>Copiază suma</translation>
-    </message>
 </context>
 <context>
     <name>ReceiveRequestDialog</name>
@@ -1710,73 +1554,6 @@
     <message>
         <source>&amp;Save Image...</source>
         <translation>&amp;Salvează imaginea...</translation>
-    </message>
-    <message>
-        <source>Request payment to %1</source>
-        <translation>Cere plata pentru %1</translation>
-    </message>
-    <message>
-        <source>Payment information</source>
-        <translation>Informaţiile plăţii</translation>
-    </message>
-    <message>
-        <source>URI</source>
-        <translation>URI</translation>
-    </message>
-    <message>
-        <source>Address</source>
-        <translation>Adresă</translation>
-    </message>
-    <message>
-        <source>Amount</source>
-        <translation>Sumă</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation>Etichetă</translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation>Mesaj</translation>
-    </message>
-    <message>
-        <source>Resulting URI too long, try to reduce the text for label / message.</source>
-        <translation>URI rezultat este prea lung, încearcaţi să reduceţi textul pentru etichetă / mesaj.</translation>
-    </message>
-    <message>
-        <source>Error encoding URI into QR Code.</source>
-        <translation>Eroare la codarea URl-ului în cod QR.</translation>
-    </message>
-</context>
-<context>
-    <name>RecentRequestsTableModel</name>
-    <message>
-        <source>Date</source>
-        <translation>Data</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation>Etichetă</translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation>Mesaj</translation>
-    </message>
-    <message>
-        <source>Amount</source>
-        <translation>Sumă</translation>
-    </message>
-    <message>
-        <source>(no label)</source>
-        <translation>(fără etichetă)</translation>
-    </message>
-    <message>
-        <source>(no message)</source>
-        <translation>(nici un mesaj)</translation>
-    </message>
-    <message>
-        <source>(no amount)</source>
-        <translation>(sumă nulă)</translation>
     </message>
 </context>
 <context>
@@ -1878,14 +1655,6 @@
         <translation>rapid</translation>
     </message>
     <message>
-        <source>Send as zero-fee transaction if possible</source>
-        <translation>Trimite ca taxă zero dacă este posibil</translation>
-    </message>
-    <message>
-        <source>(confirmation may take longer)</source>
-        <translation>(confirmarea poate dura mai mult)</translation>
-    </message>
-    <message>
         <source>Send to multiple recipients at once</source>
         <translation>Trimite simultan către mai mulţi destinatari</translation>
     </message>
@@ -1917,98 +1686,6 @@
         <source>S&amp;end</source>
         <translation>Trimit&amp;e</translation>
     </message>
-    <message>
-        <source>Confirm send coins</source>
-        <translation>Confirmă trimiterea de monede</translation>
-    </message>
-    <message>
-        <source>%1 to %2</source>
-        <translation>%1 la %2</translation>
-    </message>
-    <message>
-        <source>Copy quantity</source>
-        <translation>Copiază cantitea</translation>
-    </message>
-    <message>
-        <source>Copy amount</source>
-        <translation>Copiază suma</translation>
-    </message>
-    <message>
-        <source>Copy fee</source>
-        <translation>Copiază taxa</translation>
-    </message>
-    <message>
-        <source>Copy after fee</source>
-        <translation>Copiază după taxă</translation>
-    </message>
-    <message>
-        <source>Copy bytes</source>
-        <translation>Copiază octeţi</translation>
-    </message>
-    <message>
-        <source>Copy priority</source>
-        <translation>Copiază prioritatea</translation>
-    </message>
-    <message>
-        <source>Copy change</source>
-        <translation>Copiază rest</translation>
-    </message>
-    <message>
-        <source>or</source>
-        <translation>sau</translation>
-    </message>
-    <message>
-        <source>The amount to pay must be larger than 0.</source>
-        <translation>Suma de plată trebuie să fie mai mare decît 0.</translation>
-    </message>
-    <message>
-        <source>The amount exceeds your balance.</source>
-        <translation>Suma depăşeşte soldul contului.</translation>
-    </message>
-    <message>
-        <source>The total exceeds your balance when the %1 transaction fee is included.</source>
-        <translation>Totalul depăşeşte soldul contului dacă se include şi plata taxei de %1.</translation>
-    </message>
-    <message>
-        <source>Transaction creation failed!</source>
-        <translation>Creare tranzacţie nereuşită!</translation>
-    </message>
-    <message>
-        <source>The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.</source>
-        <translation>Tranzacţia a fost respinsă! Acest lucru se poate întîmpla dacă o parte din monedele tale din portofel au fost deja cheltuite, la fel ca şi cum aţi fi folosit o copie a wallet.dat şi monedele au fost cheltuite în copie, dar nu au fost marcate ca şi cheltuite şi aici.</translation>
-    </message>
-    <message>
-        <source>Payment request expired.</source>
-        <translation>Cererea de plată a expirat.</translation>
-    </message>
-    <message>
-        <source>The recipient address is not valid. Please recheck.</source>
-        <translation>Adresa destinatarului nu este validă, vă rugăm să o verificaţi.</translation>
-    </message>
-    <message>
-        <source>Warning: Invalid Bitcoin address</source>
-        <translation>Atenţie: Adresa bitcoin nevalidă!</translation>
-    </message>
-    <message>
-        <source>(no label)</source>
-        <translation>(fără etichetă)</translation>
-    </message>
-    <message>
-        <source>Warning: Unknown change address</source>
-        <translation>Atenţie: Adresă de rest necunoscută</translation>
-    </message>
-    <message>
-        <source>Copy dust</source>
-        <translation>Copiază praf</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to send?</source>
-        <translation>Sigur doriţi să trimiteţi?</translation>
-    </message>
-    <message>
-        <source>added as transaction fee</source>
-        <translation>adăugat ca taxă de tranzacţie</translation>
-    </message>
 </context>
 <context>
     <name>SendCoinsEntry</name>
@@ -2019,10 +1696,6 @@
     <message>
         <source>Pay &amp;To:</source>
         <translation>Plăteşte că&amp;tre:</translation>
-    </message>
-    <message>
-        <source>Enter a label for this address to add it to your address book</source>
-        <translation>Introduceţi o etichetă pentru această adresă pentru a fi adăugată în lista dvs. de adrese</translation>
     </message>
     <message>
         <source>&amp;Label:</source>
@@ -2080,8 +1753,8 @@
 <context>
     <name>ShutdownWindow</name>
     <message>
-        <source>Bitcoin Core is shutting down...</source>
-        <translation>Nucleul Bitcoin se închide...</translation>
+        <source>%1 is shutting down...</source>
+        <translation>%1 se închide</translation>
     </message>
     <message>
         <source>Do not shut down the computer until this window disappears.</source>
@@ -2166,66 +1839,71 @@
         <source>Reset all verify message fields</source>
         <translation>Resetează toate cîmpurile mesajelor semnate</translation>
     </message>
-    <message>
-        <source>Click "Sign Message" to generate signature</source>
-        <translation>Faceţi clic pe "Semneaza msaj" pentru a genera semnătura</translation>
-    </message>
-    <message>
-        <source>The entered address is invalid.</source>
-        <translation>Adresa introdusă nu este validă</translation>
-    </message>
-    <message>
-        <source>Please check the address and try again.</source>
-        <translation>Vă rugăm verificaţi adresa şi încercaţi din nou.</translation>
-    </message>
-    <message>
-        <source>The entered address does not refer to a key.</source>
-        <translation>Adresa introdusă nu se referă la o cheie.</translation>
-    </message>
-    <message>
-        <source>Wallet unlock was cancelled.</source>
-        <translation>Blocarea portofelului a fost întreruptă.</translation>
-    </message>
-    <message>
-        <source>Private key for the entered address is not available.</source>
-        <translation>Cheia privată pentru adresa introdusă nu este validă.</translation>
-    </message>
-    <message>
-        <source>Message signing failed.</source>
-        <translation>Semnarea mesajului nu a reuşit.</translation>
-    </message>
-    <message>
-        <source>Message signed.</source>
-        <translation>Mesaj semnat.</translation>
-    </message>
-    <message>
-        <source>The signature could not be decoded.</source>
-        <translation>Această semnatură nu a putut fi decodată.</translation>
-    </message>
-    <message>
-        <source>Please check the signature and try again.</source>
-        <translation>Vă rugăm verificaţi semnătura şi încercaţi din nou.</translation>
-    </message>
-    <message>
-        <source>The signature did not match the message digest.</source>
-        <translation>Semnatura nu se potriveşte cu mesajul.</translation>
-    </message>
-    <message>
-        <source>Message verification failed.</source>
-        <translation>Verificarea mesajului nu a reuşit.</translation>
-    </message>
-    <message>
-        <source>Message verified.</source>
-        <translation>Mesaj verificat.</translation>
-    </message>
 </context>
 <context>
     <name>SplashScreen</name>
+    <message>
+        <source>[testnet]</source>
+        <translation>[testnet]</translation>
+    </message>
+</context>
+<context>
+    <name>TrafficGraphWidget</name>
+    <message>
+        <source>KB/s</source>
+        <translation>KB/s</translation>
+    </message>
+</context>
+<context>
+    <name>TransactionDescDialog</name>
+    <message>
+        <source>This pane shows a detailed description of the transaction</source>
+        <translation>Acest panou arată o descriere detaliată a tranzacţiei</translation>
+    </message>
+</context>
+<context>
+    <name>UnitDisplayStatusBarControl</name>
+    <message>
+        <source>Unit to show amounts in. Click to select another unit.</source>
+        <translation>Unitatea în care sînt arătate sumele. Faceţi clic pentru a selecta o altă unitate.</translation>
+    </message>
+</context>
+<context>
+    <name>bitcoin-core</name>
+    <message>
+        <source>Options:</source>
+        <translation>Opţiuni:</translation>
+    </message>
+    <message>
+        <source>Specify data directory</source>
+        <translation>Specificaţi dosarul de date</translation>
+    </message>
+    <message>
+        <source>Connect to a node to retrieve peer addresses, and disconnect</source>
+        <translation>Se conectează la un nod pentru a obţine adresele partenerilor, şi apoi se deconectează</translation>
+    </message>
+    <message>
+        <source>Specify your own public address</source>
+        <translation>Specificaţi adresa dvs. publică</translation>
+    </message>
+    <message>
+        <source>Accept command line and JSON-RPC commands</source>
+        <translation>Acceptă comenzi din linia de comandă şi comenzi JSON-RPC</translation>
+    </message>
+    <message>
+        <source>Run in the background as a daemon and accept commands</source>
+        <translation>Rulează în fundal ca un demon şi acceptă comenzi</translation>
+    </message>
+    <message>
+        <source>Accept connections from outside (default: 1 if no -proxy or -connect)</source>
+        <translation>Acceptă conexiuni din afară (implicit: 1 dacă nu se foloseşte -proxy sau -connect)</translation>
+    </message>
     <message>
         <source>Bitcoin Core</source>
         <translation>Nucleul Bitcoin</translation>
     </message>
     <message>
+<<<<<<< HEAD:src/qt/locale/vcoin_ro_RO.ts
         <source>The Bitcoin Core developers</source>
         <translation>Dezvoltatorii Nucleului Bitcoin</translation>
     </message>
@@ -2736,6 +2414,8 @@
         <translation>Acceptă conexiuni din afară (implicit: 1 dacă nu se foloseşte -proxy sau -connect)</translation>
     </message>
     <message>
+=======
+>>>>>>> official/0.13:src/qt/locale/bitcoin_ro_RO.ts
         <source>Bind to given address and always listen on it. Use [host]:port notation for IPv6</source>
         <translation>Ataşaţi adresei date şi ascultaţi totdeauna pe ea. Folosiţi notaţia [host]:port pentru IPv6</translation>
     </message>
@@ -2756,20 +2436,12 @@
         <translation>Aceasta este o versiune de test preliminară - vă asumaţi riscul folosind-o - nu folosiţi pentru minerit sau aplicaţiile comercianţilor</translation>
     </message>
     <message>
-        <source>Unable to bind to %s on this computer. Bitcoin Core is probably already running.</source>
-        <translation>Nu se poate lega la %s pe acest calculator. Nucleul Bitcoin probabil deja rulează.</translation>
-    </message>
-    <message>
         <source>Warning: The network does not appear to fully agree! Some miners appear to be experiencing issues.</source>
         <translation>Atenţie: Reţeaua nu pare să fie de acord în totalitate! Aparent nişte mineri au probleme.</translation>
     </message>
     <message>
         <source>Warning: We do not appear to fully agree with our peers! You may need to upgrade, or other nodes may need to upgrade.</source>
         <translation>Atenţie: Aparent, nu sîntem de acord cu toţi partenerii noştri! Va trebui să faceţi o actualizare, sau alte noduri necesită actualizare.</translation>
-    </message>
-    <message>
-        <source>Warning: wallet.dat corrupt, data salvaged! Original wallet.dat saved as wallet.{timestamp}.bak in %s; if your balance or transactions are incorrect you should restore from a backup.</source>
-        <translation>Atenţie: fişierul wallet.dat este corupt, date salvate! Fişierul original wallet.dat a fost salvat ca wallet.{timestamp}.bak in %s; dacă balansul sau tranzactiile sînt incorecte ar trebui să restauraţi dintr-o copie de siguranţă.</translation>
     </message>
     <message>
         <source>&lt;category&gt; can be:</source>
@@ -2880,16 +2552,8 @@
         <translation>Opţiuni portofel:</translation>
     </message>
     <message>
-        <source>You need to rebuild the database using -reindex to change -txindex</source>
-        <translation>Trebuie să reconstruiţi baza de date folosind -reindex pentru a schimba -txindex</translation>
-    </message>
-    <message>
         <source>Allow JSON-RPC connections from specified source. Valid for &lt;ip&gt; are a single IP (e.g. 1.2.3.4), a network/netmask (e.g. 1.2.3.4/255.255.255.0) or a network/CIDR (e.g. 1.2.3.4/24). This option can be specified multiple times</source>
         <translation>Permite conexiunile JSON-RPC din sursa specificată. Valid pentru &lt;ip&gt; sînt IP singulare (ex. 1.2.3.4), o reţea/mască-reţea (ex. 1.2.3.4/255.255.255.0) sau o reţea/CIDR (ex. 1.2.3.4/24). Această opţiune poate fi specificată de mai multe ori</translation>
-    </message>
-    <message>
-        <source>Cannot obtain a lock on data directory %s. Bitcoin Core is probably already running.</source>
-        <translation>Nu se poate obţine blocarea folderului cu date %s. Nucleul Bitcoin probabil deja rulează.</translation>
     </message>
     <message>
         <source>Execute command when a relevant alert is received or we see a really long fork (%s in cmd is replaced by message)</source>
@@ -2912,16 +2576,21 @@
         <translation>Acceptă cererile publice REST (implicit: %u)</translation>
     </message>
     <message>
+<<<<<<< HEAD:src/qt/locale/vcoin_ro_RO.ts
         <source>Cannot resolve -whitebind address: '%s'</source>
         <translation>Nu se poate rezolva adresa -whitebind: '%s'</translation>
     </message>
     <message>
         <source>Connect through SOCKS5 proxy</source>
         <translation>Conectare prin proxy SOCKS5</translation>
+=======
+        <source>Automatically create Tor hidden service (default: %d)</source>
+        <translation>Crează automat un serviciu Tor ascuns (implicit: %d)</translation>
+>>>>>>> official/0.13:src/qt/locale/bitcoin_ro_RO.ts
     </message>
     <message>
-        <source>Copyright (C) 2009-%i The Bitcoin Core Developers</source>
-        <translation>Copyright (C) 2009-%i Dezvoltatorii Bitcoin</translation>
+        <source>Connect through SOCKS5 proxy</source>
+        <translation>Conectare prin proxy SOCKS5</translation>
     </message>
     <message>
         <source>Error reading from database, shutting down.</source>
@@ -2930,22 +2599,6 @@
     <message>
         <source>Information</source>
         <translation>Informaţie</translation>
-    </message>
-    <message>
-        <source>Initialization sanity check failed. Bitcoin Core is shutting down.</source>
-        <translation>Nu s-a reuşit iniţierea verificării sănătăţii. Nucleul Bitcoin se opreşte.</translation>
-    </message>
-    <message>
-        <source>Invalid amount for -maxtxfee=&lt;amount&gt;: '%s'</source>
-        <translation>Sumă nevalidă pentru -maxtxfee=&lt;suma&gt;: '%s'</translation>
-    </message>
-    <message>
-        <source>Invalid amount for -minrelaytxfee=&lt;amount&gt;: '%s'</source>
-        <translation>Sumă nevalidă pentru -minrelaytxfee=&lt;suma&gt;:'%s'</translation>
-    </message>
-    <message>
-        <source>Invalid amount for -mintxfee=&lt;amount&gt;: '%s'</source>
-        <translation>Sumă nevalidă pentru -mintxfee=&lt;suma&gt;: '%s'</translation>
     </message>
     <message>
         <source>Invalid amount for -paytxfee=&lt;amount&gt;: '%s' (must be at least %s)</source>
@@ -3012,20 +2665,12 @@
         <translation>Utilizator pentru conexiunile JSON-RPC</translation>
     </message>
     <message>
-        <source>Wallet needed to be rewritten: restart Bitcoin Core to complete</source>
-        <translation>Portofelul necesită rescrierea: reporniţi Nucleul Bitcoin pentru completare</translation>
-    </message>
-    <message>
         <source>Warning</source>
         <translation>Avertisment</translation>
     </message>
     <message>
         <source>Zapping all transactions from wallet...</source>
         <translation>Şterge toate tranzacţiile din portofel...</translation>
-    </message>
-    <message>
-        <source>wallet.dat corrupt, salvage failed</source>
-        <translation>wallet.dat corupt, salvare nereuşită</translation>
     </message>
     <message>
         <source>Password for JSON-RPC connections</source>
@@ -3036,20 +2681,12 @@
         <translation>Execută comanda cînd cel mai bun bloc se modifică (%s în cmd este înlocuit cu hash-ul blocului)</translation>
     </message>
     <message>
-        <source>This help message</source>
-        <translation>Acest mesaj de ajutor</translation>
-    </message>
-    <message>
         <source>Allow DNS lookups for -addnode, -seednode and -connect</source>
         <translation>Permite căutări DNS pentru -addnode, -seednode şi -connect</translation>
     </message>
     <message>
         <source>Loading addresses...</source>
         <translation>Încărcare adrese...</translation>
-    </message>
-    <message>
-        <source>Error loading wallet.dat: Wallet corrupted</source>
-        <translation>Eroare la încărcarea wallet.dat: Portofel corupt</translation>
     </message>
     <message>
         <source>Output debugging information (default: %u, supplying &lt;category&gt; is optional)</source>
@@ -3060,24 +2697,12 @@
         <translation>(implicit: %s)</translation>
     </message>
     <message>
-        <source>Error loading wallet.dat</source>
-        <translation>Eroare la încărcarea wallet.dat</translation>
-    </message>
-    <message>
-        <source>Generate coins (default: %u)</source>
-        <translation>Generează monede (implicit: %u)</translation>
-    </message>
-    <message>
         <source>How many blocks to check at startup (default: %u, 0 = all)</source>
         <translation>Cîte blocuri verifică la pornire (implicit: %u, 0 = toate)</translation>
     </message>
     <message>
         <source>Invalid -proxy address: '%s'</source>
         <translation>Adresa -proxy nevalidă: '%s'</translation>
-    </message>
-    <message>
-        <source>Set minimum block size in bytes (default: %u)</source>
-        <translation>Setare mărime minimă bloc în octeţi (implicit: %u)</translation>
     </message>
     <message>
         <source>Specify configuration file (default: %s)</source>
@@ -3090,18 +2715,6 @@
     <message>
         <source>Unknown network specified in -onlynet: '%s'</source>
         <translation>Reţeaua specificată în -onlynet este necunoscută: '%s'</translation>
-    </message>
-    <message>
-        <source>Cannot resolve -bind address: '%s'</source>
-        <translation>Nu se poate rezolva adresa -bind: '%s'</translation>
-    </message>
-    <message>
-        <source>Cannot resolve -externalip address: '%s'</source>
-        <translation>Nu se poate rezolva adresa -externalip: '%s'</translation>
-    </message>
-    <message>
-        <source>Invalid amount for -paytxfee=&lt;amount&gt;: '%s'</source>
-        <translation>Suma nevalidă pentru -paytxfee=&lt;amount&gt;: '%s'</translation>
     </message>
     <message>
         <source>Insufficient funds</source>

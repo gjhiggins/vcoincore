@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Bitcoin Core version 0.12.0 is now available from:
 
   <https://bitcoin.org/bin/bitcoin-core-0.12.0/>
@@ -165,19 +166,32 @@ creating transactions that would be replaceable under BIP 125.
 
 RPC: Random-cookie RPC authentication
 -------------------------------------
+=======
+Bitcoin Core version 0.13.x is now available from:
 
-When no `-rpcpassword` is specified, the daemon now uses a special 'cookie'
-file for authentication. This file is generated with random content when the
-daemon starts, and deleted when it exits. Its contents are used as
-authentication token. Read access to this file controls who can access through
-RPC. By default it is stored in the data directory but its location can be
-overridden with the option `-rpccookiefile`.
+  <https://bitcoin.org/bin/bitcoin-core-0.13.x/>
 
-This is similar to Tor's CookieAuthentication: see
-https://www.torproject.org/docs/tor-manual.html.en
+This is a new major version release, including new features, various bugfixes
+and performance improvements, as well as updated translations.
 
-This allows running bitcoind without having to do any manual configuration.
+Please report bugs using the issue tracker at github:
 
+  <https://github.com/bitcoin/bitcoin/issues>
+
+To receive security and update notifications, please subscribe to:
+>>>>>>> official/0.13
+
+  <https://bitcoincore.org/en/list/announcements/join/>
+
+Compatibility
+==============
+
+Microsoft ended support for Windows XP on [April 8th, 2014](https://www.microsoft.com/en-us/WindowsForBusiness/end-of-xp-support),
+an OS initially released in 2001. This means that not even critical security
+updates will be released anymore. Without security updates, using a bitcoin
+wallet on a XP machine is irresponsible at least.
+
+<<<<<<< HEAD
 Relay: Any sequence of pushdatas in OP_RETURN outputs now allowed
 -----------------------------------------------------------------
 
@@ -236,12 +250,29 @@ Bitcoin Core automatically creates a hidden service to listen on, without
 manual configuration. Bitcoin Core will also use Tor automatically to connect
 to other .onion nodes if the control socket can be successfully opened. This
 will positively affect the number of available .onion nodes and their usage.
+=======
+In addition to that, with 0.12.x there have been varied reports of Bitcoin Core
+randomly crashing on Windows XP. It is [not clear](https://github.com/bitcoin/bitcoin/issues/7681#issuecomment-217439891)
+what the source of these crashes is, but it is likely that upstream
+libraries such as Qt are no longer being tested on XP.
 
-This new feature is enabled by default if Bitcoin Core is listening, and
-a connection to Tor can be made. It can be configured with the `-listenonion`,
-`-torcontrol` and `-torpassword` settings. To show verbose debugging
-information, pass `-debug=tor`.
+We do not have time nor resources to provide support for an OS that is
+end-of-life. From 0.13.0 on, Windows XP is no longer supported. Users are
+suggested to upgrade to a newer version of Windows, or install an alternative OS
+that is supported.
 
+No attempt is made to prevent installing or running the software on Windows XP,
+you can still do so at your own risk, but do not expect it to work: do not
+report issues about Windows XP to the issue tracker.
+
+Notable changes
+===============
+>>>>>>> official/0.13
+
+Example item
+--------------
+
+<<<<<<< HEAD
 Notifications through ZMQ
 -------------------------
 
@@ -297,6 +328,18 @@ spendable.
 
 Wallet: Merkle branches removed
 -------------------------------
+=======
+Low-level RPC changes
+---------------------
+
+- `importprunedfunds` only accepts two required arguments. Some versions accept
+  an optional third arg, which was always ignored. Make sure to never pass more
+  than two arguments.
+
+
+0.13.1 Change log
+=================
+>>>>>>> official/0.13
 
 Previously, every wallet transaction stored a Merkle branch to prove its
 presence in blocks. This wasn't being used for more than an expensive
@@ -304,6 +347,7 @@ sanity check. Since 0.12, these are no longer stored. When loading a
 0.12 wallet into an older version, it will automatically rescan to avoid
 failed checks.
 
+<<<<<<< HEAD
 Wallet: Pruning
 ---------------
 
@@ -752,9 +796,14 @@ git merge commit are mentioned.
 - #7229 `1ed938b` [qa] wallet: Check if maintenance changes the balance (MarcoFalke)
 - #7308 `d513405` [Tests] Eliminate intermittent failures in sendheaders.py (Suhas Daftuar)
 - #7468 `947c4ff` [rpc-tests] Change solve() to use rehash (Brad Andrews)
+=======
+    ... fill in here
+>>>>>>> official/0.13
 
-### Miscellaneous
+Credits
+=======
 
+<<<<<<< HEAD
 - #6213 `e54ff2f` [init] add -blockversion help and extend -upnp help (Diapolo)
 - #5975 `1fea667` Consensus: Decouple ContextualCheckBlockHeader from checkpoints (Jorge Timón)
 - #6061 `eba2f06` Separate Consensus::CheckTxInputs and GetSpendHeight in CheckInputs (Jorge Timón)
@@ -888,3 +937,10 @@ Thanks to everyone who directly contributed to this release:
 
 As well as everyone that helped translating on [Transifex](https://www.transifex.com/projects/p/bitcoin/).
 
+=======
+Thanks to everyone who directly contributed to this release:
+
+    ... fill in here
+
+As well as everyone that helped translating on [Transifex](https://www.transifex.com/projects/p/bitcoin/).
+>>>>>>> official/0.13

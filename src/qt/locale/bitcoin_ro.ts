@@ -11,7 +11,11 @@
     </message>
     <message>
         <source>&amp;New</source>
+<<<<<<< HEAD
         <translation>&amp;Nou</translation>
+=======
+        <translation>Nou</translation>
+>>>>>>> official/0.13
     </message>
     <message>
         <source>Copy the currently selected address to the system clipboard</source>
@@ -19,6 +23,7 @@
     </message>
     <message>
         <source>&amp;Copy</source>
+<<<<<<< HEAD
         <translation>&amp;Copiază</translation>
     </message>
     <message>
@@ -28,6 +33,13 @@
     <message>
         <source>&amp;Copy Address</source>
         <translation>&amp;Copiază Adresa</translation>
+=======
+        <translation>Copiază</translation>
+    </message>
+    <message>
+        <source>C&amp;lose</source>
+        <translation>Închide</translation>
+>>>>>>> official/0.13
     </message>
     <message>
         <source>Delete the currently selected address from the list</source>
@@ -39,6 +51,7 @@
     </message>
     <message>
         <source>&amp;Export</source>
+<<<<<<< HEAD
         <translation>&amp;Exportă</translation>
     </message>
     <message>
@@ -64,6 +77,51 @@
     </context>
 <context>
     <name>ClientModel</name>
+=======
+        <translation>Exportă</translation>
+    </message>
+    <message>
+        <source>&amp;Delete</source>
+        <translation>Șterge</translation>
+    </message>
+</context>
+<context>
+    <name>AskPassphraseDialog</name>
+    <message>
+        <source>Passphrase Dialog</source>
+        <translation>Secventa de cuvinte a parolei</translation>
+    </message>
+    <message>
+        <source>Enter passphrase</source>
+        <translation>Introduceti parola</translation>
+    </message>
+    <message>
+        <source>New passphrase</source>
+        <translation>Noua parolă</translation>
+    </message>
+    <message>
+        <source>Repeat new passphrase</source>
+        <translation>Repetati noua parolă</translation>
+    </message>
+</context>
+<context>
+    <name>BanTableModel</name>
+    <message>
+        <source>Banned Until</source>
+        <translation>Blocat până</translation>
+    </message>
+</context>
+<context>
+    <name>BitcoinGUI</name>
+    <message>
+        <source>Synchronizing with network...</source>
+        <translation>Se sincronizează cu rețeaua</translation>
+    </message>
+    <message>
+        <source>&amp;Options...</source>
+        <translation>&amp;Opțiuni...</translation>
+    </message>
+>>>>>>> official/0.13
     </context>
 <context>
     <name>CoinControlDialog</name>
@@ -90,18 +148,24 @@
     <name>OverviewPage</name>
     </context>
 <context>
+<<<<<<< HEAD
     <name>PaymentServer</name>
     </context>
 <context>
+=======
+>>>>>>> official/0.13
     <name>PeerTableModel</name>
     </context>
 <context>
     <name>QObject</name>
     </context>
 <context>
+<<<<<<< HEAD
     <name>QRImageWidget</name>
     </context>
 <context>
+=======
+>>>>>>> official/0.13
     <name>RPCConsole</name>
     </context>
 <context>
@@ -111,9 +175,12 @@
     <name>ReceiveRequestDialog</name>
     </context>
 <context>
+<<<<<<< HEAD
     <name>RecentRequestsTableModel</name>
     </context>
 <context>
+=======
+>>>>>>> official/0.13
     <name>SendCoinsDialog</name>
     </context>
 <context>
@@ -132,6 +199,7 @@
     <name>TrafficGraphWidget</name>
     </context>
 <context>
+<<<<<<< HEAD
     <name>TransactionDesc</name>
     </context>
 <context>
@@ -164,6 +232,14 @@
     </message>
     </context>
 <context>
+=======
+    <name>TransactionDescDialog</name>
+    </context>
+<context>
+    <name>UnitDisplayStatusBarControl</name>
+    </context>
+<context>
+>>>>>>> official/0.13
     <name>bitcoin-core</name>
     </context>
 </TS>
