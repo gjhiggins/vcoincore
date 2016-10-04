@@ -204,18 +204,12 @@ UniValue generatetoaddress(const UniValue& params, bool fHelp)
         nMaxTries = params[2].get_int();
     }
 
-<<<<<<< HEAD:src/rpcmining.cpp
-    mapArgs["-gen"] = (fGenerate ? "1" : "0");
-    mapArgs ["-genproclimit"] = itostr(nGenProcLimit);
-    GenerateVCoins(fGenerate, nGenProcLimit, Params());
-=======
     CBitcoinAddress address(params[1].get_str());
     if (!address.IsValid())
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Error: Invalid address");
     
     boost::shared_ptr<CReserveScript> coinbaseScript(new CReserveScript());
     coinbaseScript->reserveScript = GetScriptForDestination(address.Get());
->>>>>>> official/0.13:src/rpc/mining.cpp
 
     return generateBlocks(coinbaseScript, nGenerate, nMaxTries, false);
 }
@@ -464,10 +458,10 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
 
     if (vNodes.empty())
-        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "VCoin is not connected!");
+        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "V Core is not connected!");
 
     if (IsInitialBlockDownload())
-        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "VCoin is downloading blocks...");
+        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "V Core is downloading blocks...");
 
     static unsigned int nTransactionsUpdatedLast;
 

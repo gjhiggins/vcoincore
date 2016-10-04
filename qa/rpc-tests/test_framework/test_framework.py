@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-#!/usr/bin/env python2
-# Copyright (c) 2014-2015 The Bitcoin Core developers
-=======
 #!/usr/bin/env python3
 # Copyright (c) 2014-2016 The Bitcoin Core developers
->>>>>>> official/0.13
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -137,11 +132,8 @@ class BitcoinTestFramework(object):
         if self.options.coveragedir:
             enable_coverage(self.options.coveragedir)
 
-<<<<<<< HEAD
-=======
         PortSeed.n = self.options.port_seed
 
->>>>>>> official/0.13
         os.environ['PATH'] = self.options.srcdir+":"+self.options.srcdir+"/qt:"+os.environ['PATH']
 
         check_json_precision()

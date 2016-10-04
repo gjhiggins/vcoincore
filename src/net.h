@@ -405,9 +405,6 @@ public:
 
     // inventory based relay
     CRollingBloomFilter filterInventoryKnown;
-<<<<<<< HEAD
-    std::vector<CInv> vInventoryToSend;
-=======
     // Set of transaction ids we still have to announce.
     // They are sorted by the mempool before relay, so the order is not important.
     std::set<uint256> setInventoryTxToSend;
@@ -415,7 +412,6 @@ public:
     // There is no final sorting before sending, as they are always sent immediately
     // and in the order requested.
     std::vector<uint256> vInventoryBlockToSend;
->>>>>>> official/0.13
     CCriticalSection cs_inventory;
     std::set<uint256> setAskFor;
     std::multimap<int64_t, CInv> mapAskFor;
@@ -546,13 +542,6 @@ public:
 
     void PushInventory(const CInv& inv)
     {
-<<<<<<< HEAD
-        {
-            LOCK(cs_inventory);
-            if (inv.type == MSG_TX && filterInventoryKnown.contains(inv.hash))
-                return;
-            vInventoryToSend.push_back(inv);
-=======
         LOCK(cs_inventory);
         if (inv.type == MSG_TX) {
             if (!filterInventoryKnown.contains(inv.hash)) {
@@ -560,7 +549,6 @@ public:
             }
         } else if (inv.type == MSG_BLOCK) {
             vInventoryBlockToSend.push_back(inv.hash);
->>>>>>> official/0.13
         }
     }
 
@@ -866,8 +854,5 @@ struct AddedNodeInfo
 };
 
 std::vector<AddedNodeInfo> GetAddedNodeInfo();
-
-/** Return a timestamp in the future (in microseconds) for exponentially distributed events. */
-int64_t PoissonNextSend(int64_t nNow, int average_interval_seconds);
 
 #endif // BITCOIN_NET_H

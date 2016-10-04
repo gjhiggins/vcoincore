@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-#!/usr/bin/env python2
-# Copyright (c) 2014-2015 The Bitcoin Core developers
-=======
 #!/usr/bin/env python3
 # Copyright (c) 2014-2016 The Bitcoin Core developers
->>>>>>> official/0.13
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -32,13 +27,6 @@ class PruneTest(BitcoinTestFramework):
         self.utxo = []
         self.address = ["",""]
         self.txouts = gen_return_txouts()
-<<<<<<< HEAD
-
-    def setup_chain(self):
-        print("Initializing test directory "+self.options.tmpdir)
-        initialize_chain_clean(self.options.tmpdir, 3)
-=======
->>>>>>> official/0.13
 
     def setup_network(self):
         self.nodes = []

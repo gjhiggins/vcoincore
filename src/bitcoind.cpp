@@ -30,8 +30,8 @@
  *
  * \section intro_sec Introduction
  *
- * This is the developer documentation of the reference client for an experimental new digital currency called VCoin (https://www.vcoin.org/),
- * which enables instant payments to anyone, anywhere in the world. VCoin uses peer-to-peer technology to operate
+ * This is the developer documentation of the reference client for an experimental new digital currency called V (https://www.vcore.org/),
+ * which enables instant payments to anyone, anywhere in the world. V Core uses peer-to-peer technology to operate
  * with no central authority: managing transactions and issuing money are carried out collectively by the network.
  *
  * The software is a community-driven open source project, released under the MIT license.
@@ -78,11 +78,7 @@ bool AppInit(int argc, char* argv[])
     // Process help and version before taking care about datadir
     if (mapArgs.count("-?") || mapArgs.count("-h") ||  mapArgs.count("-help") || mapArgs.count("-version"))
     {
-<<<<<<< HEAD
-        std::string strUsage = _("VCoin Core Daemon") + " " + _("version") + " " + FormatFullVersion() + "\n";
-=======
         std::string strUsage = strprintf(_("%s Daemon"), _(PACKAGE_NAME)) + " " + _("version") + " " + FormatFullVersion() + "\n";
->>>>>>> official/0.13
 
         if (mapArgs.count("-version"))
         {
@@ -91,11 +87,7 @@ bool AppInit(int argc, char* argv[])
         else
         {
             strUsage += "\n" + _("Usage:") + "\n" +
-<<<<<<< HEAD
-                  "  vcoind [options]                     " + _("Start VCoin Core Daemon") + "\n";
-=======
                   "  bitcoind [options]                     " + strprintf(_("Start %s Daemon"), _(PACKAGE_NAME)) + "\n";
->>>>>>> official/0.13
 
             strUsage += "\n" + HelpMessage(HMM_BITCOIND);
         }
@@ -129,19 +121,19 @@ bool AppInit(int argc, char* argv[])
         // Command-line RPC
         bool fCommandLine = false;
         for (int i = 1; i < argc; i++)
-            if (!IsSwitchChar(argv[i][0]) && !boost::algorithm::istarts_with(argv[i], "vcoin:"))
+            if (!IsSwitchChar(argv[i][0]) && !boost::algorithm::istarts_with(argv[i], "bitcoin:"))
                 fCommandLine = true;
 
         if (fCommandLine)
         {
-            fprintf(stderr, "Error: There is no RPC client functionality in vcoind anymore. Use the vcoin-cli utility instead.\n");
+            fprintf(stderr, "Error: There is no RPC client functionality in vcored any longer. Use the vcore-cli utility instead.\n");
             exit(1);
         }
 #ifndef WIN32
         fDaemon = GetBoolArg("-daemon", false);
         if (fDaemon)
         {
-            fprintf(stdout, "VCoin server starting\n");
+            fprintf(stdout, "V Core server starting\n");
 
             // Daemonize
             pid_t pid = fork();
@@ -192,7 +184,7 @@ int main(int argc, char* argv[])
 {
     SetupEnvironment();
 
-    // Connect vcoind signal handlers
+    // Connect vcored signal handlers
     noui_connect();
 
     return (AppInit(argc, argv) ? 0 : 1);

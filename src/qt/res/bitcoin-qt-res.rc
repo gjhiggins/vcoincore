@@ -1,5 +1,5 @@
-IDI_ICON1 ICON DISCARDABLE "icons/bitcoin.ico"
-IDI_ICON2 ICON DISCARDABLE "icons/bitcoin_testnet.ico"
+IDI_ICON1 ICON DISCARDABLE "icons/vcore.ico"
+IDI_ICON2 ICON DISCARDABLE "icons/vcore_testnet.ico"
 
 #include <windows.h>             // needed for VERSIONINFO
 #include "../../clientversion.h" // holds the needed client version information
@@ -19,24 +19,14 @@ BEGIN
     BEGIN
         BLOCK "040904E4" // U.S. English - multilingual (hex)
         BEGIN
-<<<<<<< HEAD
-            VALUE "CompanyName",        "VCoin"
-            VALUE "FileDescription",    "VCoin Core (GUI node for VCoin)"
-=======
-            VALUE "CompanyName",        "Bitcoin"
-            VALUE "FileDescription",    PACKAGE_NAME " (GUI node for Bitcoin)"
->>>>>>> official/0.13
+            VALUE "CompanyName",        "V"
+            VALUE "FileDescription",    PACKAGE_NAME " (GUI node for V)"
             VALUE "FileVersion",        VER_FILEVERSION_STR
-            VALUE "InternalName",       "vcoin-qt"
+            VALUE "InternalName",       "vcore-qt"
             VALUE "LegalCopyright",     COPYRIGHT_STR
             VALUE "LegalTrademarks1",   "Distributed under the MIT software license, see the accompanying file COPYING or http://www.opensource.org/licenses/mit-license.php."
-<<<<<<< HEAD
-            VALUE "OriginalFilename",   "vcoin-qt.exe"
-            VALUE "ProductName",        "VCoin Core"
-=======
-            VALUE "OriginalFilename",   "bitcoin-qt.exe"
+            VALUE "OriginalFilename",   "vcore-qt.exe"
             VALUE "ProductName",        PACKAGE_NAME
->>>>>>> official/0.13
             VALUE "ProductVersion",     VER_PRODUCTVERSION_STR
         END
     END

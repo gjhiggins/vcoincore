@@ -1,167 +1,93 @@
-bin_PROGRAMS += qt/vcoin-qt
+bin_PROGRAMS += qt/vcore-qt
 EXTRA_LIBRARIES += qt/libbitcoinqt.a
 
 # bitcoin qt core #
 QT_TS = \
-<<<<<<< HEAD
-  qt/locale/vcoin_ach.ts \
-  qt/locale/vcoin_af_ZA.ts \
-  qt/locale/vcoin_ar.ts \
-  qt/locale/vcoin_be_BY.ts \
-  qt/locale/vcoin_bg.ts \
-  qt/locale/vcoin_bs.ts \
-  qt/locale/vcoin_ca_ES.ts \
-  qt/locale/vcoin_ca.ts \
-  qt/locale/vcoin_ca@valencia.ts \
-  qt/locale/vcoin_cmn.ts \
-  qt/locale/vcoin_cs.ts \
-  qt/locale/vcoin_cy.ts \
-  qt/locale/vcoin_da.ts \
-  qt/locale/vcoin_de.ts \
-  qt/locale/vcoin_el_GR.ts \
-  qt/locale/vcoin_en.ts \
-  qt/locale/vcoin_eo.ts \
-  qt/locale/vcoin_es_CL.ts \
-  qt/locale/vcoin_es_DO.ts \
-  qt/locale/vcoin_es_MX.ts \
-  qt/locale/vcoin_es.ts \
-  qt/locale/vcoin_es_UY.ts \
-  qt/locale/vcoin_et.ts \
-  qt/locale/vcoin_eu_ES.ts \
-  qt/locale/vcoin_fa_IR.ts \
-  qt/locale/vcoin_fa.ts \
-  qt/locale/vcoin_fi.ts \
-  qt/locale/vcoin_fr_CA.ts \
-  qt/locale/vcoin_fr.ts \
-  qt/locale/vcoin_gl.ts \
-  qt/locale/vcoin_gu_IN.ts \
-  qt/locale/vcoin_he.ts \
-  qt/locale/vcoin_hi_IN.ts \
-  qt/locale/vcoin_hr.ts \
-  qt/locale/vcoin_hu.ts \
-  qt/locale/vcoin_id_ID.ts \
-  qt/locale/vcoin_it.ts \
-  qt/locale/vcoin_ja.ts \
-  qt/locale/vcoin_ka.ts \
-  qt/locale/vcoin_kk_KZ.ts \
-  qt/locale/vcoin_ko_KR.ts \
-  qt/locale/vcoin_ky.ts \
-  qt/locale/vcoin_la.ts \
-  qt/locale/vcoin_lt.ts \
-  qt/locale/vcoin_lv_LV.ts \
-  qt/locale/vcoin_mn.ts \
-  qt/locale/vcoin_ms_MY.ts \
-  qt/locale/vcoin_nb.ts \
-  qt/locale/vcoin_nl.ts \
-  qt/locale/vcoin_pam.ts \
-  qt/locale/vcoin_pl.ts \
-  qt/locale/vcoin_pt_BR.ts \
-  qt/locale/vcoin_pt_PT.ts \
-  qt/locale/vcoin_ro_RO.ts \
-  qt/locale/vcoin_ru.ts \
-  qt/locale/vcoin_sah.ts \
-  qt/locale/vcoin_sk.ts \
-  qt/locale/vcoin_sl_SI.ts \
-  qt/locale/vcoin_sq.ts \
-  qt/locale/vcoin_sr.ts \
-  qt/locale/vcoin_sv.ts \
-  qt/locale/vcoin_th_TH.ts \
-  qt/locale/vcoin_tr.ts \
-  qt/locale/vcoin_uk.ts \
-  qt/locale/vcoin_ur_PK.ts \
-  qt/locale/vcoin_uz@Cyrl.ts \
-  qt/locale/vcoin_vi.ts \
-  qt/locale/vcoin_vi_VN.ts \
-  qt/locale/vcoin_zh_CN.ts \
-  qt/locale/vcoin_zh_HK.ts \
-  qt/locale/vcoin_zh_TW.ts
-=======
-  qt/locale/bitcoin_af.ts \
-  qt/locale/bitcoin_af_ZA.ts \
-  qt/locale/bitcoin_ar.ts \
-  qt/locale/bitcoin_be_BY.ts \
-  qt/locale/bitcoin_bg.ts \
-  qt/locale/bitcoin_bg_BG.ts \
-  qt/locale/bitcoin_ca_ES.ts \
-  qt/locale/bitcoin_ca.ts \
-  qt/locale/bitcoin_ca@valencia.ts \
-  qt/locale/bitcoin_cs_CZ.ts \
-  qt/locale/bitcoin_cs.ts \
-  qt/locale/bitcoin_cy.ts \
-  qt/locale/bitcoin_da.ts \
-  qt/locale/bitcoin_de.ts \
-  qt/locale/bitcoin_el_GR.ts \
-  qt/locale/bitcoin_el.ts \
-  qt/locale/bitcoin_en_GB.ts \
-  qt/locale/bitcoin_en.ts \
-  qt/locale/bitcoin_eo.ts \
-  qt/locale/bitcoin_es_AR.ts \
-  qt/locale/bitcoin_es_CL.ts \
-  qt/locale/bitcoin_es_CO.ts \
-  qt/locale/bitcoin_es_DO.ts \
-  qt/locale/bitcoin_es_ES.ts \
-  qt/locale/bitcoin_es_MX.ts \
-  qt/locale/bitcoin_es.ts \
-  qt/locale/bitcoin_es_UY.ts \
-  qt/locale/bitcoin_es_VE.ts \
-  qt/locale/bitcoin_et.ts \
-  qt/locale/bitcoin_eu_ES.ts \
-  qt/locale/bitcoin_fa_IR.ts \
-  qt/locale/bitcoin_fa.ts \
-  qt/locale/bitcoin_fi.ts \
-  qt/locale/bitcoin_fr_CA.ts \
-  qt/locale/bitcoin_fr_FR.ts \
-  qt/locale/bitcoin_fr.ts \
-  qt/locale/bitcoin_gl.ts \
-  qt/locale/bitcoin_he.ts \
-  qt/locale/bitcoin_hi_IN.ts \
-  qt/locale/bitcoin_hr.ts \
-  qt/locale/bitcoin_hu.ts \
-  qt/locale/bitcoin_id_ID.ts \
-  qt/locale/bitcoin_it_IT.ts \
-  qt/locale/bitcoin_it.ts \
-  qt/locale/bitcoin_ja.ts \
-  qt/locale/bitcoin_ka.ts \
-  qt/locale/bitcoin_kk_KZ.ts \
-  qt/locale/bitcoin_ko_KR.ts \
-  qt/locale/bitcoin_ku_IQ.ts \
-  qt/locale/bitcoin_ky.ts \
-  qt/locale/bitcoin_la.ts \
-  qt/locale/bitcoin_lt.ts \
-  qt/locale/bitcoin_lv_LV.ts \
-  qt/locale/bitcoin_mk_MK.ts \
-  qt/locale/bitcoin_mn.ts \
-  qt/locale/bitcoin_ms_MY.ts \
-  qt/locale/bitcoin_nb.ts \
-  qt/locale/bitcoin_nl.ts \
-  qt/locale/bitcoin_pam.ts \
-  qt/locale/bitcoin_pl.ts \
-  qt/locale/bitcoin_pt_BR.ts \
-  qt/locale/bitcoin_pt_PT.ts \
-  qt/locale/bitcoin_ro_RO.ts \
-  qt/locale/bitcoin_ro.ts \
-  qt/locale/bitcoin_ru_RU.ts \
-  qt/locale/bitcoin_ru.ts \
-  qt/locale/bitcoin_sk.ts \
-  qt/locale/bitcoin_sl_SI.ts \
-  qt/locale/bitcoin_sq.ts \
-  qt/locale/bitcoin_sr@latin.ts \
-  qt/locale/bitcoin_sr.ts \
-  qt/locale/bitcoin_sv.ts \
-  qt/locale/bitcoin_ta.ts \
-  qt/locale/bitcoin_th_TH.ts \
-  qt/locale/bitcoin_tr_TR.ts \
-  qt/locale/bitcoin_tr.ts \
-  qt/locale/bitcoin_uk.ts \
-  qt/locale/bitcoin_ur_PK.ts \
-  qt/locale/bitcoin_uz@Cyrl.ts \
-  qt/locale/bitcoin_vi.ts \
-  qt/locale/bitcoin_vi_VN.ts \
-  qt/locale/bitcoin_zh_CN.ts \
-  qt/locale/bitcoin_zh_HK.ts \
-  qt/locale/bitcoin_zh.ts \
-  qt/locale/bitcoin_zh_TW.ts
->>>>>>> official/0.13
+  qt/locale/vcore_af.ts \
+  qt/locale/vcore_af_ZA.ts \
+  qt/locale/vcore_ar.ts \
+  qt/locale/vcore_be_BY.ts \
+  qt/locale/vcore_bg.ts \
+  qt/locale/vcore_bg_BG.ts \
+  qt/locale/vcore_ca_ES.ts \
+  qt/locale/vcore_ca.ts \
+  qt/locale/vcore_ca@valencia.ts \
+  qt/locale/vcore_cs_CZ.ts \
+  qt/locale/vcore_cs.ts \
+  qt/locale/vcore_cy.ts \
+  qt/locale/vcore_da.ts \
+  qt/locale/vcore_de.ts \
+  qt/locale/vcore_el_GR.ts \
+  qt/locale/vcore_el.ts \
+  qt/locale/vcore_en_GB.ts \
+  qt/locale/vcore_en.ts \
+  qt/locale/vcore_eo.ts \
+  qt/locale/vcore_es_AR.ts \
+  qt/locale/vcore_es_CL.ts \
+  qt/locale/vcore_es_CO.ts \
+  qt/locale/vcore_es_DO.ts \
+  qt/locale/vcore_es_ES.ts \
+  qt/locale/vcore_es_MX.ts \
+  qt/locale/vcore_es.ts \
+  qt/locale/vcore_es_UY.ts \
+  qt/locale/vcore_es_VE.ts \
+  qt/locale/vcore_et.ts \
+  qt/locale/vcore_eu_ES.ts \
+  qt/locale/vcore_fa_IR.ts \
+  qt/locale/vcore_fa.ts \
+  qt/locale/vcore_fi.ts \
+  qt/locale/vcore_fr_CA.ts \
+  qt/locale/vcore_fr_FR.ts \
+  qt/locale/vcore_fr.ts \
+  qt/locale/vcore_gl.ts \
+  qt/locale/vcore_he.ts \
+  qt/locale/vcore_hi_IN.ts \
+  qt/locale/vcore_hr.ts \
+  qt/locale/vcore_hu.ts \
+  qt/locale/vcore_id_ID.ts \
+  qt/locale/vcore_it_IT.ts \
+  qt/locale/vcore_it.ts \
+  qt/locale/vcore_ja.ts \
+  qt/locale/vcore_ka.ts \
+  qt/locale/vcore_kk_KZ.ts \
+  qt/locale/vcore_ko_KR.ts \
+  qt/locale/vcore_ku_IQ.ts \
+  qt/locale/vcore_ky.ts \
+  qt/locale/vcore_la.ts \
+  qt/locale/vcore_lt.ts \
+  qt/locale/vcore_lv_LV.ts \
+  qt/locale/vcore_mk_MK.ts \
+  qt/locale/vcore_mn.ts \
+  qt/locale/vcore_ms_MY.ts \
+  qt/locale/vcore_nb.ts \
+  qt/locale/vcore_nl.ts \
+  qt/locale/vcore_pam.ts \
+  qt/locale/vcore_pl.ts \
+  qt/locale/vcore_pt_BR.ts \
+  qt/locale/vcore_pt_PT.ts \
+  qt/locale/vcore_ro_RO.ts \
+  qt/locale/vcore_ro.ts \
+  qt/locale/vcore_ru_RU.ts \
+  qt/locale/vcore_ru.ts \
+  qt/locale/vcore_sk.ts \
+  qt/locale/vcore_sl_SI.ts \
+  qt/locale/vcore_sq.ts \
+  qt/locale/vcore_sr@latin.ts \
+  qt/locale/vcore_sr.ts \
+  qt/locale/vcore_sv.ts \
+  qt/locale/vcore_ta.ts \
+  qt/locale/vcore_th_TH.ts \
+  qt/locale/vcore_tr_TR.ts \
+  qt/locale/vcore_tr.ts \
+  qt/locale/vcore_uk.ts \
+  qt/locale/vcore_ur_PK.ts \
+  qt/locale/vcore_uz@Cyrl.ts \
+  qt/locale/vcore_vi.ts \
+  qt/locale/vcore_vi_VN.ts \
+  qt/locale/vcore_zh_CN.ts \
+  qt/locale/vcore_zh_HK.ts \
+  qt/locale/vcore_zh.ts \
+  qt/locale/vcore_zh_TW.ts
 
 QT_FORMS_UI = \
   qt/forms/addressbookpage.ui \
@@ -308,16 +234,7 @@ RES_ICONS = \
   qt/res/icons/bitcoin.ico \
   qt/res/icons/bitcoin_testnet.ico \
   qt/res/icons/bitcoin.png \
-<<<<<<< HEAD
-  qt/res/icons/bitcoin_testnet.ico \
-  qt/res/icons/bitcoin_testnet.png \
-  qt/res/icons/vcoin.ico \
-  qt/res/icons/vcoin.png \
-  qt/res/icons/vcoin_testnet.ico \
-  qt/res/icons/vcoin_testnet.png \
-=======
   qt/res/icons/chevron.png \
->>>>>>> official/0.13
   qt/res/icons/clock1.png \
   qt/res/icons/clock2.png \
   qt/res/icons/clock3.png \
@@ -347,6 +264,7 @@ RES_ICONS = \
   qt/res/icons/lock_open.png \
   qt/res/icons/open.png \
   qt/res/icons/overview.png \
+  qt/res/icons/qrcode.png \
   qt/res/icons/quit.png \
   qt/res/icons/receive.png \
   qt/res/icons/remove.png \
@@ -359,6 +277,14 @@ RES_ICONS = \
   qt/res/icons/tx_input.png \
   qt/res/icons/tx_output.png \
   qt/res/icons/tx_mined.png \
+  qt/res/icons/unit_btc.png \
+  qt/res/icons/unit_mbtc.png \
+  qt/res/icons/unit_ubtc.png \
+  qt/res/icons/unit_vcn.png \
+  qt/res/icons/unit_mvcn.png \
+  qt/res/icons/unit_uvcn.png \
+  qt/res/icons/vcore.ico \
+  qt/res/icons/vcore.png \
   qt/res/icons/warning.png \
   qt/res/icons/verify.png \
   qt/res/icons/transaction_abandoned.png
@@ -420,7 +346,10 @@ BITCOIN_QT_CPP += \
   qt/walletview.cpp
 endif
 
-RES_IMAGES = 
+RES_IMAGES = \
+  qt/res/images/about.png \
+  qt/res/images/splash.png \
+  qt/res/images/splash_testnet.png
 
 RES_MOVIES = $(wildcard qt/res/movies/spinner-*.png)
 
@@ -445,7 +374,7 @@ QT_FORMS_H=$(join $(dir $(QT_FORMS_UI)),$(addprefix ui_, $(notdir $(QT_FORMS_UI:
 # Most files will depend on the forms and moc files as includes. Generate them
 # before anything else.
 $(QT_MOC): $(QT_FORMS_H)
-$(qt_libbitcoinqt_a_OBJECTS) $(qt_vcoin_qt_OBJECTS) : | $(QT_MOC)
+$(qt_libbitcoinqt_a_OBJECTS) $(qt_vcore_qt_OBJECTS) : | $(QT_MOC)
 
 #Generating these with a half-written protobuf header leads to wacky results.
 #This makes sure it's done.
@@ -453,33 +382,29 @@ $(QT_MOC): $(PROTOBUF_H)
 $(QT_MOC_CPP): $(PROTOBUF_H)
 
 # bitcoin-qt binary #
-qt_vcoin_qt_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(BITCOIN_QT_INCLUDES) \
+qt_vcore_qt_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(BITCOIN_QT_INCLUDES) \
   $(QT_INCLUDES) $(PROTOBUF_CFLAGS) $(QR_CFLAGS)
-qt_bitcoin_qt_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
+qt_vcore_qt_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
 
-qt_vcoin_qt_SOURCES = qt/bitcoin.cpp
+qt_vcore_qt_SOURCES = qt/bitcoin.cpp
 if TARGET_DARWIN
-  qt_vcoin_qt_SOURCES += $(BITCOIN_MM)
+  qt_vcore_qt_SOURCES += $(BITCOIN_MM)
 endif
 if TARGET_WINDOWS
-  qt_vcoin_qt_SOURCES += $(BITCOIN_RC)
+  qt_vcore_qt_SOURCES += $(BITCOIN_RC)
 endif
-qt_vcoin_qt_LDADD = qt/libbitcoinqt.a $(LIBBITCOIN_SERVER)
+qt_vcore_qt_LDADD = qt/libbitcoinqt.a $(LIBBITCOIN_SERVER)
 if ENABLE_WALLET
-qt_vcoin_qt_LDADD += $(LIBBITCOIN_WALLET)
+qt_vcore_qt_LDADD += $(LIBBITCOIN_WALLET)
 endif
 if ENABLE_ZMQ
-qt_vcoin_qt_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
+qt_vcore_qt_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
 endif
-<<<<<<< HEAD
-qt_vcoin_qt_LDADD += $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBITCOIN_UTIL) $(LIBBITCOIN_CRYPTO) $(LIBUNIVALUE) $(LIBLEVELDB) $(LIBMEMENV) \
-=======
-qt_bitcoin_qt_LDADD += $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBITCOIN_UTIL) $(LIBBITCOIN_CONSENSUS) $(LIBBITCOIN_CRYPTO) $(LIBUNIVALUE) $(LIBLEVELDB) $(LIBMEMENV) \
->>>>>>> official/0.13
+qt_vcore_qt_LDADD += $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBITCOIN_UTIL) $(LIBBITCOIN_CONSENSUS) $(LIBBITCOIN_CRYPTO) $(LIBUNIVALUE) $(LIBLEVELDB) $(LIBMEMENV) \
   $(BOOST_LIBS) $(QT_LIBS) $(QT_DBUS_LIBS) $(QR_LIBS) $(PROTOBUF_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(LIBSECP256K1) \
   $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
-qt_vcoin_qt_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(QT_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
-qt_vcoin_qt_LIBTOOLFLAGS = --tag CXX
+qt_vcore_qt_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(QT_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+qt_vcore_qt_LIBTOOLFLAGS = --tag CXX
 
 #locale/foo.ts -> locale/foo.qm
 QT_QM=$(QT_TS:.ts=.qm)
@@ -492,21 +417,12 @@ $(srcdir)/qt/bitcoinstrings.cpp: $(libbitcoin_server_a_SOURCES) $(libbitcoin_wal
 
 translate: $(srcdir)/qt/bitcoinstrings.cpp $(QT_FORMS_UI) $(QT_FORMS_UI) $(BITCOIN_QT_CPP) $(BITCOIN_QT_H) $(BITCOIN_MM)
 	@test -n $(LUPDATE) || echo "lupdate is required for updating translations"
-<<<<<<< HEAD
-	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(LUPDATE) $^ -locations relative -no-obsolete -ts qt/locale/vcoin_en.ts
-
-$(QT_QRC_LOCALE_CPP): $(QT_QRC_LOCALE) $(QT_QM)
-	@test -f $(RCC)
-	@test -f $(@D)/$(<F) || cp -f $< $(@D)
-	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name vcoin_locale $(@D)/$(<F) | \
-=======
-	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(LUPDATE) $^ -locations relative -no-obsolete -ts $(srcdir)/qt/locale/bitcoin_en.ts
+	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(LUPDATE) $^ -locations relative -no-obsolete -ts $(srcdir)/qt/locale/vcore_en.ts
 
 $(QT_QRC_LOCALE_CPP): $(QT_QRC_LOCALE) $(QT_QM)
 	@test -f $(RCC)
 	@cp -f $< $(@D)/temp_$(<F)
-	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name bitcoin_locale $(@D)/temp_$(<F) | \
->>>>>>> official/0.13
+	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name vcore_locale $(@D)/temp_$(<F) | \
 	  $(SED) -e '/^\*\*.*Created:/d' -e '/^\*\*.*by:/d' > $@
 	@rm $(@D)/temp_$(<F)
 
@@ -519,10 +435,10 @@ CLEAN_QT = $(nodist_qt_libbitcoinqt_a_SOURCES) $(QT_QM) $(QT_FORMS_H) qt/*.gcda 
 
 CLEANFILES += $(CLEAN_QT)
 
-vcoin_qt_clean: FORCE
-	rm -f $(CLEAN_QT) $(qt_libbitcoinqt_a_OBJECTS) $(qt_bitcoin_qt_OBJECTS) qt/vcoin-qt$(EXEEXT) $(LIBBITCOINQT)
+vcore_qt_clean: FORCE
+	rm -f $(CLEAN_QT) $(qt_libbitcoinqt_a_OBJECTS) $(qt_vcore_qt_OBJECTS) qt/vcore-qt$(EXEEXT) $(LIBBITCOINQT)
 
-vcoin_qt : qt/vcoin-qt$(EXEEXT)
+vcore_qt : qt/vcore-qt$(EXEEXT)
 
 ui_%.h: %.ui
 	@test -f $(UIC)

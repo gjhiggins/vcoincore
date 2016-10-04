@@ -341,8 +341,6 @@ BOOST_AUTO_TEST_CASE(test_Get)
 
     BOOST_CHECK(AreInputsStandard(t1, coins));
     BOOST_CHECK_EQUAL(coins.GetValueIn(t1), (50+21+22)*CENT);
-<<<<<<< HEAD
-=======
 }
 
 void CreateCreditAndSpend(const CKeyStore& keystore, const CScript& outscript, CTransaction& output, CMutableTransaction& input, bool success = true)
@@ -694,7 +692,6 @@ BOOST_AUTO_TEST_CASE(test_witness)
     UpdateTransaction(input1, 0, CombineSignatures(output1.vout[0].scriptPubKey, MutableTransactionSignatureChecker(&input1, 0, output1.vout[0].nValue), DataFromTransaction(input1, 0), DataFromTransaction(input2, 0)));
     CheckWithFlag(output1, input1, SCRIPT_VERIFY_P2SH | SCRIPT_VERIFY_WITNESS, true);
     CheckWithFlag(output1, input1, STANDARD_SCRIPT_VERIFY_FLAGS, true);
->>>>>>> official/0.13
 }
 
 BOOST_AUTO_TEST_CASE(test_IsStandard)

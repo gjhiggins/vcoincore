@@ -39,11 +39,7 @@
 
 #include <math.h>
 
-<<<<<<< HEAD
-// Dump addresses to peers.dat every 15 minutes (900s)
-=======
 // Dump addresses to peers.dat and banlist.dat every 15 minutes (900s)
->>>>>>> official/0.13
 #define DUMP_ADDRESSES_INTERVAL 900
 
 // We add a random period time (0 to 1 seconds) to feeler connections to prevent synchronization.
@@ -509,13 +505,8 @@ void CNode::PushVersion()
         LogPrint("net", "send version message: version %d, blocks=%d, us=%s, them=%s, peer=%d\n", PROTOCOL_VERSION, nBestHeight, addrMe.ToString(), addrYou.ToString(), id);
     else
         LogPrint("net", "send version message: version %d, blocks=%d, us=%s, peer=%d\n", PROTOCOL_VERSION, nBestHeight, addrMe.ToString(), id);
-<<<<<<< HEAD
-    PushMessage(NetMsgType::VERSION, PROTOCOL_VERSION, nLocalServices, nTime, addrYou, addrMe,
-                nLocalHostNonce, strSubVersion, nBestHeight, !GetBoolArg("-blocksonly", DEFAULT_BLOCKSONLY));
-=======
     PushMessage(NetMsgType::VERSION, PROTOCOL_VERSION, (uint64_t)nLocalServices, nTime, addrYou, addrMe,
                 nLocalHostNonce, strSubVersion, nBestHeight, ::fRelayTxes);
->>>>>>> official/0.13
 }
 
 
@@ -944,14 +935,10 @@ static bool AttemptToEvictConnection() {
                 continue;
             if (node->fDisconnect)
                 continue;
-<<<<<<< HEAD
-            vEvictionCandidates.push_back(CNodeRef(node));
-=======
             NodeEvictionCandidate candidate = {node->id, node->nTimeConnected, node->nMinPingUsecTime,
                                                node->nLastBlockTime, node->nLastTXTime, node->fNetworkNode,
                                                node->fRelayTxes, node->pfilter != NULL, node->addr, node->nKeyedNetGroup};
             vEvictionCandidates.push_back(candidate);
->>>>>>> official/0.13
         }
     }
 
@@ -996,16 +983,6 @@ static bool AttemptToEvictConnection() {
 
     // Identify the network group with the most connections and youngest member.
     // (vEvictionCandidates is already sorted by reverse connect time)
-<<<<<<< HEAD
-    std::vector<unsigned char> naMostConnections;
-    unsigned int nMostConnections = 0;
-    int64_t nMostConnectionsTime = 0;
-    std::map<std::vector<unsigned char>, std::vector<CNodeRef> > mapAddrCounts;
-    BOOST_FOREACH(const CNodeRef &node, vEvictionCandidates) {
-        mapAddrCounts[node->addr.GetGroup()].push_back(node);
-        int64_t grouptime = mapAddrCounts[node->addr.GetGroup()][0]->nTimeConnected;
-        size_t groupsize = mapAddrCounts[node->addr.GetGroup()].size();
-=======
     uint64_t naMostConnections;
     unsigned int nMostConnections = 0;
     int64_t nMostConnectionsTime = 0;
@@ -1014,34 +991,15 @@ static bool AttemptToEvictConnection() {
         mapAddrCounts[node.nKeyedNetGroup].push_back(node);
         int64_t grouptime = mapAddrCounts[node.nKeyedNetGroup][0].nTimeConnected;
         size_t groupsize = mapAddrCounts[node.nKeyedNetGroup].size();
->>>>>>> official/0.13
 
         if (groupsize > nMostConnections || (groupsize == nMostConnections && grouptime > nMostConnectionsTime)) {
             nMostConnections = groupsize;
             nMostConnectionsTime = grouptime;
-<<<<<<< HEAD
-            naMostConnections = node->addr.GetGroup();
-=======
             naMostConnections = node.nKeyedNetGroup;
->>>>>>> official/0.13
         }
     }
 
     // Reduce to the network group with the most connections
-<<<<<<< HEAD
-    vEvictionCandidates = mapAddrCounts[naMostConnections];
-
-    // Do not disconnect peers if there is only one unprotected connection from their network group.
-    if (vEvictionCandidates.size() <= 1)
-        // unless we prefer the new connection (for whitelisted peers)
-        if (!fPreferNewConnection)
-            return false;
-
-    // Disconnect from the network group with the most connections
-    vEvictionCandidates[0]->fDisconnect = true;
-
-    return true;
-=======
     vEvictionCandidates = std::move(mapAddrCounts[naMostConnections]);
 
     // Disconnect from the network group with the most connections
@@ -1054,7 +1012,6 @@ static bool AttemptToEvictConnection() {
         }
     }
     return false;
->>>>>>> official/0.13
 }
 
 static void AcceptConnection(const ListenSocket& hListenSocket) {
@@ -1452,11 +1409,7 @@ void ThreadMapPort()
             }
         }
 
-<<<<<<< HEAD
-        string strDesc = "VCoin " + FormatFullVersion();
-=======
-        std::string strDesc = "Bitcoin " + FormatFullVersion();
->>>>>>> official/0.13
+        std::string strDesc = "V Core " + FormatFullVersion();
 
         try {
             while (true) {
@@ -1935,11 +1888,7 @@ void ThreadMessageHandler()
             {
                 TRY_LOCK(pnode->cs_vSend, lockSend);
                 if (lockSend)
-<<<<<<< HEAD
-                    g_signals.SendMessages(pnode);
-=======
                     GetNodeSignals().SendMessages(pnode);
->>>>>>> official/0.13
             }
             boost::this_thread::interruption_point();
         }
@@ -2032,11 +1981,7 @@ bool BindListenPort(const CService &addrBind, std::string& strError, bool fWhite
     {
         int nErr = WSAGetLastError();
         if (nErr == WSAEADDRINUSE)
-<<<<<<< HEAD
-            strError = strprintf(_("Unable to bind to %s on this computer. VCoin Core Daemon is probably already running."), addrBind.ToString());
-=======
             strError = strprintf(_("Unable to bind to %s on this computer. %s is probably already running."), addrBind.ToString(), _(PACKAGE_NAME));
->>>>>>> official/0.13
         else
             strError = strprintf(_("Unable to bind to %s on this computer (bind returned error %s)"), addrBind.ToString(), NetworkErrorString(nErr));
         LogPrintf("%s\n", strError);
@@ -2543,10 +2488,7 @@ CNode::CNode(SOCKET hSocketIn, const CAddress& addrIn, const std::string& addrNa
     hashContinue = uint256();
     nStartingHeight = -1;
     filterInventoryKnown.reset();
-<<<<<<< HEAD
-=======
     fSendMempool = false;
->>>>>>> official/0.13
     fGetAddr = false;
     nNextLocalAddrSend = 0;
     nNextAddrSend = 0;
@@ -2807,8 +2749,4 @@ int64_t PoissonNextSend(int64_t nNow, int average_interval_seconds) {
     std::vector<unsigned char> vchNetGroup(ad.GetGroup());
 
     return CSipHasher(k0, k1).Write(&vchNetGroup[0], vchNetGroup.size()).Finalize();
-}
-
-int64_t PoissonNextSend(int64_t nNow, int average_interval_seconds) {
-    return nNow + (int64_t)(log1p(GetRand(1ULL << 48) * -0.0000000000000035527136788 /* -1/2^48 */) * average_interval_seconds * -1000000.0 + 0.5);
 }

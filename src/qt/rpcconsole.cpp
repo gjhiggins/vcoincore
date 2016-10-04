@@ -538,15 +538,6 @@ void RPCConsole::clear(bool clearHistory)
 
     // Set default style sheet
     QFontInfo fixedFontInfo(GUIUtil::fixedPitchFont());
-<<<<<<< HEAD
-    // Try to make fixed font adequately large on different OS
-#ifdef WIN32
-    QString ptSize = QString("%1pt").arg(QFontInfo(QFont()).pointSize() * 10 / 8);
-#else
-    QString ptSize = QString("%1pt").arg(QFontInfo(QFont()).pointSize() * 8.5 / 9);
-#endif
-=======
->>>>>>> official/0.13
     ui->messagesWidget->document()->setDefaultStyleSheet(
         QString(
                 "table { }"
@@ -558,11 +549,7 @@ void RPCConsole::clear(bool clearHistory)
             ).arg(fixedFontInfo.family(), QString("%1pt").arg(consoleFontSize))
         );
 
-<<<<<<< HEAD
-    message(CMD_REPLY, (tr("Welcome to the VCoin Core RPC console.") + "<br>" +
-=======
     message(CMD_REPLY, (tr("Welcome to the %1 RPC console.").arg(tr(PACKAGE_NAME)) + "<br>" +
->>>>>>> official/0.13
                         tr("Use up and down arrows to navigate history, and <b>Ctrl-L</b> to clear screen.") + "<br>" +
                         tr("Type <b>help</b> for an overview of available commands.")), true);
 }

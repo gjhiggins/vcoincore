@@ -132,11 +132,7 @@ const char* GetOpName(opcodetype opcode)
     // expanson
     case OP_NOP1                   : return "OP_NOP1";
     case OP_CHECKLOCKTIMEVERIFY    : return "OP_CHECKLOCKTIMEVERIFY";
-<<<<<<< HEAD
-    case OP_NOP3                   : return "OP_NOP3";
-=======
     case OP_CHECKSEQUENCEVERIFY    : return "OP_CHECKSEQUENCEVERIFY";
->>>>>>> official/0.13
     case OP_NOP4                   : return "OP_NOP4";
     case OP_NOP5                   : return "OP_NOP5";
     case OP_NOP6                   : return "OP_NOP6";

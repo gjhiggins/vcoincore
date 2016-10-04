@@ -10,23 +10,10 @@
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
 import zmq
-<<<<<<< HEAD
-import binascii
-
-try:
-    import http.client as httplib
-except ImportError:
-    import httplib
-try:
-    import urllib.parse as urlparse
-except ImportError:
-    import urlparse
-=======
 import struct
 
 import http.client
 import urllib.parse
->>>>>>> official/0.13
 
 class ZMQTest (BitcoinTestFramework):
 

@@ -28,32 +28,17 @@ const char *GETADDR="getaddr";
 const char *MEMPOOL="mempool";
 const char *PING="ping";
 const char *PONG="pong";
-<<<<<<< HEAD
-const char *ALERT="alert";
-=======
->>>>>>> official/0.13
 const char *NOTFOUND="notfound";
 const char *FILTERLOAD="filterload";
 const char *FILTERADD="filteradd";
 const char *FILTERCLEAR="filterclear";
 const char *REJECT="reject";
 const char *SENDHEADERS="sendheaders";
-<<<<<<< HEAD
-};
-
-static const char* ppszTypeName[] =
-{
-    "ERROR", // Should never occur
-    NetMsgType::TX,
-    NetMsgType::BLOCK,
-    "filtered block" // Should never occur
-=======
 const char *FEEFILTER="feefilter";
 const char *SENDCMPCT="sendcmpct";
 const char *CMPCTBLOCK="cmpctblock";
 const char *GETBLOCKTXN="getblocktxn";
 const char *BLOCKTXN="blocktxn";
->>>>>>> official/0.13
 };
 
 /** All known message types. Keep this in the same order as the list of
@@ -75,25 +60,17 @@ const static std::string allNetMessageTypes[] = {
     NetMsgType::MEMPOOL,
     NetMsgType::PING,
     NetMsgType::PONG,
-<<<<<<< HEAD
-    NetMsgType::ALERT,
-=======
->>>>>>> official/0.13
     NetMsgType::NOTFOUND,
     NetMsgType::FILTERLOAD,
     NetMsgType::FILTERADD,
     NetMsgType::FILTERCLEAR,
     NetMsgType::REJECT,
-<<<<<<< HEAD
-    NetMsgType::SENDHEADERS
-=======
     NetMsgType::SENDHEADERS,
     NetMsgType::FEEFILTER,
     NetMsgType::SENDCMPCT,
     NetMsgType::CMPCTBLOCK,
     NetMsgType::GETBLOCKTXN,
     NetMsgType::BLOCKTXN,
->>>>>>> official/0.13
 };
 const static std::vector<std::string> allNetMessageTypesVec(allNetMessageTypes, allNetMessageTypes+ARRAYLEN(allNetMessageTypes));
 

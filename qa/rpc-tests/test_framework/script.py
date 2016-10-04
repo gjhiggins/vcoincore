@@ -15,14 +15,9 @@ Functionality to build scripts, as well as SignatureHash().
 """
 
 
-<<<<<<< HEAD
-from .mininode import CTransaction, CTxOut, hash256
-from binascii import hexlify
-=======
 from .mininode import CTransaction, CTxOut, sha256, hash256, uint256_from_str, ser_uint256, ser_string
 from binascii import hexlify
 import hashlib
->>>>>>> official/0.13
 
 import sys
 bchr = chr
@@ -238,11 +233,7 @@ OP_CHECKMULTISIGVERIFY = CScriptOp(0xaf)
 # expansion
 OP_NOP1 = CScriptOp(0xb0)
 OP_CHECKLOCKTIMEVERIFY = CScriptOp(0xb1)
-<<<<<<< HEAD
-OP_NOP3 = CScriptOp(0xb2)
-=======
 OP_CHECKSEQUENCEVERIFY = CScriptOp(0xb2)
->>>>>>> official/0.13
 OP_NOP4 = CScriptOp(0xb3)
 OP_NOP5 = CScriptOp(0xb4)
 OP_NOP6 = CScriptOp(0xb5)
@@ -369,11 +360,7 @@ VALID_OPCODES = {
 
     OP_NOP1,
     OP_CHECKLOCKTIMEVERIFY,
-<<<<<<< HEAD
-    OP_NOP3,
-=======
     OP_CHECKSEQUENCEVERIFY,
->>>>>>> official/0.13
     OP_NOP4,
     OP_NOP5,
     OP_NOP6,
@@ -492,11 +479,7 @@ OPCODE_NAMES.update({
     OP_CHECKMULTISIGVERIFY : 'OP_CHECKMULTISIGVERIFY',
     OP_NOP1 : 'OP_NOP1',
     OP_CHECKLOCKTIMEVERIFY : 'OP_CHECKLOCKTIMEVERIFY',
-<<<<<<< HEAD
-    OP_NOP3 : 'OP_NOP3',
-=======
     OP_CHECKSEQUENCEVERIFY : 'OP_CHECKSEQUENCEVERIFY',
->>>>>>> official/0.13
     OP_NOP4 : 'OP_NOP4',
     OP_NOP5 : 'OP_NOP5',
     OP_NOP6 : 'OP_NOP6',
@@ -615,11 +598,7 @@ OPCODES_BY_NAME = {
     'OP_CHECKMULTISIGVERIFY' : OP_CHECKMULTISIGVERIFY,
     'OP_NOP1' : OP_NOP1,
     'OP_CHECKLOCKTIMEVERIFY' : OP_CHECKLOCKTIMEVERIFY,
-<<<<<<< HEAD
-    'OP_NOP3' : OP_NOP3,
-=======
     'OP_CHECKSEQUENCEVERIFY' : OP_CHECKSEQUENCEVERIFY,
->>>>>>> official/0.13
     'OP_NOP4' : OP_NOP4,
     'OP_NOP5' : OP_NOP5,
     'OP_NOP6' : OP_NOP6,
@@ -804,11 +783,7 @@ class CScript(bytes):
         # need to change
         def _repr(o):
             if isinstance(o, bytes):
-<<<<<<< HEAD
-                return "x('%s')" % hexlify(o).decode('utf8')
-=======
                 return b"x('%s')" % hexlify(o).decode('ascii')
->>>>>>> official/0.13
             else:
                 return repr(o)
 

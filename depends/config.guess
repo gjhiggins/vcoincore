@@ -2,11 +2,7 @@
 # Attempt to guess a canonical system name.
 #   Copyright 1992-2016 Free Software Foundation, Inc.
 
-<<<<<<< HEAD
-timestamp='2015-11-19'
-=======
 timestamp='2016-05-15'
->>>>>>> official/0.13
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -1408,11 +1404,7 @@ EOF
 	echo ${UNAME_MACHINE}-unknown-esx
 	exit ;;
     amd64:Isilon\ OneFS:*:*)
-<<<<<<< HEAD
-        echo x86_64-unknown-onefs
-=======
 	echo x86_64-unknown-onefs
->>>>>>> official/0.13
 	exit ;;
 esac
 

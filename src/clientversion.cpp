@@ -13,12 +13,12 @@
  * for both bitcoind and bitcoin-core, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
-const std::string CLIENT_NAME("Voroshi");
+const std::string CLIENT_NAME("Veni");
 
 /**
  * Client version number
  */
-#define CLIENT_VERSION_SUFFIX "-rita"
+#define CLIENT_VERSION_SUFFIX "-beta"
 
 
 /**

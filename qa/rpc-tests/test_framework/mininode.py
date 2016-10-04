@@ -44,8 +44,6 @@ MY_SUBVERSION = b"/python-mininode-tester:0.0.3/"
 
 MAX_INV_SZ = 50000
 MAX_BLOCK_SIZE = 1000000
-<<<<<<< HEAD
-=======
 
 COIN = 100000000 # 1 btc in satoshis
 
@@ -53,7 +51,6 @@ NODE_NETWORK = (1 << 0)
 NODE_GETUTXO = (1 << 1)
 NODE_BLOOM = (1 << 2)
 NODE_WITNESS = (1 << 3)
->>>>>>> official/0.13
 
 # Keep our own socket map for asyncore, so that we can track disconnects
 # ourselves (to workaround an issue with closing an asyncore socket when
@@ -1436,11 +1433,8 @@ class NodeConnCB(object):
         # tests; it causes message delivery to sleep for the specified time
         # before acquiring the global lock and delivering the next message.
         self.deliver_sleep_time = None
-<<<<<<< HEAD
-=======
         # Remember the services our peer has advertised
         self.peer_services = None
->>>>>>> official/0.13
 
     def set_deliver_sleep_time(self, value):
         with mininode_lock:
@@ -1467,11 +1461,7 @@ class NodeConnCB(object):
             time.sleep(deliver_sleep)
         with mininode_lock:
             try:
-<<<<<<< HEAD
-                getattr(self, 'on_' + message.command)(conn, message)
-=======
                 getattr(self, 'on_' + message.command.decode('ascii'))(conn, message)
->>>>>>> official/0.13
             except:
                 print("ERROR delivering %s (%s)" % (repr(message),
                                                     sys.exc_info()[0]))

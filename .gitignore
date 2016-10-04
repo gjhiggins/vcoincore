@@ -1,12 +1,12 @@
 *.tar.gz
 
 *.exe
-src/bitcoin
-src/bitcoind
-src/bitcoin-cli
-src/bitcoin-tx
-src/test/test_bitcoin
-src/qt/test/test_bitcoin-qt
+src/vcore
+src/vcored
+src/vcore-cli
+src/vcore-tx
+src/test/test_vcore
+src/qt/test/test_vcore-qt
 
 # autoreconf
 Makefile.in
@@ -74,8 +74,8 @@ src/qt/test/moc*.cpp
 # Compilation and Qt preprocessor part
 *.qm
 Makefile
-bitcoin-qt
-Bitcoin-Qt.app
+vcore-qt
+VCore-Qt.app
 
 # Unit-tests
 Makefile.test
@@ -113,9 +113,5 @@ share/BitcoindComparisonTool.jar
 
 /doc/doxygen/
 
-/libvcoinconsensus.pc
-/vcoin-cli
-/vcoin-qt
-/vcoin-tx
-/vcoind
+libbitcoinconsensus.pc
 contrib/devtools/split-debug.sh

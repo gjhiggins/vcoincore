@@ -23,16 +23,10 @@ packages:
 - "libcap-dev"
 - "libz-dev"
 - "libbz2-dev"
-<<<<<<< HEAD
-- "ca-certificates"
-- "python"
-reference_datetime: "2016-01-01 00:00:00"
-=======
 - "python"
 - "python-dev"
 - "python-setuptools"
 - "fonts-tuffy"
->>>>>>> official/0.13
 remotes:
 - "url": "https://github.com/bitcoin/bitcoin.git"
   "dir": "bitcoin"
