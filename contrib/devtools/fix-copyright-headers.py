@@ -18,7 +18,7 @@ import re
 CMD_GIT_LIST_FILES = ['git', 'ls-files']
 CMD_GIT_DATE = ['git', 'log', '--format=%ad', '--date=short', '-1']
 CMD_PERL_REGEX = ['perl', '-pi', '-e']
-REGEX_TEMPLATE = 's/(20\\d\\d)(?:-20\\d\\d)? The V/$1-%s The V/'
+REGEX_TEMPLATE = 's/(20\\d\\d)(?:-20\\d\\d)? The Bitcoin/$1-%s The Bitcoin/'
 
 FOLDERS = ["qa/", "src/"]
 EXTENSIONS = [".cpp",".h", ".py"]

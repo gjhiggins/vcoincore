@@ -571,10 +571,6 @@
         <translation>Биткоин Core</translation>
     </message>
     <message>
-        <source>Options:</source>
-        <translation>Опции:</translation>
-    </message>
-    <message>
         <source>Warning</source>
         <translation>Предупредување</translation>
     </message>
