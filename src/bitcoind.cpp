@@ -130,6 +130,7 @@ bool AppInit(int argc, char* argv[])
         }
         if (GetBoolArg("-daemon", false))
         {
+#if HAVE_DECL_DAEMON
             fprintf(stdout, "V Core server starting\n");
 
             // Daemonize
