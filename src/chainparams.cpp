@@ -76,12 +76,10 @@ public:
         consensus.nMajorityEnforceBlockUpgrade = 750;
         consensus.nMajorityRejectBlockOutdated = 950;
         consensus.nMajorityWindow = 1000;
-
         consensus.BIP34Height = 227931;
         consensus.BIP34Hash = uint256S("0x000000000000024b89b42a942fe0d9fea3bb44ab7bd1b19115dd6a759c0808b8");
-
         consensus.powLimit = uint256S("0x00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~arith_uint256(0) >> 20
-        consensus.nPowTargetTimespan = 20 * 60; // 20 minutes
+        consensus.nPowTargetTimespan = 1200; // 20 minutes
         consensus.nPowTargetSpacing = 30; // 30 seconds
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
@@ -110,20 +108,21 @@ public:
         pchMessageStart[1] = 0x05;
         pchMessageStart[2] = 0xb5;
         pchMessageStart[3] = 0x05;
+        
         nDefaultPort = 5530;
         nPruneAfterHeight = 100000;
 
         genesis = CreateGenesisBlock(1431517588, 1486592, 0x1e0fffff, 1, 1 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        LogPrintf("mainnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
-        LogPrintf("mainnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        LogPrintf("mainnet: %x\n", consensus.powLimit.ToString().c_str());
+        printf("mainnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
+        printf("mainnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
+        printf("mainnet: %x\n", consensus.powLimit.ToString().c_str());
         // genesis.print();
 
         /*
         // calculate Genesis Block
         if (true && (genesis.GetHash() != consensus.hashGenesisBlock)) {
-            LogPrintf("Calculating Genesis Block:\n");
+            printf("Calculating Genesis Block:\n");
             arith_uint256 hashTarget = arith_uint256().SetCompact(genesis.nBits);
             uint256 hash;
             genesis.nNonce = 0;
@@ -137,12 +136,12 @@ public:
                 ++genesis.nNonce;
                 if (genesis.nNonce == 0)
                 {
-                    LogPrintf("NONCE WRAPPED, incrementing time");
+                    printf("NONCE WRAPPED, incrementing time");
                     ++genesis.nTime;
                 }
                 if (genesis.nNonce % 10000 == 0)
                 {
-                    LogPrintf("nonce %08u: hash = %s \n", genesis.nNonce, genesis.GetHash().ToString().c_str());
+                    printf("nonce %08u: hash = %s \n", genesis.nNonce, genesis.GetHash().ToString().c_str());
                 }
             }
         }
@@ -156,8 +155,8 @@ public:
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,70);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,224);
-        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >();
-        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xAD)(0xE4).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >(); // xpub
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xAD)(0xE4).convert_to_container<std::vector<unsigned char> >(); // xprv
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
 
@@ -193,10 +192,9 @@ public:
         consensus.BIP34Height = 21111;
         consensus.BIP34Hash = uint256S("0x0000000023b3a96d3484e5abb3755c413e7d41500f8e2a5c3f0dd01299cd8ef8");
         consensus.powLimit = uint256S("0x00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~arith_uint256(0) >> 20
-        consensus.nPowTargetTimespan = 20 * 60; // twenty minutes
-        consensus.nPowTargetSpacing = 30; // 30seconds
+        consensus.nPowTargetTimespan = 1200; // 20 minutes
+        consensus.nPowTargetSpacing = 30; // 30 seconds
         consensus.fPowAllowMinDifficultyBlocks = true;
-        nDefaultPort = 55534;
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
         consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
@@ -218,15 +216,16 @@ public:
         pchMessageStart[1] = 0xfe;
         pchMessageStart[2] = 0xfe;
         pchMessageStart[3] = 0x05;
+        
         nDefaultPort = 55534;
         nPruneAfterHeight = 1000;
 
         genesis = CreateGenesisBlock(1441062000, 1173545, 0x1e0fffff, 1, 1 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        LogPrintf("testnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
-        LogPrintf("testnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        LogPrintf("testnet: %x\n", consensus.powLimit.ToString().c_str());
-        assert(consensus.hashGenesisBlock == uint256S("000007e14c52364cee2d4d9483541d473e3e73c896df75882273b91313b44816"));
+        printf("testnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
+        printf("testnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
+        printf("testnet: %x\n", consensus.powLimit.ToString().c_str());
+        assert(consensus.hashGenesisBlock == uint256S("0x000007e14c52364cee2d4d9483541d473e3e73c896df75882273b91313b44816"));
         assert(genesis.hashMerkleRoot == uint256S("0x1576ef41775095b26a8f8f2bb65b693ec12230608a425aa84ee462381cae00e6"));
 
         vFixedSeeds.clear();
@@ -268,7 +267,7 @@ class CRegTestParams : public CChainParams {
 public:
     CRegTestParams() {
         strNetworkID = "regtest";
-        consensus.nSubsidyHalvingInterval = 150;
+        consensus.nSubsidyHalvingInterval = 100000;
         // consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nMajorityEnforceBlockUpgrade = 750;
         consensus.nMajorityRejectBlockOutdated = 950;
@@ -276,8 +275,8 @@ public:
         consensus.BIP34Height = -1; // BIP34 has not necessarily activated on regtest
         consensus.BIP34Hash = uint256();
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.nPowTargetTimespan = 20 * 60; // twenty minutes
-        consensus.nPowTargetSpacing = 10 * 60;
+        consensus.nPowTargetTimespan = 1200; // 20 minutes
+        consensus.nPowTargetSpacing = 30; // 30 seconds
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
         consensus.nRuleChangeActivationThreshold = 108; // 75% for testchains
@@ -296,6 +295,7 @@ public:
         pchMessageStart[1] = 0x0f;
         pchMessageStart[2] = 0xa5;
         pchMessageStart[3] = 0x5a;
+        
         nDefaultPort = 56534;
         nPruneAfterHeight = 1000;
 
@@ -319,7 +319,7 @@ public:
 
         checkpointData = (CCheckpointData){
             boost::assign::map_list_of
-            ( 0, uint256S("0x")),
+            (0, uint256S("0xffc694d084bd98d8b0708c8a5fba877f498476439c7ab31f0cf3f5c38c026a64")),
             0,
             0,
             0
