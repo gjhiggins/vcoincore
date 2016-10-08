@@ -20,7 +20,7 @@ QT_TRANSLATE_NOOP("v-core", ""
 QT_TRANSLATE_NOOP("v-core", ""
 "-maxtxfee is set very high! Fees this large could be paid on a single "
 "transaction."),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "-paytxfee is set very high! This is the transaction fee you will pay if you "
 "send a transaction."),
 QT_TRANSLATE_NOOP("v-core", ""
@@ -33,13 +33,13 @@ QT_TRANSLATE_NOOP("v-core", ""
 "Allow JSON-RPC connections from specified source. Valid for <ip> are a "
 "single IP (e.g. 1.2.3.4), a network/netmask (e.g. 1.2.3.4/255.255.255.0) or "
 "a network/CIDR (e.g. 1.2.3.4/24). This option can be specified multiple times"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Bind to given address and always listen on it. Use [host]:port notation for "
 "IPv6"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Bind to given address and whitelist peers connecting to it. Use [host]:port "
 "notation for IPv6"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Bind to given address to listen for JSON-RPC connections. Use [host]:port "
 "notation for IPv6. This option can be specified multiple times (default: "
 "bind to all interfaces)"),
@@ -48,16 +48,16 @@ QT_TRANSLATE_NOOP("v-core", ""
 QT_TRANSLATE_NOOP("v-core", ""
 "Create new files with system default permissions, instead of umask 077 (only "
 "effective with disabled wallet functionality)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Delete all wallet transactions and only recover those parts of the "
 "blockchain through -rescan on startup"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Discover own IP addresses (default: 1 when listening and no -externalip or -"
 "proxy)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Distributed under the MIT software license, see the accompanying file "
 "COPYING or <http://www.opensource.org/licenses/mit-license.php>."),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Do not keep transactions in the mempool longer than <n> hours (default: %u)"),
 QT_TRANSLATE_NOOP("v-core", ""
 "Equivalent bytes per sigop in transactions for relay and mining (default: %u)"),
@@ -68,19 +68,19 @@ QT_TRANSLATE_NOOP("v-core", ""
 "book entries might be missing or incorrect."),
 QT_TRANSLATE_NOOP("v-core", ""
 "Error: Listening for incoming connections failed (listen returned error %s)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Execute command when a relevant alert is received or we see a really long "
 "fork (%s in cmd is replaced by message)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Execute command when a wallet transaction changes (%s in cmd is replaced by "
 "TxID)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Execute command when the best block changes (%s in cmd is replaced by block "
 "hash)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Fees (in %s/kB) smaller than this are considered zero fee for relaying, "
 "mining and transaction creation (default: %s)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Fees (in %s/kB) smaller than this are considered zero fee for transaction "
 "creation (default: %s)"),
 QT_TRANSLATE_NOOP("v-core", ""
@@ -88,16 +88,16 @@ QT_TRANSLATE_NOOP("v-core", ""
 "relay policy (default: %d)"),
 QT_TRANSLATE_NOOP("v-core", ""
 "How thorough the block verification of -checkblocks is (0-4, default: %u)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "If <category> is not supplied or if <category> = 1, output all debugging "
 "information."),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "If paytxfee is not set, include enough fee so transactions begin "
 "confirmation on average within n blocks (default: %u)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Invalid amount for -maxtxfee=<amount>: '%s' (must be at least the minrelay "
 "fee of %s to prevent stuck transactions)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Maintain a full transaction index, used by the getrawtransaction rpc call "
 "(default: %u)"),
 QT_TRANSLATE_NOOP("v-core", ""
@@ -112,9 +112,9 @@ QT_TRANSLATE_NOOP("v-core", ""
 "transaction; setting this too low may abort large transactions (default: %s)"),
 QT_TRANSLATE_NOOP("v-core", ""
 "Number of seconds to keep misbehaving peers from reconnecting (default: %u)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Output debugging information (default: %u, supplying <category> is optional)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Please check that your computer's date and time are correct! If your clock "
 "is wrong, %s will not work properly."),
 QT_TRANSLATE_NOOP("v-core", ""
@@ -122,48 +122,48 @@ QT_TRANSLATE_NOOP("v-core", ""
 "about the software."),
 QT_TRANSLATE_NOOP("v-core", ""
 "Prune configured below the minimum of %d MiB.  Please use a higher number."),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Prune: last wallet synchronisation goes beyond pruned data. You need to -"
 "reindex (download the whole blockchain again in case of pruned node)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Query for peer addresses via DNS lookup, if low on addresses (default: 1 "
 "unless -connect)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Randomize credentials for every proxy connection. This enables Tor stream "
 "isolation (default: %u)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Reduce storage requirements by pruning (deleting) old blocks. This mode is "
 "incompatible with -txindex and -rescan. Warning: Reverting this setting "
 "requires re-downloading the entire blockchain. (default: 0 = disable pruning "
 "blocks, >%u = target size in MiB to use for block files)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Rescans are not possible in pruned mode. You will need to use -reindex which "
 "will download the whole blockchain again."),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Set maximum size of high-priority/low-fee transactions in bytes (default: %d)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Set the number of script verification threads (%u to %d, 0 = auto, <0 = "
 "leave that many cores free, default: %d)"),
 QT_TRANSLATE_NOOP("v-core", ""
 "Support filtering of blocks and transaction with bloom filters (default: %u)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "The block database contains a block which appears to be from the future. "
 "This may be due to your computer's date and time being set incorrectly. Only "
 "rebuild the block database if you are sure that your computer's date and "
 "time are correct"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "The transaction amount is too small to send after the fee has been deducted"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "This is a pre-release test build - use at your own risk - do not use for "
 "mining or merchant applications"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "This product includes software developed by the OpenSSL Project for use in "
 "the OpenSSL Toolkit <https://www.openssl.org/> and cryptographic software "
 "written by Eric Young and UPnP software written by Thomas Bernard."),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Total length of network version string (%i) exceeds maximum length (%i). "
 "Reduce the number or size of uacomments."),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Tries to keep outbound traffic under the given target (in MiB per 24h), 0 = "
 "no limit (default: %d)"),
 QT_TRANSLATE_NOOP("v-core", ""
@@ -183,7 +183,7 @@ QT_TRANSLATE_NOOP("v-core", ""
 QT_TRANSLATE_NOOP("v-core", ""
 "Use separate SOCKS5 proxy to reach peers via Tor hidden services (default: "
 "%s)"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Username and hashed password for JSON-RPC connections. The field <userpw> "
 "comes in the format: <USERNAME>:<SALT>$<HASH>. A canonical python script is "
 "included in share/rpcuser. This option can be specified multiple times"),
@@ -203,10 +203,10 @@ QT_TRANSLATE_NOOP("v-core", ""
 QT_TRANSLATE_NOOP("v-core", ""
 "Whitelist peers connecting from the given netmask or IP address. Can be "
 "specified multiple times."),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Whitelisted peers cannot be DoS banned and their transactions are always "
 "relayed, even if they are already in the mempool, useful e.g. for a gateway"),
-QT_TRANSLATE_NOOP("vcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "You need to rebuild the database using -reindex to go back to unpruned "
 "mode.  This will redownload the entire blockchain"),
 QT_TRANSLATE_NOOP("v-core", ""
