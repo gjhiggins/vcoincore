@@ -126,7 +126,7 @@
                <string>Unconfirmed transactions to watch-only addresses</string>
               </property>
               <property name="text">
-               <string notr="true">0.000 000 00 BTC</string>
+               <string notr="true">0.000 000 00 VCN</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -304,7 +304,7 @@
                <string>Current total balance in watch-only addresses</string>
               </property>
               <property name="text">
-               <string notr="true">0.000 000 00 BTC</string>
+               <string notr="true">0.000 000 00 VCN</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -371,7 +371,7 @@
                <string>Your current balance in watch-only addresses</string>
               </property>
               <property name="text">
-               <string notr="true">0.000 000 00 BTC</string>
+               <string notr="true">0.000 000 00 VNC</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
