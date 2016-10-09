@@ -95,6 +95,10 @@ enum
     //
     SCRIPT_VERIFY_DISCOURAGE_UPGRADABLE_WITNESS_PROGRAM = (1U << 12),
 
+    // Perform name checks in "mempool" mode.  This allows / disallows
+    // certain stuff (e. g., it allows immature spending of name_new's).
+    SCRIPT_VERIFY_NAMES_MEMPOOL = (1U << 24),
+
     // Segwit script only: Require the argument of OP_IF/NOTIF to be exactly 0x01 or empty vector
     //
     SCRIPT_VERIFY_MINIMALIF = (1U << 13),

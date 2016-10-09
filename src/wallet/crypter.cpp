@@ -130,11 +130,27 @@ static bool DecryptSecret(const CKeyingMaterial& vMasterKey, const std::vector<u
     return cKeyCrypter.Decrypt(vchCiphertext, *((CKeyingMaterial*)&vchPlaintext));
 }
 
+/* The old namecoind encrypted not the 32-byte secret, but the full 279-byte
+   serialised keys.  Thus, we need to handle both formats.  This is done
+   by the following utility routine:  It decrypts a secret and initialises
+   a CKey object from it.  */
 static bool DecryptKey(const CKeyingMaterial& vMasterKey, const std::vector<unsigned char>& vchCryptedSecret, const CPubKey& vchPubKey, CKey& key)
 {
     CKeyingMaterial vchSecret;
     if(!DecryptSecret(vMasterKey, vchCryptedSecret, vchPubKey.GetHash(), vchSecret))
         return false;
+
+    if (fDebug)
+        LogPrintf("%s : decrypted %u-byte key\n", __func__, vchSecret.size());
+    /* FIXME: resolve upstream discrepancy
+    if (vchSecret.size() == 32)
+    {
+        key.Set(vchSecret.begin(), vchSecret.end(), vchPubKey.IsCompressed());
+        return true;
+    }
+
+    return key.SetPrivKey(vchSecret, vchPubKey.IsCompressed());
+    */
 
     if (vchSecret.size() != 32)
         return false;

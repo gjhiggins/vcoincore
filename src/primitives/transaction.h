@@ -358,6 +358,7 @@ private:
 public:
     // Default transaction version.
     static const int32_t CURRENT_VERSION=1;
+    static const int32_t NAMECOIN_VERSION=0x7100;
 
     // Changing the default transaction version requires a two step process: first
     // adapting relay policy by bumping MAX_STANDARD_VERSION, and then later date
@@ -406,7 +407,7 @@ public:
     uint256 GetWitnessHash() const;
 
     // Return sum of txouts.
-    CAmount GetValueOut() const;
+    CAmount GetValueOut(bool fExclueNames = false) const;
     // GetValueIn() is a method on CCoinsViewCache, because
     // inputs must be known to compute value in.
 
@@ -426,6 +427,11 @@ public:
     bool IsCoinBase() const
     {
         return (vin.size() == 1 && vin[0].prevout.IsNull());
+    }
+
+    bool IsNamecoin() const
+    {
+        return nVersion == NAMECOIN_VERSION;
     }
 
     friend bool operator==(const CTransaction& a, const CTransaction& b)
@@ -466,6 +472,12 @@ struct CMutableTransaction
      * fly, as opposed to GetHash() in CTransaction, which uses a cached result.
      */
     uint256 GetHash() const;
+
+    /**
+     * Turn this into a Namecoin version transaction.  It is assumed
+     * that it isn't already.
+     */
+    void SetNamecoin();
 };
 
 /** Compute the weight of a transaction, as defined by BIP 141 */

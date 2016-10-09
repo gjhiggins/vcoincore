@@ -58,7 +58,9 @@ bool IsStandard(const CScript& scriptPubKey, txnouttype& whichType, const bool w
 
 bool IsStandardTx(const CTransaction& tx, std::string& reason, const bool witnessEnabled)
 {
-    if (tx.nVersion > CTransaction::MAX_STANDARD_VERSION || tx.nVersion < 1) {
+    if (!tx.IsNamecoin()
+        && (tx.nVersion > CTransaction::MAX_STANDARD_VERSION
+            || tx.nVersion < 1)) {
         reason = "version";
         return false;
     }
