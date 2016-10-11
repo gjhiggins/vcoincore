@@ -78,7 +78,7 @@ public:
         consensus.BIP65Height = 388381; // 000000000000000004c2b624ed5d7756c508d90fd0da2c7c679febfa6c4735f0
         consensus.BIP66Height = 363725; // 00000000000000000379eaa19dce8c9b722d46ae6a57c2f1a988119488b50931
         consensus.powLimit = uint256S("0x00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~arith_uint256(0) >> 20
-        consensus.nPowTargetTimespan = 20 * 60; // 20 minutes
+        consensus.nPowTargetTimespan = 1200; // 20 minutes
         consensus.nPowTargetSpacing = 30; // 30 seconds
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
@@ -112,15 +112,15 @@ public:
 
         genesis = CreateGenesisBlock(1431517588, 1486592, 0x1e0fffff, 1, 1 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        LogPrintf("mainnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
-        LogPrintf("mainnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        LogPrintf("mainnet: %x\n", consensus.powLimit.ToString().c_str());
+        printf("mainnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
+        printf("mainnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
+        printf("mainnet: %x\n", consensus.powLimit.ToString().c_str());
         // genesis.print();
 
         /*
         // calculate Genesis Block
         if (true && (genesis.GetHash() != consensus.hashGenesisBlock)) {
-            LogPrintf("Calculating Genesis Block:\n");
+            printf("Calculating Genesis Block:\n");
             arith_uint256 hashTarget = arith_uint256().SetCompact(genesis.nBits);
             uint256 hash;
             genesis.nNonce = 0;
@@ -134,12 +134,12 @@ public:
                 ++genesis.nNonce;
                 if (genesis.nNonce == 0)
                 {
-                    LogPrintf("NONCE WRAPPED, incrementing time");
+                    printf("NONCE WRAPPED, incrementing time");
                     ++genesis.nTime;
                 }
                 if (genesis.nNonce % 10000 == 0)
                 {
-                    LogPrintf("nonce %08u: hash = %s \n", genesis.nNonce, genesis.GetHash().ToString().c_str());
+                    printf("nonce %08u: hash = %s \n", genesis.nNonce, genesis.GetHash().ToString().c_str());
                 }
             }
         }
@@ -153,8 +153,8 @@ public:
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,70);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,224);
-        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >();
-        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xAD)(0xE4).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >(); // xpub
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xAD)(0xE4).convert_to_container<std::vector<unsigned char> >(); // xprv
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
 
@@ -189,10 +189,9 @@ public:
         consensus.BIP65Height = 581885; // 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
         consensus.BIP66Height = 330776; // 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182
         consensus.powLimit = uint256S("0x00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~arith_uint256(0) >> 20
-        consensus.nPowTargetTimespan = 20 * 60; // twenty minutes
-        consensus.nPowTargetSpacing = 30; // 30seconds
+        consensus.nPowTargetTimespan = 1200; // 20 minutes
+        consensus.nPowTargetSpacing = 30; // 30 seconds
         consensus.fPowAllowMinDifficultyBlocks = true;
-        nDefaultPort = 55534;
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
         consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
@@ -219,10 +218,10 @@ public:
 
         genesis = CreateGenesisBlock(1441062000, 1173545, 0x1e0fffff, 1, 1 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        LogPrintf("testnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
-        LogPrintf("testnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        LogPrintf("testnet: %x\n", consensus.powLimit.ToString().c_str());
-        assert(consensus.hashGenesisBlock == uint256S("000007e14c52364cee2d4d9483541d473e3e73c896df75882273b91313b44816"));
+        printf("testnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
+        printf("testnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
+        printf("testnet: %x\n", consensus.powLimit.ToString().c_str());
+        assert(consensus.hashGenesisBlock == uint256S("0x000007e14c52364cee2d4d9483541d473e3e73c896df75882273b91313b44816"));
         assert(genesis.hashMerkleRoot == uint256S("0x1576ef41775095b26a8f8f2bb65b693ec12230608a425aa84ee462381cae00e6"));
 
         vFixedSeeds.clear();
@@ -270,8 +269,8 @@ public:
         consensus.BIP65Height = 1351; // BIP65 activated on regtest (Used in rpc activation tests)
         consensus.BIP66Height = 1251; // BIP66 activated on regtest (Used in rpc activation tests)
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.nPowTargetTimespan = 20 * 60; // twenty minutes
-        consensus.nPowTargetSpacing = 10 * 60;
+        consensus.nPowTargetTimespan = 1200; // 20 minutes
+        consensus.nPowTargetSpacing = 30; // 30 seconds
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
         consensus.nRuleChangeActivationThreshold = 108; // 75% for testchains
@@ -313,7 +312,7 @@ public:
 
         checkpointData = (CCheckpointData){
             boost::assign::map_list_of
-            ( 0, uint256S("0x")),
+            (0, uint256S("0xffc694d084bd98d8b0708c8a5fba877f498476439c7ab31f0cf3f5c38c026a64")),
             0,
             0,
             0

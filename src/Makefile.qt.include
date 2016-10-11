@@ -239,6 +239,7 @@ RES_ICONS = \
   qt/res/icons/about.png \
   qt/res/icons/about_qt.png \
   qt/res/icons/bitcoin.ico \
+  qt/res/icons/bitcoin.icns \
   qt/res/icons/bitcoin_testnet.ico \
   qt/res/icons/bitcoin.png \
   qt/res/icons/chevron.png \
@@ -273,7 +274,6 @@ RES_ICONS = \
   qt/res/icons/lock_open.png \
   qt/res/icons/open.png \
   qt/res/icons/overview.png \
-  qt/res/icons/qrcode.png \
   qt/res/icons/quit.png \
   qt/res/icons/receive.png \
   qt/res/icons/remove.png \
@@ -287,14 +287,6 @@ RES_ICONS = \
   qt/res/icons/tx_input.png \
   qt/res/icons/tx_output.png \
   qt/res/icons/tx_mined.png \
-  qt/res/icons/unit_btc.png \
-  qt/res/icons/unit_mbtc.png \
-  qt/res/icons/unit_ubtc.png \
-  qt/res/icons/unit_vcn.png \
-  qt/res/icons/unit_mvcn.png \
-  qt/res/icons/unit_uvcn.png \
-  qt/res/icons/vcore.ico \
-  qt/res/icons/vcore.png \
   qt/res/icons/warning.png \
   qt/res/icons/verify.png
 
@@ -356,10 +348,7 @@ BITCOIN_QT_CPP += \
   qt/walletview.cpp
 endif
 
-RES_IMAGES = \
-  qt/res/images/about.png \
-  qt/res/images/splash.png \
-  qt/res/images/splash_testnet.png
+RES_IMAGES = 
 
 RES_MOVIES = $(wildcard qt/res/movies/spinner-*.png)
 
@@ -427,12 +416,12 @@ $(srcdir)/qt/bitcoinstrings.cpp: $(libbitcoin_server_a_SOURCES) $(libbitcoin_wal
 
 translate: $(srcdir)/qt/bitcoinstrings.cpp $(QT_FORMS_UI) $(QT_FORMS_UI) $(BITCOIN_QT_CPP) $(BITCOIN_QT_H) $(BITCOIN_MM)
 	@test -n $(LUPDATE) || echo "lupdate is required for updating translations"
-	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(LUPDATE) $^ -locations relative -no-obsolete -ts $(srcdir)/qt/locale/vcore_en.ts
+	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(LUPDATE) $^ -locations relative -no-obsolete -ts $(srcdir)/qt/locale/bitcoin_en.ts
 
 $(QT_QRC_LOCALE_CPP): $(QT_QRC_LOCALE) $(QT_QM)
 	@test -f $(RCC)
 	@cp -f $< $(@D)/temp_$(<F)
-	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name vcore_locale $(@D)/temp_$(<F) | \
+	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name bitcoin_locale $(@D)/temp_$(<F) | \
 	  $(SED) -e '/^\*\*.*Created:/d' -e '/^\*\*.*by:/d' > $@
 	@rm $(@D)/temp_$(<F)
 

@@ -48,8 +48,8 @@ static const int MAX_URI_LENGTH = 255;
 /* Number of frames in spinner animation */
 #define SPINNER_FRAMES 36
 
-#define QAPP_ORG_NAME "V"
-#define QAPP_ORG_DOMAIN "v.org"
+#define QAPP_ORG_NAME "V Core"
+#define QAPP_ORG_DOMAIN "vcore.org"
 #define QAPP_APP_NAME_DEFAULT "VCore-Qt"
 #define QAPP_APP_NAME_TESTNET "VCore-Qt-testnet"
 
