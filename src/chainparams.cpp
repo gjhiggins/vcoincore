@@ -115,7 +115,7 @@ public:
         consensus.hashGenesisBlock = genesis.GetHash();
         printf("mainnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
         printf("mainnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        printf("mainnet: %x\n", consensus.powLimit.ToString().c_str());
+        printf("mainnet: %s\n", consensus.powLimit.ToString().c_str());
         // genesis.print();
 
         /*
@@ -222,7 +222,7 @@ public:
         consensus.hashGenesisBlock = genesis.GetHash();
         printf("testnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
         printf("testnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        printf("testnet: %x\n", consensus.powLimit.ToString().c_str());
+        printf("testnet: %s\n", consensus.powLimit.ToString().c_str());
         assert(consensus.hashGenesisBlock == uint256S("0x000007e14c52364cee2d4d9483541d473e3e73c896df75882273b91313b44816"));
         assert(genesis.hashMerkleRoot == uint256S("0x1576ef41775095b26a8f8f2bb65b693ec12230608a425aa84ee462381cae00e6"));
 
@@ -299,7 +299,7 @@ public:
         consensus.hashGenesisBlock = genesis.GetHash();
         LogPrintf("regtest: %s\n", consensus.hashGenesisBlock.ToString().c_str());
         LogPrintf("regtest: %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        LogPrintf("regtest: %x\n", consensus.powLimit.ToString().c_str());
+        LogPrintf("regtest: %s\n", consensus.powLimit.ToString().c_str());
 
         assert(consensus.hashGenesisBlock == uint256S("0xffc694d084bd98d8b0708c8a5fba877f498476439c7ab31f0cf3f5c38c026a64"));
         assert(genesis.hashMerkleRoot == uint256S("0x1576ef41775095b26a8f8f2bb65b693ec12230608a425aa84ee462381cae00e6"));
