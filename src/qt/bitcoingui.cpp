@@ -12,6 +12,7 @@
 #include "clientmodel.h"
 #include "guiconstants.h"
 #include "guiutil.h"
+#include "bittrextradingtab.h"
 #include "modaloverlay.h"
 #include "networkstyle.h"
 #include "notificator.h"
@@ -307,6 +308,19 @@ void BitcoinGUI::createActions()
     historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
     tabGroup->addAction(historyAction);
 
+    bittrexTradingAction = new QAction(platformStyle->SingleColorIcon(":/icons/trade"), tr("&Trade"), this);
+    bittrexTradingAction->setStatusTip(tr("Buy/Sell at Bittrex"));
+    bittrexTradingAction->setToolTip(bittrexTradingAction->statusTip());
+    bittrexTradingAction->setCheckable(true);
+    bittrexTradingAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
+    tabGroup->addAction(bittrexTradingAction);
+
+    /*
+    bittrexTradingMenuAction = new QAction(QIcon(":/icons/trade"), bittrexTradingAction->text(), this);
+    bittrexTradingMenuAction->setStatusTip(bittrexTradingAction->statusTip());
+    bittrexTradingMenuAction->setToolTip(bittrexTradingMenuAction->statusTip());
+    */
+
 #ifdef ENABLE_WALLET
     // These showNormalIfMinimized are needed because Send Coins and Receive Coins
     // can be triggered from the tray menu, and need to show the GUI to be useful.
@@ -322,6 +336,8 @@ void BitcoinGUI::createActions()
     connect(receiveCoinsMenuAction, SIGNAL(triggered()), this, SLOT(gotoReceiveCoinsPage()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(gotoHistoryPage()));
+    connect(bittrexTradingAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(bittrexTradingAction, SIGNAL(triggered()), this, SLOT(gotoBittrexTradingTab()));
 #endif // ENABLE_WALLET
 
     quitAction = new QAction(platformStyle->TextColorIcon(":/icons/quit"), tr("E&xit"), this);
@@ -455,6 +471,7 @@ void BitcoinGUI::createToolBars()
         toolbar->addAction(sendCoinsAction);
         toolbar->addAction(receiveCoinsAction);
         toolbar->addAction(historyAction);
+        toolbar->addAction(bittrexTradingAction);
         overviewAction->setChecked(true);
     }
 }
@@ -685,6 +702,12 @@ void BitcoinGUI::gotoSendCoinsPage(QString addr)
 {
     sendCoinsAction->setChecked(true);
     if (walletFrame) walletFrame->gotoSendCoinsPage(addr);
+}
+
+void BitcoinGUI::gotoBittrexTradingTab()
+{
+    bittrexTradingAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoBittrexTradingTab();
 }
 
 void BitcoinGUI::gotoSignMessageTab(QString addr)
