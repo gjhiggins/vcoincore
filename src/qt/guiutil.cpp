@@ -151,7 +151,7 @@ void setupAmountWidget(QLineEdit *widget, QWidget *parent)
 bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
     // return if URI is not valid or is no bitcoin: URI
-    if(!uri.isValid() || uri.scheme() != QString("bitcoin"))
+    if(!uri.isValid() || uri.scheme() != QString("vcore"))
         return false;
 
     SendCoinsRecipient rv;
@@ -709,8 +709,8 @@ boost::filesystem::path static GetAutostartFilePath()
 {
     std::string chain = ChainNameFromCommandLine();
     if (chain == CBaseChainParams::MAIN)
-        return GetAutostartDir() / "bitcoin.desktop";
-    return GetAutostartDir() / strprintf("bitcoin-%s.lnk", chain);
+        return GetAutostartDir() / "vcore.desktop";
+    return GetAutostartDir() / strprintf("vcore-%s.lnk", chain);
 }
 
 bool GetStartOnSystemStartup()
