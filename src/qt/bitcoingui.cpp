@@ -12,6 +12,7 @@
 #include "clientmodel.h"
 #include "guiconstants.h"
 #include "guiutil.h"
+#include "qtexampledialogpage.h"
 #include "modaloverlay.h"
 #include "networkstyle.h"
 #include "notificator.h"
@@ -307,6 +308,17 @@ void BitcoinGUI::createActions()
     historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
     tabGroup->addAction(historyAction);
 
+    exampleDialogAction = new QAction(QIcon(":/icons/bitcoin"), tr("&Example dialog"), this);
+    exampleDialogAction->setStatusTip(tr("Present an example dialog"));
+    exampleDialogAction->setToolTip(exampleDialogAction->statusTip());
+    exampleDialogAction->setCheckable(true);
+    exampleDialogAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
+    tabGroup->addAction(exampleDialogAction);
+
+    exampleDialogMenuAction = new QAction(QIcon(":/icons/bitcoin"), exampleDialogAction->text(), this);
+    exampleDialogMenuAction->setStatusTip(exampleDialogAction->statusTip());
+    exampleDialogMenuAction->setToolTip(exampleDialogMenuAction->statusTip());
+
 #ifdef ENABLE_WALLET
     // These showNormalIfMinimized are needed because Send Coins and Receive Coins
     // can be triggered from the tray menu, and need to show the GUI to be useful.
@@ -322,6 +334,8 @@ void BitcoinGUI::createActions()
     connect(receiveCoinsMenuAction, SIGNAL(triggered()), this, SLOT(gotoReceiveCoinsPage()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(gotoHistoryPage()));
+    connect(exampleDialogAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(exampleDialogAction, SIGNAL(triggered()), this, SLOT(gotoExampleDialogPage()));
 #endif // ENABLE_WALLET
 
     quitAction = new QAction(platformStyle->TextColorIcon(":/icons/quit"), tr("E&xit"), this);
@@ -455,6 +469,7 @@ void BitcoinGUI::createToolBars()
         toolbar->addAction(sendCoinsAction);
         toolbar->addAction(receiveCoinsAction);
         toolbar->addAction(historyAction);
+        toolbar->addAction(exampleDialogAction);
         overviewAction->setChecked(true);
     }
 }
@@ -592,6 +607,7 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(sendCoinsMenuAction);
     trayIconMenu->addAction(receiveCoinsMenuAction);
+    trayIconMenu->addAction(exampleDialogMenuAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(signMessageAction);
     trayIconMenu->addAction(verifyMessageAction);
@@ -685,6 +701,12 @@ void BitcoinGUI::gotoSendCoinsPage(QString addr)
 {
     sendCoinsAction->setChecked(true);
     if (walletFrame) walletFrame->gotoSendCoinsPage(addr);
+}
+
+void BitcoinGUI::gotoExampleDialogPage()
+{
+    exampleDialogAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoExampleDialogPage();
 }
 
 void BitcoinGUI::gotoSignMessageTab(QString addr)

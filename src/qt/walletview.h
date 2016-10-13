@@ -16,6 +16,7 @@ class PlatformStyle;
 class ReceiveCoinsDialog;
 class SendCoinsDialog;
 class SendCoinsRecipient;
+class ExampleDialogPage;
 class TransactionView;
 class WalletModel;
 class AddressBookPage;
@@ -62,6 +63,7 @@ private:
     QWidget *transactionsPage;
     ReceiveCoinsDialog *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
+    ExampleDialogPage *exampleDialogPage;
     AddressBookPage *usedSendingAddressesPage;
     AddressBookPage *usedReceivingAddressesPage;
 
@@ -84,6 +86,9 @@ public Q_SLOTS:
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
+
+    /** NMC names mgmt tab */
+    void gotoExampleDialogPage();
 
     /** Show incoming transaction notification for new transactions.
 
