@@ -28,6 +28,7 @@ class SendCoinsRecipient;
 class UnitDisplayStatusBarControl;
 class WalletFrame;
 class WalletModel;
+class ExampleWindow;
 class HelpMessageDialog;
 class ModalOverlay;
 
@@ -113,11 +114,13 @@ private:
     QAction *openRPCConsoleAction;
     QAction *openAction;
     QAction *showHelpMessageAction;
+    QAction *openExampleWindowAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
     Notificator *notificator;
     RPCConsole *rpcConsole;
+    ExampleWindow  *exampleWindow;
     HelpMessageDialog *helpMessageDialog;
     ModalOverlay *modalOverlay;
 
@@ -194,6 +197,8 @@ private Q_SLOTS:
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");
+    /** Switch to manage names page */
+    void gotoExampleWindow();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");
