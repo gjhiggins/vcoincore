@@ -107,7 +107,6 @@ public:
         pchMessageStart[1] = 0x05;
         pchMessageStart[2] = 0xb5;
         pchMessageStart[3] = 0x05;
-        
         nDefaultPort = 5530;
         nPruneAfterHeight = 100000;
 
@@ -214,7 +213,6 @@ public:
         pchMessageStart[1] = 0xfe;
         pchMessageStart[2] = 0xfe;
         pchMessageStart[3] = 0x05;
-        
         nDefaultPort = 55534;
         nPruneAfterHeight = 1000;
 
@@ -291,7 +289,6 @@ public:
         pchMessageStart[1] = 0x0f;
         pchMessageStart[2] = 0xa5;
         pchMessageStart[3] = 0x5a;
-        
         nDefaultPort = 56534;
         nPruneAfterHeight = 1000;
 
