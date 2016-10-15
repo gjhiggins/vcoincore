@@ -110,6 +110,7 @@ QT_FORMS_UI = \
   qt/forms/sendcoinsdialog.ui \
   qt/forms/sendcoinsentry.ui \
   qt/forms/signverifymessagedialog.ui \
+  qt/forms/tradingdialog.ui \
   qt/forms/transactiondescdialog.ui
 
 QT_MOC_CPP = \
@@ -138,6 +139,7 @@ QT_MOC_CPP = \
   qt/moc_overviewpage.cpp \
   qt/moc_peertablemodel.cpp \
   qt/moc_paymentserver.cpp \
+  qt/moc_qcustomplot.cpp \
   qt/moc_qvalidatedlineedit.cpp \
   qt/moc_qvaluecombobox.cpp \
   qt/moc_receivecoinsdialog.cpp \
@@ -148,6 +150,7 @@ QT_MOC_CPP = \
   qt/moc_sendcoinsentry.cpp \
   qt/moc_signverifymessagedialog.cpp \
   qt/moc_splashscreen.cpp \
+  qt/moc_tradingdialog.cpp \
   qt/moc_trafficgraphwidget.cpp \
   qt/moc_transactiondesc.cpp \
   qt/moc_transactiondescdialog.cpp \
@@ -168,6 +171,7 @@ QT_MOC = \
   qt/bitcoinamountfield.moc \
   qt/intro.moc \
   qt/overviewpage.moc \
+  qt/qcustomplot.moc \
   qt/rpcconsole.moc
 
 QT_QRC_CPP = qt/qrc_bitcoin.cpp
@@ -209,6 +213,7 @@ BITCOIN_QT_H = \
   qt/paymentserver.h \
   qt/peertablemodel.h \
   qt/platformstyle.h \
+  qt/qcustomplot.h \
   qt/qvalidatedlineedit.h \
   qt/qvaluecombobox.h \
   qt/receivecoinsdialog.h \
@@ -219,6 +224,7 @@ BITCOIN_QT_H = \
   qt/sendcoinsentry.h \
   qt/signverifymessagedialog.h \
   qt/splashscreen.h \
+  qt/tradingdialog.h \
   qt/trafficgraphwidget.h \
   qt/transactiondesc.h \
   qt/transactiondescdialog.h \
@@ -279,6 +285,7 @@ RES_ICONS = \
   qt/res/icons/remove.png \
   qt/res/icons/send.png \
   qt/res/icons/synced.png \
+  qt/res/icons/trade.png \
   qt/res/icons/transaction0.png \
   qt/res/icons/transaction2.png \
   qt/res/icons/transaction_abandoned.png \
@@ -288,7 +295,8 @@ RES_ICONS = \
   qt/res/icons/tx_output.png \
   qt/res/icons/tx_mined.png \
   qt/res/icons/warning.png \
-  qt/res/icons/verify.png
+  qt/res/icons/verify.png \
+  qt/res/icons/bleutrade.png
 
 BITCOIN_QT_CPP = \
   qt/bantablemodel.cpp \
@@ -307,10 +315,12 @@ BITCOIN_QT_CPP = \
   qt/optionsmodel.cpp \
   qt/peertablemodel.cpp \
   qt/platformstyle.cpp \
+  qt/qcustomplot.cpp \
   qt/qvalidatedlineedit.cpp \
   qt/qvaluecombobox.cpp \
   qt/rpcconsole.cpp \
   qt/splashscreen.cpp \
+  qt/tradingdialog.cpp \
   qt/trafficgraphwidget.cpp \
   qt/utilitydialog.cpp
 
@@ -330,12 +340,14 @@ BITCOIN_QT_CPP += \
   qt/overviewpage.cpp \
   qt/paymentrequestplus.cpp \
   qt/paymentserver.cpp \
+  qt/qcustomplot.cpp \
   qt/receivecoinsdialog.cpp \
   qt/receiverequestdialog.cpp \
   qt/recentrequeststablemodel.cpp \
   qt/sendcoinsdialog.cpp \
   qt/sendcoinsentry.cpp \
   qt/signverifymessagedialog.cpp \
+  qt/tradingdialog.cpp \
   qt/transactiondesc.cpp \
   qt/transactiondescdialog.cpp \
   qt/transactionfilterproxy.cpp \

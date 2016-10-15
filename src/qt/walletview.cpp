@@ -18,6 +18,7 @@
 #include "transactiontablemodel.h"
 #include "transactionview.h"
 #include "walletmodel.h"
+#include "tradingdialog.h"
 
 #include "ui_interface.h"
 
@@ -37,6 +38,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 {
     // Create tabs
     overviewPage = new OverviewPage(platformStyle);
+	tradingPage = new tradingDialog(this);
 
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -63,6 +65,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(transactionsPage);
     addWidget(receiveCoinsPage);
     addWidget(sendCoinsPage);
+    addWidget(tradingPage);
 
     // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
@@ -191,6 +194,12 @@ void WalletView::gotoSendCoinsPage(QString addr)
     if (!addr.isEmpty())
         sendCoinsPage->setAddress(addr);
 }
+
+void WalletView::gotoTradingPage()
+{
+    setCurrentWidget(tradingPage);
+}
+
 
 void WalletView::gotoSignMessageTab(QString addr)
 {

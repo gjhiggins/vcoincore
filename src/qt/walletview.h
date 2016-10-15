@@ -19,6 +19,7 @@ class SendCoinsRecipient;
 class TransactionView;
 class WalletModel;
 class AddressBookPage;
+class tradingDialog;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -64,6 +65,7 @@ private:
     SendCoinsDialog *sendCoinsPage;
     AddressBookPage *usedSendingAddressesPage;
     AddressBookPage *usedReceivingAddressesPage;
+    tradingDialog *tradingPage;
 
     TransactionView *transactionView;
 
@@ -75,6 +77,8 @@ public Q_SLOTS:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
+    /** Switch to trading page */
+    void gotoTradingPage();	
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */

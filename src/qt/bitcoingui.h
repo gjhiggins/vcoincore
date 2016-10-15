@@ -28,6 +28,7 @@ class SendCoinsRecipient;
 class UnitDisplayStatusBarControl;
 class WalletFrame;
 class WalletModel;
+class tradingDialog;
 class HelpMessageDialog;
 class ModalOverlay;
 
@@ -113,11 +114,13 @@ private:
     QAction *openRPCConsoleAction;
     QAction *openAction;
     QAction *showHelpMessageAction;
+    QAction *opentradingWindowAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
     Notificator *notificator;
     RPCConsole *rpcConsole;
+    tradingDialog  *tradingWindow;
     HelpMessageDialog *helpMessageDialog;
     ModalOverlay *modalOverlay;
 
@@ -190,6 +193,8 @@ private Q_SLOTS:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
+    /** Switch to Trading Page */
+    void gotoTradingPage();
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */

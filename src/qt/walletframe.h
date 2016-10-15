@@ -14,6 +14,7 @@ class PlatformStyle;
 class SendCoinsRecipient;
 class WalletModel;
 class WalletView;
+class TradingDialog;
 
 QT_BEGIN_NAMESPACE
 class QStackedWidget;
@@ -66,6 +67,8 @@ public Q_SLOTS:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
+    /** Switch to trading page */
+    void gotoTradingPage();	
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */

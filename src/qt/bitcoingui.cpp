@@ -12,6 +12,7 @@
 #include "clientmodel.h"
 #include "guiconstants.h"
 #include "guiutil.h"
+#include "tradingdialog.h"
 #include "modaloverlay.h"
 #include "networkstyle.h"
 #include "notificator.h"
@@ -118,6 +119,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     notificator(0),
     rpcConsole(0),
     helpMessageDialog(0),
+    tradingWindow(0),
     modalOverlay(0),
     prevBlocks(0),
     spinnerFrame(0),
@@ -158,6 +160,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
         /** Create wallet frame and make it the central widget */
         walletFrame = new WalletFrame(_platformStyle, this);
         setCentralWidget(walletFrame);
+        tradingWindow = new tradingDialog(this);
     } else
 #endif // ENABLE_WALLET
     {
@@ -234,6 +237,12 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     statusBar()->addWidget(progressBarLabel);
     statusBar()->addWidget(progressBar);
     statusBar()->addPermanentWidget(frameBlocks);
+
+    connect(opentradingWindowAction, SIGNAL(triggered()), tradingWindow, SLOT(show()));
+
+    // prevents an oben debug window from becoming stuck/unusable on client shutdown
+    connect(quitAction, SIGNAL(triggered()), tradingWindow, SLOT(hide()));
+
 
     // Install event filter to be able to catch status tip events (QEvent::StatusTip)
     this->installEventFilter(this);
@@ -367,6 +376,9 @@ void BitcoinGUI::createActions()
     openAction = new QAction(platformStyle->TextColorIcon(":/icons/open"), tr("Open &URI..."), this);
     openAction->setStatusTip(tr("Open a vcore: URI or payment request"));
 
+    opentradingWindowAction = new QAction(platformStyle->TextColorIcon(":/icons/trade"), tr("&Trading window"), this);
+    opentradingWindowAction->setStatusTip(tr("Bleutrade trading window"));
+
     showHelpMessageAction = new QAction(platformStyle->TextColorIcon(":/icons/info"), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
     showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible Bitcoin command-line options").arg(tr(PACKAGE_NAME)));
@@ -432,6 +444,12 @@ void BitcoinGUI::createMenuBar()
         settings->addSeparator();
     }
     settings->addAction(optionsAction);
+
+    QMenu *trade = appMenuBar->addMenu(tr("&Trade"));
+    if(walletFrame)
+    {
+        trade->addAction(opentradingWindowAction);
+	}
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
     if(walletFrame)
@@ -597,6 +615,7 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addAction(verifyMessageAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(optionsAction);
+    trayIconMenu->addAction(opentradingWindowAction);
     trayIconMenu->addAction(openRPCConsoleAction);
 #ifndef Q_OS_MAC // This is built-in on Mac
     trayIconMenu->addSeparator();
@@ -696,6 +715,13 @@ void BitcoinGUI::gotoVerifyMessageTab(QString addr)
 {
     if (walletFrame) walletFrame->gotoVerifyMessageTab(addr);
 }
+
+void BitcoinGUI::gotoTradingPage()
+{
+    opentradingWindowAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoTradingPage();
+}
+
 #endif // ENABLE_WALLET
 
 void BitcoinGUI::setNumConnections(int count)
