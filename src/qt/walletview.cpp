@@ -23,6 +23,7 @@
 #include "statsexplorer.h"
 #include "managenamespage.h"
 #include "chatwindow.h"
+#include "exampledialog.h"
 
 #include "ui_interface.h"
 
@@ -45,6 +46,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 	explorerWindow = new BlockExplorer(this);
     statsExplorerPage = new StatsExplorer(this);
     chatWindow = new ChatWindow(this);
+    exampleDialogPage = new exampleDialog(platformStyle, this);
 
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -93,6 +95,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(statsExplorerPage);
     addWidget(manageNamesPage);
 	addWidget(chatWindow);
+    addWidget(exampleDialogPage);
 
         // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
@@ -223,16 +226,6 @@ void WalletView::gotoSendCoinsPage(QString addr)
 
     if (!addr.isEmpty())
         sendCoinsPage->setAddress(addr);
-}
-
-void WalletView::gotoStatsExplorerPage()
-{
-    setCurrentWidget(statsExplorerPage);
-}
-
-void WalletView::gotoManageNamesPage()
-{
-    setCurrentWidget(manageNamesPage);
 }
 
 void WalletView::gotoSignMessageTab(QString addr)
@@ -372,20 +365,29 @@ void WalletView::requestedSyncWarningInfo()
     Q_EMIT outOfSyncWarningClicked();
 }
 
+void WalletView::gotoBlockExplorerPage()
+{
+    setCurrentWidget(explorerWindow);
+}
+
 void WalletView::gotoAccountReportPage()
 {
     setCurrentWidget(accountreportPage); 
 }
 
-void WalletView::gotoBlockExplorerPage()
+void WalletView::gotoStatsExplorerPage()
 {
-    setCurrentWidget(explorerWindow);
+    setCurrentWidget(statsExplorerPage);
 }
 
 void WalletView::gotoChatPage()
 {
     setCurrentWidget(chatWindow);
 }
+
+void WalletView::gotoManageNamesPage()
+{
+    setCurrentWidget(manageNamesPage);
 
 void WalletView::inscribeBlockChain()
 {
@@ -395,4 +397,10 @@ void WalletView::inscribeBlockChain()
     InscriptionDialog dlg(this);
     dlg.setModel(walletModel);
     dlg.exec();
+}
+
+void WalletView::gotoExamplePage()
+{
+    setCurrentWidget(exampleDialogPage);
+
 }

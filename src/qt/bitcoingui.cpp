@@ -30,6 +30,7 @@
 #include "reportview.h"
 #include "managenamespage.h"
 #include "chatwindow.h"
+#include "exampledialog.h"
 #endif // ENABLE_WALLET
 
 #ifdef Q_OS_MAC
@@ -126,6 +127,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     helpMessageDialog(0),
     statsWindow(0),
     chatWindow(0),
+    exampleWindow(0),
     modalOverlay(0),
     prevBlocks(0),
     spinnerFrame(0),
@@ -169,6 +171,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
         setCentralWidget(walletFrame);
         statsWindow = new StatsExplorer(this);
         chatWindow = new ChatWindow(this);
+        exampleWindow = new exampleDialog(this);
     } else
 #endif // ENABLE_WALLET
     {
@@ -260,6 +263,11 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
 
     // prevents an oben debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), chatWindow, SLOT(hide()));
+
+    connect(openExamplewindowAction, SIGNAL(triggered()), exampleWindow, SLOT(show()));
+
+    // prevents an oben debug window from becoming stuck/unusable on client shutdown
+    connect(quitAction, SIGNAL(triggered()), exampleWindow, SLOT(hide()));
 
     // Install event filter to be able to catch status tip events (QEvent::StatusTip)
     this->installEventFilter(this);
@@ -424,6 +432,8 @@ void BitcoinGUI::createActions()
     openChatWindowAction->setStatusTip(tr("Chat window"));
     inscribeBlockChainAction = new QAction(platformStyle->TextColorIcon(":/icons/inscribe"), tr("&Inscribe block"), this);
     inscribeBlockChainAction->setStatusTip(tr("Indelibly inscribe the block"));    
+    openExamplewindowAction = new QAction(platformStyle->TextColorIcon(":/icons/example"), tr("&Example window"), this);
+    openExamplewindowAction->setStatusTip(tr("Example dialog"));
 
     showHelpMessageAction = new QAction(platformStyle->TextColorIcon(":/icons/info"), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
@@ -500,6 +510,7 @@ void BitcoinGUI::createMenuBar()
         data->addAction(inscribeBlockChainAction);
         data->addAction(openStatsExplorerAction);
     	data->addAction(openChatWindowAction);
+        data->addAction(openExamplewindowAction);
     }
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
@@ -673,6 +684,7 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(optionsAction);
     trayIconMenu->addAction(openStatsExplorerAction);
+    trayIconMenu->addAction(openExamplewindowAction);
     trayIconMenu->addAction(openRPCConsoleAction);
     trayIconMenu->addAction(openBlockExplorerAction);
     trayIconMenu->addAction(openChatWindowAction);
@@ -803,6 +815,12 @@ void BitcoinGUI::gotoChatPage()
 {
     openChatWindowAction->setChecked(true);
     if (walletFrame) walletFrame->gotoChatPage();
+}
+
+void BitcoinGUI::gotoExamplePage()
+{
+    openExamplewindowAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoExamplePage();
 }
 #endif // ENABLE_WALLET
 

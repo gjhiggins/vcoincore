@@ -25,6 +25,7 @@ class ReportView;
 class BlockExplorer;
 class InscriptionDialog;
 class StatsExplorer;
+class exampleDialog;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -74,6 +75,7 @@ private:
     AddressBookPage *usedReceivingAddressesPage;
     BlockExplorer *explorerWindow;
     StatsExplorer *statsExplorerPage;
+    exampleDialog *exampleDialogPage;
 
     TransactionView *transactionView;
     
@@ -88,10 +90,6 @@ public Q_SLOTS:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
-    /** Switch to Stats page */
-    void gotoStatsExplorerPage();	
-    /** Switch to chat page */
-    void gotoChatPage();
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
@@ -102,6 +100,10 @@ public Q_SLOTS:
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
     
+    /** Switch to Stats page */
+    void gotoStatsExplorerPage();	
+    /** Switch to chat page */
+    void gotoChatPage();
     /** Switch to explorer page */
     void gotoBlockExplorerPage();	
     /** Switch to account report page */
@@ -110,6 +112,8 @@ public Q_SLOTS:
     void inscribeBlockChain();
     /** V Core identity mgmt tab */
     void gotoManageNamesPage();
+    /** Switch to Example page */
+    void gotoExamplePage();	
 
     /** Show incoming transaction notification for new transactions.
 

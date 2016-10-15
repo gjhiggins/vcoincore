@@ -26,6 +26,7 @@ class PlatformStyle;
 class ChatWindow;
 class RPCConsole;
 class StatsExplorer;
+class exampleDialog;
 class SendCoinsRecipient;
 class UnitDisplayStatusBarControl;
 class WalletFrame;
@@ -119,6 +120,7 @@ private:
     QAction *openAction;
 	QAction *openStatsExplorerAction;
     QAction *openChatWindowAction;
+	QAction *openExamplewindowAction;
     QAction *showHelpMessageAction;
 	QAction *openBlockExplorerAction;
     QAction *inscribeBlockChainAction;
@@ -131,6 +133,7 @@ private:
     BlockExplorer  *explorerWindow;
     StatsExplorer  *statsWindow;
     ChatWindow *chatWindow;
+    exampleDialog  *exampleWindow;
     ModalOverlay *modalOverlay;
 
     /** Keep track of previous number of blocks, to detect progress */
@@ -203,6 +206,8 @@ private Q_SLOTS:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
+    /** Switch to Example Page */
+    void gotoExamplePage(); 
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
