@@ -130,6 +130,7 @@ private:
     /** Create the main UI actions. */
     void createActions();
     /** Create the menu bar and sub-menus. */
+    QAction *accountReportAction;
     void createMenuBar();
     /** Create the toolbars */
     void createToolBars();
@@ -199,6 +200,9 @@ private Q_SLOTS:
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
+    
+    /** Switch to account report page */
+    void gotoAccountReportPage();
 
     /** Show open dialog */
     void openClicked();

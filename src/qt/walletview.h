@@ -16,6 +16,7 @@ class PlatformStyle;
 class ReceiveCoinsDialog;
 class SendCoinsDialog;
 class SendCoinsRecipient;
+class ReportView;
 class TransactionView;
 class WalletModel;
 class AddressBookPage;
@@ -66,6 +67,9 @@ private:
     AddressBookPage *usedReceivingAddressesPage;
 
     TransactionView *transactionView;
+    
+    QWidget *accountreportPage;
+    ReportView *reportView;		
 
     QProgressDialog *progressDialog;
     const PlatformStyle *platformStyle;
@@ -84,6 +88,9 @@ public Q_SLOTS:
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
+    
+    /** Switch to account report page */
+    void gotoAccountReportPage(); 
 
     /** Show incoming transaction notification for new transactions.
 
