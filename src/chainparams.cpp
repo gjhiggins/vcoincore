@@ -113,15 +113,15 @@ public:
 
         genesis = CreateGenesisBlock(1431517588, 1486592, 0x1e0fffff, 1, 1 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        printf("mainnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
-        printf("mainnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        printf("mainnet: %s\n", consensus.powLimit.ToString().c_str());
+        LogPrintf("mainnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
+        LogPrintf("mainnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
+        LogPrintf("mainnet: %s\n", consensus.powLimit.ToString().c_str());
         // genesis.print();
 
         /*
         // calculate Genesis Block
         if (true && (genesis.GetHash() != consensus.hashGenesisBlock)) {
-            printf("Calculating Genesis Block:\n");
+            LogPrintf("Calculating Genesis Block:\n");
             arith_uint256 hashTarget = arith_uint256().SetCompact(genesis.nBits);
             uint256 hash;
             genesis.nNonce = 0;
@@ -135,12 +135,12 @@ public:
                 ++genesis.nNonce;
                 if (genesis.nNonce == 0)
                 {
-                    printf("NONCE WRAPPED, incrementing time");
+                    LogPrintf("NONCE WRAPPED, incrementing time");
                     ++genesis.nTime;
                 }
                 if (genesis.nNonce % 10000 == 0)
                 {
-                    printf("nonce %08u: hash = %s \n", genesis.nNonce, genesis.GetHash().ToString().c_str());
+                    LogPrintf("nonce %08u: hash = %s \n", genesis.nNonce, genesis.GetHash().ToString().c_str());
                 }
             }
         }
@@ -220,9 +220,9 @@ public:
 
         genesis = CreateGenesisBlock(1441062000, 1173545, 0x1e0fffff, 1, 1 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        printf("testnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
-        printf("testnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        printf("testnet: %s\n", consensus.powLimit.ToString().c_str());
+        LogPrintf("testnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
+        LogPrintf("testnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
+        LogPrintf("testnet: %s\n", consensus.powLimit.ToString().c_str());
         assert(consensus.hashGenesisBlock == uint256S("0x000007e14c52364cee2d4d9483541d473e3e73c896df75882273b91313b44816"));
         assert(genesis.hashMerkleRoot == uint256S("0x1576ef41775095b26a8f8f2bb65b693ec12230608a425aa84ee462381cae00e6"));
 
