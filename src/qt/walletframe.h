@@ -14,7 +14,6 @@ class PlatformStyle;
 class SendCoinsRecipient;
 class WalletModel;
 class WalletView;
-// class ExampleWindow;
 
 QT_BEGIN_NAMESPACE
 class QStackedWidget;

@@ -153,13 +153,13 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
 #endif
 
     rpcConsole = new RPCConsole(_platformStyle, 0);
+    exampleWindow = new ExampleWindow(platformStyle, 0);
     helpMessageDialog = new HelpMessageDialog(this, false);
 #ifdef ENABLE_WALLET
     if(enableWallet)
     {
         /** Create wallet frame and make it the central widget */
         walletFrame = new WalletFrame(_platformStyle, this);
-        exampleWindow = new ExampleWindow(platformStyle, this);
         setCentralWidget(walletFrame);
     } else
 #endif // ENABLE_WALLET
@@ -243,6 +243,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     // prevents an open debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), exampleWindow, SLOT(hide()));
 
+
     // Install event filter to be able to catch status tip events (QEvent::StatusTip)
     this->installEventFilter(this);
 
@@ -273,6 +274,7 @@ BitcoinGUI::~BitcoinGUI()
 #endif
 
     delete rpcConsole;
+    delete exampleWindow;
 }
 
 void BitcoinGUI::createActions()
@@ -376,7 +378,7 @@ void BitcoinGUI::createActions()
     openAction->setStatusTip(tr("Open a vcore: URI or payment request"));
 
     openExampleWindowAction = new QAction(platformStyle->TextColorIcon(":/icons/example"), tr("&Example window"), this);
-    openExampleWindowAction->setStatusTip(tr("Example window"));
+    openExampleWindowAction->setStatusTip(tr("Open example window"));
 
     showHelpMessageAction = new QAction(platformStyle->TextColorIcon(":/icons/info"), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
@@ -391,6 +393,10 @@ void BitcoinGUI::createActions()
     connect(openRPCConsoleAction, SIGNAL(triggered()), this, SLOT(showDebugWindow()));
     // prevents an open debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), rpcConsole, SLOT(hide()));
+
+    connect(openExampleWindowAction, SIGNAL(triggered()), this, SLOT(showExampleWindow()));
+    // prevents an open debug window from becoming stuck/unusable on client shutdown
+    connect(quitAction, SIGNAL(triggered()), exampleWindow, SLOT(hide()));
 
 #ifdef ENABLE_WALLET
     if(walletFrame)
@@ -445,7 +451,10 @@ void BitcoinGUI::createMenuBar()
     settings->addAction(optionsAction);
 
     QMenu *data = appMenuBar->addMenu(tr("&Example"));
-    data->addAction(openExampleWindowAction);
+    if(walletFrame)
+    {
+        data->addAction(openExampleWindowAction);
+    }
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
     if(walletFrame)
@@ -657,6 +666,14 @@ void BitcoinGUI::showDebugWindow()
     rpcConsole->activateWindow();
 }
 
+void BitcoinGUI::showExampleWindow()
+{
+    exampleWindow->showNormal();
+    exampleWindow->show();
+    exampleWindow->raise();
+    exampleWindow->activateWindow();
+}
+
 void BitcoinGUI::showDebugWindowActivateConsole()
 {
     rpcConsole->setTabFocus(RPCConsole::TAB_CONSOLE);
@@ -701,6 +718,7 @@ void BitcoinGUI::gotoSendCoinsPage(QString addr)
     sendCoinsAction->setChecked(true);
     if (walletFrame) walletFrame->gotoSendCoinsPage(addr);
 }
+
 void BitcoinGUI::gotoSignMessageTab(QString addr)
 {
     if (walletFrame) walletFrame->gotoSignMessageTab(addr);
@@ -710,7 +728,6 @@ void BitcoinGUI::gotoVerifyMessageTab(QString addr)
 {
     if (walletFrame) walletFrame->gotoVerifyMessageTab(addr);
 }
-
 
 void BitcoinGUI::gotoExampleWindow()
 {
@@ -933,6 +950,7 @@ void BitcoinGUI::closeEvent(QCloseEvent *event)
         {
             // close rpcConsole in case it was open to make some space for the shutdown window
             rpcConsole->close();
+            exampleWindow->close();
 
             QApplication::quit();
         }
@@ -951,6 +969,7 @@ void BitcoinGUI::showEvent(QShowEvent *event)
 {
     // enable the debug window when the main window shows up
     openRPCConsoleAction->setEnabled(true);
+    openExampleWindowAction->setEnabled(true);
     aboutAction->setEnabled(true);
     optionsAction->setEnabled(true);
 }
@@ -1090,6 +1109,8 @@ void BitcoinGUI::detectShutdown()
     {
         if(rpcConsole)
             rpcConsole->hide();
+        if(exampleWindow)
+            exampleWindow->hide();
         qApp->quit();
     }
 }

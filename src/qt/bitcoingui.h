@@ -212,6 +212,8 @@ private Q_SLOTS:
     void optionsClicked();
     /** Show about dialog */
     void aboutClicked();
+    /** Show example window */
+    void showExampleWindow();
     /** Show debug window */
     void showDebugWindow();
     /** Show debug window and set focus to the console */

@@ -1,33 +1,38 @@
+// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef EXAMPLEWINDOW_H
 #define EXAMPLEWINDOW_H
 
-#include "platformstyle.h"
+#include "guiutil.h"
 
 #include <QWidget>
-#include <QFrame>
+#include <QCompleter>
 
-namespace Ui
-{
+class PlatformStyle;
+
+namespace Ui {
     class ExampleWindow;
 }
 
-/** Page for Example Dialog */
-class ExampleWindow : public QWidget
+QT_BEGIN_NAMESPACE
+class QMenu;
+class QItemSelection;
+QT_END_NAMESPACE
+
+/** Example Qt Window. */
+class ExampleWindow: public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ExampleWindow(const PlatformStyle *platformStyle, QWidget *parent = 0);
+    explicit ExampleWindow(const PlatformStyle *platformStyle, QWidget *parent);
     ~ExampleWindow();
 
 private:
-    const PlatformStyle *platformStyle;
     Ui::ExampleWindow *ui;
-
-public Q_SLOTS:
-
-private Q_SLOTS:
-
+    const PlatformStyle *platformStyle;
 };
 
 #endif // EXAMPLEWINDOW_H
