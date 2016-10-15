@@ -28,6 +28,7 @@ class SendCoinsRecipient;
 class UnitDisplayStatusBarControl;
 class WalletFrame;
 class WalletModel;
+class BlockExplorer;
 class HelpMessageDialog;
 class ModalOverlay;
 
@@ -113,11 +114,13 @@ private:
     QAction *openRPCConsoleAction;
     QAction *openAction;
     QAction *showHelpMessageAction;
+	QAction *openBlockExplorerAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
     Notificator *notificator;
     RPCConsole *rpcConsole;
+    BlockExplorer  *explorerWindow;
     HelpMessageDialog *helpMessageDialog;
     ModalOverlay *modalOverlay;
 
@@ -130,6 +133,7 @@ private:
     /** Create the main UI actions. */
     void createActions();
     /** Create the menu bar and sub-menus. */
+    QAction *accountReportAction;
     void createMenuBar();
     /** Create the toolbars */
     void createToolBars();
@@ -199,6 +203,11 @@ private Q_SLOTS:
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
+    
+    /** Switch to Explorer Page */
+    void gotoBlockExplorerPage(); 
+    /** Switch to account report page */
+    void gotoAccountReportPage();
 
     /** Show open dialog */
     void openClicked();
