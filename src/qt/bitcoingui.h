@@ -24,6 +24,7 @@ class Notificator;
 class OptionsModel;
 class PlatformStyle;
 class RPCConsole;
+class exampleDialog;
 class SendCoinsRecipient;
 class UnitDisplayStatusBarControl;
 class WalletFrame;
@@ -112,6 +113,7 @@ private:
     QAction *aboutQtAction;
     QAction *openRPCConsoleAction;
     QAction *openAction;
+	QAction *openExamplewindowAction;
     QAction *showHelpMessageAction;
 
     QSystemTrayIcon *trayIcon;
@@ -119,6 +121,7 @@ private:
     Notificator *notificator;
     RPCConsole *rpcConsole;
     HelpMessageDialog *helpMessageDialog;
+    exampleDialog  *exampleWindow;
     ModalOverlay *modalOverlay;
 
     /** Keep track of previous number of blocks, to detect progress */
@@ -190,6 +193,8 @@ private Q_SLOTS:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
+    /** Switch to Example Page */
+    void gotoExamplePage(); 
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
