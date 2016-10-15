@@ -451,13 +451,16 @@ void BitcoinGUI::createMenuBar()
         settings->addAction(encryptWalletAction);
         settings->addAction(changePassphraseAction);
         settings->addSeparator();
-        settings->addAction(accountReportAction);
         settings->addSeparator();
     }
     settings->addAction(optionsAction);
 
     QMenu *data = appMenuBar->addMenu(tr("&Data"));
-    data->addAction(openBlockExplorerAction);
+    if(walletFrame)
+    {
+        data->addAction(openBlockExplorerAction);
+        data->addAction(accountReportAction);
+    }
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
     if(walletFrame)
@@ -725,13 +728,6 @@ void BitcoinGUI::gotoVerifyMessageTab(QString addr)
 {
     if (walletFrame) walletFrame->gotoVerifyMessageTab(addr);
 }
-
-void BitcoinGUI::gotoBlockExplorerPage()
-{
-    openBlockExplorerAction->setChecked(true);
-    if (walletFrame) walletFrame->gotoBlockExplorerPage();
-}
-
 #endif // ENABLE_WALLET
 
 void BitcoinGUI::setNumConnections(int count)
@@ -1150,6 +1146,12 @@ void BitcoinGUI::gotoAccountReportPage()
 {
 		accountReportAction->setChecked(true);
     if (walletFrame) walletFrame->gotoAccountReportPage();
+}
+
+void BitcoinGUI::gotoBlockExplorerPage()
+{
+    openBlockExplorerAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoBlockExplorerPage();
 }
 
 static bool ThreadSafeMessageBox(BitcoinGUI *gui, const std::string& message, const std::string& caption, unsigned int style)

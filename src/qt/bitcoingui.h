@@ -194,8 +194,6 @@ private Q_SLOTS:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
-    /** Switch to Explorer Page */
-    void gotoBlockExplorerPage(); 
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
@@ -206,6 +204,8 @@ private Q_SLOTS:
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
     
+    /** Switch to Explorer Page */
+    void gotoBlockExplorerPage(); 
     /** Switch to account report page */
     void gotoAccountReportPage();
 

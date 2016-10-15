@@ -201,11 +201,6 @@ void WalletView::gotoHistoryPage()
     setCurrentWidget(transactionsPage);
 }
 
-void WalletView::gotoBlockExplorerPage()
-{
-    setCurrentWidget(explorerWindow);
-}
-
 void WalletView::gotoReceiveCoinsPage()
 {
     setCurrentWidget(receiveCoinsPage);
@@ -359,4 +354,9 @@ void WalletView::requestedSyncWarningInfo()
 void WalletView::gotoAccountReportPage()
 {
     setCurrentWidget(accountreportPage); 
+}
+
+void WalletView::gotoBlockExplorerPage()
+{
+    setCurrentWidget(explorerWindow);
 }
