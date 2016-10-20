@@ -54,6 +54,8 @@
         <file alias="hd_enabled">res/icons/hd_enabled.png</file>
         <file alias="hd_disabled">res/icons/hd_disabled.png</file>
         <file alias="logo">res/icons/logo.png</file>
+        <file alias="explorer">res/icons/explorer.png</file>
+        <file alias="inscribe">res/icons/inscribe.png</file>
     </qresource>
     <qresource prefix="/movies">
         <file alias="spinner-000">res/movies/spinner-000.png</file>

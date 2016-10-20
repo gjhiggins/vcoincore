@@ -115,13 +115,14 @@ private:
     QAction *openAction;
     QAction *showHelpMessageAction;
 	QAction *openBlockExplorerAction;
+    QAction *inscribeBlockChainAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
     Notificator *notificator;
     RPCConsole *rpcConsole;
-    BlockExplorer  *explorerWindow;
     HelpMessageDialog *helpMessageDialog;
+    BlockExplorer  *explorerWindow;
     ModalOverlay *modalOverlay;
 
     /** Keep track of previous number of blocks, to detect progress */

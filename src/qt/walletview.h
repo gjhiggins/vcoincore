@@ -21,6 +21,7 @@ class WalletModel;
 class AddressBookPage;
 class ReportView;
 class BlockExplorer;
+class InscriptionDialog;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -109,6 +110,9 @@ public Q_SLOTS:
     void changePassphrase();
     /** Ask for passphrase to unlock wallet temporarily */
     void unlockWallet();
+
+    /** Open inscription dialog **/
+    void inscribeBlockChain();
 
     /** Show used sending addresses */
     void usedSendingAddresses();

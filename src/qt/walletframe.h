@@ -15,6 +15,7 @@ class SendCoinsRecipient;
 class WalletModel;
 class WalletView;
 class BlockExplorer;
+class InscriptionDialog;
 
 QT_BEGIN_NAMESPACE
 class QStackedWidget;
@@ -75,6 +76,8 @@ public Q_SLOTS:
     void gotoBlockExplorerPage();	
     /** Switch to account report page */
     void gotoAccountReportPage();
+    /** Open inscription dialog **/
+    void inscribeBlockChain();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");
