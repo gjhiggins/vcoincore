@@ -73,6 +73,7 @@ src/qt/test/moc*.cpp
 
 # Compilation and Qt preprocessor part
 *.qm
+Makefile.am.user
 Makefile
 vcore-qt
 VCore-Qt.app
