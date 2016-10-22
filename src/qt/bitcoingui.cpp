@@ -12,7 +12,6 @@
 #include "clientmodel.h"
 #include "guiconstants.h"
 #include "guiutil.h"
-#include "reportview.h"
 #include "modaloverlay.h"
 #include "networkstyle.h"
 #include "notificator.h"
@@ -27,6 +26,7 @@
 #include "walletframe.h"
 #include "walletmodel.h"
 #include "blockexplorer.h"
+#include "reportview.h"
 #endif // ENABLE_WALLET
 
 #ifdef Q_OS_MAC
@@ -385,7 +385,7 @@ void BitcoinGUI::createActions()
     openAction = new QAction(platformStyle->TextColorIcon(":/icons/open"), tr("Open &URI..."), this);
     openAction->setStatusTip(tr("Open a vcore: URI or payment request"));
 
-    openBlockExplorerAction = new QAction(platformStyle->TextColorIcon(":/icons/explorer"), tr("&Block explorer window"), this);
+    openBlockExplorerAction = new QAction(platformStyle->TextColorIcon(":/icons/explorer"), tr("&Blockchain explorer"), this);
     openBlockExplorerAction->setStatusTip(tr("Block explorer window"));
 
     showHelpMessageAction = new QAction(platformStyle->TextColorIcon(":/icons/info"), tr("&Command-line options"), this);
@@ -459,7 +459,6 @@ void BitcoinGUI::createMenuBar()
     if(walletFrame)
     {
         data->addAction(openBlockExplorerAction);
-        data->addAction(accountReportAction);
     }
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));

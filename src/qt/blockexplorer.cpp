@@ -499,8 +499,8 @@ void BlockExplorer::showEvent(QShowEvent*)
 
         if (!GetBoolArg("-txindex", false))
         {
-            QString Warning = tr("Not all transactions will be shown. To view all transactions you need to set txindex=1 in the configuration file (spreadcoin.conf).");
-            QMessageBox::warning(this, "VCoin Blockchain Explorer", Warning, QMessageBox::Ok);
+            QString Warning = tr("Not all transactions will be shown. To view all transactions you need to set txindex=1 in the configuration file (vcore.conf).");
+            QMessageBox::warning(this, "V Core Blockchain Explorer", Warning, QMessageBox::Ok);
         }
     }
 }
