@@ -19,7 +19,9 @@ class SendCoinsRecipient;
 class TransactionView;
 class WalletModel;
 class AddressBookPage;
+class ReportView;
 class BlockExplorer;
+class StatsExplorer;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -66,8 +68,12 @@ private:
     AddressBookPage *usedSendingAddressesPage;
     AddressBookPage *usedReceivingAddressesPage;
     BlockExplorer *explorerWindow;
+    StatsExplorer *statsExplorerPage;
 
     TransactionView *transactionView;
+    
+    QWidget *accountreportPage;
+    ReportView *reportView;		
 
     QProgressDialog *progressDialog;
     const PlatformStyle *platformStyle;
@@ -77,8 +83,8 @@ public Q_SLOTS:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
-    /** Switch to explorer page */
-    void gotoBlockExplorerPage();	
+    /** Switch to Stats page */
+    void gotoStatsExplorerPage();	
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
@@ -88,6 +94,11 @@ public Q_SLOTS:
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
+    
+    /** Switch to explorer page */
+    void gotoBlockExplorerPage();	
+    /** Switch to account report page */
+    void gotoAccountReportPage(); 
 
     /** Show incoming transaction notification for new transactions.
 
