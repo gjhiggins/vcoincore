@@ -110,6 +110,11 @@ public:
         READWRITE(nSequence);
     }
 
+    bool IsFinal() const
+    {
+        return (nSequence == std::numeric_limits<uint32_t>::max());
+    }
+
     friend bool operator==(const CTxIn& a, const CTxIn& b)
     {
         return (a.prevout   == b.prevout &&
@@ -158,6 +163,20 @@ public:
     bool IsNull() const
     {
         return (nValue == -1);
+    }
+    /* FIXME: check relevance */
+    bool IsOpReturn() const {
+       std::vector<uint8_t> vchR;
+       opcodetype opCode;
+       CScript scriptPK = this->scriptPubKey;
+       CScript::const_iterator pc = scriptPK.begin();
+       if (!vchR.empty()) {
+             vchR.clear();
+       }
+       if (scriptPK.GetOp(pc, opCode, vchR) && (opCode == OP_RETURN)) {
+              return true;
+       }
+       return false;
     }
 
     uint256 GetHash() const;
@@ -357,7 +376,14 @@ private:
 
 public:
     // Default transaction version.
-    static const int32_t CURRENT_VERSION=1;
+
+    // versions
+    //    1 : launch
+    //    2 : after pow
+    //        support for tx references (strTxReference)
+    //        support for semantic type identifiers (nSemTypeID)
+    static const int CURRENT_VERSION = 2;
+    static const int PREVIOUS_VERSION = 1;
 
     // Changing the default transaction version requires a two step process: first
     // adapting relay policy by bumping MAX_STANDARD_VERSION, and then later date
@@ -375,6 +401,8 @@ public:
     const std::vector<CTxOut> vout;
     CTxWitness wit; // Not const: can change without invalidating the txid cache
     const uint32_t nLockTime;
+    std::string strTxReference;
+    unsigned int nSemTypeID;
 
     /** Construct a CTransaction that qualifies as IsNull() */
     CTransaction();
@@ -388,13 +416,33 @@ public:
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+        /* FIXME: replaced by uncommented code below - correctly?
         SerializeTransaction(*this, s, ser_action, nType, nVersion);
-        if (ser_action.ForRead()) {
-            UpdateHash();
+        */
+        READWRITE(*const_cast<int32_t*>(&this->nVersion));
+        nVersion = this->nVersion;
+        READWRITE(*const_cast<std::vector<CTxIn>*>(&vin));
+        READWRITE(*const_cast<std::vector<CTxOut>*>(&vout));
+        READWRITE(*const_cast<uint32_t*>(&nLockTime));
+        if (nVersion >= 2) {
+            READWRITE(*const_cast<std::string*>(&strTxReference));
+            READWRITE(*const_cast<uint32_t*>(&nSemTypeID));
         }
+        if (ser_action.ForRead())
+            UpdateHash();
     }
 
     bool IsNull() const {
+        /* FIXME: what was *this* supposed to be doing?
+        nTime = GetAdjustedTime();
+        if (nBestHeight >= LAST_POW_BLOCK) {
+            nVersion = CTransaction::CURRENT_VERSION;
+            strTxReference.clear();
+            nSemTypeID = VCN_NONE;
+        } else {
+            nVersion = CTransaction::PREVIOUS_VERSION;
+        }
+        */
         return vin.empty() && vout.empty();
     }
 
@@ -439,7 +487,8 @@ public:
     }
 
     std::string ToString() const;
-
+    int64_t GetInscriptionFee() const;
+    int64_t GetOpRetFee() const;
     void UpdateHash() const;
 };
 
@@ -451,6 +500,8 @@ struct CMutableTransaction
     std::vector<CTxOut> vout;
     CTxWitness wit;
     uint32_t nLockTime;
+    std::string strTxReference;
+    unsigned int nSemTypeID;
 
     CMutableTransaction();
     CMutableTransaction(const CTransaction& tx);
@@ -459,13 +510,26 @@ struct CMutableTransaction
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+        /* FIXME: replaced by uncommented code below
         SerializeTransaction(*this, s, ser_action, nType, nVersion);
+        */
+        READWRITE(this->nVersion);
+        nVersion = this->nVersion;
+        READWRITE(vin);
+        READWRITE(vout);
+        READWRITE(nLockTime);
+        if (nVersion >= 2) {
+              READWRITE(strTxReference);
+              READWRITE(nSemTypeID);
+        }
     }
 
     /** Compute the hash of this CMutableTransaction. This is computed on the
      * fly, as opposed to GetHash() in CTransaction, which uses a cached result.
      */
     uint256 GetHash() const;
+    int64_t GetInscriptionFee() const;
+    int64_t GetOpRetFee() const;
 };
 
 /** Compute the weight of a transaction, as defined by BIP 141 */
