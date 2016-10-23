@@ -1712,6 +1712,18 @@ bool ReadBlockFromDisk(CBlock& block, const CBlockIndex* pindex, const Consensus
     return true;
 }
 
+/* HOW-TO: reward of a block is 16 satoshis (">>4") per difficulty of that block
+CAmount GetBlockSubsidy(unsigned int nBits, int nHeight, const Consensus::Params& consensusParams)
+{
+  arith_uint256 nTarget, nMaximumTarget;
+  nTarget.SetCompact(nBits);
+  nMaximumTarget.SetCompact(0x1d00ffff);
+  arith_uint256 nDiffSatoshis = nMaximumTarget / (nTarget >> 4);
+  CAmount nSubsidy = nDiffSatoshis.GetLow64();
+  return nSubsidy;
+}
+*/
+
 CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 {
     int halvings = nHeight / consensusParams.nSubsidyHalvingInterval;
@@ -3535,6 +3547,7 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
     if (block.GetBlockTime() > nAdjustedTime + 2 * 60 * 60)
         return state.Invalid(false, REJECT_INVALID, "time-too-new", "block timestamp too far in the future");
 
+    // FIXME: ensure valid VCN blocks not excluded
     // Reject outdated version blocks when 95% (75% on testnet) of the network has upgraded:
     // check for version 2, 3 and 4 upgrades
     if((block.nVersion < 2 && nHeight >= consensusParams.BIP34Height) ||
@@ -3567,6 +3580,7 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, const Co
         }
     }
 
+    // FIXME: check pertinence
     // Enforce rule that the coinbase starts with serialized block height
     if (nHeight >= consensusParams.BIP34Height)
     {
