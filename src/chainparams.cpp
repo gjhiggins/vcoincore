@@ -89,6 +89,9 @@ public:
         consensus.powLimit = uint256S("0x00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~arith_uint256(0) >> 20
         consensus.nPowTargetTimespan = 1200; // 20 minutes
         consensus.nPowTargetSpacing = 30; // 30 seconds
+        // Officially removed to where?
+        // consensus.nMaxAdjustUp = 4;
+        // consensus.nMaxAdjustDown = 20;
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016

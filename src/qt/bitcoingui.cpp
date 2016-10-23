@@ -325,7 +325,7 @@ void BitcoinGUI::createActions()
     tabGroup->addAction(historyAction);
     
     accountReportAction = new QAction(platformStyle->SingleColorIcon(":/icons/account-report"), tr("&Report"), this);
-    accountReportAction->setStatusTip(tr("Get my account report"));
+    accountReportAction->setStatusTip(tr("Account report"));
     accountReportAction->setToolTip(accountReportAction->statusTip());
     accountReportAction->setCheckable(true);
     accountReportAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
@@ -469,7 +469,6 @@ void BitcoinGUI::createMenuBar()
     if(walletFrame)
     {
         data->addAction(openBlockExplorerAction);
-        data->addAction(accountReportAction);
         data->addAction(openStatsExplorerAction);
     }
 
