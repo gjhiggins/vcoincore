@@ -18,6 +18,7 @@
 #include "transactiontablemodel.h"
 #include "transactionview.h"
 #include "walletmodel.h"
+#include "utilitydialog.h"
 #include "reportview.h"
 #include "blockexplorer.h"
 #include "statsexplorer.h"
@@ -367,4 +368,14 @@ void WalletView::gotoAccountReportPage()
 void WalletView::gotoBlockExplorerPage()
 {
     setCurrentWidget(explorerWindow);
+}
+
+void WalletView::inscribeBlockChain()
+{
+    if(!walletModel)
+        return;
+
+    InscriptionDialog dlg(this);
+    dlg.setModel(walletModel);
+    dlg.exec();
 }

@@ -117,13 +117,14 @@ private:
 	QAction *openStatsExplorerAction;
     QAction *showHelpMessageAction;
 	QAction *openBlockExplorerAction;
+    QAction *inscribeBlockChainAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
     Notificator *notificator;
     RPCConsole *rpcConsole;
-    BlockExplorer  *explorerWindow;
     HelpMessageDialog *helpMessageDialog;
+    BlockExplorer  *explorerWindow;
     StatsExplorer  *statsWindow;
     ModalOverlay *modalOverlay;
 

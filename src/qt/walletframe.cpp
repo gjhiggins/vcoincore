@@ -209,6 +209,13 @@ void WalletFrame::outOfSyncWarningClicked()
     Q_EMIT requestedSyncWarningInfo();
 }
 
+void WalletFrame::inscribeBlockChain()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->inscribeBlockChain();
+}
+
 void WalletFrame::gotoAccountReportPage()
 {
     QMap<QString, WalletView*>::const_iterator i;
