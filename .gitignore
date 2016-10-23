@@ -113,3 +113,4 @@ qa/cache/*
 libbitcoinconsensus.pc
 contrib/devtools/split-debug.sh
 *.am.user
+*.diff

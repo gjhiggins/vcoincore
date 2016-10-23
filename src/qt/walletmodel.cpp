@@ -189,7 +189,9 @@ bool WalletModel::validateAddress(const QString &address)
     return addressParsed.IsValid();
 }
 
-WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransaction &transaction, const CCoinControl *coinControl)
+//WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransaction &transaction, const CCoinControl *coinControl)
+// FIXED: Added txreference
+WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransaction &transaction, const QString &txreference, const CCoinControl *coinControl)
 {
     CAmount total = 0;
     bool fSubtractFeeFromAmount = false;
@@ -271,10 +273,13 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
         CAmount nFeeRequired = 0;
         int nChangePosRet = -1;
         std::string strFailReason;
+        std::string strTxReference = txreference.toStdString();
 
         CWalletTx *newTx = transaction.getTransaction();
         CReserveKey *keyChange = transaction.getPossibleKeyChange();
-        bool fCreated = wallet->CreateTransaction(vecSend, *newTx, *keyChange, nFeeRequired, nChangePosRet, strFailReason, coinControl);
+        // FIXED: added strTxReference
+        bool fCreated = wallet->CreateTransaction(vecSend, *newTx, *keyChange, nFeeRequired, nChangePosRet, strFailReason, strTxReference, coinControl);
+        // bool fCreated = wallet->CreateTransaction(vecSend, *newTx, *keyChange, nFeeRequired, nChangePosRet, strFailReason, coinControl);
         transaction.setTransactionFee(nFeeRequired);
         if (fSubtractFeeFromAmount && fCreated)
             transaction.reassignAmounts(nChangePosRet);

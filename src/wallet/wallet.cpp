@@ -5,6 +5,7 @@
 
 #include "wallet/wallet.h"
 
+#include "amount.h"
 #include "base58.h"
 #include "checkpoints.h"
 #include "chain.h"
@@ -2132,7 +2133,8 @@ bool CWallet::FundTransaction(CMutableTransaction& tx, CAmount& nFeeRet, bool ov
 
     CReserveKey reservekey(this);
     CWalletTx wtx;
-    if (!CreateTransaction(vecSend, wtx, reservekey, nFeeRet, nChangePosInOut, strFailReason, &coinControl, false))
+    std::string strTxReference = 0;
+    if (!CreateTransaction(vecSend, wtx, reservekey, nFeeRet, nChangePosInOut, strFailReason, strTxReference, &coinControl, false))
         return false;
 
     if (nChangePosInOut != -1)
@@ -2156,8 +2158,8 @@ bool CWallet::FundTransaction(CMutableTransaction& tx, CAmount& nFeeRet, bool ov
     return true;
 }
 
-bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend, CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet,
-                                int& nChangePosInOut, std::string& strFailReason, const CCoinControl* coinControl, bool sign)
+bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend,
+                                CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet, int& nChangePosInOut, std::string& strFailReason, std::string& strTxReference, const CCoinControl* coinControl, bool sign)
 {
     CAmount nValue = 0;
     int nChangePosRequest = nChangePosInOut;
@@ -2183,6 +2185,15 @@ bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend, CWalletTx& wt
     wtxNew.fTimeReceivedIsTxTime = true;
     wtxNew.BindWallet(this);
     CMutableTransaction txNew;
+
+    // Semantic type
+    wtxNew.nSemTypeID = 1;
+    // Public reference
+    wtxNew.strTxReference = strTxReference;
+
+    if (wtxNew.strTxReference.length() > MAX_TX_REFERENCE_LEN) {
+           wtxNew.strTxReference.resize(MAX_TX_REFERENCE_LEN);
+    }
 
     // Discourage fee sniping.
     //

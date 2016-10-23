@@ -29,8 +29,8 @@ class SendCoinsRecipient;
 class UnitDisplayStatusBarControl;
 class WalletFrame;
 class WalletModel;
-class BlockExplorer;
 class HelpMessageDialog;
+class BlockExplorer;
 class ModalOverlay;
 
 class CWallet;
