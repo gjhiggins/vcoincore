@@ -55,6 +55,7 @@
         <file alias="hd_disabled">res/icons/hd_disabled.png</file>
         <file alias="logo">res/icons/logo.png</file>
         <file alias="explorer">res/icons/explorer.png</file>
+        <file alias="inscribe">res/icons/inscribe.png</file>
         <file alias="stats">res/icons/stats.png</file>
    </qresource>
     <qresource prefix="/movies">
