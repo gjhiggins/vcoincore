@@ -26,6 +26,7 @@
 #include "walletframe.h"
 #include "walletmodel.h"
 #include "blockexplorer.h"
+#include "statsexplorer.h"
 #include "reportview.h"
 #endif // ENABLE_WALLET
 
@@ -121,6 +122,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     rpcConsole(0),
     helpMessageDialog(0),
     explorerWindow(0),
+    statsWindow(0),
     modalOverlay(0),
     prevBlocks(0),
     spinnerFrame(0),
@@ -162,6 +164,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
         walletFrame = new WalletFrame(_platformStyle, this);
         explorerWindow = new BlockExplorer(this);
         setCentralWidget(walletFrame);
+        statsWindow = new StatsExplorer(this);
     } else
 #endif // ENABLE_WALLET
     {
@@ -244,6 +247,11 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     // prevents an open debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), explorerWindow, SLOT(hide()));
 
+    connect(openStatsExplorerAction, SIGNAL(triggered()), statsWindow, SLOT(show()));
+
+    // prevents an oben debug window from becoming stuck/unusable on client shutdown
+    connect(quitAction, SIGNAL(triggered()), statsWindow, SLOT(hide()));
+
     // Install event filter to be able to catch status tip events (QEvent::StatusTip)
     this->installEventFilter(this);
 
@@ -317,7 +325,7 @@ void BitcoinGUI::createActions()
     tabGroup->addAction(historyAction);
     
     accountReportAction = new QAction(platformStyle->SingleColorIcon(":/icons/account-report"), tr("&Report"), this);
-    accountReportAction->setStatusTip(tr("Get my account report"));
+    accountReportAction->setStatusTip(tr("Account report"));
     accountReportAction->setToolTip(accountReportAction->statusTip());
     accountReportAction->setCheckable(true);
     accountReportAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
@@ -387,6 +395,8 @@ void BitcoinGUI::createActions()
 
     openBlockExplorerAction = new QAction(platformStyle->TextColorIcon(":/icons/explorer"), tr("&Blockchain explorer"), this);
     openBlockExplorerAction->setStatusTip(tr("Block explorer window"));
+    openStatsExplorerAction = new QAction(platformStyle->TextColorIcon(":/icons/stats"), tr("&Statistics explorer"), this);
+    openStatsExplorerAction->setStatusTip(tr("Statistics"));
 
     inscribeBlockChainAction = new QAction(platformStyle->TextColorIcon(":/icons/inscribe"), tr("&Inscribe block"), this);
     inscribeBlockChainAction->setStatusTip(tr("Indelibly inscribe the block"));
@@ -465,6 +475,7 @@ void BitcoinGUI::createMenuBar()
     {
         data->addAction(openBlockExplorerAction);
         data->addAction(inscribeBlockChainAction);
+        data->addAction(openStatsExplorerAction);
     }
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
@@ -634,6 +645,7 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addAction(verifyMessageAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(optionsAction);
+    trayIconMenu->addAction(openStatsExplorerAction);
     trayIconMenu->addAction(openRPCConsoleAction);
     trayIconMenu->addAction(openBlockExplorerAction);
 #ifndef Q_OS_MAC // This is built-in on Mac
@@ -733,6 +745,11 @@ void BitcoinGUI::gotoSignMessageTab(QString addr)
 void BitcoinGUI::gotoVerifyMessageTab(QString addr)
 {
     if (walletFrame) walletFrame->gotoVerifyMessageTab(addr);
+}
+void BitcoinGUI::gotoStatsExplorerPage()
+{
+    openStatsExplorerAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoStatsExplorerPage();
 }
 #endif // ENABLE_WALLET
 

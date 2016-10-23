@@ -22,6 +22,7 @@ class AddressBookPage;
 class ReportView;
 class BlockExplorer;
 class InscriptionDialog;
+class StatsExplorer;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -68,6 +69,7 @@ private:
     AddressBookPage *usedSendingAddressesPage;
     AddressBookPage *usedReceivingAddressesPage;
     BlockExplorer *explorerWindow;
+    StatsExplorer *statsExplorerPage;
 
     TransactionView *transactionView;
     
@@ -82,6 +84,8 @@ public Q_SLOTS:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
+    /** Switch to Stats page */
+    void gotoStatsExplorerPage();	
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */

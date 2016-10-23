@@ -21,6 +21,7 @@
 #include "utilitydialog.h"
 #include "reportview.h"
 #include "blockexplorer.h"
+#include "statsexplorer.h"
 
 #include "ui_interface.h"
 
@@ -41,6 +42,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     // Create tabs
     overviewPage = new OverviewPage(platformStyle);
 	explorerWindow = new BlockExplorer(this);
+    statsExplorerPage = new StatsExplorer(this);
 
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -85,6 +87,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(receiveCoinsPage);
     addWidget(sendCoinsPage);
 	addWidget(explorerWindow);
+    addWidget(statsExplorerPage);
     // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
     connect(overviewPage, SIGNAL(outOfSyncWarningClicked()), this, SLOT(requestedSyncWarningInfo()));
@@ -213,6 +216,11 @@ void WalletView::gotoSendCoinsPage(QString addr)
 
     if (!addr.isEmpty())
         sendCoinsPage->setAddress(addr);
+}
+
+void WalletView::gotoStatsExplorerPage()
+{
+    setCurrentWidget(statsExplorerPage);
 }
 
 void WalletView::gotoSignMessageTab(QString addr)
