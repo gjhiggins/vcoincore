@@ -24,6 +24,8 @@
 
 #include <memory>
 #include <stdint.h>
+#include <memory>
+#include <utility>
 
 #include <boost/assign/list_of.hpp>
 #include <boost/shared_ptr.hpp>
@@ -121,14 +123,16 @@ UniValue generateBlocks(boost::shared_ptr<CReserveScript> coinbaseScript, int nG
             LOCK(cs_main);
             IncrementExtraNonce(pblock, chainActive.Tip(), nExtraNonce);
         }
-        while (nMaxTries > 0 && pblock->nNonce < nInnerLoopCount && !CheckProofOfWork(pblock->GetHash(), pblock->nBits, Params().GetConsensus())) {
-            ++pblock->nNonce;
+        CAuxPow::initAuxPow(*pblock);
+        CPureBlockHeader& miningHeader = pblock->auxpow->parentBlock;
+        while (nMaxTries > 0 && miningHeader.nNonce < nInnerLoopCount && !CheckProofOfWork(miningHeader.GetHash(), pblock->nBits, Params().GetConsensus())) {
+            ++miningHeader.nNonce;
             --nMaxTries;
         }
         if (nMaxTries == 0) {
             break;
         }
-        if (pblock->nNonce == nInnerLoopCount) {
+        if (miningHeader.nNonce == nInnerLoopCount) {
             continue;
         }
         CValidationState state;
@@ -306,6 +310,11 @@ static UniValue BIP22ValidationResult(const CValidationState& state)
     return "valid?";
 }
 
+#if 0
+getblocktemplate is disabled for merge-mining, since getauxblock should
+be used instead.  All blocks are required to be merge-mined, thus GBT
+makes no sense.
+
 std::string gbt_vb_name(const Consensus::DeploymentPos pos) {
     const struct BIP9DeploymentInfo& vbinfo = VersionBitsDeploymentInfo[pos];
     std::string s = vbinfo.name;
@@ -466,7 +475,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         throw JSONRPCError(RPC_CLIENT_P2P_DISABLED, "Error: Peer-to-peer functionality missing or disabled");
 
     if (g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL) == 0)
-        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Bitcoin is not connected!");
+        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "V Core is not connected!");
 
     if (IsInitialBlockDownload())
         throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "V Core is downloading blocks...");
@@ -686,6 +695,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
 
     return result;
 }
+#endif // Disabled getblocktemplate
 
 class submitblock_StateCatcher : public CValidationInterface
 {
@@ -904,14 +914,180 @@ UniValue estimatesmartpriority(const JSONRPCRequest& request)
     return result;
 }
 
+/* ************************************************************************** */
+/* Merge mining.  */
+
+UniValue getauxblock(const UniValue& params, bool fHelp)
+{
+    if (fHelp || (params.size() != 0 && params.size() != 2))
+        throw std::runtime_error(
+            "getauxblock (hash auxpow)\n"
+            "\nCreate or submit a merge-mined block.\n"
+            "\nWithout arguments, create a new block and return information\n"
+            "required to merge-mine it.  With arguments, submit a solved\n"
+            "auxpow for a previously returned block.\n"
+            "\nArguments:\n"
+            "1. \"hash\"    (string, optional) hash of the block to submit\n"
+            "2. \"auxpow\"  (string, optional) serialised auxpow found\n"
+            "\nResult (without arguments):\n"
+            "{\n"
+            "  \"hash\"               (string) hash of the created block\n"
+            "  \"chainid\"            (numeric) chain ID for this block\n"
+            "  \"previousblockhash\"  (string) hash of the previous block\n"
+            "  \"coinbasevalue\"      (numeric) value of the block's coinbase\n"
+            "  \"bits\"               (string) compressed target of the block\n"
+            "  \"height\"             (numeric) height of the block\n"
+            "  \"_target\"            (string) target in reversed byte order, deprecated\n"
+            "}\n"
+            "\nResult (with arguments):\n"
+            "xxxxx        (boolean) whether the submitted block was correct\n"
+            "\nExamples:\n"
+            + HelpExampleCli("getauxblock", "")
+            + HelpExampleCli("getauxblock", "\"hash\" \"serialised auxpow\"")
+            + HelpExampleRpc("getauxblock", "")
+            );
+
+    boost::shared_ptr<CReserveScript> coinbaseScript;
+    GetMainSignals().ScriptForMining(coinbaseScript);
+
+    // If the keypool is exhausted, no script is returned at all.  Catch this.
+    if (!coinbaseScript)
+        throw JSONRPCError(RPC_WALLET_KEYPOOL_RAN_OUT, "Error: Keypool ran out, please call keypoolrefill first");
+
+    //throw an error if no script was provided
+    if (!coinbaseScript->reserveScript.size())
+        throw JSONRPCError(RPC_INTERNAL_ERROR, "No coinbase script available (mining requires a wallet)");
+
+    if (vNodes.empty() && !Params().MineBlocksOnDemand())
+        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED,
+                           "Namecoin is not connected!");
+
+    if (IsInitialBlockDownload() && !Params().MineBlocksOnDemand())
+        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD,
+                           "Namecoin is downloading blocks...");
+    
+    /* This should never fail, since the chain is already
+       past the point of merge-mining start.  Check nevertheless.  */
+    {
+        LOCK(cs_main);
+        if (chainActive.Height() + 1 < Params().GetConsensus().nAuxpowStartHeight)
+            throw std::runtime_error("getauxblock method is not yet available");
+    }
+
+    /* The variables below are used to keep track of created and not yet
+       submitted auxpow blocks.  Lock them to be sure even for multiple
+       RPC threads running in parallel.  */
+    static CCriticalSection cs_auxblockCache;
+    LOCK(cs_auxblockCache);
+    static std::map<uint256, CBlock*> mapNewBlock;
+    static std::vector<std::unique_ptr<CBlockTemplate>> vNewBlockTemplate;
+
+    /* Create a new block?  */
+    if (params.size() == 0)
+    {
+        static unsigned nTransactionsUpdatedLast;
+        static const CBlockIndex* pindexPrev = nullptr;
+        static uint64_t nStart;
+        static CBlock* pblock = nullptr;
+        static unsigned nExtraNonce = 0;
+
+        // Update block
+        {
+        LOCK(cs_main);
+        if (pindexPrev != chainActive.Tip()
+            || (mempool.GetTransactionsUpdated() != nTransactionsUpdatedLast
+                && GetTime() - nStart > 60))
+        {
+            if (pindexPrev != chainActive.Tip())
+            {
+                // Clear old blocks since they're obsolete now.
+                mapNewBlock.clear();
+                vNewBlockTemplate.clear();
+                pblock = nullptr;
+            }
+
+            // Create new block with nonce = 0 and extraNonce = 1
+            std::unique_ptr<CBlockTemplate> newBlock(BlockAssembler(Params()).CreateNewBlock(coinbaseScript->reserveScript));
+            if (!newBlock)
+                throw JSONRPCError(RPC_OUT_OF_MEMORY, "out of memory");
+
+            // Update state only when CreateNewBlock succeeded
+            nTransactionsUpdatedLast = mempool.GetTransactionsUpdated();
+            pindexPrev = chainActive.Tip();
+            nStart = GetTime();
+
+            // Finalise it by setting the version and building the merkle root
+            IncrementExtraNonce(&newBlock->block, pindexPrev, nExtraNonce);
+            newBlock->block.SetAuxpowVersion(true);
+
+            // Save
+            pblock = &newBlock->block;
+            mapNewBlock[pblock->GetHash()] = pblock;
+            vNewBlockTemplate.push_back(std::move(newBlock));
+        }
+        }
+
+        arith_uint256 target;
+        bool fNegative, fOverflow;
+        target.SetCompact(pblock->nBits, &fNegative, &fOverflow);
+        if (fNegative || fOverflow || target == 0)
+            throw std::runtime_error("invalid difficulty bits in block");
+
+        UniValue result(UniValue::VOBJ);
+        result.push_back(Pair("hash", pblock->GetHash().GetHex()));
+        result.push_back(Pair("chainid", pblock->GetChainId()));
+        result.push_back(Pair("previousblockhash", pblock->hashPrevBlock.GetHex()));
+        result.push_back(Pair("coinbasevalue", (int64_t)pblock->vtx[0].vout[0].nValue));
+        result.push_back(Pair("bits", strprintf("%08x", pblock->nBits)));
+        result.push_back(Pair("height", static_cast<int64_t> (pindexPrev->nHeight + 1)));
+        result.push_back(Pair("_target", HexStr(BEGIN(target), END(target))));
+
+        return result;
+    }
+
+    /* Submit a block instead.  Note that this need not lock cs_main,
+       since ProcessNewBlock below locks it instead.  */
+
+    assert(params.size() == 2);
+    uint256 hash;
+    hash.SetHex(params[0].get_str());
+
+    const std::map<uint256, CBlock*>::iterator mit = mapNewBlock.find(hash);
+    if (mit == mapNewBlock.end())
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "block hash unknown");
+    CBlock& block = *mit->second;
+
+    const std::vector<unsigned char> vchAuxPow = ParseHex(params[1].get_str());
+    CDataStream ss(vchAuxPow, SER_GETHASH, PROTOCOL_VERSION);
+    CAuxPow pow;
+    ss >> pow;
+    block.SetAuxpow(new CAuxPow(pow));
+    assert(block.GetHash() == hash);
+
+    CValidationState state;
+    submitblock_StateCatcher sc(block.GetHash());
+    RegisterValidationInterface(&sc);
+    bool fAccepted = ProcessNewBlock(state, Params(), nullptr, &block,
+                                     true, nullptr);
+    UnregisterValidationInterface(&sc);
+
+    if (fAccepted)
+        coinbaseScript->KeepScript();
+
+    return fAccepted;
+}
+
+/* ************************************************************************** */
+
 static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         okSafeMode
   //  --------------------- ------------------------  -----------------------  ----------
     { "mining",             "getnetworkhashps",       &getnetworkhashps,       true  },
     { "mining",             "getmininginfo",          &getmininginfo,          true  },
     { "mining",             "prioritisetransaction",  &prioritisetransaction,  true  },
-    { "mining",             "getblocktemplate",       &getblocktemplate,       true  },
+  //  { "mining",             "getblocktemplate",       &getblocktemplate,       true  },
     { "mining",             "submitblock",            &submitblock,            true  },
+    { "mining",             "getauxblock",            &getauxblock,            true  },
 
     { "generating",         "generate",               &generate,               true  },
     { "generating",         "generatetoaddress",      &generatetoaddress,      true  },

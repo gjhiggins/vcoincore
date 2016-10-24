@@ -16,6 +16,8 @@
 
 #include <boost/test/unit_test.hpp>
 
+class CNameCache;
+
 namespace
 {
 class CCoinsViewTest : public CCoinsView
@@ -46,7 +48,7 @@ public:
 
     uint256 GetBestBlock() const { return hashBestBlock_; }
 
-    bool BatchWrite(CCoinsMap& mapCoins, const uint256& hashBlock)
+    bool BatchWrite(CCoinsMap& mapCoins, const uint256& hashBlock, const CNameCache &names)
     {
         for (CCoinsMap::iterator it = mapCoins.begin(); it != mapCoins.end(); ) {
             if (it->second.flags & CCoinsCacheEntry::DIRTY) {

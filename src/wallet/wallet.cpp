@@ -1069,6 +1069,18 @@ void CWallet::SyncTransaction(const CTransaction& tx, const CBlockIndex *pindex,
     }
 }
 
+void CWallet::NameConflict(const CTransaction& tx, const uint256& hashBlock)
+{
+    LOCK2(cs_main, cs_wallet);
+    const uint256& txHash = tx.GetHash();
+
+    LogPrint ("names", "name conflict: %s, wallet: %u\n",
+              txHash.GetHex().c_str(), mapWallet.count(txHash));
+
+    if (mapWallet.count(txHash))
+        MarkConflicted(hashBlock, txHash);
+}
+
 
 isminetype CWallet::IsMine(const CTxIn &txin) const
 {
@@ -1085,7 +1097,7 @@ isminetype CWallet::IsMine(const CTxIn &txin) const
     return ISMINE_NO;
 }
 
-CAmount CWallet::GetDebit(const CTxIn &txin, const isminefilter& filter) const
+CAmount CWallet::GetDebit(const CTxIn &txin, const isminefilter& filter, bool fExcludeNames) const
 {
     {
         LOCK(cs_wallet);
@@ -1094,8 +1106,15 @@ CAmount CWallet::GetDebit(const CTxIn &txin, const isminefilter& filter) const
         {
             const CWalletTx& prev = (*mi).second;
             if (txin.prevout.n < prev.vout.size())
-                if (IsMine(prev.vout[txin.prevout.n]) & filter)
-                    return prev.vout[txin.prevout.n].nValue;
+            {
+                const CTxOut& prevout = prev.vout[txin.prevout.n];
+                if (fExcludeNames
+                    && CNameScript::isNameScript(prevout.scriptPubKey))
+                    return 0;
+
+                if (IsMine(prevout) & filter)
+                    return prevout.nValue;
+            }
         }
     }
     return 0;
@@ -1155,12 +1174,12 @@ bool CWallet::IsFromMe(const CTransaction& tx) const
     return (GetDebit(tx, ISMINE_ALL) > 0);
 }
 
-CAmount CWallet::GetDebit(const CTransaction& tx, const isminefilter& filter) const
+CAmount CWallet::GetDebit(const CTransaction& tx, const isminefilter& filter, bool fExcludeNames) const
 {
     CAmount nDebit = 0;
     BOOST_FOREACH(const CTxIn& txin, tx.vin)
     {
-        nDebit += GetDebit(txin, filter);
+        nDebit += GetDebit(txin, filter, fExcludeNames);
         if (!MoneyRange(nDebit))
             throw std::runtime_error(std::string(__func__) + ": value out of range");
     }
@@ -1307,10 +1326,11 @@ void CWalletTx::GetAmounts(list<COutputEntry>& listReceived,
     strSentAccount = strFromAccount;
 
     // Compute fee:
-    CAmount nDebit = GetDebit(filter);
-    if (nDebit > 0) // debit>0 means we signed/sent this transaction
+    const bool isFromMe = IsFromMe(filter);
+    if (isFromMe)
     {
-        CAmount nValueOut = GetValueOut();
+        const CAmount nDebit = GetDebit(filter);
+        const CAmount nValueOut = GetValueOut(true);
         nFee = nDebit - nValueOut;
     }
 
@@ -1319,13 +1339,14 @@ void CWalletTx::GetAmounts(list<COutputEntry>& listReceived,
     {
         const CTxOut& txout = vout[i];
         isminetype fIsMine = pwallet->IsMine(txout);
+        const CNameScript nameOp(txout.scriptPubKey);
         // Only need to handle txouts if AT LEAST one of these is true:
         //   1) they debit from us (sent)
         //   2) the output is to us (received)
-        if (nDebit > 0)
+        if (isFromMe)
         {
-            // Don't report 'change' txouts
-            if (pwallet->IsChange(txout))
+            // Don't report 'change' txouts, but keep names in all cases
+            if (pwallet->IsChange(txout) && !nameOp.isNameOp())
                 continue;
         }
         else if (!(fIsMine & filter))
@@ -1341,14 +1362,26 @@ void CWalletTx::GetAmounts(list<COutputEntry>& listReceived,
             address = CNoDestination();
         }
 
-        COutputEntry output = {address, txout.nValue, (int)i};
+        COutputEntry output = {address, "", txout.nValue, (int)i};
+
+        // If we have a name script, set the "name" parameter.
+        if (nameOp.isNameOp())
+        {
+            if (nameOp.isAnyUpdate())
+                output.nameOp = "update: " + ValtypeToString(nameOp.getOpName());
+            else
+                output.nameOp = "new: " + HexStr(nameOp.getOpHash());
+            output.amount = 0;
+        }
 
         // If we are debited by the transaction, add the output as a "sent" entry
-        if (nDebit > 0)
+        if (isFromMe)
             listSent.push_back(output);
 
         // If we are receiving the output, add it as a "received" entry
-        if (fIsMine & filter)
+        // For names, only do this if we did not also add it as "sent"
+        if ((fIsMine & filter)
+            && (!nameOp.isNameOp() || !isFromMe))
             listReceived.push_back(output);
     }
 
@@ -1500,7 +1533,7 @@ set<uint256> CWalletTx::GetConflicts() const
     return result;
 }
 
-CAmount CWalletTx::GetDebit(const isminefilter& filter) const
+CAmount CWalletTx::GetDebit(const isminefilter& filter, bool fExcludeNames) const
 {
     if (vin.empty())
         return 0;
@@ -1508,25 +1541,23 @@ CAmount CWalletTx::GetDebit(const isminefilter& filter) const
     CAmount debit = 0;
     if(filter & ISMINE_SPENDABLE)
     {
-        if (fDebitCached)
-            debit += nDebitCached;
-        else
+        if (!fDebitCached)
         {
-            nDebitCached = pwallet->GetDebit(*this, ISMINE_SPENDABLE);
+            nDebitCached = pwallet->GetDebit(*this, ISMINE_SPENDABLE, true);
+            nDebitWithNamesCached = pwallet->GetDebit(*this, ISMINE_SPENDABLE, false);
             fDebitCached = true;
-            debit += nDebitCached;
         }
+        debit += (fExcludeNames ? nDebitCached : nDebitWithNamesCached);
     }
     if(filter & ISMINE_WATCH_ONLY)
     {
-        if(fWatchDebitCached)
-            debit += nWatchDebitCached;
-        else
+        if (!fWatchDebitCached)
         {
-            nWatchDebitCached = pwallet->GetDebit(*this, ISMINE_WATCH_ONLY);
+            nWatchDebitCached = pwallet->GetDebit(*this, ISMINE_WATCH_ONLY, true);
+            nWatchDebitWithNamesCached = pwallet->GetDebit(*this, ISMINE_WATCH_ONLY, false);
             fWatchDebitCached = true;
-            debit += nWatchDebitCached;
         }
+        debit += (fExcludeNames ? nWatchDebitCached : nWatchDebitWithNamesCached);
     }
     return debit;
 }
@@ -1890,7 +1921,8 @@ void CWallet::AvailableCoins(vector<COutput>& vCoins, bool fOnlyConfirmed, const
                 isminetype mine = IsMine(pcoin->vout[i]);
                 if (!(IsSpent(wtxid, i)) && mine != ISMINE_NO &&
                     !IsLockedCoin((*it).first, i) && (pcoin->vout[i].nValue > 0 || fIncludeZeroValue) &&
-                    (!coinControl || !coinControl->HasSelected() || coinControl->fAllowOtherInputs || coinControl->IsSelected(COutPoint((*it).first, i))))
+                    (!coinControl || !coinControl->HasSelected() || coinControl->fAllowOtherInputs || coinControl->IsSelected(COutPoint((*it).first, i)))
+                    && !CNameScript::isNameScript(pcoin->vout[i].scriptPubKey))
                         vCoins.push_back(COutput(pcoin, i, nDepth,
                                                  ((mine & ISMINE_SPENDABLE) != ISMINE_NO) ||
                                                   (coinControl && coinControl->fAllowWatchOnly && (mine & ISMINE_WATCH_SOLVABLE) != ISMINE_NO),
@@ -2159,11 +2191,18 @@ bool CWallet::FundTransaction(CMutableTransaction& tx, CAmount& nFeeRet, bool ov
 }
 
 bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend,
-                                CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet, int& nChangePosInOut, std::string& strFailReason, std::string& strTxReference, const CCoinControl* coinControl, bool sign)
+                                const CTxIn* withInput,
+                                CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet,
+                                int& nChangePosInOut, std::string& strFailReason, std::string& strTxReference, const CCoinControl* coinControl, bool sign)
 {
+    /* Initialise nFeeRet here so that SendMoney doesn't see an uninitialised
+       value in case we error out earlier.  */
+    nFeeRet = 0;
+
     CAmount nValue = 0;
     int nChangePosRequest = nChangePosInOut;
     unsigned int nSubtractFeeFromAmount = 0;
+    bool isNamecoin = false;
     BOOST_FOREACH (const CRecipient& recipient, vecSend)
     {
         if (nValue < 0 || recipient.nAmount < 0)
@@ -2175,6 +2214,9 @@ bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend,
 
         if (recipient.fSubtractFeeFromAmount)
             nSubtractFeeFromAmount++;
+
+        if (CNameScript::isNameScript (recipient.scriptPubKey))
+            isNamecoin = true;
     }
     if (vecSend.empty() || nValue < 0)
     {
@@ -2182,9 +2224,33 @@ bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend,
         return false;
     }
 
+    /* If we have an input to include, find its value.  This value will be
+       subtracted later on during coin selection, since the input is added
+       additionally to the selected coins.  */
+    CAmount nInputValue = 0;
+    const CWalletTx* withInputTx = NULL;
+    if (withInput)
+    {
+        withInputTx = GetWalletTx(withInput->prevout.hash);
+        if (!withInputTx)
+        {
+            strFailReason = _("Input tx not found in wallet");
+            return false;
+        }
+        const CTxOut& withOut = withInputTx->vout[withInput->prevout.n];
+        if (IsMine (withOut) != ISMINE_SPENDABLE)
+        {
+            strFailReason = _("Input tx is not mine");
+            return false;
+        }
+        nInputValue = withOut.nValue;
+    }
+
     wtxNew.fTimeReceivedIsTxTime = true;
     wtxNew.BindWallet(this);
     CMutableTransaction txNew;
+    if (isNamecoin)
+        txNew.SetNamecoin();
 
     // Semantic type
     wtxNew.nSemTypeID = 1;
@@ -2244,7 +2310,7 @@ bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend,
                 wtxNew.fFromMe = true;
                 bool fFirst = true;
 
-                CAmount nValueToSelect = nValue;
+                CAmount nValueToSelect = nValue - nInputValue;
                 if (nSubtractFeeFromAmount == 0)
                     nValueToSelect += nFeeRet;
                 double dPriority = 0;
@@ -2288,6 +2354,8 @@ bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend,
                     strFailReason = _("Insufficient funds");
                     return false;
                 }
+                if (withInput)
+                    setCoins.insert(std::make_pair(withInputTx, withInput->prevout.n));
                 BOOST_FOREACH(PAIRTYPE(const CWalletTx*, unsigned int) pcoin, setCoins)
                 {
                     CAmount nCredit = pcoin.first->vout[pcoin.second].nValue;
@@ -2696,6 +2764,20 @@ bool CWallet::DelAddressBook(const CTxDestination& address)
         return false;
     CWalletDB(strWalletFile).ErasePurpose(CBitcoinAddress(address).ToString());
     return CWalletDB(strWalletFile).EraseName(CBitcoinAddress(address).ToString());
+}
+
+bool CWallet::WriteNameFirstUpdate(const std::string& name, const std::string& data)
+{
+    if (!fFileBacked)
+        return false;
+    return CWalletDB(strWalletFile).WriteNameFirstUpdate(name, data);
+}
+
+bool CWallet::EraseNameFirstUpdate(const std::string& name)
+{
+    if (!fFileBacked)
+        return false;
+    return CWalletDB(strWalletFile).EraseNameFirstUpdate(name);
 }
 
 bool CWallet::SetDefaultKey(const CPubKey &vchPubKey)

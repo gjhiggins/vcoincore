@@ -16,6 +16,7 @@ class PlatformStyle;
 class ReceiveCoinsDialog;
 class SendCoinsDialog;
 class SendCoinsRecipient;
+class ManageNamesPage;
 class TransactionView;
 class WalletModel;
 class AddressBookPage;
@@ -66,6 +67,7 @@ private:
     QWidget *transactionsPage;
     ReceiveCoinsDialog *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
+    ManageNamesPage *manageNamesPage;
     AddressBookPage *usedSendingAddressesPage;
     AddressBookPage *usedReceivingAddressesPage;
     BlockExplorer *explorerWindow;
@@ -100,6 +102,9 @@ public Q_SLOTS:
     void gotoBlockExplorerPage();	
     /** Switch to account report page */
     void gotoAccountReportPage(); 
+
+    /** NMC names mgmt tab */
+    void gotoManageNamesPage();
 
     /** Show incoming transaction notification for new transactions.
 
