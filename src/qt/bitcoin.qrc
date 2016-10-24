@@ -56,6 +56,7 @@
         <file alias="logo">res/icons/logo.png</file>
         <file alias="explorer">res/icons/explorer.png</file>
         <file alias="stats">res/icons/stats.png</file>
+		<file alias="chat">res/icons/chat.png</file>
    </qresource>
     <qresource prefix="/movies">
         <file alias="spinner-000">res/movies/spinner-000.png</file>

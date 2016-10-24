@@ -13,6 +13,7 @@ class ClientModel;
 class PlatformStyle;
 class SendCoinsRecipient;
 class WalletModel;
+class ChatWindow;
 class WalletView;
 class BlockExplorer;
 class statsExplorer;
@@ -78,6 +79,8 @@ public Q_SLOTS:
     void gotoBlockExplorerPage();	
     /** Switch to account report page */
     void gotoAccountReportPage();
+	/** Switch to chat page */
+    void gotoChatPage();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");

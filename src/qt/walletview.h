@@ -17,6 +17,7 @@ class ReceiveCoinsDialog;
 class SendCoinsDialog;
 class SendCoinsRecipient;
 class TransactionView;
+class ChatWindow;
 class WalletModel;
 class AddressBookPage;
 class ReportView;
@@ -60,6 +61,7 @@ public:
 private:
     ClientModel *clientModel;
     WalletModel *walletModel;
+	ChatWindow *chatWindow;
 
     OverviewPage *overviewPage;
     QWidget *transactionsPage;
@@ -70,6 +72,8 @@ private:
     BlockExplorer *explorerWindow;
     StatsExplorer *statsExplorerPage;
 
+    /** Switch to chat page */
+    void gotoChatPage();
     TransactionView *transactionView;
     
     QWidget *accountreportPage;

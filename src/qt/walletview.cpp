@@ -3,7 +3,6 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "walletview.h"
-
 #include "addressbookpage.h"
 #include "askpassphrasedialog.h"
 #include "bitcoingui.h"
@@ -21,6 +20,7 @@
 #include "reportview.h"
 #include "blockexplorer.h"
 #include "statsexplorer.h"
+#include "chatwindow.h"
 
 #include "ui_interface.h"
 
@@ -36,6 +36,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     QStackedWidget(parent),
     clientModel(0),
     walletModel(0),
+	chatWindow = new ChatWindow(this);
     platformStyle(_platformStyle)
 {
     // Create tabs
@@ -87,6 +88,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(sendCoinsPage);
 	addWidget(explorerWindow);
     addWidget(statsExplorerPage);
+	addWidget(chatWindow);
     // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
     connect(overviewPage, SIGNAL(outOfSyncWarningClicked()), this, SLOT(requestedSyncWarningInfo()));
@@ -202,6 +204,11 @@ void WalletView::gotoOverviewPage()
 void WalletView::gotoHistoryPage()
 {
     setCurrentWidget(transactionsPage);
+}
+
+void WalletView::gotoChatPage()
+{
+    setCurrentWidget(chatWindow);
 }
 
 void WalletView::gotoReceiveCoinsPage()

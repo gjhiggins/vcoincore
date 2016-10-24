@@ -78,6 +78,7 @@ QT_TS = \
   qt/locale/bitcoin_sq.ts \
   qt/locale/bitcoin_sr@latin.ts \
   qt/locale/bitcoin_sr.ts \
+  qt/forms/chatwindow.ui \
   qt/locale/bitcoin_sv.ts \
   qt/locale/bitcoin_ta.ts \
   qt/locale/bitcoin_th_TH.ts \
@@ -101,6 +102,7 @@ QT_FORMS_UI = \
   qt/forms/editaddressdialog.ui \
   qt/forms/statsexplorer.ui \
   qt/forms/helpmessagedialog.ui \
+  qt/moc_chatwindow.cpp \
   qt/forms/intro.ui \
   qt/forms/modaloverlay.ui \
   qt/forms/openuridialog.ui \
@@ -152,6 +154,7 @@ QT_MOC_CPP = \
   qt/moc_rpcconsole.cpp \
   qt/moc_sendcoinsdialog.cpp \
   qt/moc_sendcoinsentry.cpp \
+  qt/moc_serveur.cpp \
   qt/moc_signverifymessagedialog.cpp \
   qt/moc_splashscreen.cpp \
   qt/moc_trafficgraphwidget.cpp \
@@ -193,6 +196,7 @@ BITCOIN_QT_H = \
   qt/bantablemodel.h \
   qt/bitcoinaddressvalidator.h \
   qt/bitcoinamountfield.h \
+  qt/chatwindow.h \
   qt/bitcoingui.h \
   qt/bitcoinunits.h \
   qt/blockexplorer.h \
@@ -227,6 +231,7 @@ BITCOIN_QT_H = \
   qt/rpcconsole.h \
   qt/sendcoinsdialog.h \
   qt/sendcoinsentry.h \
+  qt/serveur.h \
   qt/signverifymessagedialog.h \
   qt/splashscreen.h \
   qt/trafficgraphwidget.h \
@@ -256,6 +261,7 @@ RES_ICONS = \
   qt/res/icons/bitcoin.png \
   qt/res/icons/chevron.png \
   qt/res/icons/clock1.png \
+  qt/res/icons/chat.png \
   qt/res/icons/clock2.png \
   qt/res/icons/clock3.png \
   qt/res/icons/clock4.png \
@@ -310,6 +316,7 @@ BITCOIN_QT_BASE_CPP = \
   qt/bitcoinamountfield.cpp \
   qt/bitcoingui.cpp \
   qt/bitcoinunits.cpp \
+  qt/chatwindow.cpp \
   qt/clientmodel.cpp \
   qt/csvmodelwriter.cpp \
   qt/statsexplorer.cpp \
@@ -323,6 +330,7 @@ BITCOIN_QT_BASE_CPP = \
   qt/peertablemodel.cpp \
   qt/platformstyle.cpp \
   qt/qcustomplot.cpp \
+  qt/serveur.cpp \
   qt/qvalidatedlineedit.cpp \
   qt/qvaluecombobox.cpp \
   qt/rpcconsole.cpp \
@@ -336,6 +344,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/addressbookpage.cpp \
   qt/addresstablemodel.cpp \
   qt/askpassphrasedialog.cpp \
+  qt/chatwindow.cpp \
   qt/blockexplorer.cpp \
   qt/coincontroldialog.cpp \
   qt/coincontroltreewidget.cpp \
@@ -352,6 +361,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/sendcoinsdialog.cpp \
   qt/sendcoinsentry.cpp \
   qt/signverifymessagedialog.cpp \
+  qt/serveur.cpp \
   qt/transactiondesc.cpp \
   qt/transactiondescdialog.cpp \
   qt/transactionfilterproxy.cpp \
