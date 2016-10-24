@@ -7,7 +7,6 @@
 
 #include "addrman.h"
 #include "arith_uint256.h"
-#include "auxpow.h"
 #include "blockencodings.h"
 #include "chainparams.h"
 #include "checkpoints.h"
@@ -1681,46 +1680,10 @@ bool GetTransaction(const uint256 &hash, CTransaction &txOut, const Consensus::P
 
 bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params)
 {
-    /* Except for legacy blocks with full version 1, ensure that
-       the chain ID is correct.  Legacy blocks are not allowed since
-       the merge-mining start, which is checked in AcceptBlockHeader
-       where the height is known.  */
-    if (!block.IsLegacy() && params.fStrictChainId
-        && block.GetChainId() != params.nAuxpowChainId)
-        return error("%s : block does not have our chain ID"
-                     " (got %d, expected %d, full nVersion %d)",
-                     __func__, block.GetChainId(),
-                     params.nAuxpowChainId, block.nVersion);
-
-    /* If there is no auxpow, just check the block hash.  */
-    if (!block.auxpow)
-    {
-        if (block.IsAuxpow())
-            return error("%s : no auxpow on block with auxpow version",
-                         __func__);
-
         if (!CheckProofOfWork(block.GetHash(), block.nBits, params))
             return error("%s : non-AUX proof of work failed", __func__);
-
         return true;
     }
-
-    /* We have auxpow.  Check it.  */
-
-    if (!block.IsAuxpow())
-        return error("%s : auxpow on block with non-auxpow version", __func__);
-
-    /* Temporary check:  Disallow parent blocks with auxpow version.  This is
-       for compatibility with the old client.  */
-    /* FIXME: Remove this check with a hardfork later on.  */
-    if (block.auxpow->getParentBlock().IsAuxpow())
-        return error("%s : auxpow parent block has auxpow version", __func__);
-
-    if (!block.auxpow->check(block.GetHash(), block.GetChainId(), params))
-        return error("%s : AUX POW is not valid", __func__);
-    if (!CheckProofOfWork(block.auxpow->getParentBlockHash(), block.nBits, params))
-        return error("%s : AUX proof of work failed", __func__);
-
     return true;
 }
 
@@ -5743,36 +5706,16 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         LogPrint("net", "getheaders %d to %s from peer=%d\n", (pindex ? pindex->nHeight : -1), hashStop.IsNull() ? "end" : hashStop.ToString(), pfrom->id);
         for (; pindex; pindex = chainActive.Next(pindex))
         {
-            const CBlockHeader header = pindex->GetBlockHeader(chainparams.GetConsensus());
-            ++nCount;
-            nSize += GetSerializeSize(header, SER_NETWORK, PROTOCOL_VERSION);
-            vHeaders.push_back(header);
-            if (nCount >= MAX_HEADERS_RESULTS
-                  || pindex->GetBlockHash() == hashStop)
-                break;
-            if (pfrom->nVersion >= SIZE_HEADERS_LIMIT_VERSION
-                  && nSize >= THRESHOLD_HEADERS_SIZE)
+            vHeaders.push_back(pindex->GetBlockHeader());
+            if (--nLimit <= 0 || pindex->GetBlockHash() == hashStop)
                 break;
         }
-
-        /* Check maximum headers size before pushing the message
-           if the peer enforces it.  This should not fail since we
-           break above in the loop at the threshold and the threshold
-           should be small enough in comparison to the hard max size.
-           Do it nevertheless to be sure.  */
-        if (pfrom->nVersion >= SIZE_HEADERS_LIMIT_VERSION
-              && nSize > MAX_HEADERS_SIZE)
-            LogPrintf("ERROR: not pushing 'headers', too large\n");
-        else
-        {
-            LogPrint("net", "pushing %u headers, %u bytes\n", nCount, nSize);
             // pindex can be NULL either if we sent chainActive.Tip() OR
             // if our peer has chainActive.Tip() (and thus we are sending an empty
             // headers message). In both cases it's safe to update
             // pindexBestHeaderSent to be our tip.
             nodestate->pindexBestHeaderSent = pindex ? pindex : chainActive.Tip();
             pfrom->PushMessage(NetMsgType::HEADERS, vHeaders);
-        }
     }
 
 
@@ -6134,20 +6077,12 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         if (nCount > MAX_HEADERS_RESULTS) {
             LOCK(cs_main);
             Misbehaving(pfrom->GetId(), 20);
-            return error("headers message count = %u", nCount);
+            return error("headers message size = %u", nCount);
         }
         headers.resize(nCount);
-        unsigned nSize = 0;
         for (unsigned int n = 0; n < nCount; n++) {
             vRecv >> headers[n];
             ReadCompactSize(vRecv); // ignore tx count; assume it is 0.
-
-            nSize += GetSerializeSize(headers[n], SER_NETWORK, PROTOCOL_VERSION);
-            if (pfrom->nVersion >= SIZE_HEADERS_LIMIT_VERSION
-                  && nSize > MAX_HEADERS_SIZE) {
-                Misbehaving(pfrom->GetId(), 20);
-                return error("headers message size = %u", nSize);
-            }
         }
 
         {
@@ -6212,21 +6147,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         assert(pindexLast);
         UpdateBlockAvailability(pfrom->GetId(), pindexLast->GetBlockHash());
 
-        // If we already know the last header in the message, then it contains
-        // no new information for us.  In this case, we do not request
-        // more headers later.  This prevents multiple chains of redundant
-        // getheader requests from running in parallel if triggered by incoming
-        // blocks while the node is still in initial headers sync.
-        const bool hasNewHeaders = (mapBlockIndex.count(headers.back().GetHash()) == 0);
-
-        bool maxSize = (nCount == MAX_HEADERS_RESULTS);
-        if (pfrom->nVersion >= SIZE_HEADERS_LIMIT_VERSION
-              && nSize >= THRESHOLD_HEADERS_SIZE)
-            maxSize = true;
-        // FIXME: This change (with hasNewHeaders) is rolled back in Bitcoin,
-        // but I think it should stay here for merge-mined coins.  Try to get
-        // it fixed again upstream and then update the fix.
-        if (maxSize && hasNewHeaders) {
+        if (nCount == MAX_HEADERS_RESULTS) {
             // Headers message had its maximum size; the peer may have more headers.
             // TODO: optimize: if pindexLast is an ancestor of chainActive.Tip or pindexBestHeader, continue
             // from there instead.
