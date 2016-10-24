@@ -24,10 +24,12 @@ class Notificator;
 class OptionsModel;
 class PlatformStyle;
 class RPCConsole;
+class StatsExplorer;
 class SendCoinsRecipient;
 class UnitDisplayStatusBarControl;
 class WalletFrame;
 class WalletModel;
+class BlockExplorer;
 class HelpMessageDialog;
 class ModalOverlay;
 
@@ -114,13 +116,17 @@ private:
     QAction *aboutQtAction;
     QAction *openRPCConsoleAction;
     QAction *openAction;
+	QAction *openStatsExplorerAction;
     QAction *showHelpMessageAction;
+	QAction *openBlockExplorerAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
     Notificator *notificator;
     RPCConsole *rpcConsole;
+    BlockExplorer  *explorerWindow;
     HelpMessageDialog *helpMessageDialog;
+    StatsExplorer  *statsWindow;
     ModalOverlay *modalOverlay;
 
     /** Keep track of previous number of blocks, to detect progress */
@@ -132,6 +138,7 @@ private:
     /** Create the main UI actions. */
     void createActions();
     /** Create the menu bar and sub-menus. */
+    QAction *accountReportAction;
     void createMenuBar();
     /** Create the toolbars */
     void createToolBars();
@@ -192,6 +199,8 @@ private Q_SLOTS:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
+    /** Switch to Example Page */
+    void gotoStatsExplorerPage(); 
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
@@ -203,6 +212,11 @@ private Q_SLOTS:
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
+    
+    /** Switch to Explorer Page */
+    void gotoBlockExplorerPage(); 
+    /** Switch to account report page */
+    void gotoAccountReportPage();
 
     /** Show open dialog */
     void openClicked();

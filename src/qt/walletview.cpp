@@ -18,6 +18,9 @@
 #include "transactiontablemodel.h"
 #include "transactionview.h"
 #include "walletmodel.h"
+#include "reportview.h"
+#include "blockexplorer.h"
+#include "statsexplorer.h"
 #include "managenamespage.h"
 
 #include "ui_interface.h"
@@ -38,6 +41,8 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 {
     // Create tabs
     overviewPage = new OverviewPage(platformStyle);
+	explorerWindow = new BlockExplorer(this);
+    statsExplorerPage = new StatsExplorer(this);
 
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -53,6 +58,22 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     hbox_buttons->addWidget(exportButton);
     vbox->addLayout(hbox_buttons);
     transactionsPage->setLayout(vbox);
+    
+    
+    accountreportPage = new QWidget(this);
+    QVBoxLayout *vboxR = new QVBoxLayout();
+    QHBoxLayout *hboxR_buttons = new QHBoxLayout();
+    reportView = new ReportView(this);
+    vboxR->addWidget(reportView);
+    QPushButton *exportRButton = new QPushButton(tr("&Export"), this);
+    exportRButton->setToolTip(tr("Export the data in the current tab to a file"));
+#ifndef Q_OS_MAC // Icons on push buttons are very uncommon on Mac
+    exportRButton->setIcon(QIcon(":/icons/export"));
+#endif    
+    hboxR_buttons->addStretch();
+    hboxR_buttons->addWidget(exportRButton);
+    vboxR->addLayout(hboxR_buttons);
+    accountreportPage->setLayout(vboxR);
 
     receiveCoinsPage = new ReceiveCoinsDialog(platformStyle);
     sendCoinsPage = new SendCoinsDialog(platformStyle);
@@ -61,10 +82,13 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     usedSendingAddressesPage = new AddressBookPage(platformStyle, AddressBookPage::ForEditing, AddressBookPage::SendingTab, this);
     usedReceivingAddressesPage = new AddressBookPage(platformStyle, AddressBookPage::ForEditing, AddressBookPage::ReceivingTab, this);
 
+    addWidget(accountreportPage);
     addWidget(overviewPage);
     addWidget(transactionsPage);
     addWidget(receiveCoinsPage);
     addWidget(sendCoinsPage);
+	addWidget(explorerWindow);
+    addWidget(statsExplorerPage);
     addWidget(manageNamesPage);
 
     // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
@@ -76,6 +100,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 
     // Clicking on "Export" allows to export the transaction list
     connect(exportButton, SIGNAL(clicked()), transactionView, SLOT(exportClicked()));
+    connect(exportRButton, SIGNAL(clicked()), reportView, SLOT(exportClicked())); 
 
     // Pass through messages from sendCoinsPage
     connect(sendCoinsPage, SIGNAL(message(QString,QString,unsigned int)), this, SIGNAL(message(QString,QString,unsigned int)));
@@ -122,6 +147,7 @@ void WalletView::setWalletModel(WalletModel *_walletModel)
 
     // Put transaction list in tabs
     transactionView->setModel(_walletModel);
+    reportView->setModel(walletModel);
     overviewPage->setWalletModel(_walletModel);
     receiveCoinsPage->setModel(_walletModel);
     sendCoinsPage->setModel(_walletModel);
@@ -194,6 +220,11 @@ void WalletView::gotoSendCoinsPage(QString addr)
 
     if (!addr.isEmpty())
         sendCoinsPage->setAddress(addr);
+}
+
+void WalletView::gotoStatsExplorerPage()
+{
+    setCurrentWidget(statsExplorerPage);
 }
 
 void WalletView::gotoManageNamesPage()
@@ -336,4 +367,14 @@ void WalletView::showProgress(const QString &title, int nProgress)
 void WalletView::requestedSyncWarningInfo()
 {
     Q_EMIT outOfSyncWarningClicked();
+}
+
+void WalletView::gotoAccountReportPage()
+{
+    setCurrentWidget(accountreportPage); 
+}
+
+void WalletView::gotoBlockExplorerPage()
+{
+    setCurrentWidget(explorerWindow);
 }

@@ -142,11 +142,13 @@ testScripts = [
     'invalidtxrequest.py',
     'abandonconflict.py',
     'p2p-versionbits-warning.py',
+    'preciousblock.py',
     'importprunedfunds.py',
     'signmessages.py',
     'p2p-compactblocks.py',
     'nulldummy.py',
 
+    'importmulti.py',
     # auxpow tests
     'getauxblock.py',
 
