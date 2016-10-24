@@ -72,8 +72,6 @@ private:
     BlockExplorer *explorerWindow;
     StatsExplorer *statsExplorerPage;
 
-    /** Switch to chat page */
-    void gotoChatPage();
     TransactionView *transactionView;
     
     QWidget *accountreportPage;
@@ -89,6 +87,8 @@ public Q_SLOTS:
     void gotoHistoryPage();
     /** Switch to Stats page */
     void gotoStatsExplorerPage();	
+    /** Switch to chat page */
+    void gotoChatPage();
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */

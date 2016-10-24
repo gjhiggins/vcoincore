@@ -36,13 +36,13 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     QStackedWidget(parent),
     clientModel(0),
     walletModel(0),
-	chatWindow = new ChatWindow(this);
     platformStyle(_platformStyle)
 {
     // Create tabs
     overviewPage = new OverviewPage(platformStyle);
 	explorerWindow = new BlockExplorer(this);
     statsExplorerPage = new StatsExplorer(this);
+    chatWindow = new ChatWindow(this);
 
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -204,11 +204,6 @@ void WalletView::gotoOverviewPage()
 void WalletView::gotoHistoryPage()
 {
     setCurrentWidget(transactionsPage);
-}
-
-void WalletView::gotoChatPage()
-{
-    setCurrentWidget(chatWindow);
 }
 
 void WalletView::gotoReceiveCoinsPage()
@@ -374,4 +369,9 @@ void WalletView::gotoAccountReportPage()
 void WalletView::gotoBlockExplorerPage()
 {
     setCurrentWidget(explorerWindow);
+}
+
+void WalletView::gotoChatPage()
+{
+    setCurrentWidget(chatWindow);
 }

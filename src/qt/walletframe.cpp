@@ -122,13 +122,6 @@ void WalletFrame::gotoHistoryPage()
         i.value()->gotoHistoryPage();
 }
 
-void WalletFrame::gotoChatPage()
-{
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoChatPage();
-}
-
 void WalletFrame::gotoReceiveCoinsPage()
 {
     QMap<QString, WalletView*>::const_iterator i;
@@ -216,11 +209,18 @@ void WalletFrame::outOfSyncWarningClicked()
     Q_EMIT requestedSyncWarningInfo();
 }
 
-void WalletFrame::gotoAccountReportPage()
+void WalletFrame::gotoChatPage()
 {
     QMap<QString, WalletView*>::const_iterator i;
     for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoAccountReportPage();
+        i.value()->gotoChatPage();
+}
+
+void WalletFrame::gotoAccountReportPage()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoAccountReportPage();
 }
 
 void WalletFrame::gotoBlockExplorerPage()
