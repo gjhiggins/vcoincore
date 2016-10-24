@@ -217,11 +217,24 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
 
     // Limit adjustment step
     int64_t nActualTimespan = pindexLast->GetBlockTime() - nFirstBlockTime;
+
     LogPrintf("nActualTimespan = %u before bounds\n", nActualTimespan);
-    if (nActualTimespan < params.nPowTargetTimespan)
-        nActualTimespan = params.nPowTargetTimespan;
-    if (nActualTimespan > params.nPowTargetTimespan)
-        nActualTimespan = params.nPowTargetTimespan;
+
+    if (params.fPowAllowMinDifficultyBlocks)
+    {
+        // Testnet version
+        if (nActualTimespan < params.nPowTargetTimespan/4)
+            nActualTimespan = params.nPowTargetTimespan/4;
+        if (nActualTimespan > params.nPowTargetTimespan*4)
+            nActualTimespan = params.nPowTargetTimespan*4;
+    }else{
+        // Mainnet version
+        if (nActualTimespan < params.nPowTargetTimespan)
+            nActualTimespan = params.nPowTargetTimespan;
+        if (nActualTimespan > params.nPowTargetTimespan)
+            nActualTimespan = params.nPowTargetTimespan;
+    }
+
     LogPrintf("nActualTimespan = %u after bounds\n", nActualTimespan);
 
     // Retarget
