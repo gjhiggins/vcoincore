@@ -378,6 +378,8 @@ public:
     //        support for tx references (strTxReference)
     //        support for semantic type identifiers (nSemTypeID)
     static const int CURRENT_VERSION = 2;
+    static const int PREVIOUS_VERSION = 1;
+    // static const int32_t CURRENT_VERSION=1;
     // static const int PREVIOUS_VERSION = 1;
     static const int32_t NAMECOIN_VERSION=0x7100; // 28928
 

@@ -2165,8 +2165,8 @@ bool CWallet::FundTransaction(CMutableTransaction& tx, CAmount& nFeeRet, bool ov
 
     CReserveKey reservekey(this);
     CWalletTx wtx;
-    std::string strTxReference = 0;
-    if (!CreateTransaction(vecSend, wtx, reservekey, nFeeRet, nChangePosInOut, strFailReason, strTxReference, &coinControl, false))
+    std::string strTxReference = "";
+    if (!CreateTransaction(vecSend, NULL, wtx, reservekey, nFeeRet, nChangePosInOut, strFailReason, strTxReference, &coinControl, false))
         return false;
 
     if (nChangePosInOut != -1)
@@ -2190,10 +2190,17 @@ bool CWallet::FundTransaction(CMutableTransaction& tx, CAmount& nFeeRet, bool ov
     return true;
 }
 
-bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend,
-                                const CTxIn* withInput,
-                                CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet,
-                                int& nChangePosInOut, std::string& strFailReason, std::string& strTxReference, const CCoinControl* coinControl, bool sign)
+bool CWallet::CreateTransaction(
+     const vector<CRecipient>& vecSend,
+     const CTxIn* withInput,
+     CWalletTx& wtxNew,
+     CReserveKey& reservekey,
+     CAmount& nFeeRet,
+     int& nChangePosInOut,
+     std::string& strFailReason,
+     std::string& strTxReference,
+     const CCoinControl* coinControl,
+     bool sign)
 {
     /* Initialise nFeeRet here so that SendMoney doesn't see an uninitialised
        value in case we error out earlier.  */

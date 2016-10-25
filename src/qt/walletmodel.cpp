@@ -20,6 +20,7 @@
 #include "wallet/wallet.h"
 #include "wallet/walletdb.h" // for BackupWallet
 #include "wallet/rpcwallet.cpp"
+#include "primitives/transaction.h"
 #include "names/common.h"
 #include "rpc/server.h"
 #include "util.h"
@@ -287,10 +288,9 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
         std::string strFailReason;
         std::string strTxReference = txreference.toStdString();
 
-        CWalletTx *newTx = transaction.getTransaction();
+        CWalletTx *wtx = transaction.getTransaction();
         CReserveKey *keyChange = transaction.getPossibleKeyChange();
-        // FIXED: added strTxReference
-        bool fCreated = wallet->CreateTransaction(vecSend, *newTx, *keyChange, nFeeRequired, nChangePosRet, strFailReason, strTxReference, coinControl);
+        bool fCreated = wallet->CreateTransaction(vecSend, NULL, *wtx, *keyChange, nFeeRequired, nChangePosRet, strFailReason, strTxReference, coinControl, false);
         // bool fCreated = wallet->CreateTransaction(vecSend, *newTx, *keyChange, nFeeRequired, nChangePosRet, strFailReason, coinControl);
         transaction.setTransactionFee(nFeeRequired);
         if (fSubtractFeeFromAmount && fCreated)
@@ -712,6 +712,7 @@ bool WalletModel::abandonTransaction(uint256 hash) const
     return wallet->AbandonTransaction(hash);
 }
 
+/* FIXME: Need general remapping from old UniValue params to JSONRPCRequest */
 bool WalletModel::nameAvailable(const QString &name)
 {
     UniValue params (UniValue::VOBJ);
@@ -720,6 +721,7 @@ bool WalletModel::nameAvailable(const QString &name)
     const std::string strName = name.toStdString();
     params.push_back (Pair("name", strName));
 
+    /*
     try {
         res = name_show( params, false);
     } catch (const UniValue& e) {
@@ -729,10 +731,11 @@ bool WalletModel::nameAvailable(const QString &name)
     isExpired = find_value( res, "expired");
     if(isExpired.get_bool())
       return true;
-
+    */
     return false;
 }
 
+/* FIXME: Need general remapping from old UniValue params to JSONRPCRequest */
 NameNewReturn WalletModel::nameNew(const QString &name)
 {
     std::string strName = name.toStdString ();
@@ -741,12 +744,17 @@ NameNewReturn WalletModel::nameNew(const QString &name)
     UniValue params(UniValue::VOBJ);
     std::vector<UniValue> values;
     UniValue res, txid, rand;
-
     NameNewReturn retval;
 
     params.push_back (Pair("name", strName));
+
+    /*
+    JSONRPCRequest request;
+    request.params = RPCConvertValues(params);
+    request.fHelp = false;
+
     try {
-        res = name_new (params, false);
+        res = name_new (request);
     } catch (const UniValue& e) {
         UniValue message = find_value( e, "message");
         std::string errorStr = message.get_str();
@@ -766,10 +774,14 @@ NameNewReturn WalletModel::nameNew(const QString &name)
     retval.hex = txid.get_str ();
     // rand
     retval.rand = rand.get_str ();
+    */
 
+    retval.err_msg = "Not yet implemented.";
+    retval.ok = false;
     return retval;
 }
 
+/* FIXME: Need general remapping from old UniValue params to JSONRPCRequest */
 // this gets called from configure names dialog after name_new succeeds
 QString WalletModel::nameFirstUpdatePrepare(const QString& name, const QString& data)
 {
@@ -814,10 +826,13 @@ QString WalletModel::nameFirstUpdatePrepare(const QString& name, const QString& 
 
     std::string jsonData = uniNameUpdateData.write();
     LogPrintf ("Writing name_firstupdate %s => %s\n", strName.c_str(), jsonData.c_str());
+    /*
     wallet->WriteNameFirstUpdate(strName, jsonData);
+    */
     return tr("");
 }
 
+/* FIXME: Need general remapping from old UniValue params to JSONRPCRequest */
 std::string WalletModel::completePendingNameFirstUpdate(std::string &name, std::string &rand, std::string &txid, std::string &data, std::string &toaddress)
 {
     UniValue params(UniValue::VOBJ);
@@ -831,6 +846,7 @@ std::string WalletModel::completePendingNameFirstUpdate(std::string &name, std::
     if(!toaddress.empty())
         params.push_back (Pair("toaddress", toaddress));
 
+    /*
     try {
         res = name_firstupdate (params, false);
     }
@@ -839,9 +855,11 @@ std::string WalletModel::completePendingNameFirstUpdate(std::string &name, std::
         errorStr = message.get_str();
         LogPrintf ("name_firstupdate error: %s\n", errorStr.c_str());
     }
-    return errorStr;
+    */
+    return "";
 }
 
+/* FIXME: Need general remapping from old UniValue params to JSONRPCRequest */
 void WalletModel::sendPendingNameFirstUpdates()
 {
     for (std::map<std::string, NameNewReturn>::iterator i = pendingNameFirstUpdate.begin();
@@ -862,6 +880,7 @@ void WalletModel::sendPendingNameFirstUpdates()
 
         params1.push_back (Pair("txid", txid));
 
+        /*
         // if we're here, the names doesn't exist
         // should we remove it from the DB?
         try {
@@ -897,7 +916,7 @@ void WalletModel::sendPendingNameFirstUpdates()
         {
             if (QMessageBox::Yes != QMessageBox::question(this,
                   tr("Confirm wallet unlock"),
-                  tr("Namecoin Core is about to finalize your name registration "
+                  tr("V Core is about to finalize your name registration "
                      "for name <b>%1</b>, by sending name_firstupdate. If your "
                      "wallet is locked, you will be prompted to unlock it. "
                      "Pressing cancel will delay your name registration by one "
@@ -937,7 +956,7 @@ void WalletModel::sendPendingNameFirstUpdates()
         // if we got an error on name_firstupdate. prompt user for what to do
         else
         {
-            QString errorMsg = tr("Namecoin Core has encountered an error "
+            QString errorMsg = tr("V Core has encountered an error "
                                   "while attempting to complete your name "
                                   "registration for name <b>%1</b>. The "
                                   "name_firstupdate operation caused the "
@@ -957,12 +976,13 @@ void WalletModel::sendPendingNameFirstUpdates()
                 continue;
             }
         }
-
         pendingNameFirstUpdate.erase(i++);
         wallet->EraseNameFirstUpdate(name);
+        */
     }
 }
 
+/* FIXME: Need general remapping from old UniValue params to JSONRPCRequest */
 QString WalletModel::nameUpdate(const QString &name, const QString &data, const QString &transferToAddress)
 {
     std::string strName = name.toStdString ();
@@ -980,6 +1000,7 @@ QString WalletModel::nameUpdate(const QString &name, const QString &data, const 
     if (strTransferToAddress != "")
         params.push_back (Pair("toaddress", strTransferToAddress));
 
+    /*
     try {
         res = name_update (params, false);
     }
@@ -989,9 +1010,10 @@ QString WalletModel::nameUpdate(const QString &name, const QString &data, const 
         LogPrintf ("name_update error: %s\n", errorStr.c_str());
         return QString::fromStdString(errorStr);
     }
+    */
     return tr ("");
+}
 
-/*
 bool WalletModel::isWalletEnabled()
 {
    return !GetBoolArg("-disablewallet", DEFAULT_DISABLE_WALLET);

@@ -69,12 +69,12 @@ public Q_SLOTS:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
-    /** Switch to Stats page */
-    void gotoStatsExplorerPage();	
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");
+    /** Switch to Stats page */
+    void gotoStatsExplorerPage();	
 	/** Switch to explorer page */
     void gotoBlockExplorerPage();	
     /** Switch to account report page */

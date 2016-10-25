@@ -7,7 +7,6 @@
 #define BITCOIN_WALLET_WALLET_H
 
 #include "amount.h"
-#include "auxpow.h" // contains CMerkleTx
 #include "streams.h"
 #include "tinyformat.h"
 #include "ui_interface.h"
@@ -72,6 +71,12 @@ static const bool DEFAULT_DISABLE_WALLET = false;
 static const bool DEFAULT_USE_HD_WALLET = true;
 
 extern const char * DEFAULT_WALLET_DAT;
+
+// change the string to avoid conversion to string all the time
+static const std::string sMAX_TX_REFERENCE_LEN = "512";
+// static const unsigned int MAX_TX_REFERENCE_LEN = std::atoi(sMAX_TX_REFERENCE_LEN.c_str());
+static const unsigned int MAX_TX_REFERENCE_LEN = 512;
+
 
 class CBlockIndex;
 class CCoinControl;
@@ -787,11 +792,17 @@ public:
      * selected by SelectCoins(); Also create the change output, when needed
      * @note passing nChangePosInOut as -1 will result in setting a random position
      */
-    // FIXED: Added txReference
-    bool CreateTransaction(const std::vector<CRecipient>& vecSend,
-                           const CTxIn* withInput,
-                           CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet, int& nChangePosInOut,
-                           std::string& strFailReason, std::string& strTxReference, const CCoinControl *coinControl = NULL, bool sign = true);
+    bool CreateTransaction(
+        const std::vector<CRecipient>& vecSend,
+        const CTxIn* withInput,
+        CWalletTx& wtxNew,
+        CReserveKey& reservekey,
+        CAmount& nFeeRet,
+        int& nChangePosRet,
+        std::string& strFailReason,
+        std::string& strTxReference,
+        const CCoinControl *coinControl = NULL,
+        bool sign = true);
     bool CommitTransaction(CWalletTx& wtxNew, CReserveKey& reservekey, CConnman* connman);
 
     void ListAccountCreditDebit(const std::string& strAccount, std::list<CAccountingEntry>& entries);

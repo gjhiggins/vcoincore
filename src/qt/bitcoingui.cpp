@@ -121,8 +121,8 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     trayIconMenu(0),
     notificator(0),
     rpcConsole(0),
-    helpMessageDialog(0),
     explorerWindow(0),
+    helpMessageDialog(0),
     statsWindow(0),
     modalOverlay(0),
     prevBlocks(0),
@@ -332,14 +332,14 @@ void BitcoinGUI::createActions()
     accountReportAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
     tabGroup->addAction(accountReportAction);
 
-    manageNamesAction = new QAction(QIcon(":/icons/bitcoin"), tr("&Manage Names"), this);
-    manageNamesAction->setStatusTip(tr("Manage names registered via Namecoin"));
+    manageNamesAction = new QAction(platformStyle->SingleColorIcon(":/icons/names"), tr("&Names"), this);
+    manageNamesAction->setStatusTip(tr("Manage names."));
     manageNamesAction->setToolTip(manageNamesAction->statusTip());
     manageNamesAction->setCheckable(true);
     manageNamesAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
     tabGroup->addAction(manageNamesAction);
 
-    manageNamesMenuAction = new QAction(QIcon(":/icons/bitcoin"), manageNamesAction->text(), this);
+    manageNamesMenuAction = new QAction(platformStyle->SingleColorIcon(":/icons/names"), manageNamesAction->text(), this);
     manageNamesMenuAction->setStatusTip(manageNamesAction->statusTip());
     manageNamesMenuAction->setToolTip(manageNamesMenuAction->statusTip());
 
@@ -411,6 +411,9 @@ void BitcoinGUI::createActions()
     openBlockExplorerAction->setStatusTip(tr("Block explorer window"));
     openStatsExplorerAction = new QAction(platformStyle->TextColorIcon(":/icons/stats"), tr("&Statistics explorer"), this);
     openStatsExplorerAction->setStatusTip(tr("Statistics"));
+    inscribeBlockChainAction = new QAction(platformStyle->TextColorIcon(":/icons/inscribe"), tr("&Inscribe block"), this);
+    inscribeBlockChainAction->setStatusTip(tr("Indelibly inscribe the block"));
+    
 
     inscribeBlockChainAction = new QAction(platformStyle->TextColorIcon(":/icons/inscribe"), tr("&Inscribe block"), this);
     inscribeBlockChainAction->setStatusTip(tr("Indelibly inscribe the block"));
@@ -768,10 +771,17 @@ void BitcoinGUI::gotoVerifyMessageTab(QString addr)
 {
     if (walletFrame) walletFrame->gotoVerifyMessageTab(addr);
 }
+
 void BitcoinGUI::gotoStatsExplorerPage()
 {
     openStatsExplorerAction->setChecked(true);
     if (walletFrame) walletFrame->gotoStatsExplorerPage();
+}
+
+void BitcoinGUI::gotoManageNamesPage()
+{
+    manageNamesAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoManageNamesPage();
 }
 #endif // ENABLE_WALLET
 

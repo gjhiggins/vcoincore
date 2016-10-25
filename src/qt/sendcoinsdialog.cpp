@@ -42,7 +42,7 @@ SendCoinsDialog::SendCoinsDialog(const PlatformStyle *_platformStyle, QWidget *p
     platformStyle(_platformStyle)
 {
 
-    // vcoi  service ID
+    // vcore service ID
     nSemTypeID = VCN_NONE;
 
     ui->setupUi(this);

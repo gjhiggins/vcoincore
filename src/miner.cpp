@@ -145,12 +145,12 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     CBlockIndex* pindexPrev = chainActive.Tip();
     nHeight = pindexPrev->nHeight + 1;
 
-    const int32_t nChainId = chainparams.GetConsensus ().nAuxpowChainId;
+    // const int32_t nChainId = chainparams.GetConsensus ().nAuxpowChainId;
     // FIXME: Active version bits after the always-auxpow fork!
     //const int32_t nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
-    const int32_t nVersion = 4;
+    // const int32_t nVersion = 4;
     // pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
-    pblock->SetBaseVersion(nVersion, nChainId);
+    // pblock->SetBaseVersion(nVersion, nChainId);
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios
     if (chainparams.MineBlocksOnDemand())
@@ -311,9 +311,6 @@ bool BlockAssembler::TestForBlock(CTxMemPool::txiter iter)
         return false;
     }
 
-    // Check the DB lock limit won't be exceeded.
-    if (!DbLockLimitOk({iter}))
-        return false;
 
     // The tx must be valid for Namecoin.
     if (!TxAllowedForNamecoin(iter->GetTx()))
@@ -367,18 +364,6 @@ BlockAssembler::TxAllowedForNamecoin (const CTransaction& tx) const
     }
 
   return true;
-}
-
-bool
-BlockAssembler::DbLockLimitOk (const CTxMemPool::setEntries& candidates) const
-{
-  std::vector<CTransaction> vtx;
-  for (const auto& iter : inBlock)
-    vtx.push_back(iter->GetTx());
-  for (const auto& iter : candidates)
-    vtx.push_back(iter->GetTx());
-
-  return CheckDbLockLimit (vtx);
 }
 
 void BlockAssembler::AddToBlock(CTxMemPool::txiter iter)

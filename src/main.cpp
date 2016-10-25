@@ -1680,10 +1680,8 @@ bool GetTransaction(const uint256 &hash, CTransaction &txOut, const Consensus::P
 
 bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params)
 {
-        if (!CheckProofOfWork(block.GetHash(), block.nBits, params))
-            return error("%s : non-AUX proof of work failed", __func__);
-        return true;
-    }
+    if (!CheckProofOfWork(block.GetHash(), block.nBits, params))
+        return error("%s : proof of work failed", __func__);
     return true;
 }
 
@@ -2211,7 +2209,7 @@ bool AbortNode(CValidationState& state, const std::string& strMessage, const std
  * @param out The out point that corresponds to the tx input.
  * @return True on success.
  */
-static bool ApplyTxInUndo(const CTxInUndo& undo, CCoinsViewCache& view, const COutPoint& out)
+bool ApplyTxInUndo(const CTxInUndo& undo, CCoinsViewCache& view, const COutPoint& out)
 {
     bool fClean = true;
 
@@ -2281,16 +2279,6 @@ bool DisconnectBlock(const CBlock& block, CValidationState& state, const CBlockI
         // but it must be corrected before txout nversion ever influences a network rule.
         if (outsBlock.nVersion < 0)
             outs->nVersion = outsBlock.nVersion;
-        if (*outs != outsBlock)
-        {
-            /* This may be due to a historic bug.  For them, some names
-               are marked immediately as unspendable.  They fail this check
-               when undoing, thus ignore them here.  */
-            CChainParams::BugType type;
-            if (!Params ().IsHistoricBug (tx.GetHash (), pindex->nHeight, type) || type != CChainParams::BUG_FULLY_IGNORE)
-                fClean = fClean && error("DisconnectBlock(): added transaction mismatch? database corrupted");
-        }
-
         // remove outputs
         outs->Clear();
         }
@@ -2625,8 +2613,8 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
        spending transaction would be at least at that height.  This has
        to be done after checking the transactions themselves, because
        spending a name would still be valid in the current block.  */
-    if (!ExpireNames(pindex->nHeight + 1, view, blockundo, expiredNames))
-        return error("%s : ExpireNames failed", __func__);
+    // if (!ExpireNames(pindex->nHeight + 1, view, blockundo, expiredNames))
+    //    return error("%s : ExpireNames failed", __func__);
 
     // Write undo information to disk
     if (pindex->GetUndoPos().IsNull() || !pindex->IsValid(BLOCK_VALID_SCRIPTS))
@@ -2984,7 +2972,8 @@ bool static ConnectTip(CValidationState& state, const CChainParams& chainparams,
     int64_t nTime5 = GetTimeMicros(); nTimeChainState += nTime5 - nTime4;
     LogPrint("bench", "  - Writing chainstate: %.2fms [%.2fs]\n", (nTime5 - nTime4) * 0.001, nTimeChainState * 0.000001);
     // Remove conflicting transactions from the mempool.;
-    mempool.removeForBlock(pblock->vtx, pindexNew->nHeight, txConflicted, !IsInitialBlockDownload());
+    std::list<CTransaction> txNameConflicts;
+    mempool.removeForBlock(pblock->vtx, pindexNew->nHeight, txConflicted, txNameConflicts, !IsInitialBlockDownload());
     // Update chainActive & related variables.
     UpdateTip(pindexNew, chainparams);
 
@@ -6077,12 +6066,20 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         if (nCount > MAX_HEADERS_RESULTS) {
             LOCK(cs_main);
             Misbehaving(pfrom->GetId(), 20);
-            return error("headers message size = %u", nCount);
+            return error("headers message count = %u", nCount);
         }
         headers.resize(nCount);
+        unsigned nSize = 0;
         for (unsigned int n = 0; n < nCount; n++) {
             vRecv >> headers[n];
             ReadCompactSize(vRecv); // ignore tx count; assume it is 0.
+
+            nSize += GetSerializeSize(headers[n], SER_NETWORK, PROTOCOL_VERSION);
+            if (pfrom->nVersion >= SIZE_HEADERS_LIMIT_VERSION
+                  && nSize > MAX_HEADERS_SIZE) {
+                Misbehaving(pfrom->GetId(), 20);
+                return error("headers message size = %u", nSize);
+            }
         }
 
         {
@@ -6147,7 +6144,21 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         assert(pindexLast);
         UpdateBlockAvailability(pfrom->GetId(), pindexLast->GetBlockHash());
 
-        if (nCount == MAX_HEADERS_RESULTS) {
+        // If we already know the last header in the message, then it contains
+        // no new information for us.  In this case, we do not request
+        // more headers later.  This prevents multiple chains of redundant
+        // getheader requests from running in parallel if triggered by incoming
+        // blocks while the node is still in initial headers sync.
+        const bool hasNewHeaders = (mapBlockIndex.count(headers.back().GetHash()) == 0);
+
+        bool maxSize = (nCount == MAX_HEADERS_RESULTS);
+        if (pfrom->nVersion >= SIZE_HEADERS_LIMIT_VERSION
+              && nSize >= THRESHOLD_HEADERS_SIZE)
+            maxSize = true;
+        // FIXME: This change (with hasNewHeaders) is rolled back in Bitcoin,
+        // but I think it should stay here for merge-mined coins.  Try to get
+        // it fixed again upstream and then update the fix.
+        if (maxSize && hasNewHeaders) {
             // Headers message had its maximum size; the peer may have more headers.
             // TODO: optimize: if pindexLast is an ancestor of chainActive.Tip or pindexBestHeader, continue
             // from there instead.
