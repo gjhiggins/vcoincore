@@ -61,14 +61,14 @@ bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, vector<vector<unsi
 
     // If we have a name script, strip the prefix
     const CNameScript nameOp(scriptPubKey);
-    const CScript& script1 = nameOp.getAddress();
+    const CScript& unprefixedscript = nameOp.getAddress();
 
     // Shortcut for pay-to-script-hash, which are more constrained than the other types:
     // it is always OP_HASH160 20 [20 byte hash] OP_EQUAL
-    if (script1.IsPayToScriptHash(false))
+    if (unprefixedscript.IsPayToScriptHash(false))
     {
         typeRet = TX_SCRIPTHASH;
-        vector<unsigned char> hashBytes(script1.begin()+2, script1.begin()+22);
+        vector<unsigned char> hashBytes(unprefixedscript.begin()+2, unprefixedscript.begin()+22);
         vSolutionsRet.push_back(hashBytes);
         return true;
     }

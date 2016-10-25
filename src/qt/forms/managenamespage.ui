@@ -51,7 +51,7 @@
          <string>Enter a name or domain name (prefixed with d/) to be registered via Namecoin.</string>
         </property>
         <property name="text">
-         <string>d/</string>
+         <string>v/</string>
         </property>
        </widget>
       </item>
@@ -64,7 +64,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use &lt;span style=&quot; font-weight:600;&quot;&gt;d/&lt;/span&gt; prefix for domain names. E.g. &lt;span style=&quot; font-weight:600;&quot;&gt;d/mysite&lt;/span&gt; will register &lt;span style=&quot; font-weight:600;&quot;&gt;mysite.bit&lt;/span&gt;&lt;/p&gt;&lt;p&gt;See &lt;a href=&quot;https://wiki.namecoin.info/index.php?title=Domain_Name_Specification&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Domain names&lt;/span&gt;&lt;/a&gt; in Namecoin wiki for reference. Other prefixes can be used for miscellaneous purposes (not domain names).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use &lt;span style=&quot; font-weight:600;&quot;&gt;v/&lt;/span&gt; prefix for domain names. E.g. &lt;span style=&quot; font-weight:600;&quot;&gt;v/mysite&lt;/span&gt; will register &lt;span style=&quot; font-weight:600;&quot;&gt;mysite.v&lt;/span&gt;&lt;/p&gt;&lt;p&gt;See &lt;a href=&quot;https://wiki.v-core.info/index.php?title=Domain_Name_Specification&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Domain names&lt;/span&gt;&lt;/a&gt; in the V Core wiki for reference. Other prefixes can be used for miscellaneous purposes (not domain names).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="textFormat">
          <enum>Qt::RichText</enum>
@@ -233,7 +233,7 @@ to the network and creates a pending name_firstupdate transaction.</string>
   <customwidget>
    <class>QValidatedLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>../../src/qt/qvalidatedlineedit.h</header>
+   <header>qvalidatedlineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources>

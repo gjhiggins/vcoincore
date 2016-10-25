@@ -7,7 +7,6 @@
 #define BITCOIN_WALLET_WALLET_H
 
 #include "amount.h"
-#include "auxpow.h" // contains CMerkleTx
 #include "streams.h"
 #include "tinyformat.h"
 #include "ui_interface.h"
@@ -37,6 +36,7 @@ extern CWallet* pwalletMain;
  * Settings
  */
 extern CFeeRate payTxFee;
+extern CAmount maxTxFee;
 extern unsigned int nTxConfirmTarget;
 extern bool bSpendZeroConfChange;
 extern bool fSendFreeTransactions;
@@ -45,10 +45,14 @@ extern bool fWalletRbf;
 static const unsigned int DEFAULT_KEYPOOL_SIZE = 100;
 //! -paytxfee default
 static const CAmount DEFAULT_TRANSACTION_FEE = 0;
+//! -paytxfee will warn if called with a higher fee than this amount (in satoshis) per KB
+static const CAmount nHighTransactionFeeWarning = 0.01 * COIN;
 //! -fallbackfee default
 static const CAmount DEFAULT_FALLBACK_FEE = 20000;
 //! -mintxfee default
 static const CAmount DEFAULT_TRANSACTION_MINFEE = 1000;
+//! -maxtxfee default
+// static const CAmount DEFAULT_TRANSACTION_MAXFEE = 0.1 * COIN;
 //! minimum change amount
 static const CAmount MIN_CHANGE = CENT;
 //! Default for -spendzeroconfchange
@@ -67,6 +71,12 @@ static const bool DEFAULT_DISABLE_WALLET = false;
 static const bool DEFAULT_USE_HD_WALLET = true;
 
 extern const char * DEFAULT_WALLET_DAT;
+
+// change the string to avoid conversion to string all the time
+static const std::string sMAX_TX_REFERENCE_LEN = "512";
+// static const unsigned int MAX_TX_REFERENCE_LEN = std::atoi(sMAX_TX_REFERENCE_LEN.c_str());
+static const unsigned int MAX_TX_REFERENCE_LEN = 512;
+
 
 class CBlockIndex;
 class CCoinControl;
@@ -201,6 +211,7 @@ public:
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         std::vector<uint256> vMerkleBranch; // For compatibility with older versions.
         READWRITE(*(CTransaction*)this);
+        nVersion = this->nVersion;
         READWRITE(hashBlock);
         READWRITE(vMerkleBranch);
         READWRITE(nIndex);
@@ -781,10 +792,17 @@ public:
      * selected by SelectCoins(); Also create the change output, when needed
      * @note passing nChangePosInOut as -1 will result in setting a random position
      */
-    bool CreateTransaction(const std::vector<CRecipient>& vecSend,
-                           const CTxIn* withInput,
-                           CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet, int& nChangePosInOut,
-                           std::string& strFailReason, const CCoinControl *coinControl = NULL, bool sign = true);
+    bool CreateTransaction(
+        const std::vector<CRecipient>& vecSend,
+        const CTxIn* withInput,
+        CWalletTx& wtxNew,
+        CReserveKey& reservekey,
+        CAmount& nFeeRet,
+        int& nChangePosRet,
+        std::string& strFailReason,
+        std::string& strTxReference,
+        const CCoinControl *coinControl = NULL,
+        bool sign = true);
     bool CommitTransaction(CWalletTx& wtxNew, CReserveKey& reservekey, CConnman* connman);
 
     void ListAccountCreditDebit(const std::string& strAccount, std::list<CAccountingEntry>& entries);

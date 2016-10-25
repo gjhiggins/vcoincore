@@ -10,7 +10,8 @@
 #include "script/script.h"
 #include "serialize.h"
 
-#include <univalue.h>
+//#include <univalue.h>
+#include "../univalue/include/univalue.h"
 
 #include <map>
 #include <set>

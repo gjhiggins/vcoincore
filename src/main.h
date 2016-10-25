@@ -18,6 +18,7 @@
 #include "sync.h"
 #include "validationinterface.h"
 #include "versionbits.h"
+#include "semtypeids.h"
 
 #include <algorithm>
 #include <exception>
@@ -41,6 +42,8 @@ class CTxInUndo;
 class CTxMemPool;
 class CValidationInterface;
 class CValidationState;
+class CTransaction;
+class CMutableTransaction;
 
 struct PrecomputedTransactionData;
 struct LockPoints;
@@ -166,6 +169,11 @@ static const int MAX_UNCONNECTING_HEADERS = 10;
 
 static const bool DEFAULT_PEERBLOOMFILTERS = true;
 
+/* FIXME: inscription fee-setting */
+// Comments are used for block chain services -- they cost money
+static const int64_t REFERENCE_FEE_PER_CHAR = 10000;
+// OP_RETURN is useful, but encourage swift services
+static const int64_t OP_RET_FEE_PER_CHAR = 15000;
 struct BlockHasher
 {
     size_t operator()(const uint256& hash) const { return hash.GetCheapHash(); }

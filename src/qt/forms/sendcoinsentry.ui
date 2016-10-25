@@ -162,6 +162,19 @@
       </property>
      </widget>
     </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="payToLabel">
+      <property name="text">
+       <string>Pay &amp;To:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+      <property name="buddy">
+       <cstring>payTo</cstring>
+      </property>
+     </widget>
+    </item>
     <item row="2" column="1">
      <layout class="QHBoxLayout" name="horizontalLayoutAmount" stretch="0,1">
       <item>
@@ -191,11 +204,11 @@
     </item>
     <item row="3" column="1">
      <widget class="QLabel" name="messageTextLabel">
-      <property name="toolTip">
-       <string>A message that was attached to the vcore: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the V Core network.</string>
-      </property>
       <property name="textFormat">
        <enum>Qt::PlainText</enum>
+      </property>
+      <property name="toolTip">
+       <string>A message that was attached to the vcore: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the V Core network.</string>
       </property>
      </widget>
     </item>
@@ -203,6 +216,19 @@
      <widget class="Line" name="line">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="messageLabel">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="text">
+       <string>Message:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
@@ -689,6 +715,23 @@
      </widget>
     </item>
     <item row="2" column="0">
+     <widget class="QLabel" name="inscriptionLabel_is">
+      <property name="text">
+       <string>Inscription:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLabel" name="inscriptionTextLabel_is">
+      <property name="textFormat">
+       <enum>Qt::PlainText</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
      <widget class="QLabel" name="amountLabel_is">
       <property name="text">
        <string>A&amp;mount:</string>
@@ -701,7 +744,7 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="1">
+    <item row="3" column="1">
      <widget class="BitcoinAmountField" name="payAmount_is">
       <property name="acceptDrops">
        <bool>false</bool>
@@ -1222,6 +1265,23 @@
      </widget>
     </item>
     <item row="2" column="0">
+     <widget class="QLabel" name="inscriptionLabel_s">
+      <property name="text">
+       <string>Inscription:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLabel" name="inscriptionTextLabel_s">
+      <property name="textFormat">
+       <enum>Qt::PlainText</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
      <widget class="QLabel" name="amountLabel_s">
       <property name="text">
        <string>A&amp;mount:</string>
@@ -1234,7 +1294,7 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="1">
+    <item row="3" column="1">
      <widget class="BitcoinAmountField" name="payAmount_s">
       <property name="acceptDrops">
        <bool>false</bool>
@@ -1254,6 +1314,7 @@
    <class>BitcoinAmountField</class>
    <extends>QLineEdit</extends>
    <header>bitcoinamountfield.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

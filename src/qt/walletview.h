@@ -22,6 +22,7 @@ class WalletModel;
 class AddressBookPage;
 class ReportView;
 class BlockExplorer;
+class InscriptionDialog;
 class StatsExplorer;
 
 QT_BEGIN_NAMESPACE
@@ -102,7 +103,9 @@ public Q_SLOTS:
     /** Switch to account report page */
     void gotoAccountReportPage(); 
 
-    /** NMC names mgmt tab */
+    /** Open inscription dialog **/
+    void inscribeBlockChain();
+    /** V Core identity mgmt tab */
     void gotoManageNamesPage();
 
     /** Show incoming transaction notification for new transactions.

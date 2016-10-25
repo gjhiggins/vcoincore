@@ -7,7 +7,6 @@
 
 #include "addrman.h"
 #include "arith_uint256.h"
-#include "auxpow.h"
 #include "blockencodings.h"
 #include "chainparams.h"
 #include "checkpoints.h"
@@ -1681,46 +1680,8 @@ bool GetTransaction(const uint256 &hash, CTransaction &txOut, const Consensus::P
 
 bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params)
 {
-    /* Except for legacy blocks with full version 1, ensure that
-       the chain ID is correct.  Legacy blocks are not allowed since
-       the merge-mining start, which is checked in AcceptBlockHeader
-       where the height is known.  */
-    if (!block.IsLegacy() && params.fStrictChainId
-        && block.GetChainId() != params.nAuxpowChainId)
-        return error("%s : block does not have our chain ID"
-                     " (got %d, expected %d, full nVersion %d)",
-                     __func__, block.GetChainId(),
-                     params.nAuxpowChainId, block.nVersion);
-
-    /* If there is no auxpow, just check the block hash.  */
-    if (!block.auxpow)
-    {
-        if (block.IsAuxpow())
-            return error("%s : no auxpow on block with auxpow version",
-                         __func__);
-
-        if (!CheckProofOfWork(block.GetHash(), block.nBits, params))
-            return error("%s : non-AUX proof of work failed", __func__);
-
-        return true;
-    }
-
-    /* We have auxpow.  Check it.  */
-
-    if (!block.IsAuxpow())
-        return error("%s : auxpow on block with non-auxpow version", __func__);
-
-    /* Temporary check:  Disallow parent blocks with auxpow version.  This is
-       for compatibility with the old client.  */
-    /* FIXME: Remove this check with a hardfork later on.  */
-    if (block.auxpow->getParentBlock().IsAuxpow())
-        return error("%s : auxpow parent block has auxpow version", __func__);
-
-    if (!block.auxpow->check(block.GetHash(), block.GetChainId(), params))
-        return error("%s : AUX POW is not valid", __func__);
-    if (!CheckProofOfWork(block.auxpow->getParentBlockHash(), block.nBits, params))
-        return error("%s : AUX proof of work failed", __func__);
-
+    if (!CheckProofOfWork(block.GetHash(), block.nBits, params))
+        return error("%s : proof of work failed", __func__);
     return true;
 }
 
@@ -2236,7 +2197,7 @@ bool AbortNode(CValidationState& state, const std::string& strMessage, const std
  * @param out The out point that corresponds to the tx input.
  * @return True on success.
  */
-static bool ApplyTxInUndo(const CTxInUndo& undo, CCoinsViewCache& view, const COutPoint& out)
+bool ApplyTxInUndo(const CTxInUndo& undo, CCoinsViewCache& view, const COutPoint& out)
 {
     bool fClean = true;
 
@@ -2306,16 +2267,6 @@ bool DisconnectBlock(const CBlock& block, CValidationState& state, const CBlockI
         // but it must be corrected before txout nversion ever influences a network rule.
         if (outsBlock.nVersion < 0)
             outs->nVersion = outsBlock.nVersion;
-        if (*outs != outsBlock)
-        {
-            /* This may be due to a historic bug.  For them, some names
-               are marked immediately as unspendable.  They fail this check
-               when undoing, thus ignore them here.  */
-            CChainParams::BugType type;
-            if (!Params ().IsHistoricBug (tx.GetHash (), pindex->nHeight, type) || type != CChainParams::BUG_FULLY_IGNORE)
-                fClean = fClean && error("DisconnectBlock(): added transaction mismatch? database corrupted");
-        }
-
         // remove outputs
         outs->Clear();
         }
@@ -2650,8 +2601,8 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
        spending transaction would be at least at that height.  This has
        to be done after checking the transactions themselves, because
        spending a name would still be valid in the current block.  */
-    if (!ExpireNames(pindex->nHeight + 1, view, blockundo, expiredNames))
-        return error("%s : ExpireNames failed", __func__);
+    // if (!ExpireNames(pindex->nHeight + 1, view, blockundo, expiredNames))
+    //    return error("%s : ExpireNames failed", __func__);
 
     // Write undo information to disk
     if (pindex->GetUndoPos().IsNull() || !pindex->IsValid(BLOCK_VALID_SCRIPTS))
@@ -2862,14 +2813,6 @@ void static UpdateTip(CBlockIndex *pindexNew, const CChainParams& chainParams) {
                 ++nUpgraded;
             pindex = pindex->pprev;
         }
-        /* FIXME: resolve upstream discrepancy
-        {
-            int32_t nExpectedVersion = ComputeBlockVersion(pindex->pprev, chainParams.GetConsensus());
-            if (pindex->GetBaseVersion() > VERSIONBITS_LAST_OLD_BLOCK_VERSION && (pindex->GetBaseVersion() & ~nExpectedVersion) != 0)
-                ++nUpgraded;
-            pindex = pindex->pprev;
-        }
-        */
         if (nUpgraded > 0)
             warningMessages.push_back(strprintf("%d of last 100 blocks have unexpected version", nUpgraded));
         if (nUpgraded > 100/2)
@@ -3009,7 +2952,8 @@ bool static ConnectTip(CValidationState& state, const CChainParams& chainparams,
     int64_t nTime5 = GetTimeMicros(); nTimeChainState += nTime5 - nTime4;
     LogPrint("bench", "  - Writing chainstate: %.2fms [%.2fs]\n", (nTime5 - nTime4) * 0.001, nTimeChainState * 0.000001);
     // Remove conflicting transactions from the mempool.;
-    mempool.removeForBlock(pblock->vtx, pindexNew->nHeight, txConflicted, !IsInitialBlockDownload());
+    std::list<CTransaction> txNameConflicts;
+    mempool.removeForBlock(pblock->vtx, pindexNew->nHeight, txConflicted, txNameConflicts, !IsInitialBlockDownload());
     // Update chainActive & related variables.
     UpdateTip(pindexNew, chainparams);
 
@@ -3538,39 +3482,6 @@ bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, unsigne
     return true;
 }
 
-/* Temporary check that blocks are compatible with BDB's 10,000 lock limit.
-   This is based on Bitcoin's commit 8c222dca4f961ad13ec64d690134a40d09b20813.
-   Each "object" touched in the DB may cause two locks (one read and one
-   write lock).  Objects are transaction IDs and names.  Thus, count the
-   total number of transaction IDs (tx themselves plus all distinct inputs).
-   In addition, each Namecoin transaction could touch at most one name,
-   so add them as well.  */
-bool CheckDbLockLimit(const std::vector<CTransaction>& vtx)
-{
-    set<uint256> setTxIds;
-    unsigned nNames = 0;
-    BOOST_FOREACH(const CTransaction& tx, vtx)
-    {
-        setTxIds.insert(tx.GetHash());
-        if (tx.IsNamecoin())
-            ++nNames;
-
-        BOOST_FOREACH(const CTxIn& txIn, tx.vin)
-            setTxIds.insert(txIn.prevout.hash);
-    }
-
-    const unsigned nTotalIds = setTxIds.size() + nNames;
-
-    if (nTotalIds > 4500)
-        return error("%s : %u locks estimated, that is too much for BDB",
-                     __func__, nTotalIds);
-
-    if (fDebug)
-        LogPrintf ("%s : need %u locks\n", __func__, nTotalIds);
-    
-    return true;
-}
-
 bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW)
 {
     // Check proof of work matches claimed amount
@@ -3615,12 +3526,6 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     // Size limits
     if (block.vtx.empty() || block.vtx.size() > MAX_BLOCK_BASE_SIZE || ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) > MAX_BLOCK_BASE_SIZE)
         return state.DoS(100, false, REJECT_INVALID, "bad-blk-length", false, "size limits failed");
-
-    // Enforce the temporary DB lock limit.
-    // TODO: Remove with a hardfork in the future.
-    if (!CheckDbLockLimit(block.vtx))
-        return state.DoS(100, error("%s : DB lock limit failed", __func__),
-                         REJECT_INVALID, "bad-db-locks");
 
     // First transaction must be coinbase, the rest must not be
     if (block.vtx.empty() || !block.vtx[0].IsCoinBase())
@@ -3731,10 +3636,6 @@ std::vector<unsigned char> GenerateCoinbaseCommitment(CBlock& block, const CBloc
 bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev, int64_t nAdjustedTime)
 {
     const int nHeight = pindexPrev == NULL ? 0 : pindexPrev->nHeight + 1;
-    if (!Params().GetConsensus().AllowLegacyBlocks(nHeight) && block.IsLegacy())
-        return state.DoS(100, error("%s : legacy block after auxpow start",
-                                    __func__),
-                         REJECT_INVALID, "late-legacy-block");
     // Check proof of work
     if (block.nBits != GetNextWorkRequired(pindexPrev, &block, consensusParams))
         return state.DoS(100, false, REJECT_INVALID, "bad-diffbits", false, "incorrect proof of work");
@@ -3747,6 +3648,7 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
     if (block.GetBlockTime() > nAdjustedTime + 2 * 60 * 60)
         return state.Invalid(false, REJECT_INVALID, "time-too-new", "block timestamp too far in the future");
 
+    // FIXME: ensure valid VCN blocks not excluded
     // Reject outdated version blocks when 95% (75% on testnet) of the network has upgraded:
     // check for version 2, 3 and 4 upgrades
     if((block.nVersion < 2 && nHeight >= consensusParams.BIP34Height) ||
@@ -3779,6 +3681,7 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, const Co
         }
     }
 
+    // FIXME: check pertinence
     // Enforce rule that the coinbase starts with serialized block height
     if (nHeight >= consensusParams.BIP34Height)
     {
@@ -5726,36 +5629,16 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         LogPrint("net", "getheaders %d to %s from peer=%d\n", (pindex ? pindex->nHeight : -1), hashStop.IsNull() ? "end" : hashStop.ToString(), pfrom->id);
         for (; pindex; pindex = chainActive.Next(pindex))
         {
-            const CBlockHeader header = pindex->GetBlockHeader(chainparams.GetConsensus());
-            ++nCount;
-            nSize += GetSerializeSize(header, SER_NETWORK, PROTOCOL_VERSION);
-            vHeaders.push_back(header);
-            if (nCount >= MAX_HEADERS_RESULTS
-                  || pindex->GetBlockHash() == hashStop)
-                break;
-            if (pfrom->nVersion >= SIZE_HEADERS_LIMIT_VERSION
-                  && nSize >= THRESHOLD_HEADERS_SIZE)
+            vHeaders.push_back(pindex->GetBlockHeader());
+            if (--nLimit <= 0 || pindex->GetBlockHash() == hashStop)
                 break;
         }
-
-        /* Check maximum headers size before pushing the message
-           if the peer enforces it.  This should not fail since we
-           break above in the loop at the threshold and the threshold
-           should be small enough in comparison to the hard max size.
-           Do it nevertheless to be sure.  */
-        if (pfrom->nVersion >= SIZE_HEADERS_LIMIT_VERSION
-              && nSize > MAX_HEADERS_SIZE)
-            LogPrintf("ERROR: not pushing 'headers', too large\n");
-        else
-        {
-            LogPrint("net", "pushing %u headers, %u bytes\n", nCount, nSize);
             // pindex can be NULL either if we sent chainActive.Tip() OR
             // if our peer has chainActive.Tip() (and thus we are sending an empty
             // headers message). In both cases it's safe to update
             // pindexBestHeaderSent to be our tip.
             nodestate->pindexBestHeaderSent = pindex ? pindex : chainActive.Tip();
             pfrom->PushMessage(NetMsgType::HEADERS, vHeaders);
-        }
     }
 
 
@@ -6866,14 +6749,14 @@ bool SendMessages(CNode* pto, CConnman& connman)
                     pBestIndex = pindex;
                     if (fFoundStartingHeader) {
                         // add this to the headers message
-                        vHeaders.push_back(pindex->GetBlockHeader(consensusParams));
+                        vHeaders.push_back(pindex->GetBlockHeader());
                     } else if (PeerHasHeader(&state, pindex)) {
                         continue; // keep looking for the first new block
                     } else if (pindex->pprev == NULL || PeerHasHeader(&state, pindex->pprev)) {
                         // Peer doesn't have this header but they do have the prior one.
                         // Start sending headers.
                         fFoundStartingHeader = true;
-                        vHeaders.push_back(pindex->GetBlockHeader(consensusParams));
+                        vHeaders.push_back(pindex->GetBlockHeader());
                     } else {
                         // Peer doesn't have this header or the prior one -- nothing will
                         // connect, so bail out.

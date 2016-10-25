@@ -5,6 +5,7 @@
 
 #include "wallet/wallet.h"
 
+#include "amount.h"
 #include "base58.h"
 #include "checkpoints.h"
 #include "chain.h"
@@ -2164,7 +2165,8 @@ bool CWallet::FundTransaction(CMutableTransaction& tx, CAmount& nFeeRet, bool ov
 
     CReserveKey reservekey(this);
     CWalletTx wtx;
-    if (!CreateTransaction(vecSend, NULL, wtx, reservekey, nFeeRet, nChangePosInOut, strFailReason, &coinControl, false))
+    std::string strTxReference = "";
+    if (!CreateTransaction(vecSend, NULL, wtx, reservekey, nFeeRet, nChangePosInOut, strFailReason, strTxReference, &coinControl, false))
         return false;
 
     if (nChangePosInOut != -1)
@@ -2188,10 +2190,17 @@ bool CWallet::FundTransaction(CMutableTransaction& tx, CAmount& nFeeRet, bool ov
     return true;
 }
 
-bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend,
-                                const CTxIn* withInput,
-                                CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet,
-                                int& nChangePosInOut, std::string& strFailReason, const CCoinControl* coinControl, bool sign)
+bool CWallet::CreateTransaction(
+     const vector<CRecipient>& vecSend,
+     const CTxIn* withInput,
+     CWalletTx& wtxNew,
+     CReserveKey& reservekey,
+     CAmount& nFeeRet,
+     int& nChangePosInOut,
+     std::string& strFailReason,
+     std::string& strTxReference,
+     const CCoinControl* coinControl,
+     bool sign)
 {
     /* Initialise nFeeRet here so that SendMoney doesn't see an uninitialised
        value in case we error out earlier.  */
@@ -2249,6 +2258,15 @@ bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend,
     CMutableTransaction txNew;
     if (isNamecoin)
         txNew.SetNamecoin();
+
+    // Semantic type
+    wtxNew.nSemTypeID = 1;
+    // Public reference
+    wtxNew.strTxReference = strTxReference;
+
+    if (wtxNew.strTxReference.length() > MAX_TX_REFERENCE_LEN) {
+           wtxNew.strTxReference.resize(MAX_TX_REFERENCE_LEN);
+    }
 
     // Discourage fee sniping.
     //

@@ -233,8 +233,8 @@ UniValue setaccount(const JSONRPCRequest& request)
             "1. \"vcoreaddress\"  (string, required) The V Core address to be associated with an account.\n"
             "2. \"account\"         (string, required) The account to assign the address to.\n"
             "\nExamples:\n"
-            + HelpExampleCli("setaccount", "\"1D1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XZ\" \"tabby\"")
-            + HelpExampleRpc("setaccount", "\"1D1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XZ\", \"tabby\"")
+            + HelpExampleCli("setaccount", "\"V21ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XZ\" \"tabby\"")
+            + HelpExampleRpc("setaccount", "\"V21ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XZ\", \"tabby\"")
         );
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
@@ -280,8 +280,8 @@ UniValue getaccount(const JSONRPCRequest& request)
             "\nResult:\n"
             "\"accountname\"        (string) the account address\n"
             "\nExamples:\n"
-            + HelpExampleCli("getaccount", "\"VD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XZ\"")
-            + HelpExampleRpc("getaccount", "\"VD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XZ\"")
+            + HelpExampleCli("getaccount", "\"V21ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XZ\"")
+            + HelpExampleRpc("getaccount", "\"V21ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XZ\"")
         );
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
@@ -358,7 +358,7 @@ void SendMoneyToScript(const CScript &scriptPubKey, const CTxIn* withInput, CAmo
         throw JSONRPCError(RPC_CLIENT_P2P_DISABLED, "Error: Peer-to-peer functionality missing or disabled");
 
     // Parse Bitcoin address
-    CScript scriptPubKey = GetScriptForDestination(address);
+    // CScript _scriptPubKey = GetScriptForDestination(address);
 
     // Create and send the transaction
     CReserveKey reservekey(pwalletMain);
@@ -368,7 +368,9 @@ void SendMoneyToScript(const CScript &scriptPubKey, const CTxIn* withInput, CAmo
     int nChangePosRet = -1;
     CRecipient recipient = {scriptPubKey, nValue, fSubtractFeeFromAmount};
     vecSend.push_back(recipient);
-    if (!pwalletMain->CreateTransaction(vecSend, withInput, wtxNew, reservekey, nFeeRequired, nChangePosRet, strError)) {
+    // Notary service not available via RPC. (Why?)
+    std::string strTxReference = "";
+    if (!pwalletMain->CreateTransaction(vecSend, withInput, wtxNew, reservekey, nFeeRequired, nChangePosRet, strError, strTxReference, NULL, false)) {
         if (!fSubtractFeeFromAmount && nValue + nFeeRequired > pwalletMain->GetBalance())
             strError = strprintf("Error: This transaction requires a transaction fee of at least %s because of its amount, complexity, or use of recently received funds!", FormatMoney(nFeeRequired));
         throw JSONRPCError(RPC_WALLET_ERROR, strError);
@@ -967,7 +969,8 @@ UniValue sendmany(const JSONRPCRequest& request)
     CAmount nFeeRequired = 0;
     int nChangePosRet = -1;
     string strFailReason;
-    bool fCreated = pwalletMain->CreateTransaction(vecSend, wtx, keyChange, nFeeRequired, nChangePosRet, strFailReason);
+    std::string strTxReference = "";
+    bool fCreated = pwalletMain->CreateTransaction(vecSend, NULL, wtx, keyChange, nFeeRequired, nChangePosRet, strFailReason, strTxReference, NULL, false);
     if (!fCreated)
         throw JSONRPCError(RPC_WALLET_INSUFFICIENT_FUNDS, strFailReason);
     if (!pwalletMain->CommitTransaction(wtx, keyChange, g_connman.get()))
@@ -2600,11 +2603,13 @@ extern UniValue importprunedfunds(const JSONRPCRequest& request);
 extern UniValue removeprunedfunds(const JSONRPCRequest& request);
 extern UniValue importmulti(const JSONRPCRequest& request);
 
-extern UniValue name_list(const UniValue& params, bool fHelp); // in rpcnames.cpp
-extern UniValue name_new(const UniValue& params, bool fHelp);
-extern UniValue name_firstupdate(const UniValue& params, bool fHelp);
-extern UniValue name_update(const UniValue& params, bool fHelp);
-extern UniValue sendtoname(const UniValue& params, bool fHelp);
+/*
+extern UniValue name_list(const JSONRPCRequest& request); // in rpcnames.cpp
+extern UniValue name_new(const JSONRPCRequest& request);
+extern UniValue name_firstupdate(const JSONRPCRequest& request);
+extern UniValue name_update(const JSONRPCRequest& request);
+extern UniValue sendtoname(const JSONRPCRequest& request);
+*/
 
 static const CRPCCommand commands[] =
 { //  category              name                        actor (function)           okSafeMode
@@ -2656,13 +2661,14 @@ static const CRPCCommand commands[] =
     { "wallet",             "walletpassphrasechange",   &walletpassphrasechange,   true  },
     { "wallet",             "walletpassphrase",         &walletpassphrase,         true  },
     { "wallet",             "removeprunedfunds",        &removeprunedfunds,        true  },
-
-    // Namecoin-specific wallet calls.
-    { "namecoin",           "name_list",                &name_list,                false },
-    { "namecoin",           "name_new",                 &name_new,                 false },
-    { "namecoin",           "name_firstupdate",         &name_firstupdate,         false },
-    { "namecoin",           "name_update",              &name_update,              false },
-    { "namecoin",           "sendtoname",               &sendtoname,               false },
+    /*
+    // Name calls.
+    { "wallet",             "name_list",                &name_list,                false },
+    { "wallet",             "name_new",                 &name_new,                 false },
+    { "wallet",             "name_firstupdate",         &name_firstupdate,         false },
+    { "wallet",             "name_update",              &name_update,              false },
+    { "wallet",             "sendtoname",               &sendtoname,               false },
+    */
 };
 
 void RegisterWalletRPCCommands(CRPCTable &t)

@@ -498,8 +498,8 @@ UniValue createrawtransaction(const JSONRPCRequest& request)
         }
     }
 
-    if (params.size() > 2 && !params[2].isNull())
-        AddRawTxNameOperation(rawTx, params[2].get_obj());
+    if (request.params.size() > 2 && !request.params[2].isNull())
+        AddRawTxNameOperation(rawTx, request.params[2].get_obj());
 
     return EncodeHexTx(rawTx);
 }

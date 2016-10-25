@@ -15,6 +15,7 @@ class SendCoinsRecipient;
 class WalletModel;
 class WalletView;
 class BlockExplorer;
+class InscriptionDialog;
 class statsExplorer;
 
 QT_BEGIN_NAMESPACE
@@ -68,16 +69,18 @@ public Q_SLOTS:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
-    /** Switch to Stats page */
-    void gotoStatsExplorerPage();	
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");
+    /** Switch to Stats page */
+    void gotoStatsExplorerPage();	
 	/** Switch to explorer page */
     void gotoBlockExplorerPage();	
     /** Switch to account report page */
     void gotoAccountReportPage();
+    /** Open inscription dialog **/
+    void inscribeBlockChain();
     /** Switch to manage names page */
     void gotoManageNamesPage();
 
