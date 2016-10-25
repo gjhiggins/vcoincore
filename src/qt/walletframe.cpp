@@ -209,11 +209,18 @@ void WalletFrame::gotoStatsExplorerPage()
         i.value()->gotoStatsExplorerPage();
 }
 
-void WalletFrame::gotoAccountReportPage()
+void WalletFrame::gotoChatPage()
 {
     QMap<QString, WalletView*>::const_iterator i;
     for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoAccountReportPage();
+        i.value()->gotoChatPage();
+}
+
+void WalletFrame::gotoAccountReportPage()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoAccountReportPage();
 }
 
 void WalletFrame::gotoBlockExplorerPage()

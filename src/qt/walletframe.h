@@ -13,6 +13,7 @@ class ClientModel;
 class PlatformStyle;
 class SendCoinsRecipient;
 class WalletModel;
+class ChatWindow;
 class WalletView;
 class BlockExplorer;
 class InscriptionDialog;
@@ -83,6 +84,8 @@ public Q_SLOTS:
     void inscribeBlockChain();
     /** Switch to manage names page */
     void gotoManageNamesPage();
+	/** Switch to chat page */
+    void gotoChatPage();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");

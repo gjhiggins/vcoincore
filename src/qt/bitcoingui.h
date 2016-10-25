@@ -23,6 +23,7 @@ class NetworkStyle;
 class Notificator;
 class OptionsModel;
 class PlatformStyle;
+class ChatWindow;
 class RPCConsole;
 class StatsExplorer;
 class SendCoinsRecipient;
@@ -117,6 +118,7 @@ private:
     QAction *openRPCConsoleAction;
     QAction *openAction;
 	QAction *openStatsExplorerAction;
+    QAction *openChatWindowAction;
     QAction *showHelpMessageAction;
 	QAction *openBlockExplorerAction;
     QAction *inscribeBlockChainAction;
@@ -128,6 +130,7 @@ private:
     HelpMessageDialog *helpMessageDialog;
     BlockExplorer  *explorerWindow;
     StatsExplorer  *statsWindow;
+    ChatWindow *chatWindow;
     ModalOverlay *modalOverlay;
 
     /** Keep track of previous number of blocks, to detect progress */
@@ -218,6 +221,8 @@ private Q_SLOTS:
     void gotoAccountReportPage();
     /** Switch to manage names page */
     void gotoManageNamesPage();
+	/** Switch to chat page */
+    void gotoChatPage();
 
     /** Show open dialog */
     void openClicked();

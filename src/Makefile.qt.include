@@ -102,6 +102,7 @@ QT_FORMS_UI = \
   qt/forms/statsexplorer.ui \
   qt/forms/helpmessagedialog.ui \
   qt/forms/inscriptiondialog.ui \
+  qt/forms/chatwindow.ui \
   qt/forms/intro.ui \
   qt/forms/modaloverlay.ui \
   qt/forms/openuridialog.ui \
@@ -127,6 +128,7 @@ QT_MOC_CPP = \
   qt/moc_bitcoingui.cpp \
   qt/moc_bitcoinunits.cpp \
   qt/moc_blockexplorer.cpp \
+  qt/moc_chatwindow.cpp \
   qt/moc_clientmodel.cpp \
   qt/moc_coincontroldialog.cpp \
   qt/moc_coincontroltreewidget.cpp \
@@ -158,6 +160,7 @@ QT_MOC_CPP = \
   qt/moc_rpcconsole.cpp \
   qt/moc_sendcoinsdialog.cpp \
   qt/moc_sendcoinsentry.cpp \
+  qt/moc_chatclient.cpp \
   qt/moc_signverifymessagedialog.cpp \
   qt/moc_splashscreen.cpp \
   qt/moc_trafficgraphwidget.cpp \
@@ -198,14 +201,16 @@ BITCOIN_QT_H = \
   qt/bantablemodel.h \
   qt/bitcoinaddressvalidator.h \
   qt/bitcoinamountfield.h \
+  qt/chatwindow.h \
   qt/bitcoingui.h \
   qt/bitcoinunits.h \
   qt/blockexplorer.h \
+  qt/chatclient.h \
   qt/clientmodel.h \
   qt/coincontroldialog.h \
   qt/coincontroltreewidget.h \
-  qt/csvmodelwriter.h \
   qt/configurenamedialog.h \
+  qt/csvmodelwriter.h \
   qt/editaddressdialog.h \
   qt/statsexplorer.h \
   qt/guiconstants.h \
@@ -235,9 +240,6 @@ BITCOIN_QT_H = \
   qt/rpcconsole.h \
   qt/sendcoinsdialog.h \
   qt/sendcoinsentry.h \
-  qt/managenamespage.h \
-  qt/configurenamedialog.h \
-  qt/nametablemodel.h \
   qt/signverifymessagedialog.h \
   qt/splashscreen.h \
   qt/trafficgraphwidget.h \
@@ -267,6 +269,7 @@ RES_ICONS = \
   qt/res/icons/bitcoin.png \
   qt/res/icons/chevron.png \
   qt/res/icons/clock1.png \
+  qt/res/icons/chat.png \
   qt/res/icons/clock2.png \
   qt/res/icons/clock3.png \
   qt/res/icons/clock4.png \
@@ -324,6 +327,7 @@ BITCOIN_QT_BASE_CPP = \
   qt/bitcoinamountfield.cpp \
   qt/bitcoingui.cpp \
   qt/bitcoinunits.cpp \
+  qt/chatwindow.cpp \
   qt/clientmodel.cpp \
   qt/csvmodelwriter.cpp \
   qt/statsexplorer.cpp \
@@ -337,6 +341,7 @@ BITCOIN_QT_BASE_CPP = \
   qt/peertablemodel.cpp \
   qt/platformstyle.cpp \
   qt/qcustomplot.cpp \
+  qt/chatclient.cpp \
   qt/qvalidatedlineedit.cpp \
   qt/qvaluecombobox.cpp \
   qt/rpcconsole.cpp \
@@ -350,6 +355,8 @@ BITCOIN_QT_WALLET_CPP = \
   qt/addressbookpage.cpp \
   qt/addresstablemodel.cpp \
   qt/askpassphrasedialog.cpp \
+  qt/chatclient.cpp \
+  qt/chatwindow.cpp \
   qt/blockexplorer.cpp \
   qt/coincontroldialog.cpp \
   qt/coincontroltreewidget.cpp \

@@ -3,7 +3,6 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "walletview.h"
-
 #include "addressbookpage.h"
 #include "askpassphrasedialog.h"
 #include "bitcoingui.h"
@@ -23,6 +22,7 @@
 #include "blockexplorer.h"
 #include "statsexplorer.h"
 #include "managenamespage.h"
+#include "chatwindow.h"
 
 #include "ui_interface.h"
 
@@ -44,6 +44,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     overviewPage = new OverviewPage(platformStyle);
 	explorerWindow = new BlockExplorer(this);
     statsExplorerPage = new StatsExplorer(this);
+    chatWindow = new ChatWindow(this);
 
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -91,8 +92,9 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 	addWidget(explorerWindow);
     addWidget(statsExplorerPage);
     addWidget(manageNamesPage);
+	addWidget(chatWindow);
 
-    // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
+        // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
     connect(overviewPage, SIGNAL(outOfSyncWarningClicked()), this, SLOT(requestedSyncWarningInfo()));
 
@@ -378,6 +380,11 @@ void WalletView::gotoAccountReportPage()
 void WalletView::gotoBlockExplorerPage()
 {
     setCurrentWidget(explorerWindow);
+}
+
+void WalletView::gotoChatPage()
+{
+    setCurrentWidget(chatWindow);
 }
 
 void WalletView::inscribeBlockChain()
