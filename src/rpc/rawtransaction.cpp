@@ -479,6 +479,7 @@ UniValue createrawtransaction(const JSONRPCRequest& request)
     set<CBitcoinAddress> setAddress;
     vector<string> addrList = sendTo.getKeys();
     BOOST_FOREACH(const string& name_, addrList) {
+
         if (name_ == "data") {
             std::vector<unsigned char> data = ParseHexV(sendTo[name_].getValStr(),"Data");
 

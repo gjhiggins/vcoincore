@@ -193,18 +193,9 @@
      </layout>
     </item>
     <item row="3" column="1">
-      <property name="text">
-       <string>Message:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QLabel" name="messageTextLabel">
-      <property name="textFormat">
-       <enum>Qt::PlainText</enum>
+     <widget class="QLineEdit" name="messageTextLabel">
+      <property name="enabled">
+       <bool>true</bool>
       </property>
       <property name="toolTip">
        <string>A message that was attached to the vcore: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the V Core network.</string>

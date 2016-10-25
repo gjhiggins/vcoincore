@@ -70,10 +70,7 @@ int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParam
     // Updating time can change work required on testnet:
     if (consensusParams.fPowAllowMinDifficultyBlocks)
         pblock->nBits = GetNextWorkRequired(pindexPrev, pblock, consensusParams);
-    /* FIXME: resolve upstream discrepancy
-    if (consensusParams.AllowMinDifficultyBlocks(pblock->GetBlockTime()))
-        pblock->nBits = GetNextWorkRequired(pindexPrev, pblock, consensusParams);
-    */
+
     return nNewTime - nOldTime;
 }
 
@@ -145,17 +142,11 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     CBlockIndex* pindexPrev = chainActive.Tip();
     nHeight = pindexPrev->nHeight + 1;
 
-    // const int32_t nChainId = chainparams.GetConsensus ().nAuxpowChainId;
-    // FIXME: Active version bits after the always-auxpow fork!
-    //const int32_t nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
-    // const int32_t nVersion = 4;
-    // pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
-    // pblock->SetBaseVersion(nVersion, nChainId);
+    pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios
     if (chainparams.MineBlocksOnDemand())
         pblock->nVersion = GetArg("-blockversion", pblock->nVersion);
-        // pblock->SetBaseVersion(GetArg("-blockversion", pblock->GetBaseVersion()), nChainId);
 
     pblock->nTime = GetAdjustedTime();
     const int64_t nMedianTimePast = pindexPrev->GetMedianTimePast();
@@ -541,7 +532,7 @@ void BlockAssembler::addPackageTxs()
         ancestors.insert(iter);
 
         // Test if all tx's are Final
-        if (!TestPackageTransactions(ancestors) || !DbLockLimitOk(ancestors)) {
+        if (!TestPackageTransactions(ancestors)) {
             if (fUsingModified) {
                 mapModifiedTx.get<ancestor_score>().erase(modit);
                 failedTx.insert(iter);

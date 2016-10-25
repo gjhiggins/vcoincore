@@ -210,8 +210,6 @@ private:
      * NAME_NEW.  Those are allowed in the mempool, but not in blocks.
      */
     bool TxAllowedForNamecoin(const CTransaction& tx) const;
-    /** Check DB lock limit.  */
-    bool DbLockLimitOk(const CTxMemPool::setEntries& candidates) const;
 };
 
 /** Modify the extranonce in a block */

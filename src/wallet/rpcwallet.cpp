@@ -364,8 +364,6 @@ void SendMoneyToScript(const CScript &scriptPubKey, const CTxIn* withInput, CAmo
     CReserveKey reservekey(pwalletMain);
     CAmount nFeeRequired;
     std::string strError;
-    std::string strTxReference = "";
-    // Notary service not available via RPC. (Why?)
     vector<CRecipient> vecSend;
     int nChangePosRet = -1;
     CRecipient recipient = {scriptPubKey, nValue, fSubtractFeeFromAmount};
