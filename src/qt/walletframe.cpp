@@ -136,13 +136,6 @@ void WalletFrame::gotoSendCoinsPage(QString addr)
         i.value()->gotoSendCoinsPage(addr);
 }
 
-void WalletFrame::gotoStatsExplorerPage()
-{
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoStatsExplorerPage();
-}
-
 void WalletFrame::gotoSignMessageTab(QString addr)
 {
     WalletView *walletView = currentWalletView();
@@ -209,18 +202,25 @@ void WalletFrame::outOfSyncWarningClicked()
     Q_EMIT requestedSyncWarningInfo();
 }
 
-void WalletFrame::inscribeBlockChain()
+void WalletFrame::gotoStatsExplorerPage()
 {
-    WalletView *walletView = currentWalletView();
-    if (walletView)
-        walletView->inscribeBlockChain();
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoStatsExplorerPage();
+}
+
+void WalletFrame::gotoChatPage()
+{
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoChatPage();
 }
 
 void WalletFrame::gotoAccountReportPage()
 {
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoAccountReportPage();
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoAccountReportPage();
 }
 
 void WalletFrame::gotoBlockExplorerPage()
@@ -229,3 +229,18 @@ void WalletFrame::gotoBlockExplorerPage()
     for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
         i.value()->gotoBlockExplorerPage();
 }
+
+void WalletFrame::inscribeBlockChain()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->inscribeBlockChain();
+}
+
+void WalletFrame::gotoManageNamesPage()
+{
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoManageNamesPage();
+}
+

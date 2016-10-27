@@ -28,6 +28,8 @@
 #include "blockexplorer.h"
 #include "statsexplorer.h"
 #include "reportview.h"
+#include "managenamespage.h"
+#include "chatwindow.h"
 #endif // ENABLE_WALLET
 
 #ifdef Q_OS_MAC
@@ -120,9 +122,10 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     trayIconMenu(0),
     notificator(0),
     rpcConsole(0),
-    helpMessageDialog(0),
     explorerWindow(0),
+    helpMessageDialog(0),
     statsWindow(0),
+    chatWindow(0),
     modalOverlay(0),
     prevBlocks(0),
     spinnerFrame(0),
@@ -165,6 +168,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
         explorerWindow = new BlockExplorer(this);
         setCentralWidget(walletFrame);
         statsWindow = new StatsExplorer(this);
+        chatWindow = new ChatWindow(this);
     } else
 #endif // ENABLE_WALLET
     {
@@ -252,6 +256,11 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     // prevents an oben debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), statsWindow, SLOT(hide()));
 
+    connect(openChatWindowAction, SIGNAL(triggered()), chatWindow, SLOT(show()));
+
+    // prevents an oben debug window from becoming stuck/unusable on client shutdown
+    connect(quitAction, SIGNAL(triggered()), chatWindow, SLOT(hide()));
+
     // Install event filter to be able to catch status tip events (QEvent::StatusTip)
     this->installEventFilter(this);
 
@@ -307,7 +316,7 @@ void BitcoinGUI::createActions()
     sendCoinsMenuAction->setToolTip(sendCoinsMenuAction->statusTip());
 
     receiveCoinsAction = new QAction(platformStyle->SingleColorIcon(":/icons/receiving_addresses"), tr("&Receive"), this);
-    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and bitcoin: URIs)"));
+    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and vcore: URIs)"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
     receiveCoinsAction->setCheckable(true);
     receiveCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_3));
@@ -331,6 +340,17 @@ void BitcoinGUI::createActions()
     accountReportAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
     tabGroup->addAction(accountReportAction);
 
+    manageNamesAction = new QAction(platformStyle->SingleColorIcon(":/icons/names"), tr("&Names"), this);
+    manageNamesAction->setStatusTip(tr("Manage names."));
+    manageNamesAction->setToolTip(manageNamesAction->statusTip());
+    manageNamesAction->setCheckable(true);
+    manageNamesAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
+    tabGroup->addAction(manageNamesAction);
+
+    manageNamesMenuAction = new QAction(platformStyle->SingleColorIcon(":/icons/names"), manageNamesAction->text(), this);
+    manageNamesMenuAction->setStatusTip(manageNamesAction->statusTip());
+    manageNamesMenuAction->setToolTip(manageNamesMenuAction->statusTip());
+
 #ifdef ENABLE_WALLET
     // These showNormalIfMinimized are needed because Send Coins and Receive Coins
     // can be triggered from the tray menu, and need to show the GUI to be useful.
@@ -348,6 +368,8 @@ void BitcoinGUI::createActions()
     connect(historyAction, SIGNAL(triggered()), this, SLOT(gotoHistoryPage()));
     connect(accountReportAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(accountReportAction, SIGNAL(triggered()), this, SLOT(gotoAccountReportPage()));
+    connect(manageNamesAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(manageNamesAction, SIGNAL(triggered()), this, SLOT(gotoManageNamesPage()));
 #endif // ENABLE_WALLET
 
     quitAction = new QAction(platformStyle->TextColorIcon(":/icons/quit"), tr("E&xit"), this);
@@ -374,6 +396,7 @@ void BitcoinGUI::createActions()
     backupWalletAction = new QAction(platformStyle->TextColorIcon(":/icons/filesave"), tr("&Backup Wallet..."), this);
     backupWalletAction->setStatusTip(tr("Backup wallet to another location"));
     changePassphraseAction = new QAction(platformStyle->TextColorIcon(":/icons/key"), tr("&Change Passphrase..."), this);
+
     changePassphraseAction->setStatusTip(tr("Change the passphrase used for wallet encryption"));
     signMessageAction = new QAction(platformStyle->TextColorIcon(":/icons/edit"), tr("Sign &message..."), this);
     signMessageAction->setStatusTip(tr("Sign messages with your V Core addresses to prove you own them"));
@@ -397,10 +420,10 @@ void BitcoinGUI::createActions()
     openBlockExplorerAction->setStatusTip(tr("Block explorer window"));
     openStatsExplorerAction = new QAction(platformStyle->TextColorIcon(":/icons/stats"), tr("&Statistics explorer"), this);
     openStatsExplorerAction->setStatusTip(tr("Statistics"));
-
+    openChatWindowAction = new QAction(platformStyle->TextColorIcon(":/icons/chat"), tr("&Chat window"), this);
+    openChatWindowAction->setStatusTip(tr("Chat window"));
     inscribeBlockChainAction = new QAction(platformStyle->TextColorIcon(":/icons/inscribe"), tr("&Inscribe block"), this);
-    inscribeBlockChainAction->setStatusTip(tr("Indelibly inscribe the block"));
-    
+    inscribeBlockChainAction->setStatusTip(tr("Indelibly inscribe the block"));    
 
     showHelpMessageAction = new QAction(platformStyle->TextColorIcon(":/icons/info"), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
@@ -476,6 +499,7 @@ void BitcoinGUI::createMenuBar()
         data->addAction(openBlockExplorerAction);
         data->addAction(inscribeBlockChainAction);
         data->addAction(openStatsExplorerAction);
+    	data->addAction(openChatWindowAction);
     }
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
@@ -501,6 +525,7 @@ void BitcoinGUI::createToolBars()
         toolbar->addAction(receiveCoinsAction);
         toolbar->addAction(historyAction);
         toolbar->addAction(accountReportAction);
+        toolbar->addAction(manageNamesAction);
         overviewAction->setChecked(true);
     }
 }
@@ -601,6 +626,7 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     openAction->setEnabled(enabled);
     accountReportAction->setEnabled(enabled);
     inscribeBlockChainAction->setEnabled(enabled);
+    openChatWindowAction->setEnabled(enabled);
 }
 
 void BitcoinGUI::createTrayIcon(const NetworkStyle *networkStyle)
@@ -640,6 +666,7 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(sendCoinsMenuAction);
     trayIconMenu->addAction(receiveCoinsMenuAction);
+    trayIconMenu->addAction(manageNamesMenuAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(signMessageAction);
     trayIconMenu->addAction(verifyMessageAction);
@@ -648,6 +675,7 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addAction(openStatsExplorerAction);
     trayIconMenu->addAction(openRPCConsoleAction);
     trayIconMenu->addAction(openBlockExplorerAction);
+    trayIconMenu->addAction(openChatWindowAction);
 #ifndef Q_OS_MAC // This is built-in on Mac
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(quitAction);
@@ -746,10 +774,35 @@ void BitcoinGUI::gotoVerifyMessageTab(QString addr)
 {
     if (walletFrame) walletFrame->gotoVerifyMessageTab(addr);
 }
+
 void BitcoinGUI::gotoStatsExplorerPage()
 {
     openStatsExplorerAction->setChecked(true);
     if (walletFrame) walletFrame->gotoStatsExplorerPage();
+}
+
+void BitcoinGUI::gotoBlockExplorerPage()
+{
+    openBlockExplorerAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoBlockExplorerPage();
+}
+
+void BitcoinGUI::gotoAccountReportPage()
+{
+    accountReportAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoAccountReportPage();
+}
+
+void BitcoinGUI::gotoManageNamesPage()
+{
+    manageNamesAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoManageNamesPage();
+}
+
+void BitcoinGUI::gotoChatPage()
+{
+    openChatWindowAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoChatPage();
 }
 #endif // ENABLE_WALLET
 
@@ -1163,18 +1216,6 @@ void BitcoinGUI::showModalOverlay()
 {
     if (modalOverlay)
         modalOverlay->showHide(false, true);
-}
-
-void BitcoinGUI::gotoAccountReportPage()
-{
-		accountReportAction->setChecked(true);
-    if (walletFrame) walletFrame->gotoAccountReportPage();
-}
-
-void BitcoinGUI::gotoBlockExplorerPage()
-{
-    openBlockExplorerAction->setChecked(true);
-    if (walletFrame) walletFrame->gotoBlockExplorerPage();
 }
 
 static bool ThreadSafeMessageBox(BitcoinGUI *gui, const std::string& message, const std::string& caption, unsigned int style)

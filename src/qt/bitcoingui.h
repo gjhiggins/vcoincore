@@ -23,6 +23,7 @@ class NetworkStyle;
 class Notificator;
 class OptionsModel;
 class PlatformStyle;
+class ChatWindow;
 class RPCConsole;
 class StatsExplorer;
 class SendCoinsRecipient;
@@ -101,6 +102,8 @@ private:
     QAction *sendCoinsMenuAction;
     QAction *usedSendingAddressesAction;
     QAction *usedReceivingAddressesAction;
+    QAction *manageNamesAction;
+    QAction *manageNamesMenuAction;
     QAction *signMessageAction;
     QAction *verifyMessageAction;
     QAction *aboutAction;
@@ -115,6 +118,7 @@ private:
     QAction *openRPCConsoleAction;
     QAction *openAction;
 	QAction *openStatsExplorerAction;
+    QAction *openChatWindowAction;
     QAction *showHelpMessageAction;
 	QAction *openBlockExplorerAction;
     QAction *inscribeBlockChainAction;
@@ -126,6 +130,7 @@ private:
     HelpMessageDialog *helpMessageDialog;
     BlockExplorer  *explorerWindow;
     StatsExplorer  *statsWindow;
+    ChatWindow *chatWindow;
     ModalOverlay *modalOverlay;
 
     /** Keep track of previous number of blocks, to detect progress */
@@ -198,8 +203,6 @@ private Q_SLOTS:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
-    /** Switch to Example Page */
-    void gotoStatsExplorerPage(); 
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
@@ -210,10 +213,16 @@ private Q_SLOTS:
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
     
+    /** Switch to Stats Page */
+    void gotoStatsExplorerPage(); 
     /** Switch to Explorer Page */
     void gotoBlockExplorerPage(); 
     /** Switch to account report page */
     void gotoAccountReportPage();
+    /** Switch to manage names page */
+    void gotoManageNamesPage();
+	/** Switch to chat page */
+    void gotoChatPage();
 
     /** Show open dialog */
     void openClicked();

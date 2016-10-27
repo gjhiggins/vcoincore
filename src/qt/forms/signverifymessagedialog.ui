@@ -48,7 +48,7 @@
          <item>
           <widget class="QValidatedLineEdit" name="addressIn_SM">
            <property name="toolTip">
-            <string>The Bitcoin address to sign the message with</string>
+            <string>The V Core address to sign the message with</string>
            </property>
           </widget>
          </item>
@@ -258,7 +258,7 @@
          <item>
           <widget class="QValidatedLineEdit" name="addressIn_VM">
            <property name="toolTip">
-            <string>The Bitcoin address the message was signed with</string>
+            <string>The V Core address the message was signed with</string>
            </property>
           </widget>
          </item>

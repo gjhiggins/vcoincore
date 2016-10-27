@@ -297,9 +297,9 @@ void InscriptionDialog::on_insertButton_clicked()
     WalletModelTransaction currentTransaction(recipients);
     WalletModel::SendCoinsReturn prepareStatus;
     if (model->getOptionsModel()->getCoinControlFeatures()) // coin control enabled
-        prepareStatus = model->prepareTransaction(currentTransaction, CoinControlDialog::coinControl);
+        prepareStatus = model->prepareTransaction(currentTransaction, textOP, CoinControlDialog::coinControl);
     else
-        prepareStatus = model->prepareTransaction(currentTransaction);
+        prepareStatus = model->prepareTransaction(currentTransaction, textOP);
 
     // process prepareStatus and on error generate message shown to user
     processSendCoinsReturn(prepareStatus,

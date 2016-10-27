@@ -5,9 +5,13 @@
 
 #include "primitives/transaction.h"
 
+#include "script/names.h"
+
 #include "hash.h"
+#include "main.h"
 #include "tinyformat.h"
 #include "utilstrencodings.h"
+#include <boost/foreach.hpp>
 
 std::string COutPoint::ToString() const
 {
@@ -67,6 +71,12 @@ uint256 CMutableTransaction::GetHash() const
     return SerializeHash(*this, SER_GETHASH, SERIALIZE_TRANSACTION_NO_WITNESS);
 }
 
+void CMutableTransaction::SetNamecoin()
+{
+    assert (nVersion == CTransaction::CURRENT_VERSION);
+    nVersion = CTransaction::NAMECOIN_VERSION;
+}
+
 void CTransaction::UpdateHash() const
 {
     *const_cast<uint256*>(&hash) = SerializeHash(*this, SER_GETHASH, SERIALIZE_TRANSACTION_NO_WITNESS);
@@ -93,12 +103,13 @@ CTransaction& CTransaction::operator=(const CTransaction &tx) {
     return *this;
 }
 
-CAmount CTransaction::GetValueOut() const
+CAmount CTransaction::GetValueOut(bool fExcludeNames) const
 {
     CAmount nValueOut = 0;
     for (std::vector<CTxOut>::const_iterator it(vout.begin()); it != vout.end(); ++it)
     {
-        nValueOut += it->nValue;
+        if (!fExcludeNames || !CNameScript::isNameScript(it->scriptPubKey))
+            nValueOut += it->nValue;
         if (!MoneyRange(it->nValue) || !MoneyRange(nValueOut))
             throw std::runtime_error(std::string(__func__) + ": value out of range");
     }
@@ -157,4 +168,58 @@ std::string CTransaction::ToString() const
 int64_t GetTransactionWeight(const CTransaction& tx)
 {
     return ::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) * (WITNESS_SCALE_FACTOR -1) + ::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION);
+}
+
+// Inscription Fee
+int64_t CTransaction::GetInscriptionFee() const {
+    int64_t nInscriptionFee = 0;
+    nInscriptionFee = REFERENCE_FEE_PER_CHAR * strTxReference.size();
+    return nInscriptionFee;
+}
+
+// OP_RETURN Fees: Encourage use of services
+// You get 1 stealth secret free for each non OP_RETURN Output
+// But you pay for non OP_Return outputs
+int64_t CTransaction::GetOpRetFee() const {
+    int64_t nOpRetFee = 0;
+    std::vector<uint8_t> vchR;
+    opcodetype opCode;
+
+    int nFreeSSecret = 0;
+
+    BOOST_FOREACH(const CTxOut& txout, vout) {
+        CScript scriptPK = txout.scriptPubKey;
+        CScript::const_iterator pc = scriptPK.begin();
+
+        // checked in GetOp2, but be safe
+        if (!vchR.empty()) {
+              vchR.clear();
+        }
+
+        if (!(scriptPK.GetOp(pc, opCode, vchR) && (opCode == OP_RETURN))) {
+                nFreeSSecret += 1;
+        }
+    }
+
+    BOOST_FOREACH(const CTxOut& txout, vout) {
+        CScript scriptPK = txout.scriptPubKey;
+        CScript::const_iterator pc = scriptPK.begin();
+
+        if (!vchR.empty()) {
+              vchR.clear();
+        }
+
+        if (scriptPK.GetOp(pc, opCode, vchR) && (opCode == OP_RETURN)) {
+              if (!vchR.empty()) {
+                     vchR.clear();
+              }
+              if (!txout.scriptPubKey.GetOp(pc, opCode, vchR) ||
+                          (vchR.size() != 33) || (nFreeSSecret < 1)) {
+                   nOpRetFee += (OP_RET_FEE_PER_CHAR * scriptPK.size());
+              } else {
+                   nFreeSSecret -= 1;
+              }
+        }
+    }
+    return nOpRetFee;
 }

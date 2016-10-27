@@ -24,6 +24,8 @@
 
 #include <memory>
 #include <stdint.h>
+#include <memory>
+#include <utility>
 
 #include <boost/assign/list_of.hpp>
 #include <boost/shared_ptr.hpp>

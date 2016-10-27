@@ -7,6 +7,7 @@
 
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
+from test_framework import auxpow
 
 class KeyPoolTest(BitcoinTestFramework):
 
@@ -19,7 +20,7 @@ class KeyPoolTest(BitcoinTestFramework):
         
         # Encrypt wallet and wait to terminate
         nodes[0].encryptwallet('test')
-        bitcoind_processes[0].wait()
+        vcored_processes[0].wait()
         # Restart node 0
         nodes[0] = start_node(0, self.options.tmpdir)
         # Keep creating keys
@@ -73,6 +74,9 @@ class KeyPoolTest(BitcoinTestFramework):
         except JSONRPCException as e:
             assert(e.error['code']==-12)
 
+        # test draining with getauxblock
+        test_auxpow(nodes)
+
     def __init__(self):
         super().__init__()
         self.setup_clean_chain = False
@@ -80,6 +84,39 @@ class KeyPoolTest(BitcoinTestFramework):
 
     def setup_network(self):
         self.nodes = self.setup_nodes()
+
+def test_auxpow(nodes):
+    """
+    Test behaviour of getauxpow.  Calling getauxpow should reserve
+    a key from the pool, but it should be released again if the
+    created block is not actually used.  On the other hand, if the
+    auxpow is submitted and turned into a block, the keypool should
+    be drained.
+    """
+
+    nodes[0].walletpassphrase('test', 12000)
+    nodes[0].keypoolrefill(1)
+    nodes[0].walletlock()
+    assert_equal (nodes[0].getwalletinfo()['keypoolsize'], 2)
+
+    nodes[0].getauxblock()
+    assert_equal (nodes[0].getwalletinfo()['keypoolsize'], 2)
+    nodes[0].generate(1)
+    assert_equal (nodes[0].getwalletinfo()['keypoolsize'], 1)
+    auxblock = nodes[0].getauxblock()
+    assert_equal (nodes[0].getwalletinfo()['keypoolsize'], 1)
+
+    target = auxpow.reverseHex(auxblock['_target'])
+    solved = auxpow.computeAuxpow(auxblock['hash'], target, True)
+    res = nodes[0].getauxblock(auxblock['hash'], solved)
+    assert res
+    assert_equal(nodes[0].getwalletinfo()['keypoolsize'], 0)
+
+    try:
+        nodes[0].getauxblock()
+        raise AssertionError('Keypool should be exhausted by getauxblock')
+    except JSONRPCException as e:
+        assert(e.error['code']==-12)
 
 if __name__ == '__main__':
     KeyPoolTest().main()

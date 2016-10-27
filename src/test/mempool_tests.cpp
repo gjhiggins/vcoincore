@@ -413,8 +413,8 @@ BOOST_AUTO_TEST_CASE(MempoolAncestorIndexingTest)
     /* after tx6 is mined, tx7 should move up in the sort */
     std::vector<CTransaction> vtx;
     vtx.push_back(tx6);
-    std::list<CTransaction> dummy;
-    pool.removeForBlock(vtx, 1, dummy, false);
+    std::list<CTransaction> dummy, dummyName;
+    pool.removeForBlock(vtx, 1, dummy, dummyName, false);
 
     sortedOrder.erase(sortedOrder.begin()+1);
     sortedOrder.pop_back();
@@ -549,12 +549,12 @@ BOOST_AUTO_TEST_CASE(MempoolSizeLimitTest)
     pool.addUnchecked(tx7.GetHash(), entry.Fee(9000LL).FromTx(tx7, &pool));
 
     std::vector<CTransaction> vtx;
-    std::list<CTransaction> conflicts;
+    std::list<CTransaction> conflicts, nameConflicts;
     SetMockTime(42);
     SetMockTime(42 + CTxMemPool::ROLLING_FEE_HALFLIFE);
     BOOST_CHECK_EQUAL(pool.GetMinFee(1).GetFeePerK(), maxFeeRateRemoved.GetFeePerK() + 1000);
     // ... we should keep the same min fee until we get a block
-    pool.removeForBlock(vtx, 1, conflicts);
+    pool.removeForBlock(vtx, 1, conflicts, nameConflicts);
     SetMockTime(42 + 2*CTxMemPool::ROLLING_FEE_HALFLIFE);
     BOOST_CHECK_EQUAL(pool.GetMinFee(1).GetFeePerK(), (maxFeeRateRemoved.GetFeePerK() + 1000)/2);
     // ... then feerate should drop 1/2 each halflife

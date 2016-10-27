@@ -164,14 +164,14 @@ def sync_mempools(rpc_connections, wait=1, timeout=60):
         timeout -= wait
     raise AssertionError("Mempool sync failed")
 
-bitcoind_processes = {}
+vcored_processes = {}
 
 def initialize_datadir(dirname, n):
     datadir = os.path.join(dirname, "node"+str(n))
     if not os.path.isdir(datadir):
         os.makedirs(datadir)
     rpc_u, rpc_p = rpc_auth_pair(n)
-    with open(os.path.join(datadir, "bitcoin.conf"), 'w', encoding='utf8') as f:
+    with open(os.path.join(datadir, "vcore.conf"), 'w', encoding='utf8') as f:
         f.write("regtest=1\n")
         f.write("rpcuser=" + rpc_u + "\n")
         f.write("rpcpassword=" + rpc_p + "\n")
@@ -179,6 +179,22 @@ def initialize_datadir(dirname, n):
         f.write("rpcport="+str(rpc_port(n))+"\n")
         f.write("listenonion=0\n")
     return datadir
+
+def base_node_args(i):
+    """
+    Return base arguments to always use for node i.  These arguments
+    are those that are also present for the chain cache and must thus
+    be set for all runs.
+    """
+
+    # We choose nodes 1 and 2 to keep -namehistory, because this allows
+    # us to test both nodes with it and without it in both split
+    # network parts (0/1 vs 2/3).
+
+    if i == 1 or i == 2:
+        return ["-namehistory"]
+
+    return []
 
 def rpc_auth_pair(n):
     return 'rpcuser💻' + str(n), 'rpcpass🔑' + str(n)
@@ -195,14 +211,14 @@ def rpc_url(i, rpchost=None):
             host = rpchost
     return "http://%s:%s@%s:%d" % (rpc_u, rpc_p, host, int(port))
 
-def wait_for_bitcoind_start(process, url, i):
+def wait_for_vcored_start(process, url, i):
     '''
-    Wait for bitcoind to start. This means that RPC is accessible and fully initialized.
-    Raise an exception if bitcoind exits during initialization.
+    Wait for vcored to start. This means that RPC is accessible and fully initialized.
+    Raise an exception if vcored exits during initialization.
     '''
     while True:
         if process.poll() is not None:
-            raise Exception('bitcoind exited with status %i during initialization' % process.returncode)
+            raise Exception('vcored exited with status %i during initialization' % process.returncode)
         try:
             rpc = get_rpc_proxy(url, i)
             blocks = rpc.getblockcount()
@@ -235,16 +251,16 @@ def initialize_chain(test_dir, num_nodes, cachedir):
             if os.path.isdir(os.path.join(cachedir,"node"+str(i))):
                 shutil.rmtree(os.path.join(cachedir,"node"+str(i)))
 
-        # Create cache directories, run bitcoinds:
+        # Create cache directories, run vcoreds:
         for i in range(MAX_NODES):
             datadir=initialize_datadir(cachedir, i)
-            args = [ os.getenv("BITCOIND", "bitcoind"), "-server", "-keypool=1", "-datadir="+datadir, "-discover=0" ]
+            args = [ os.getenv("BITCOIND", "vcored"), "-server", "-keypool=1", "-datadir="+datadir, "-discover=0" ]
             if i > 0:
                 args.append("-connect=127.0.0.1:"+str(p2p_port(0)))
-            bitcoind_processes[i] = subprocess.Popen(args)
+            vcored_processes[i] = subprocess.Popen(args)
             if os.getenv("PYTHON_DEBUG", ""):
-                print("initialize_chain: bitcoind started, waiting for RPC to come up")
-            wait_for_bitcoind_start(bitcoind_processes[i], rpc_url(i), i)
+                print("initialize_chain: vcored started, waiting for RPC to come up")
+            wait_for_vcored_start(vcored_processes[i], rpc_url(i), i)
             if os.getenv("PYTHON_DEBUG", ""):
                 print("initialize_chain: RPC succesfully started")
 
@@ -287,7 +303,7 @@ def initialize_chain(test_dir, num_nodes, cachedir):
         from_dir = os.path.join(cachedir, "node"+str(i))
         to_dir = os.path.join(test_dir,  "node"+str(i))
         shutil.copytree(from_dir, to_dir)
-        initialize_datadir(test_dir, i) # Overwrite port/rpcport in bitcoin.conf
+        initialize_datadir(test_dir, i) # Overwrite port/rpcport in vcore.conf
 
 def initialize_chain_clean(test_dir, num_nodes):
     """
@@ -320,18 +336,19 @@ def _rpchost_to_args(rpchost):
 
 def start_node(i, dirname, extra_args=None, rpchost=None, timewait=None, binary=None):
     """
-    Start a bitcoind and return RPC connection to it
+    Start a vcored and return RPC connection to it
     """
     datadir = os.path.join(dirname, "node"+str(i))
     if binary is None:
-        binary = os.getenv("BITCOIND", "bitcoind")
+        binary = os.getenv("BITCOIND", "vcored")
     args = [ binary, "-datadir="+datadir, "-server", "-keypool=1", "-discover=0", "-rest", "-mocktime="+str(get_mocktime()) ]
     if extra_args is not None: args.extend(extra_args)
-    bitcoind_processes[i] = subprocess.Popen(args)
+    args.extend(base_node_args(i))
+    vcored_processes[i] = subprocess.Popen(args)
     if os.getenv("PYTHON_DEBUG", ""):
-        print("start_node: bitcoind started, waiting for RPC to come up")
+        print("start_node: vcored started, waiting for RPC to come up")
     url = rpc_url(i, rpchost)
-    wait_for_bitcoind_start(bitcoind_processes[i], url, i)
+    wait_for_vcored_start(vcored_processes[i], url, i)
     if os.getenv("PYTHON_DEBUG", ""):
         print("start_node: RPC succesfully started")
     proxy = get_rpc_proxy(url, i, timeout=timewait)
@@ -343,7 +360,7 @@ def start_node(i, dirname, extra_args=None, rpchost=None, timewait=None, binary=
 
 def start_nodes(num_nodes, dirname, extra_args=None, rpchost=None, binary=None):
     """
-    Start multiple bitcoinds, return RPC connections to them
+    Start multiple vcoreds, return RPC connections to them
     """
     if extra_args is None: extra_args = [ None for _ in range(num_nodes) ]
     if binary is None: binary = [ None for _ in range(num_nodes) ]
@@ -364,8 +381,8 @@ def stop_node(node, i):
         node.stop()
     except http.client.CannotSendRequest as e:
         print("WARN: Unable to stop node: " + repr(e))
-    bitcoind_processes[i].wait(timeout=BITCOIND_PROC_WAIT_TIMEOUT)
-    del bitcoind_processes[i]
+    vcored_processes[i].wait(timeout=BITCOIND_PROC_WAIT_TIMEOUT)
+    del vcored_processes[i]
 
 def stop_nodes(nodes):
     for node in nodes:
@@ -374,17 +391,17 @@ def stop_nodes(nodes):
         except http.client.CannotSendRequest as e:
             print("WARN: Unable to stop node: " + repr(e))
     del nodes[:] # Emptying array closes connections as a side effect
-    wait_bitcoinds()
+    wait_vcoreds()
 
 def set_node_times(nodes, t):
     for node in nodes:
         node.setmocktime(t)
 
-def wait_bitcoinds():
-    # Wait for all bitcoinds to cleanly exit
-    for bitcoind in bitcoind_processes.values():
-        bitcoind.wait(timeout=BITCOIND_PROC_WAIT_TIMEOUT)
-    bitcoind_processes.clear()
+def wait_vcoreds():
+    # Wait for all vcoreds to cleanly exit
+    for vcored in vcored_processes.values():
+        vcored.wait(timeout=BITCOIND_PROC_WAIT_TIMEOUT)
+    vcored_processes.clear()
 
 def connect_nodes(from_connection, node_num):
     ip_port = "127.0.0.1:"+str(p2p_port(node_num))

@@ -7,8 +7,11 @@
 #define BITCOIN_PRIMITIVES_BLOCK_H
 
 #include "primitives/transaction.h"
+#include "consensus/params.h"
 #include "serialize.h"
 #include "uint256.h"
+
+#include <boost/shared_ptr.hpp>
 
 /** Nodes collect new transactions into a block, hash them into a hash tree,
  * and scan through nonce values to make the block's hash satisfy proof-of-work
@@ -46,7 +49,7 @@ public:
     }
 
     void SetNull()
-    {
+        {
         nVersion = 0;
         hashPrevBlock.SetNull();
         hashMerkleRoot.SetNull();
