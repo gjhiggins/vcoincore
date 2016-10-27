@@ -94,12 +94,6 @@ public:
     const std::vector<SeedSpec6>& FixedSeeds() const { return vFixedSeeds; }
     const CCheckpointData& Checkpoints() const { return checkpointData; }
 
-    /* Check whether the given tx is a "historic relic" for which to
-       skip the validity check.  Return also the "type" of the bug,
-       which determines further actions.  */
-    /* FIXME: Move to consensus params!  */
-    bool IsHistoricBug(const uint256& txid, unsigned nHeight, BugType& type) const;
-
 protected:
     CChainParams() {}
 
