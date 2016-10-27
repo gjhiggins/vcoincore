@@ -2263,7 +2263,6 @@ bool CWallet::CreateTransaction(
     wtxNew.nSemTypeID = 1;
     // Public reference
     wtxNew.strTxReference = strTxReference;
-
     if (wtxNew.strTxReference.length() > MAX_TX_REFERENCE_LEN) {
            wtxNew.strTxReference.resize(MAX_TX_REFERENCE_LEN);
     }
