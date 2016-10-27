@@ -69,6 +69,8 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
  */
 
 class CMainParams : public CChainParams {
+// protected:
+//     Consensus::Params digishieldConsensus;
 public:
     CMainParams() {
         strNetworkID = "main";
@@ -110,6 +112,14 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = 1479168000; // November 15th, 2016.
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 1510704000; // November 15th, 2017.
 
+        // Blocks 1,500,000 -> are Digishielded
+        // digishieldConsensus = ;
+        // digishieldConsensus.nHeightEffective = 1500000;
+        // digishieldConsensus.fSimplifiedRewards = true;
+        // digishieldConsensus.fDigishieldDifficultyCalculation = true;
+        // digishieldConsensus.nPowTargetTimespan = 30; // 30s
+        // digishieldConsensus.nCoinbaseMaturity = 30;
+
         /**
          * The message start string is designed to be unlikely to occur in normal data.
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
@@ -127,6 +137,9 @@ public:
         LogPrintf("mainnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
         LogPrintf("mainnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
         LogPrintf("mainnet: %s\n", consensus.powLimit.ToString().c_str());
+
+        // digishieldConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
+
         // genesis.print();
 
         /*
