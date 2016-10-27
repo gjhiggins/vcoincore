@@ -96,9 +96,13 @@ QT_TS = \
 QT_FORMS_UI = \
   qt/forms/addressbookpage.ui \
   qt/forms/askpassphrasedialog.ui \
+  qt/forms/blockexplorer.ui \
   qt/forms/coincontroldialog.ui \
   qt/forms/editaddressdialog.ui \
+  qt/forms/statsexplorer.ui \
   qt/forms/helpmessagedialog.ui \
+  qt/forms/inscriptiondialog.ui \
+  qt/forms/chatwindow.ui \
   qt/forms/intro.ui \
   qt/forms/modaloverlay.ui \
   qt/forms/openuridialog.ui \
@@ -110,6 +114,8 @@ QT_FORMS_UI = \
   qt/forms/debugwindow.ui \
   qt/forms/sendcoinsdialog.ui \
   qt/forms/sendcoinsentry.ui \
+  qt/forms/managenamespage.ui \
+  qt/forms/configurenamedialog.ui \
   qt/forms/signverifymessagedialog.ui \
   qt/forms/transactiondescdialog.ui
 
@@ -122,15 +128,21 @@ QT_MOC_CPP = \
   qt/moc_bitcoinamountfield.cpp \
   qt/moc_bitcoingui.cpp \
   qt/moc_bitcoinunits.cpp \
+  qt/moc_blockexplorer.cpp \
+  qt/moc_chatwindow.cpp \
   qt/moc_clientmodel.cpp \
   qt/moc_coincontroldialog.cpp \
   qt/moc_coincontroltreewidget.cpp \
+  qt/moc_configurenamedialog.cpp \
   qt/moc_csvmodelwriter.cpp \
   qt/moc_editaddressdialog.cpp \
+  qt/moc_statsexplorer.cpp \
   qt/moc_guiutil.cpp \
   qt/moc_intro.cpp \
   qt/moc_macdockiconhandler.cpp \
   qt/moc_macnotificationhandler.cpp \
+  qt/moc_managenamespage.cpp \
+  qt/moc_nametablemodel.cpp \
   qt/moc_modaloverlay.cpp \
   qt/moc_notificator.cpp \
   qt/moc_openuridialog.cpp \
@@ -138,7 +150,9 @@ QT_MOC_CPP = \
   qt/moc_optionsmodel.cpp \
   qt/moc_overviewpage.cpp \
   qt/moc_peertablemodel.cpp \
+  qt/moc_reportview.cpp \
   qt/moc_paymentserver.cpp \
+  qt/moc_qcustomplot.cpp \
   qt/moc_qtexamplewindow.cpp \
   qt/moc_qvalidatedlineedit.cpp \
   qt/moc_qvaluecombobox.cpp \
@@ -148,6 +162,7 @@ QT_MOC_CPP = \
   qt/moc_rpcconsole.cpp \
   qt/moc_sendcoinsdialog.cpp \
   qt/moc_sendcoinsentry.cpp \
+  qt/moc_chatclient.cpp \
   qt/moc_signverifymessagedialog.cpp \
   qt/moc_splashscreen.cpp \
   qt/moc_trafficgraphwidget.cpp \
@@ -188,21 +203,28 @@ BITCOIN_QT_H = \
   qt/bantablemodel.h \
   qt/bitcoinaddressvalidator.h \
   qt/bitcoinamountfield.h \
+  qt/chatwindow.h \
   qt/bitcoingui.h \
   qt/bitcoinunits.h \
+  qt/blockexplorer.h \
+  qt/chatclient.h \
   qt/clientmodel.h \
   qt/coincontroldialog.h \
   qt/coincontroltreewidget.h \
+  qt/configurenamedialog.h \
   qt/csvmodelwriter.h \
   qt/editaddressdialog.h \
+  qt/statsexplorer.h \
   qt/guiconstants.h \
   qt/guiutil.h \
   qt/intro.h \
   qt/macdockiconhandler.h \
   qt/macnotificationhandler.h \
+  qt/managenamespage.h \
   qt/modaloverlay.h \
   qt/networkstyle.h \
   qt/notificator.h \
+  qt/nametablemodel.h \
   qt/openuridialog.h \
   qt/optionsdialog.h \
   qt/optionsmodel.h \
@@ -211,6 +233,7 @@ BITCOIN_QT_H = \
   qt/paymentserver.h \
   qt/peertablemodel.h \
   qt/platformstyle.h \
+  qt/qcustomplot.h \
   qt/qtexamplewindow.h \
   qt/qvalidatedlineedit.h \
   qt/qvaluecombobox.h \
@@ -230,6 +253,7 @@ BITCOIN_QT_H = \
   qt/transactiontablemodel.h \
   qt/transactionview.h \
   qt/utilitydialog.h \
+  qt/reportview.h \
   qt/walletframe.h \
   qt/walletmodel.h \
   qt/walletmodeltransaction.h \
@@ -239,6 +263,7 @@ BITCOIN_QT_H = \
 RES_ICONS = \
   qt/res/icons/add.png \
   qt/res/icons/address-book.png \
+  qt/res/icons/account-report.png \
   qt/res/icons/about.png \
   qt/res/icons/about_qt.png \
   qt/res/icons/bitcoin.ico \
@@ -247,6 +272,7 @@ RES_ICONS = \
   qt/res/icons/bitcoin.png \
   qt/res/icons/chevron.png \
   qt/res/icons/clock1.png \
+  qt/res/icons/chat.png \
   qt/res/icons/clock2.png \
   qt/res/icons/clock3.png \
   qt/res/icons/clock4.png \
@@ -261,6 +287,7 @@ RES_ICONS = \
   qt/res/icons/edit.png \
   qt/res/icons/editcopy.png \
   qt/res/icons/editpaste.png \
+  qt/res/icons/explorer.png \
   qt/res/icons/export.png \
   qt/res/icons/eye.png \
   qt/res/icons/eye_minus.png \
@@ -272,15 +299,18 @@ RES_ICONS = \
   qt/res/icons/hd_enabled.png \
   qt/res/icons/history.png \
   qt/res/icons/info.png \
+  qt/res/icons/inscribe.png \
   qt/res/icons/key.png \
   qt/res/icons/lock_closed.png \
   qt/res/icons/lock_open.png \
+  qt/res/icons/names.png \
   qt/res/icons/open.png \
   qt/res/icons/overview.png \
   qt/res/icons/quit.png \
   qt/res/icons/receive.png \
   qt/res/icons/remove.png \
   qt/res/icons/send.png \
+  qt/res/icons/stats.png \
   qt/res/icons/synced.png \
   qt/res/icons/example.png \
   qt/res/icons/transaction0.png \
@@ -291,6 +321,7 @@ RES_ICONS = \
   qt/res/icons/tx_input.png \
   qt/res/icons/tx_output.png \
   qt/res/icons/tx_mined.png \
+  qt/res/icons/tx_nameop.png \
   qt/res/icons/warning.png \
   qt/res/icons/verify.png
 
@@ -300,8 +331,10 @@ BITCOIN_QT_BASE_CPP = \
   qt/bitcoinamountfield.cpp \
   qt/bitcoingui.cpp \
   qt/bitcoinunits.cpp \
+  qt/chatwindow.cpp \
   qt/clientmodel.cpp \
   qt/csvmodelwriter.cpp \
+  qt/statsexplorer.cpp \
   qt/guiutil.cpp \
   qt/intro.cpp \
   qt/modaloverlay.cpp \
@@ -311,6 +344,8 @@ BITCOIN_QT_BASE_CPP = \
   qt/optionsmodel.cpp \
   qt/peertablemodel.cpp \
   qt/platformstyle.cpp \
+  qt/qcustomplot.cpp \
+  qt/chatclient.cpp \
   qt/qvalidatedlineedit.cpp \
   qt/qvaluecombobox.cpp \
   qt/rpcconsole.cpp \
@@ -324,19 +359,27 @@ BITCOIN_QT_WALLET_CPP = \
   qt/addressbookpage.cpp \
   qt/addresstablemodel.cpp \
   qt/askpassphrasedialog.cpp \
+  qt/chatclient.cpp \
+  qt/chatwindow.cpp \
+  qt/blockexplorer.cpp \
   qt/coincontroldialog.cpp \
   qt/coincontroltreewidget.cpp \
   qt/editaddressdialog.cpp \
+  qt/statsexplorer.cpp \
   qt/openuridialog.cpp \
   qt/overviewpage.cpp \
   qt/paymentrequestplus.cpp \
   qt/paymentserver.cpp \
+  qt/qcustomplot.cpp \
   qt/qtexamplewindow.cpp \
   qt/receivecoinsdialog.cpp \
   qt/receiverequestdialog.cpp \
   qt/recentrequeststablemodel.cpp \
   qt/sendcoinsdialog.cpp \
   qt/sendcoinsentry.cpp \
+  qt/managenamespage.cpp \
+  qt/configurenamedialog.cpp \
+  qt/nametablemodel.cpp \
   qt/signverifymessagedialog.cpp \
   qt/transactiondesc.cpp \
   qt/transactiondescdialog.cpp \
@@ -344,6 +387,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/transactionrecord.cpp \
   qt/transactiontablemodel.cpp \
   qt/transactionview.cpp \
+  qt/reportview.cpp \
   qt/walletframe.cpp \
   qt/walletmodel.cpp \
   qt/walletmodeltransaction.cpp \

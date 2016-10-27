@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -95,6 +95,10 @@ enum
     //
     SCRIPT_VERIFY_DISCOURAGE_UPGRADABLE_WITNESS_PROGRAM = (1U << 12),
 
+    // Perform name checks in "mempool" mode.  This allows / disallows
+    // certain stuff (e. g., it allows immature spending of name_new's).
+    SCRIPT_VERIFY_NAMES_MEMPOOL = (1U << 24),
+
     // Segwit script only: Require the argument of OP_IF/NOTIF to be exactly 0x01 or empty vector
     //
     SCRIPT_VERIFY_MINIMALIF = (1U << 13),
@@ -102,6 +106,10 @@ enum
     // Signature(s) must be empty vector if an CHECK(MULTI)SIG operation failed
     //
     SCRIPT_VERIFY_NULLFAIL = (1U << 14),
+
+    // Public keys in segregated witness scripts must be compressed
+    //
+    SCRIPT_VERIFY_WITNESS_PUBKEYTYPE = (1U << 15),
 };
 
 bool CheckSignatureEncoding(const std::vector<unsigned char> &vchSig, unsigned int flags, ScriptError* serror);

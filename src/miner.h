@@ -164,7 +164,7 @@ private:
 public:
     BlockAssembler(const CChainParams& chainparams);
     /** Construct a new block template with coinbase to scriptPubKeyIn */
-    CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn);
+    std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn);
 
 private:
     // utility functions
@@ -203,10 +203,18 @@ private:
     /** Add descendants of given transactions to mapModifiedTx with ancestor
       * state updated assuming given transactions are inBlock. */
     void UpdatePackagesForAdded(const CTxMemPool::setEntries& alreadyAdded, indexed_modified_transaction_set &mapModifiedTx);
+    
+    /**
+     * Verify if a tx can be added from a Namecoin perspective.  This may not
+     * (yet) be the case if it is a NAME_FIRSTUPDATE with a not-yet-mature
+     * NAME_NEW.  Those are allowed in the mempool, but not in blocks.
+     */
+    bool TxAllowedForNamecoin(const CTransaction& tx) const;
 };
 
 /** Modify the extranonce in a block */
 void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned int& nExtraNonce);
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev);
+bool ProcessBlockFound(const CBlock* pblock, const CChainParams& chainParams);
 
 #endif // BITCOIN_MINER_H

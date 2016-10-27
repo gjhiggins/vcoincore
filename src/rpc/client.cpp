@@ -95,6 +95,8 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "importaddress", 2 },
     { "importaddress", 3 },
     { "importpubkey", 2 },
+    { "importmulti", 0 },
+    { "importmulti", 1 },
     { "verifychain", 0 },
     { "verifychain", 1 },
     { "keypoolrefill", 0 },
@@ -109,6 +111,14 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "setban", 3 },
     { "getmempoolancestors", 1 },
     { "getmempooldescendants", 1 },
+    /*
+    { "name_scan", 1 },
+    { "name_filter", 1 },
+    { "name_filter", 2 },
+    { "name_filter", 3 },
+    { "sendtoname", 1 },
+    { "sendtoname", 4 },
+    */
 };
 
 class CRPCConvertTable

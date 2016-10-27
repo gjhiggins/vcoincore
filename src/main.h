@@ -16,7 +16,9 @@
 #include "net.h"
 #include "script/script_error.h"
 #include "sync.h"
+#include "validationinterface.h"
 #include "versionbits.h"
+#include "semtypeids.h"
 
 #include <algorithm>
 #include <exception>
@@ -36,12 +38,14 @@ class CChainParams;
 class CInv;
 class CConnman;
 class CScriptCheck;
+class CTxInUndo;
 class CTxMemPool;
 class CValidationInterface;
 class CValidationState;
+class CTransaction;
+class CMutableTransaction;
 
 struct PrecomputedTransactionData;
-struct CNodeStateStats;
 struct LockPoints;
 
 /** Default for DEFAULT_WHITELISTRELAY. */
@@ -88,8 +92,29 @@ static const int MAX_BLOCKS_IN_TRANSIT_PER_PEER = 16;
 /** Timeout in seconds during which a peer must stall block download progress before being disconnected. */
 static const unsigned int BLOCK_STALLING_TIMEOUT = 2;
 /** Number of headers sent in one getheaders result. We rely on the assumption that if a peer sends
- *  less than this number, we reached its tip. Changing this value is a protocol upgrade. */
+ *  less than this number, we reached its tip. Changing this value is a protocol upgrade.
+ *
+ *  With a protocol upgrade, we now enforce an additional restriction on the
+ *  total size of a "headers" message (see below).  The absolute limit
+ *  on the number of headers still applies as well, so that we do not get
+ *  overloaded both with small and large headers.
+ */
 static const unsigned int MAX_HEADERS_RESULTS = 2000;
+/** Maximum depth of blocks we're willing to serve as compact blocks to peers
+ *  when requested. For older blocks, a regular BLOCK response will be sent. */
+static const int MAX_CMPCTBLOCK_DEPTH = 5;
+/** Maximum depth of blocks we're willing to respond to GETBLOCKTXN requests for. */
+static const int MAX_BLOCKTXN_DEPTH = 10;
+/** Maximum size of a "headers" message.  This is enforced starting with
+ *  SIZE_HEADERS_LIMIT_VERSION peers and prevents overloading if we have
+ *  very large headers (due to auxpow).
+ */
+static const unsigned int MAX_HEADERS_SIZE = (6 << 20); // 6 MiB
+/** Size of a headers message that is the threshold for assuming that the
+ *  peer has more headers (even if we have less than MAX_HEADERS_RESULTS).
+ *  This is used starting with SIZE_HEADERS_LIMIT_VERSION peers.
+ */
+static const unsigned int THRESHOLD_HEADERS_SIZE = (4 << 20); // 4 MiB
 /** Size of the "block download window": how far ahead of our current height do we fetch?
  *  Larger windows tolerate larger download speed differences between peer, but increase the potential
  *  degree of disordering of blocks on disk (which make reindexing and in the future perhaps pruning
@@ -144,6 +169,11 @@ static const int MAX_UNCONNECTING_HEADERS = 10;
 
 static const bool DEFAULT_PEERBLOOMFILTERS = true;
 
+/* FIXME: inscription fee-setting */
+// Comments are used for block chain services -- they cost money
+static const int64_t REFERENCE_FEE_PER_CHAR = 10000;
+// OP_RETURN is useful, but encourage swift services
+static const int64_t OP_RET_FEE_PER_CHAR = 15000;
 struct BlockHasher
 {
     size_t operator()(const uint256& hash) const { return hash.GetCheapHash(); }
@@ -206,11 +236,6 @@ static const unsigned int DEFAULT_CHECKLEVEL = 3;
 // Setting the target to > than 550MB will make it likely we can respect the target.
 static const uint64_t MIN_DISK_SPACE_FOR_BLOCK_FILES = 550 * 1024 * 1024;
 
-/** Register with a network node to receive its signals */
-void RegisterNodeSignals(CNodeSignals& nodeSignals);
-/** Unregister a network node */
-void UnregisterNodeSignals(CNodeSignals& nodeSignals);
-
 /** 
  * Process an incoming block. This only returns after the best known valid
  * block is made active. Note that it does not, however, guarantee that the
@@ -223,7 +248,7 @@ void UnregisterNodeSignals(CNodeSignals& nodeSignals);
  * @param[out]  dbp     The already known disk position of pblock, or NULL if not yet stored.
  * @return True if state.IsValid()
  */
-bool ProcessNewBlock(CValidationState& state, const CChainParams& chainparams, CNode* pfrom, const CBlock* pblock, bool fForceProcessing, const CDiskBlockPos* dbp, CConnman* connman);
+bool ProcessNewBlock(CValidationState& state, const CChainParams& chainparams, CNode* pfrom, const CBlock* pblock, bool fForceProcessing, const CDiskBlockPos* dbp);
 /** Check whether enough disk space is available for an incoming block */
 bool CheckDiskSpace(uint64_t nAdditionalBytes = 0);
 /** Open a block file (blk?????.dat) */
@@ -240,15 +265,6 @@ bool InitBlockIndex(const CChainParams& chainparams);
 bool LoadBlockIndex();
 /** Unload database information */
 void UnloadBlockIndex();
-/** Process protocol messages received from a given node */
-bool ProcessMessages(CNode* pfrom, CConnman& connman);
-/**
- * Send queued protocol messages to be sent to a give node.
- *
- * @param[in]   pto             The node which we are sending messages to.
- * @param[in]   connman         The connection manager for that node.
- */
-bool SendMessages(CNode* pto, CConnman& connman);
 /** Run an instance of the script checking thread */
 void ThreadScriptCheck();
 /** Check whether we are doing an initial block download (synchronizing from disk or network) */
@@ -264,7 +280,7 @@ std::string GetWarnings(const std::string& strFor);
 /** Retrieve a transaction (from memory pool, or from disk, if possible) */
 bool GetTransaction(const uint256 &hash, CTransaction &tx, const Consensus::Params& params, uint256 &hashBlock, bool fAllowSlow = false);
 /** Find the best known block, and make it the tip of the block chain */
-bool ActivateBestChain(CValidationState& state, const CChainParams& chainparams, const CBlock* pblock = NULL, CConnman* connman = NULL);
+bool ActivateBestChain(CValidationState& state, const CChainParams& chainparams, const CBlock* pblock = NULL);
 CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams);
 
 /**
@@ -291,10 +307,6 @@ void UnlinkPrunedFiles(std::set<int>& setFilesToPrune);
 
 /** Create a new block index entry for a given block hash */
 CBlockIndex * InsertBlockIndex(uint256 hash);
-/** Get statistics from node state */
-bool GetNodeStateStats(NodeId nodeid, CNodeStateStats &stats);
-/** Increase a node's misbehavior score. */
-void Misbehaving(NodeId nodeid, int howmuch);
 /** Flush all state, indexes and buffers to disk. */
 void FlushStateToDisk();
 /** Prune block files and flush state to disk. */
@@ -310,14 +322,8 @@ std::string FormatStateMessage(const CValidationState &state);
 /** Get the BIP9 state for a given deployment at the current tip. */
 ThresholdState VersionBitsTipState(const Consensus::Params& params, Consensus::DeploymentPos pos);
 
-struct CNodeStateStats {
-    int nMisbehavior;
-    int nSyncHeight;
-    int nCommonHeight;
-    std::vector<int> vHeightInFlight;
-};
-
-
+/** Get the block height at which the BIP9 deployment switched into the state for the block building on the current tip. */
+int VersionBitsTipStateSinceHeight(const Consensus::Params& params, Consensus::DeploymentPos pos);
 
 /** 
  * Count ECDSA signature operations the old-fashioned (pre-0.6) way
@@ -453,8 +459,11 @@ public:
 bool WriteBlockToDisk(const CBlock& block, CDiskBlockPos& pos, const CMessageHeader::MessageStartChars& messageStart);
 bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus::Params& consensusParams);
 bool ReadBlockFromDisk(CBlock& block, const CBlockIndex* pindex, const Consensus::Params& consensusParams);
+bool ReadBlockHeaderFromDisk(CBlockHeader& block, const CBlockIndex* pindex, const Consensus::Params& consensusParams);
 
 /** Functions for validating blocks and updating the block tree */
+
+bool ApplyTxInUndo(const CTxInUndo& undo, CCoinsViewCache& view, const COutPoint& out);
 
 /** Context-independent validity checks */
 bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true);
@@ -470,13 +479,14 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, const Co
  *  Validity checks that depend on the UTXO set are also done; ConnectBlock()
  *  can fail if those validity checks fail (among other reasons). */
 bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pindex, CCoinsViewCache& coins,
+                  std::set<valtype>& expiredNames,
                   const CChainParams& chainparams, bool fJustCheck = false);
 
 /** Undo the effects of this block (with given index) on the UTXO set represented by coins.
  *  In case pfClean is provided, operation will try to be tolerant about errors, and *pfClean
  *  will be true if no problems were found. Otherwise, the return value will be false in case
  *  of problems. Note that in any case, coins may be modified. */
-bool DisconnectBlock(const CBlock& block, CValidationState& state, const CBlockIndex* pindex, CCoinsViewCache& coins, bool* pfClean = NULL);
+bool DisconnectBlock(const CBlock& block, CValidationState& state, const CBlockIndex* pindex, CCoinsViewCache& coins, std::set<valtype>& unexpiredNames, bool* pfClean = NULL);
 
 /** Check a block is completely valid from start to finish (only works on top of our current best block, with cs_main held) */
 bool TestBlockValidity(CValidationState& state, const CChainParams& chainparams, const CBlock& block, CBlockIndex* pindexPrev, bool fCheckPOW = true, bool fCheckMerkleRoot = true);
@@ -493,6 +503,14 @@ void UpdateUncommittedBlockStructures(CBlock& block, const CBlockIndex* pindexPr
 /** Produce the necessary coinbase commitment for a block (modifies the hash, don't call for mined blocks). */
 std::vector<unsigned char> GenerateCoinbaseCommitment(CBlock& block, const CBlockIndex* pindexPrev, const Consensus::Params& consensusParams);
 
+/**
+ * Check proof-of-work of a block header, taking auxpow into account.
+ * @param block The block header.
+ * @param params Consensus parameters.
+ * @return True iff the PoW is correct.
+ */
+bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params);
+
 /** RAII wrapper for VerifyDB: Verify consistency of the block and coin databases */
 class CVerifyDB {
 public:
@@ -503,6 +521,9 @@ public:
 
 /** Find the last common block between the parameter chain and a locator. */
 CBlockIndex* FindForkInGlobalIndex(const CChain& chain, const CBlockLocator& locator);
+
+/** Mark a block as precious and reorganize. */
+bool PreciousBlock(CValidationState& state, const CChainParams& params, CBlockIndex *pindex);
 
 /** Mark a block as invalid. */
 bool InvalidateBlock(CValidationState& state, const CChainParams& chainparams, CBlockIndex *pindex);
@@ -544,5 +565,46 @@ static const unsigned int REJECT_HIGHFEE = 0x100;
 static const unsigned int REJECT_ALREADY_KNOWN = 0x101;
 /** Transaction conflicts with a transaction already known */
 static const unsigned int REJECT_CONFLICT = 0x102;
+
+// The following things handle network-processing logic
+// (and should be moved to a separate file)
+
+/** Register with a network node to receive its signals */
+void RegisterNodeSignals(CNodeSignals& nodeSignals);
+/** Unregister a network node */
+void UnregisterNodeSignals(CNodeSignals& nodeSignals);
+
+class PeerLogicValidation : public CValidationInterface {
+private:
+    CConnman* connman;
+
+public:
+    PeerLogicValidation(CConnman* connmanIn) : connman(connmanIn) {}
+
+    virtual void UpdatedBlockTip(const CBlockIndex *pindexNew, const CBlockIndex *pindexFork, bool fInitialDownload);
+    virtual void BlockChecked(const CBlock& block, const CValidationState& state);
+};
+
+struct CNodeStateStats {
+    int nMisbehavior;
+    int nSyncHeight;
+    int nCommonHeight;
+    std::vector<int> vHeightInFlight;
+};
+
+/** Get statistics from node state */
+bool GetNodeStateStats(NodeId nodeid, CNodeStateStats &stats);
+/** Increase a node's misbehavior score. */
+void Misbehaving(NodeId nodeid, int howmuch);
+
+/** Process protocol messages received from a given node */
+bool ProcessMessages(CNode* pfrom, CConnman& connman);
+/**
+ * Send queued protocol messages to be sent to a give node.
+ *
+ * @param[in]   pto             The node which we are sending messages to.
+ * @param[in]   connman         The connection manager for that node.
+ */
+bool SendMessages(CNode* pto, CConnman& connman);
 
 #endif // BITCOIN_MAIN_H

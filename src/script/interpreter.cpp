@@ -16,6 +16,13 @@
 using namespace std;
 
 typedef vector<unsigned char> valtype;
+static const valtype vchFalse(0);
+static const valtype vchZero(0);
+static const valtype vchTrue(1, 1);
+static const CScriptNum bnZero(0);
+static const CScriptNum bnOne(1);
+static const CScriptNum bnFalse(0);
+static const CScriptNum bnTrue(1);
 
 namespace {
 
@@ -79,8 +86,20 @@ bool static IsCompressedOrUncompressedPubKey(const valtype &vchPubKey) {
             return false;
         }
     } else {
-          //  Non-canonical public key: neither compressed nor uncompressed
-          return false;
+        //  Non-canonical public key: neither compressed nor uncompressed
+        return false;
+    }
+    return true;
+}
+
+bool static IsCompressedPubKey(const valtype &vchPubKey) {
+    if (vchPubKey.size() != 33) {
+        //  Non-canonical public key: invalid length for compressed key
+        return false;
+    }
+    if (vchPubKey[0] != 0x02 && vchPubKey[0] != 0x03) {
+        //  Non-canonical public key: invalid prefix for compressed key
+        return false;
     }
     return true;
 }
@@ -199,9 +218,13 @@ bool CheckSignatureEncoding(const vector<unsigned char> &vchSig, unsigned int fl
     return true;
 }
 
-bool static CheckPubKeyEncoding(const valtype &vchSig, unsigned int flags, ScriptError* serror) {
-    if ((flags & SCRIPT_VERIFY_STRICTENC) != 0 && !IsCompressedOrUncompressedPubKey(vchSig)) {
+bool static CheckPubKeyEncoding(const valtype &vchPubKey, unsigned int flags, const SigVersion &sigversion, ScriptError* serror) {
+    if ((flags & SCRIPT_VERIFY_STRICTENC) != 0 && !IsCompressedOrUncompressedPubKey(vchPubKey)) {
         return set_error(serror, SCRIPT_ERR_PUBKEYTYPE);
+    }
+    // Only compressed keys are accepted in segwit
+    if ((flags & SCRIPT_VERIFY_WITNESS_PUBKEYTYPE) != 0 && sigversion == SIGVERSION_WITNESS_V0 && !IsCompressedPubKey(vchPubKey)) {
+        return set_error(serror, SCRIPT_ERR_WITNESS_PUBKEYTYPE);
     }
     return true;
 }
@@ -874,12 +897,12 @@ bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, un
                     // Subset of script starting at the most recent codeseparator
                     CScript scriptCode(pbegincodehash, pend);
 
-                    // Drop the signature, since there's no way for a signature to sign itself
+                    // Drop the signature in pre-segwit scripts but not segwit scripts
                     if (sigversion == SIGVERSION_BASE) {
                         scriptCode.FindAndDelete(CScript(vchSig));
                     }
 
-                    if (!CheckSignatureEncoding(vchSig, flags, serror) || !CheckPubKeyEncoding(vchPubKey, flags, serror)) {
+                    if (!CheckSignatureEncoding(vchSig, flags, serror) || !CheckPubKeyEncoding(vchPubKey, flags, sigversion, serror)) {
                         //serror is set
                         return false;
                     }
@@ -935,7 +958,7 @@ bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, un
                     // Subset of script starting at the most recent codeseparator
                     CScript scriptCode(pbegincodehash, pend);
 
-                    // Drop the signatures, since there's no way for a signature to sign itself
+                    // Drop the signature in pre-segwit scripts but not segwit scripts
                     for (int k = 0; k < nSigsCount; k++)
                     {
                         valtype& vchSig = stacktop(-isig-k);
@@ -953,7 +976,7 @@ bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, un
                         // Note how this makes the exact order of pubkey/signature evaluation
                         // distinguishable by CHECKMULTISIG NOT if the STRICTENC flag is set.
                         // See the script_(in)valid tests for details.
-                        if (!CheckSignatureEncoding(vchSig, flags, serror) || !CheckPubKeyEncoding(vchPubKey, flags, serror)) {
+                        if (!CheckSignatureEncoding(vchSig, flags, serror) || !CheckPubKeyEncoding(vchPubKey, flags, sigversion, serror)) {
                             // serror is set
                             return false;
                         }
@@ -1438,7 +1461,7 @@ bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, const C
     }
 
     // Additional validation for spend-to-script-hash transactions:
-    if ((flags & SCRIPT_VERIFY_P2SH) && scriptPubKey.IsPayToScriptHash())
+    if ((flags & SCRIPT_VERIFY_P2SH) && scriptPubKey.IsPayToScriptHash(true))
     {
         // scriptSig must be literals-only or validation fails
         if (!scriptSig.IsPushOnly())
@@ -1540,7 +1563,7 @@ size_t CountWitnessSigOps(const CScript& scriptSig, const CScript& scriptPubKey,
         return WitnessSigOps(witnessversion, witnessprogram, witness ? *witness : witnessEmpty, flags);
     }
 
-    if (scriptPubKey.IsPayToScriptHash() && scriptSig.IsPushOnly()) {
+    if (scriptPubKey.IsPayToScriptHash(true) && scriptSig.IsPushOnly()) {
         CScript::const_iterator pc = scriptSig.begin();
         vector<unsigned char> data;
         while (pc < scriptSig.end()) {

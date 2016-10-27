@@ -3,7 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "coins.h"
-#include "random.h"
+#include "test_random.h"
 #include "script/standard.h"
 #include "uint256.h"
 #include "utilstrencodings.h"
@@ -15,6 +15,8 @@
 #include <map>
 
 #include <boost/test/unit_test.hpp>
+
+class CNameCache;
 
 namespace
 {
@@ -46,7 +48,7 @@ public:
 
     uint256 GetBestBlock() const { return hashBestBlock_; }
 
-    bool BatchWrite(CCoinsMap& mapCoins, const uint256& hashBlock)
+    bool BatchWrite(CCoinsMap& mapCoins, const uint256& hashBlock, const CNameCache &names)
     {
         for (CCoinsMap::iterator it = mapCoins.begin(); it != mapCoins.end(); ) {
             if (it->second.flags & CCoinsCacheEntry::DIRTY) {

@@ -29,6 +29,7 @@
 #include <boost/thread.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <queue>
+#include <utility>
 
 using namespace std;
 
@@ -122,14 +123,14 @@ void BlockAssembler::resetBlock()
     blockFinished = false;
 }
 
-CBlockTemplate* BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
+std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
 {
     resetBlock();
 
     pblocktemplate.reset(new CBlockTemplate());
 
     if(!pblocktemplate.get())
-        return NULL;
+        return nullptr;
     pblock = &pblocktemplate->block; // pointer for convenience
 
     // Add dummy coinbase tx as first transaction
@@ -194,7 +195,7 @@ CBlockTemplate* BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
         throw std::runtime_error(strprintf("%s: TestBlockValidity failed: %s", __func__, FormatStateMessage(state)));
     }
 
-    return pblocktemplate.release();
+    return std::move(pblocktemplate);
 }
 
 bool BlockAssembler::isStillDependent(CTxMemPool::txiter iter)
@@ -236,10 +237,13 @@ bool BlockAssembler::TestPackage(uint64_t packageSize, int64_t packageSigOpsCost
 // - premature witness (in case segwit transactions are added to mempool before
 //   segwit activation)
 // - serialized size (in case -blockmaxsize is in use)
+// - Namecoin maturity conditions
 bool BlockAssembler::TestPackageTransactions(const CTxMemPool::setEntries& package)
 {
     uint64_t nPotentialBlockSize = nBlockSize; // only used with fNeedSizeAccounting
     BOOST_FOREACH (const CTxMemPool::txiter it, package) {
+        if (!TxAllowedForNamecoin(it->GetTx()))
+            return false;
         if (!IsFinalTx(it->GetTx(), nHeight, nLockTimeCutoff))
             return false;
         if (!fIncludeWitness && !it->GetTx().wit.IsNull())
@@ -298,6 +302,11 @@ bool BlockAssembler::TestForBlock(CTxMemPool::txiter iter)
         return false;
     }
 
+
+    // The tx must be valid for Namecoin.
+    if (!TxAllowedForNamecoin(iter->GetTx()))
+        return false;
+
     // Must check that lock times are still valid
     // This can be removed once MTP is always enforced
     // as long as reorgs keep the mempool consistent.
@@ -305,6 +314,47 @@ bool BlockAssembler::TestForBlock(CTxMemPool::txiter iter)
         return false;
 
     return true;
+}
+
+bool
+BlockAssembler::TxAllowedForNamecoin (const CTransaction& tx) const
+{
+  if (!tx.IsNamecoin ())
+    return true;
+
+  bool nameOutFound = false;
+  CNameScript nameOpOut;
+  for (const auto& txOut : tx.vout)
+    {
+      const CNameScript op(txOut.scriptPubKey);
+      if (op.isNameOp ())
+        {
+          nameOutFound = true;
+          nameOpOut = op;
+          break;
+        }
+    }
+
+  if (nameOutFound && nameOpOut.getNameOp () == OP_NAME_FIRSTUPDATE)
+    {
+      for (const auto& txIn : tx.vin)
+        {
+          const COutPoint& prevout = txIn.prevout;
+          CCoins coins;
+          if (!pcoinsTip->GetCoins (prevout.hash, coins))
+            continue;
+
+          const CNameScript op(coins.vout[prevout.n].scriptPubKey);
+          if (op.isNameOp () && op.getNameOp () == OP_NAME_NEW)
+            {
+              const int minHeight = coins.nHeight + MIN_FIRSTUPDATE_DEPTH;
+              if (minHeight > nHeight)
+                return false;
+            }
+        }
+    }
+
+  return true;
 }
 
 void BlockAssembler::AddToBlock(CTxMemPool::txiter iter)

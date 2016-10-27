@@ -208,3 +208,46 @@ void WalletFrame::outOfSyncWarningClicked()
 {
     Q_EMIT requestedSyncWarningInfo();
 }
+
+void WalletFrame::gotoStatsExplorerPage()
+{
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoStatsExplorerPage();
+}
+
+void WalletFrame::gotoChatPage()
+{
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoChatPage();
+}
+
+void WalletFrame::gotoAccountReportPage()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoAccountReportPage();
+}
+
+void WalletFrame::gotoBlockExplorerPage()
+{
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoBlockExplorerPage();
+}
+
+void WalletFrame::inscribeBlockChain()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->inscribeBlockChain();
+}
+
+void WalletFrame::gotoManageNamesPage()
+{
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoManageNamesPage();
+}
+

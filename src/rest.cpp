@@ -8,6 +8,7 @@
 #include "primitives/block.h"
 #include "primitives/transaction.h"
 #include "main.h"
+#include "names/common.h"
 #include "httpserver.h"
 #include "rpc/server.h"
 #include "streams.h"
@@ -123,6 +124,54 @@ static bool CheckWarmup(HTTPRequest* req)
     std::string statusmessage;
     if (RPCIsInWarmup(&statusmessage))
          return RESTERR(req, HTTP_SERVICE_UNAVAILABLE, "Service temporarily unavailable: " + statusmessage);
+    return true;
+}
+
+static bool DecodeName(valtype& decoded, const std::string& encoded)
+{
+    decoded.clear();
+    for (std::string::const_iterator i = encoded.begin(); i != encoded.end(); ++i)
+    {
+        switch (*i)
+        {
+        case '+':
+            decoded.push_back(' ');
+            continue;
+
+        case '%':
+        {
+            if (i + 2 >= encoded.end())
+                return false;
+            const std::string hexStr(i + 1, i + 3);
+            i += 2;
+
+            int intChar = 0;
+            BOOST_FOREACH(char c, hexStr)
+            {
+                intChar <<= 4;
+
+                if (c >= '0' && c <= '9')
+                    intChar += c - '0';
+                else
+                {
+                    c |= (1 << 5);
+                    if (c >= 'a' && c <= 'f')
+                        intChar += c - 'a' + 10;
+                    else
+                        return false;
+                }
+            }
+
+            decoded.push_back(static_cast<char>(intChar));
+            continue;
+        }
+
+        default:
+            decoded.push_back(*i);
+            continue;
+        }
+    }
+
     return true;
 }
 
@@ -274,7 +323,7 @@ static bool rest_block_notxdetails(HTTPRequest* req, const std::string& strURIPa
 }
 
 // A bit of a hack - dependency on a function defined in rpc/blockchain.cpp
-UniValue getblockchaininfo(const UniValue& params, bool fHelp);
+UniValue getblockchaininfo(const JSONRPCRequest& request);
 
 static bool rest_chaininfo(HTTPRequest* req, const std::string& strURIPart)
 {
@@ -285,8 +334,9 @@ static bool rest_chaininfo(HTTPRequest* req, const std::string& strURIPart)
 
     switch (rf) {
     case RF_JSON: {
-        UniValue rpcParams(UniValue::VARR);
-        UniValue chainInfoObject = getblockchaininfo(rpcParams, false);
+        JSONRPCRequest jsonRequest;
+        jsonRequest.params = UniValue(UniValue::VARR);
+        UniValue chainInfoObject = getblockchaininfo(jsonRequest);
         string strJSON = chainInfoObject.write() + "\n";
         req->WriteHeader("Content-Type", "application/json");
         req->WriteReply(HTTP_OK, strJSON);
@@ -599,6 +649,61 @@ static bool rest_getutxos(HTTPRequest* req, const std::string& strURIPart)
     return true; // continue to process further HTTP reqs on this cxn
 }
 
+static bool rest_name(HTTPRequest* req, const std::string& strURIPart)
+{
+    if (!CheckWarmup(req))
+        return false;
+    std::string encodedName;
+    const RetFormat rf = ParseDataFormat(encodedName, strURIPart);
+
+    valtype plainName;
+    if (!DecodeName(plainName, encodedName))
+        return RESTERR(req, HTTP_BAD_REQUEST,
+                       "Invalid encoded name: " + encodedName);
+
+    CNameData data;
+    if (!pcoinsTip->GetName(plainName, data))
+        return RESTERR(req, HTTP_NOT_FOUND,
+                       "'" + ValtypeToString(plainName) + "' not found");
+
+    switch (rf)
+    {
+    case RF_BINARY:
+    {
+        const std::string binVal = ValtypeToString(data.getValue());
+        req->WriteHeader("Content-Type", "application/octet-stream");
+        req->WriteReply(HTTP_OK, binVal);
+        return true;
+    }
+
+    case RF_HEX:
+    {
+        const valtype& binVal = data.getValue();
+        const std::string hexVal = HexStr(binVal.begin(), binVal.end()) + "\n";
+        req->WriteHeader("Content-Type", "text/plain");
+        req->WriteReply(HTTP_OK, hexVal);
+        return true;
+    }
+
+    case RF_JSON:
+    {
+        const UniValue obj = getNameInfo(plainName, data);
+        const std::string strJSON = obj.write() + "\n";
+        req->WriteHeader("Content-Type", "application/json");
+        req->WriteReply(HTTP_OK, strJSON);
+        return true;
+    }
+
+    default:
+        return RESTERR(req, HTTP_NOT_FOUND,
+                       "output format not found (available: "
+                        + AvailableDataFormatsString() + ")");
+    }
+
+    // not reached
+    return true; // continue to process further HTTP reqs on this cxn
+}
+
 static const struct {
     const char* prefix;
     bool (*handler)(HTTPRequest* req, const std::string& strReq);
@@ -611,6 +716,7 @@ static const struct {
       {"/rest/mempool/contents", rest_mempool_contents},
       {"/rest/headers/", rest_headers},
       {"/rest/getutxos", rest_getutxos},
+      {"/rest/name/", rest_name},
 };
 
 bool StartREST()

@@ -488,8 +488,8 @@ if test x$use_hardening != xno; then
   AX_CHECK_LINK_FLAG([[-Wl,-z,now]], [HARDENED_LDFLAGS="$HARDENED_LDFLAGS -Wl,-z,now"])
 
   if test x$TARGET_OS != xwindows; then
-    AX_CHECK_COMPILE_FLAG([-fPIE],[PIE_FLAGS="-fPIE"])
-    AX_CHECK_LINK_FLAG([[-pie]], [HARDENED_LDFLAGS="$HARDENED_LDFLAGS -pie"])
+    AX_CHECK_COMPILE_FLAG([-fPIE, -fPIC],[PIE_FLAGS="-fPIE -fPIC"])
+    AX_CHECK_LINK_FLAG([[-pie, -pic]], [HARDENED_LDFLAGS="$HARDENED_LDFLAGS -pie -pic"])
   fi
 
   case $host in
@@ -590,8 +590,11 @@ fi
 
 if test x$use_boost = xyes; then
 
+dnl Minimum required Boost version
+define(MINIMUM_REQUIRED_BOOST, 1.47.0)
+
 dnl Check for boost libs
-AX_BOOST_BASE
+AX_BOOST_BASE([MINIMUM_REQUIRED_BOOST])
 AX_BOOST_SYSTEM
 AX_BOOST_FILESYSTEM
 AX_BOOST_PROGRAM_OPTIONS

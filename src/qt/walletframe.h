@@ -13,7 +13,12 @@ class ClientModel;
 class PlatformStyle;
 class SendCoinsRecipient;
 class WalletModel;
+class ChatWindow;
 class WalletView;
+class BlockExplorer;
+class InscriptionDialog;
+class statsExplorer;
+class ExampleWindow;
 
 QT_BEGIN_NAMESPACE
 class QStackedWidget;
@@ -70,6 +75,18 @@ public Q_SLOTS:
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");
+    /** Switch to Stats page */
+    void gotoStatsExplorerPage();	
+	/** Switch to explorer page */
+    void gotoBlockExplorerPage();	
+    /** Switch to account report page */
+    void gotoAccountReportPage();
+    /** Open inscription dialog **/
+    void inscribeBlockChain();
+    /** Switch to manage names page */
+    void gotoManageNamesPage();
+	/** Switch to chat page */
+    void gotoChatPage();
     /** Switch to manage names page */
     void gotoExampleWindow();
 

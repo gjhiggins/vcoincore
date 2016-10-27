@@ -164,7 +164,7 @@ static void RegisterLoad(const string& strInput)
 static void MutateTxVersion(CMutableTransaction& tx, const string& cmdVal)
 {
     int64_t newVersion = atoi64(cmdVal);
-    if (newVersion < 1 || newVersion > CTransaction::CURRENT_VERSION)
+    if (newVersion < 1 || newVersion > CTransaction::MAX_STANDARD_VERSION)
         throw runtime_error("Invalid TX version requested");
 
     tx.nVersion = (int) newVersion;
@@ -452,7 +452,8 @@ static void MutateTxSign(CMutableTransaction& tx, const string& flagStr)
 
             // if redeemScript given and private keys given,
             // add redeemScript to the tempKeystore so it can be signed:
-            if ((scriptPubKey.IsPayToScriptHash() || scriptPubKey.IsPayToWitnessScriptHash()) &&
+            /* TODO: Check IsPayTo* for required arg */
+            if ((scriptPubKey.IsPayToScriptHash(false) || scriptPubKey.IsPayToWitnessScriptHash(false)) &&
                 prevOut.exists("redeemScript")) {
                 UniValue v = prevOut["redeemScript"];
                 vector<unsigned char> rsData(ParseHexUV(v, "redeemScript"));

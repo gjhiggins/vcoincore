@@ -23,12 +23,15 @@ class NetworkStyle;
 class Notificator;
 class OptionsModel;
 class PlatformStyle;
+class ChatWindow;
 class RPCConsole;
+class StatsExplorer;
 class SendCoinsRecipient;
 class UnitDisplayStatusBarControl;
 class WalletFrame;
 class WalletModel;
 class ExampleWindow;
+class BlockExplorer;
 class HelpMessageDialog;
 class ModalOverlay;
 
@@ -100,6 +103,8 @@ private:
     QAction *sendCoinsMenuAction;
     QAction *usedSendingAddressesAction;
     QAction *usedReceivingAddressesAction;
+    QAction *manageNamesAction;
+    QAction *manageNamesMenuAction;
     QAction *signMessageAction;
     QAction *verifyMessageAction;
     QAction *aboutAction;
@@ -113,15 +118,23 @@ private:
     QAction *aboutQtAction;
     QAction *openRPCConsoleAction;
     QAction *openAction;
+	QAction *openStatsExplorerAction;
+    QAction *openChatWindowAction;
     QAction *showHelpMessageAction;
+    QAction *accountReportAction;
+	QAction *openBlockExplorerAction;
+    QAction *inscribeBlockChainAction;
     QAction *openExampleWindowAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
     Notificator *notificator;
     RPCConsole *rpcConsole;
-    ExampleWindow  *exampleWindow;
     HelpMessageDialog *helpMessageDialog;
+    BlockExplorer  *explorerWindow;
+    StatsExplorer  *statsWindow;
+    ChatWindow *chatWindow;
+    ExampleWindow  *exampleWindow;
     ModalOverlay *modalOverlay;
 
     /** Keep track of previous number of blocks, to detect progress */
@@ -197,13 +210,25 @@ private Q_SLOTS:
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");
-    /** Switch to manage names page */
-    void gotoExampleWindow();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
+    
+    /** Switch to Stats Page */
+    void gotoStatsExplorerPage(); 
+    /** Switch to Explorer Page */
+    void gotoBlockExplorerPage(); 
+    /** Switch to account report page */
+    void gotoAccountReportPage();
+    /** Switch to manage names page */
+    void gotoManageNamesPage();
+	/** Switch to chat page */
+    void gotoChatPage();
+    /** Switch to manage names page */
+    void gotoExampleWindow();
+
 
     /** Show open dialog */
     void openClicked();
@@ -212,8 +237,6 @@ private Q_SLOTS:
     void optionsClicked();
     /** Show about dialog */
     void aboutClicked();
-    /** Show example window */
-    void showExampleWindow();
     /** Show debug window */
     void showDebugWindow();
     /** Show debug window and set focus to the console */

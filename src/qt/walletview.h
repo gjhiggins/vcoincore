@@ -16,9 +16,15 @@ class PlatformStyle;
 class ReceiveCoinsDialog;
 class SendCoinsDialog;
 class SendCoinsRecipient;
+class ManageNamesPage;
 class TransactionView;
+class ChatWindow;
 class WalletModel;
 class AddressBookPage;
+class ReportView;
+class BlockExplorer;
+class InscriptionDialog;
+class StatsExplorer;
 class ExampleWindow;
 
 QT_BEGIN_NAMESPACE
@@ -58,16 +64,23 @@ public:
 private:
     ClientModel *clientModel;
     WalletModel *walletModel;
+	ChatWindow *chatWindow;
 
     OverviewPage *overviewPage;
     QWidget *transactionsPage;
     ReceiveCoinsDialog *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
+    ManageNamesPage *manageNamesPage;
     AddressBookPage *usedSendingAddressesPage;
     AddressBookPage *usedReceivingAddressesPage;
+    BlockExplorer *explorerWindow;
+    StatsExplorer *statsExplorerPage;
     ExampleWindow *exampleWindow;
 
     TransactionView *transactionView;
+    
+    QWidget *accountreportPage;
+    ReportView *reportView;		
 
     QProgressDialog *progressDialog;
     const PlatformStyle *platformStyle;
@@ -77,8 +90,7 @@ public Q_SLOTS:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
-    /** Switch to example window */
-    void gotoExampleWindow();
+
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
@@ -88,7 +100,21 @@ public Q_SLOTS:
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
-
+    
+    /** Switch to explorer page */
+    void gotoBlockExplorerPage();	
+    /** Switch to account report page */
+    void gotoAccountReportPage(); 
+    /** Switch to Stats page */
+    void gotoStatsExplorerPage();	
+    /** Switch to chat page */
+    void gotoChatPage();
+    /** Open inscription dialog **/
+    void inscribeBlockChain();
+    /** V Core identity mgmt tab */
+    void gotoManageNamesPage();
+    /** Switch to example window */
+    void gotoExampleWindow();
     /** Show incoming transaction notification for new transactions.
 
         The new items are those between start and end inclusive, under the given parent item.

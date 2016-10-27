@@ -8,6 +8,7 @@
 
 #include "amount.h"
 #include "rpc/protocol.h"
+#include "script/script.h"
 #include "uint256.h"
 
 #include <list>
@@ -30,7 +31,12 @@ namespace RPCServer
 }
 
 class CBlockIndex;
+class CMutableTransaction;
+class CNameData;
 class CNetAddr;
+class COutPoint;
+class CTxIn;
+class CWalletTx;
 
 /** Wrapper for UniValue::VType, which includes typeAny:
  * Used to denote don't care type. Only used by RPCTypeCheckObj */
@@ -41,14 +47,17 @@ struct UniValueType {
     UniValue::VType type;
 };
 
-class JSONRequest
+class JSONRPCRequest
 {
 public:
     UniValue id;
     std::string strMethod;
     UniValue params;
+    bool fHelp;
+    std::string URI;
+    std::string authUser;
 
-    JSONRequest() { id = NullUniValue; }
+    JSONRPCRequest() { id = NullUniValue; params = NullUniValue; fHelp = false; }
     void parse(const UniValue& valRequest);
 };
 
@@ -122,7 +131,7 @@ void RPCUnsetTimerInterface(RPCTimerInterface *iface);
  */
 void RPCRunLater(const std::string& name, boost::function<void(void)> func, int64_t nSeconds);
 
-typedef UniValue(*rpcfn_type)(const UniValue& params, bool fHelp);
+typedef UniValue(*rpcfn_type)(const JSONRPCRequest& jsonRequest);
 
 class CRPCCommand
 {
@@ -147,12 +156,11 @@ public:
 
     /**
      * Execute a method.
-     * @param method   Method to execute
-     * @param params   UniValue Array of arguments (JSON objects)
+     * @param request The JSONRPCRequest to execute
      * @returns Result of the call.
      * @throws an exception (UniValue) when an error happens.
      */
-    UniValue execute(const std::string &method, const UniValue &params) const;
+    UniValue execute(const JSONRPCRequest &request) const;
 
     /**
     * Returns a list of registered commands
@@ -188,7 +196,14 @@ extern std::string HelpRequiringPassphrase();
 extern std::string HelpExampleCli(const std::string& methodname, const std::string& args);
 extern std::string HelpExampleRpc(const std::string& methodname, const std::string& args);
 
+extern bool EnsureWalletIsAvailable(bool avoidException);
 extern void EnsureWalletIsUnlocked();
+extern void SendMoneyToScript(const CScript& scriptPubKey, const CTxIn* withInput, CAmount nValue, bool fSubtractFeeFromAmount, CWalletTx& wtxNew);
+
+extern void AddRawTxNameOperation(CMutableTransaction& tx, const UniValue& obj);
+extern UniValue getNameInfo(const valtype& name, const valtype& value, const COutPoint& outp, const CScript& addr, int height);
+extern UniValue getNameInfo(const valtype& name, const CNameData& data);
+extern std::string getNameInfoHelp(const std::string& indent, const std::string& trailing);
 
 bool StartRPC();
 void InterruptRPC();
