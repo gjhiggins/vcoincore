@@ -60,7 +60,7 @@ void ChatClient::connected()
 
 void ChatClient::joins()
 {
-    join("#vcoin");
+    join("#vcore");
 }
 
 void ChatClient::readClient()
