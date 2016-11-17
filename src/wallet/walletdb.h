@@ -95,6 +95,7 @@ public:
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(this->nVersion);
+        nVersion = this->nVersion;
         READWRITE(nCreateTime);
         if (this->nVersion >= VERSION_WITH_HDDATA)
         {
@@ -164,6 +165,9 @@ public:
 
     CAmount GetAccountCreditDebit(const std::string& strAccount);
     void ListAccountCreditDebit(const std::string& strAccount, std::list<CAccountingEntry>& acentries);
+
+    bool WriteNameFirstUpdate(const std::string& name, const std::string& data);
+    bool EraseNameFirstUpdate(const std::string& name);
 
     DBErrors ReorderTransactions(CWallet* pwallet);
     DBErrors LoadWallet(CWallet* pwallet);

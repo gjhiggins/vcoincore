@@ -67,12 +67,16 @@ class BitcoinTestFramework(object):
         if not split:
             connect_nodes_bi(self.nodes, 1, 2)
             sync_blocks(self.nodes[1:3])
-            sync_mempools(self.nodes[1:3])
+            # Don't sync mempools (see below).
+            # sync_mempools(self.nodes[1:3])
 
         connect_nodes_bi(self.nodes, 0, 1)
         connect_nodes_bi(self.nodes, 2, 3)
         self.is_network_split = split
-        self.sync_all()
+
+        # Only sync blocks here.  The mempools might not synchronise
+        # after joining a split network.
+        self.sync_all('blocks')
 
     def split_network(self):
         """
@@ -82,15 +86,23 @@ class BitcoinTestFramework(object):
         stop_nodes(self.nodes)
         self.setup_network(True)
 
-    def sync_all(self):
+    def sync_all(self, mode = 'both'):
+        modes = {'both': {'blocks': True, 'mempool': True},
+                 'blocks': {'blocks': True, 'mempool': False},
+                 'mempool': {'blocks': False, 'mempool': True}}
+        assert mode in modes
         if self.is_network_split:
-            sync_blocks(self.nodes[:2])
-            sync_blocks(self.nodes[2:])
-            sync_mempools(self.nodes[:2])
-            sync_mempools(self.nodes[2:])
+            if modes[mode]['blocks']:
+                sync_blocks(self.nodes[:2])
+                sync_blocks(self.nodes[2:])
+            if modes[mode]['mempool']:
+                sync_mempools(self.nodes[:2])
+                sync_mempools(self.nodes[2:])
         else:
-            sync_blocks(self.nodes)
-            sync_mempools(self.nodes)
+            if modes[mode]['blocks']:
+                sync_blocks(self.nodes)
+            if modes[mode]['mempool']:
+                sync_mempools(self.nodes)
 
     def join_network(self):
         """
@@ -104,11 +116,11 @@ class BitcoinTestFramework(object):
 
         parser = optparse.OptionParser(usage="%prog [options]")
         parser.add_option("--nocleanup", dest="nocleanup", default=False, action="store_true",
-                          help="Leave bitcoinds and test.* datadir on exit or error")
+                          help="Leave vcoreds and test.* datadir on exit or error")
         parser.add_option("--noshutdown", dest="noshutdown", default=False, action="store_true",
-                          help="Don't stop bitcoinds after the test execution")
+                          help="Don't stop vcoreds after the test execution")
         parser.add_option("--srcdir", dest="srcdir", default=os.path.normpath(os.path.dirname(os.path.realpath(__file__))+"/../../../src"),
-                          help="Source directory containing bitcoind/bitcoin-cli (default: %default)")
+                          help="Source directory containing vcored/vcore-cli (default: %default)")
         parser.add_option("--cachedir", dest="cachedir", default=os.path.normpath(os.path.dirname(os.path.realpath(__file__))+"/../../cache"),
                           help="Directory for caching pregenerated datadirs")
         parser.add_option("--tmpdir", dest="tmpdir", default=tempfile.mkdtemp(prefix="test"),
@@ -168,7 +180,7 @@ class BitcoinTestFramework(object):
             print("Stopping nodes")
             stop_nodes(self.nodes)
         else:
-            print("Note: bitcoinds were not stopped and may still be running")
+            print("Note: vcoreds were not stopped and may still be running")
 
         if not self.options.nocleanup and not self.options.noshutdown and success:
             print("Cleaning up")
@@ -186,7 +198,7 @@ class BitcoinTestFramework(object):
             sys.exit(1)
 
 
-# Test framework for doing p2p comparison testing, which sets up some bitcoind
+# Test framework for doing p2p comparison testing, which sets up some vcored
 # binaries:
 # 1 binary: test binary
 # 2 binaries: 1 test binary, 1 ref binary
@@ -201,11 +213,11 @@ class ComparisonTestFramework(BitcoinTestFramework):
 
     def add_options(self, parser):
         parser.add_option("--testbinary", dest="testbinary",
-                          default=os.getenv("BITCOIND", "bitcoind"),
-                          help="bitcoind binary to test")
+                          default=os.getenv("BITCOIND", "vcored"),
+                          help="vcored binary to test")
         parser.add_option("--refbinary", dest="refbinary",
-                          default=os.getenv("BITCOIND", "bitcoind"),
-                          help="bitcoind binary to use for reference nodes (if any)")
+                          default=os.getenv("BITCOIND", "vcored"),
+                          help="vcoredd binary to use for reference nodes (if any)")
 
     def setup_network(self):
         self.nodes = start_nodes(

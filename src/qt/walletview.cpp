@@ -6,8 +6,10 @@
 #include "addressbookpage.h"
 #include "askpassphrasedialog.h"
 #include "bitcoingui.h"
+#include "chatwindow.h"
 #include "clientmodel.h"
 #include "guiutil.h"
+#include "managenamespage.h"
 #include "optionsmodel.h"
 #include "overviewpage.h"
 #include "platformstyle.h"
@@ -17,10 +19,10 @@
 #include "transactiontablemodel.h"
 #include "transactionview.h"
 #include "walletmodel.h"
+#include "utilitydialog.h"
 #include "reportview.h"
 #include "blockexplorer.h"
 #include "statsexplorer.h"
-#include "chatwindow.h"
 
 #include "ui_interface.h"
 
@@ -77,6 +79,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 
     receiveCoinsPage = new ReceiveCoinsDialog(platformStyle);
     sendCoinsPage = new SendCoinsDialog(platformStyle);
+    manageNamesPage = new ManageNamesPage(platformStyle);
 
     usedSendingAddressesPage = new AddressBookPage(platformStyle, AddressBookPage::ForEditing, AddressBookPage::SendingTab, this);
     usedReceivingAddressesPage = new AddressBookPage(platformStyle, AddressBookPage::ForEditing, AddressBookPage::ReceivingTab, this);
@@ -88,7 +91,9 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(sendCoinsPage);
 	addWidget(explorerWindow);
     addWidget(statsExplorerPage);
+    addWidget(manageNamesPage);
 	addWidget(chatWindow);
+
     // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
     connect(overviewPage, SIGNAL(outOfSyncWarningClicked()), this, SLOT(requestedSyncWarningInfo()));
@@ -149,6 +154,7 @@ void WalletView::setWalletModel(WalletModel *_walletModel)
     overviewPage->setWalletModel(_walletModel);
     receiveCoinsPage->setModel(_walletModel);
     sendCoinsPage->setModel(_walletModel);
+    manageNamesPage->setModel(walletModel);
     usedReceivingAddressesPage->setModel(_walletModel->getAddressTableModel());
     usedSendingAddressesPage->setModel(_walletModel->getAddressTableModel());
 
@@ -222,6 +228,11 @@ void WalletView::gotoSendCoinsPage(QString addr)
 void WalletView::gotoStatsExplorerPage()
 {
     setCurrentWidget(statsExplorerPage);
+}
+
+void WalletView::gotoManageNamesPage()
+{
+    setCurrentWidget(manageNamesPage);
 }
 
 void WalletView::gotoSignMessageTab(QString addr)
@@ -369,6 +380,16 @@ void WalletView::gotoAccountReportPage()
 void WalletView::gotoBlockExplorerPage()
 {
     setCurrentWidget(explorerWindow);
+}
+
+void WalletView::inscribeBlockChain()
+{
+    if(!walletModel)
+        return;
+
+    InscriptionDialog dlg(this);
+    dlg.setModel(walletModel);
+    dlg.exec();
 }
 
 void WalletView::gotoChatPage()

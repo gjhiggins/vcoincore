@@ -179,7 +179,9 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     // Only change once per difficulty adjustment interval
     if ((pindexLast->nHeight+1) % params.DifficultyAdjustmentInterval() != 0)
     {
-        if (params.fPowAllowMinDifficultyBlocks)
+        // FIXME: resolve upstream discrepancy
+        // if (params.fPowAllowMinDifficultyBlocks)
+        if (params.AllowMinDifficultyBlocks(pblock->GetBlockTime()))
         {
             // Special difficulty rule for testnet:
             // If the new block's timestamp is more than 2* 10 minutes
@@ -198,8 +200,15 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         return pindexLast->nBits;
     }
 
+    /* Adapt the retargeting interval after merge-mining start
+       according to the changed Namecoin rules.  */
+    int nBlocksBack = params.DifficultyAdjustmentInterval() - 1;
+    if (pindexLast->nHeight >= params.nAuxpowStartHeight
+        && (pindexLast->nHeight + 1 > params.DifficultyAdjustmentInterval()))
+        nBlocksBack = params.DifficultyAdjustmentInterval();
+
     // Go back by what we want to be 14 days worth of blocks
-    int nHeightFirst = pindexLast->nHeight - (params.DifficultyAdjustmentInterval()-1);
+    int nHeightFirst = pindexLast->nHeight - nBlocksBack;
     assert(nHeightFirst >= 0);
     const CBlockIndex* pindexFirst = pindexLast->GetAncestor(nHeightFirst);
     assert(pindexFirst);
@@ -229,10 +238,10 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
             nActualTimespan = params.nPowTargetTimespan*4;
     }else{
         // Mainnet version
-    if (nActualTimespan < params.nPowTargetTimespan)
-        nActualTimespan = params.nPowTargetTimespan;
-    if (nActualTimespan > params.nPowTargetTimespan)
-        nActualTimespan = params.nPowTargetTimespan;
+        if (nActualTimespan < params.nPowTargetTimespan)
+            nActualTimespan = params.nPowTargetTimespan;
+        if (nActualTimespan > params.nPowTargetTimespan)
+            nActualTimespan = params.nPowTargetTimespan;
     }
 
     LogPrintf("nActualTimespan = %u after bounds\n", nActualTimespan);

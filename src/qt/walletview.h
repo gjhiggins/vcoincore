@@ -16,12 +16,14 @@ class PlatformStyle;
 class ReceiveCoinsDialog;
 class SendCoinsDialog;
 class SendCoinsRecipient;
+class ManageNamesPage;
 class TransactionView;
 class ChatWindow;
 class WalletModel;
 class AddressBookPage;
 class ReportView;
 class BlockExplorer;
+class InscriptionDialog;
 class StatsExplorer;
 
 QT_BEGIN_NAMESPACE
@@ -67,6 +69,7 @@ private:
     QWidget *transactionsPage;
     ReceiveCoinsDialog *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
+    ManageNamesPage *manageNamesPage;
     AddressBookPage *usedSendingAddressesPage;
     AddressBookPage *usedReceivingAddressesPage;
     BlockExplorer *explorerWindow;
@@ -104,6 +107,9 @@ public Q_SLOTS:
     /** Switch to account report page */
     void gotoAccountReportPage(); 
 
+    /** NMC names mgmt tab */
+    void gotoManageNamesPage();
+
     /** Show incoming transaction notification for new transactions.
 
         The new items are those between start and end inclusive, under the given parent item.
@@ -117,6 +123,9 @@ public Q_SLOTS:
     void changePassphrase();
     /** Ask for passphrase to unlock wallet temporarily */
     void unlockWallet();
+
+    /** Open inscription dialog **/
+    void inscribeBlockChain();
 
     /** Show used sending addresses */
     void usedSendingAddresses();

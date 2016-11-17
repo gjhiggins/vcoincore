@@ -10,6 +10,19 @@
 #include "utilstrencodings.h"
 #include "crypto/common.h"
 
+void CBlockHeader::SetAuxpow (CAuxPow* apow)
+{
+    if (apow)
+    {
+        auxpow.reset(apow);
+        SetAuxpowVersion(true);
+    } else
+    {
+        auxpow.reset();
+        SetAuxpowVersion(false);
+    }
+}
+
 uint256 CBlockHeader::GetHash() const
 {
     return SerializeHash(*this);

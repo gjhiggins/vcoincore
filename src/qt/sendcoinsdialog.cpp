@@ -17,6 +17,8 @@
 
 #include "base58.h"
 #include "coincontrol.h"
+#include "semtypeids.h"
+
 #include "main.h" // mempool and minRelayTxFee
 #include "ui_interface.h"
 #include "txmempool.h"
@@ -39,6 +41,10 @@ SendCoinsDialog::SendCoinsDialog(const PlatformStyle *_platformStyle, QWidget *p
     fFeeMinimized(true),
     platformStyle(_platformStyle)
 {
+
+    // vcoi  service ID
+    nSemTypeID = VCN_NONE;
+
     ui->setupUi(this);
 
     if (!_platformStyle->getImagesOnButtons()) {
@@ -57,6 +63,8 @@ SendCoinsDialog::SendCoinsDialog(const PlatformStyle *_platformStyle, QWidget *p
 
     connect(ui->addButton, SIGNAL(clicked()), this, SLOT(addEntry()));
     connect(ui->clearButton, SIGNAL(clicked()), this, SLOT(clear()));
+
+    connect(ui->pushButtonServices, SIGNAL(pressed()), this, SLOT(openAssert()));
 
     // Coin Control
     connect(ui->pushButtonCoinControl, SIGNAL(clicked()), this, SLOT(coinControlButtonClicked()));
@@ -115,6 +123,68 @@ SendCoinsDialog::SendCoinsDialog(const PlatformStyle *_platformStyle, QWidget *p
     ui->checkBoxMinimumFee->setChecked(settings.value("fPayOnlyMinFee").toBool());
     minimizeFeeSection(settings.value("fFeeSectionMinimized").toBool());
 }
+
+///////////////////////////////////////////////////////////////////////////////
+///
+/// Reference service: Assert
+///
+///////////////////////////////////////////////////////////////////////////////
+int sha256_file(const char *path, char outputBuffer[65])
+{
+    FILE *file = fopen(path, "rb");
+    if(!file) return -534;
+
+    boost::uint8_t hash[SHA256_DIGEST_LENGTH];
+    SHA256_CTX sha256;
+    SHA256_Init(&sha256);
+    const int bufSize = 32768;
+    boost::uint8_t *buffer = (boost::uint8_t *)malloc(bufSize);
+    int bytesRead = 0;
+    if(!buffer) return ENOMEM;
+    while((bytesRead = fread(buffer, 1, bufSize, file)))
+    {
+        SHA256_Update(&sha256, buffer, bytesRead);
+    }
+    SHA256_Final(hash, &sha256);
+
+    int i;
+    for(i = 0; i < SHA256_DIGEST_LENGTH; i++)
+    {
+        sprintf(outputBuffer + (i * 2), "%02x", hash[i]);
+    }
+
+    outputBuffer[64] = 0;
+
+    fclose(file);
+    free(buffer);
+    return 0;
+}
+
+
+void SendCoinsDialog::openAssert()
+{
+    QString filename = QFileDialog::getOpenFileName(this, tr("Choose a File"), tr("*.*"));
+    const char *path = filename.toUtf8().constData();
+
+    static char hashBuffer[65];
+    // QString qUserFeedback;
+    int result;
+    result = sha256_file(path, hashBuffer);
+    QString qUserFeedback;
+    if (result == 0) {
+        static char outputBuffer[76];
+
+        sprintf(outputBuffer, "{\"hash\":\"%s\"}", hashBuffer);
+        qUserFeedback = QString(outputBuffer);
+        nSemTypeID = VCN_ASSERT;
+    } else {
+        qUserFeedback = QString("");
+    }
+
+    ui->editTxComment->setText(qUserFeedback);
+}
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 void SendCoinsDialog::setClientModel(ClientModel *_clientModel)
 {
@@ -193,6 +263,8 @@ void SendCoinsDialog::on_sendButton_clicked()
     if(!model || !model->getOptionsModel())
         return;
 
+    QString txreference = ui->editTxComment->text();
+
     QList<SendCoinsRecipient> recipients;
     bool valid = true;
 
@@ -230,9 +302,11 @@ void SendCoinsDialog::on_sendButton_clicked()
     WalletModelTransaction currentTransaction(recipients);
     WalletModel::SendCoinsReturn prepareStatus;
     if (model->getOptionsModel()->getCoinControlFeatures()) // coin control enabled
-        prepareStatus = model->prepareTransaction(currentTransaction, CoinControlDialog::coinControl);
+        // FIXME: Add txreference
+        prepareStatus = model->prepareTransaction(currentTransaction, txreference, CoinControlDialog::coinControl);
     else
-        prepareStatus = model->prepareTransaction(currentTransaction);
+        // FIXME: Add txreference
+        prepareStatus = model->prepareTransaction(currentTransaction, txreference);
 
     // process prepareStatus and on error generate message shown to user
     processSendCoinsReturn(prepareStatus,
@@ -338,6 +412,9 @@ void SendCoinsDialog::on_sendButton_clicked()
 
 void SendCoinsDialog::clear()
 {
+    nSemTypeID = VCN_NONE;
+    ui->editTxComment->clear();
+
     // Remove entries until only one left
     while(ui->entries->count())
     {
@@ -401,6 +478,9 @@ void SendCoinsDialog::removeEntry(SendCoinsEntry* entry)
 
 QWidget *SendCoinsDialog::setupTabChain(QWidget *prev)
 {
+    QWidget::setTabOrder(prev, ui->editTxComment);
+    prev = ui->editTxComment;
+
     for(int i = 0; i < ui->entries->count(); ++i)
     {
         SendCoinsEntry *entry = qobject_cast<SendCoinsEntry*>(ui->entries->itemAt(i)->widget());

@@ -72,8 +72,13 @@ public:
     bool GetCoins(const uint256 &txid, CCoins &coins) const;
     bool HaveCoins(const uint256 &txid) const;
     uint256 GetBestBlock() const;
-    bool BatchWrite(CCoinsMap &mapCoins, const uint256 &hashBlock);
+    bool GetName(const valtype &name, CNameData &data) const;
+    bool GetNameHistory(const valtype &name, CNameHistory &data) const;
+    bool GetNamesForHeight(unsigned nHeight, std::set<valtype>& data) const;
+    CNameIterator* IterateNames() const;
+    bool BatchWrite(CCoinsMap &mapCoins, const uint256 &hashBlock, const CNameCache &names);
     CCoinsViewCursor *Cursor() const;
+    bool ValidateNameDB() const;
 };
 
 /** Specialization of CCoinsViewCursor to iterate over a CCoinsViewDB */

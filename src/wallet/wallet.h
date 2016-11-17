@@ -7,6 +7,7 @@
 #define BITCOIN_WALLET_WALLET_H
 
 #include "amount.h"
+#include "auxpow.h" // contains CMerkleTx
 #include "streams.h"
 #include "tinyformat.h"
 #include "ui_interface.h"
@@ -16,6 +17,8 @@
 #include "wallet/crypter.h"
 #include "wallet/walletdb.h"
 #include "wallet/rpcwallet.h"
+
+#include "script/names.h"
 
 #include <algorithm>
 #include <map>
@@ -34,6 +37,7 @@ extern CWallet* pwalletMain;
  * Settings
  */
 extern CFeeRate payTxFee;
+extern CAmount maxTxFee;
 extern unsigned int nTxConfirmTarget;
 extern bool bSpendZeroConfChange;
 extern bool fSendFreeTransactions;
@@ -42,10 +46,14 @@ extern bool fWalletRbf;
 static const unsigned int DEFAULT_KEYPOOL_SIZE = 100;
 //! -paytxfee default
 static const CAmount DEFAULT_TRANSACTION_FEE = 0;
+//! -paytxfee will warn if called with a higher fee than this amount (in satoshis) per KB
+static const CAmount nHighTransactionFeeWarning = 0.01 * COIN;
 //! -fallbackfee default
 static const CAmount DEFAULT_FALLBACK_FEE = 20000;
 //! -mintxfee default
 static const CAmount DEFAULT_TRANSACTION_MINFEE = 1000;
+//! -maxtxfee default
+// static const CAmount DEFAULT_TRANSACTION_MAXFEE = 0.1 * COIN;
 //! minimum change amount
 static const CAmount MIN_CHANGE = CENT;
 //! Default for -spendzeroconfchange
@@ -154,6 +162,7 @@ static void WriteOrderPos(const int64_t& nOrderPos, mapValue_t& mapValue)
 struct COutputEntry
 {
     CTxDestination destination;
+    std::string nameOp;
     CAmount amount;
     int vout;
 };
@@ -197,6 +206,7 @@ public:
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         std::vector<uint256> vMerkleBranch; // For compatibility with older versions.
         READWRITE(*(CTransaction*)this);
+        nVersion = this->nVersion;
         READWRITE(hashBlock);
         READWRITE(vMerkleBranch);
         READWRITE(nIndex);
@@ -251,10 +261,12 @@ public:
     mutable bool fAvailableWatchCreditCached;
     mutable bool fChangeCached;
     mutable CAmount nDebitCached;
+    mutable CAmount nDebitWithNamesCached;
     mutable CAmount nCreditCached;
     mutable CAmount nImmatureCreditCached;
     mutable CAmount nAvailableCreditCached;
     mutable CAmount nWatchDebitCached;
+    mutable CAmount nWatchDebitWithNamesCached;
     mutable CAmount nWatchCreditCached;
     mutable CAmount nImmatureWatchCreditCached;
     mutable CAmount nAvailableWatchCreditCached;
@@ -300,10 +312,12 @@ public:
         fAvailableWatchCreditCached = false;
         fChangeCached = false;
         nDebitCached = 0;
+        nDebitWithNamesCached = 0;
         nCreditCached = 0;
         nImmatureCreditCached = 0;
         nAvailableCreditCached = 0;
         nWatchDebitCached = 0;
+        nWatchDebitWithNamesCached = 0;
         nWatchCreditCached = 0;
         nAvailableWatchCreditCached = 0;
         nImmatureWatchCreditCached = 0;
@@ -375,7 +389,7 @@ public:
     }
 
     //! filter decides which addresses will count towards the debit
-    CAmount GetDebit(const isminefilter& filter) const;
+    CAmount GetDebit(const isminefilter& filter, bool fExcludeNames = true) const;
     CAmount GetCredit(const isminefilter& filter) const;
     CAmount GetImmatureCredit(bool fUseCache=true) const;
     CAmount GetAvailableCredit(bool fUseCache=true) const;
@@ -749,6 +763,7 @@ public:
     bool AddToWallet(const CWalletTx& wtxIn, bool fFlushOnClose=true);
     bool LoadToWallet(const CWalletTx& wtxIn);
     void SyncTransaction(const CTransaction& tx, const CBlockIndex *pindex, int posInBlock);
+    void NameConflict(const CTransaction& tx, const uint256& hashBlock);
     bool AddToWalletIfInvolvingMe(const CTransaction& tx, const CBlockIndex* pIndex, int posInBlock, bool fUpdate);
     int ScanForWalletTransactions(CBlockIndex* pindexStart, bool fUpdate = false);
     void ReacceptWalletTransactions();
@@ -772,8 +787,11 @@ public:
      * selected by SelectCoins(); Also create the change output, when needed
      * @note passing nChangePosInOut as -1 will result in setting a random position
      */
-    bool CreateTransaction(const std::vector<CRecipient>& vecSend, CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet, int& nChangePosInOut,
-                           std::string& strFailReason, const CCoinControl *coinControl = NULL, bool sign = true);
+    // FIXED: Added txReference
+    bool CreateTransaction(const std::vector<CRecipient>& vecSend,
+                           const CTxIn* withInput,
+                           CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet, int& nChangePosInOut,
+                           std::string& strFailReason, std::string& strTxReference, const CCoinControl *coinControl = NULL, bool sign = true);
     bool CommitTransaction(CWalletTx& wtxNew, CReserveKey& reservekey, CConnman* connman);
 
     void ListAccountCreditDebit(const std::string& strAccount, std::list<CAccountingEntry>& entries);
@@ -810,7 +828,7 @@ public:
     std::set<CTxDestination> GetAccountAddresses(const std::string& strAccount) const;
 
     isminetype IsMine(const CTxIn& txin) const;
-    CAmount GetDebit(const CTxIn& txin, const isminefilter& filter) const;
+    CAmount GetDebit(const CTxIn& txin, const isminefilter& filter, bool fExcludeNames = true) const;
     isminetype IsMine(const CTxOut& txout) const;
     CAmount GetCredit(const CTxOut& txout, const isminefilter& filter) const;
     bool IsChange(const CTxOut& txout) const;
@@ -818,7 +836,7 @@ public:
     bool IsMine(const CTransaction& tx) const;
     /** should probably be renamed to IsRelevantToMe */
     bool IsFromMe(const CTransaction& tx) const;
-    CAmount GetDebit(const CTransaction& tx, const isminefilter& filter) const;
+    CAmount GetDebit(const CTransaction& tx, const isminefilter& filter, bool fExcludeNames = true) const;
     CAmount GetCredit(const CTransaction& tx, const isminefilter& filter) const;
     CAmount GetChange(const CTransaction& tx) const;
     void SetBestChain(const CBlockLocator& loc);
@@ -830,6 +848,9 @@ public:
     bool SetAddressBook(const CTxDestination& address, const std::string& strName, const std::string& purpose);
 
     bool DelAddressBook(const CTxDestination& address);
+
+    bool WriteNameFirstUpdate(const std::string& name, const std::string& data);
+    bool EraseNameFirstUpdate(const std::string& name);
 
     void UpdatedTransaction(const uint256 &hashTx);
 

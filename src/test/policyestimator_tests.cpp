@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
     for (unsigned int i = 0; i < 128; i++)
         garbage.push_back('X');
     CMutableTransaction tx;
-    std::list<CTransaction> dummyConflicted;
+    std::list<CTransaction> dummyConflicted, dummyNameConflicts;
     tx.vin.resize(1);
     tx.vin[0].scriptSig = garbage;
     tx.vout.resize(1);
@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
                 txHashes[9-h].pop_back();
             }
         }
-        mpool.removeForBlock(block, ++blocknum, dummyConflicted);
+        mpool.removeForBlock(block, ++blocknum, dummyConflicted, dummyNameConflicts);
         block.clear();
         if (blocknum == 30) {
             // At this point we should need to combine 5 buckets to get enough data points
@@ -125,7 +125,7 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
     // Mine 50 more blocks with no transactions happening, estimates shouldn't change
     // We haven't decayed the moving average enough so we still have enough data points in every bucket
     while (blocknum < 250)
-        mpool.removeForBlock(block, ++blocknum, dummyConflicted);
+        mpool.removeForBlock(block, ++blocknum, dummyConflicted, dummyNameConflicts);
 
     for (int i = 1; i < 10;i++) {
         BOOST_CHECK(mpool.estimateFee(i).GetFeePerK() < origFeeEst[i-1] + deltaFee);
@@ -146,7 +146,7 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
                 txHashes[j].push_back(hash);
             }
         }
-        mpool.removeForBlock(block, ++blocknum, dummyConflicted);
+        mpool.removeForBlock(block, ++blocknum, dummyConflicted, dummyNameConflicts);
     }
 
     int answerFound;
@@ -167,7 +167,7 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
             txHashes[j].pop_back();
         }
     }
-    mpool.removeForBlock(block, 265, dummyConflicted);
+    mpool.removeForBlock(block, 265, dummyConflicted, dummyNameConflicts);
     block.clear();
     for (int i = 1; i < 10;i++) {
         BOOST_CHECK(mpool.estimateFee(i).GetFeePerK() > origFeeEst[i-1] - deltaFee);
@@ -187,7 +187,7 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
                     block.push_back(*ptx);
             }
         }
-        mpool.removeForBlock(block, ++blocknum, dummyConflicted);
+        mpool.removeForBlock(block, ++blocknum, dummyConflicted, dummyNameConflicts);
         block.clear();
     }
     for (int i = 1; i < 10; i++) {

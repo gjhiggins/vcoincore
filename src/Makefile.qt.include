@@ -98,11 +98,12 @@ QT_FORMS_UI = \
   qt/forms/addressbookpage.ui \
   qt/forms/askpassphrasedialog.ui \
   qt/forms/blockexplorer.ui \
+  qt/forms/chatwindow.ui \
   qt/forms/coincontroldialog.ui \
   qt/forms/editaddressdialog.ui \
   qt/forms/statsexplorer.ui \
   qt/forms/helpmessagedialog.ui \
-  qt/forms/chatwindow.ui \
+  qt/forms/inscriptiondialog.ui \
   qt/forms/intro.ui \
   qt/forms/modaloverlay.ui \
   qt/forms/openuridialog.ui \
@@ -113,6 +114,8 @@ QT_FORMS_UI = \
   qt/forms/debugwindow.ui \
   qt/forms/sendcoinsdialog.ui \
   qt/forms/sendcoinsentry.ui \
+  qt/forms/managenamespage.ui \
+  qt/forms/configurenamedialog.ui \
   qt/forms/signverifymessagedialog.ui \
   qt/forms/transactiondescdialog.ui
 
@@ -130,6 +133,7 @@ QT_MOC_CPP = \
   qt/moc_clientmodel.cpp \
   qt/moc_coincontroldialog.cpp \
   qt/moc_coincontroltreewidget.cpp \
+  qt/moc_configurenamedialog.cpp \
   qt/moc_csvmodelwriter.cpp \
   qt/moc_editaddressdialog.cpp \
   qt/moc_statsexplorer.cpp \
@@ -137,6 +141,8 @@ QT_MOC_CPP = \
   qt/moc_intro.cpp \
   qt/moc_macdockiconhandler.cpp \
   qt/moc_macnotificationhandler.cpp \
+  qt/moc_managenamespage.cpp \
+  qt/moc_nametablemodel.cpp \
   qt/moc_modaloverlay.cpp \
   qt/moc_notificator.cpp \
   qt/moc_openuridialog.cpp \
@@ -197,6 +203,8 @@ BITCOIN_QT_H = \
   qt/bitcoinaddressvalidator.h \
   qt/bitcoinamountfield.h \
   qt/chatwindow.h \
+  qt/chatclient.h \
+  qt/configurenamedialog.h \
   qt/bitcoingui.h \
   qt/bitcoinunits.h \
   qt/blockexplorer.h \
@@ -204,6 +212,7 @@ BITCOIN_QT_H = \
   qt/coincontroldialog.h \
   qt/coincontroltreewidget.h \
   qt/csvmodelwriter.h \
+  qt/configurenamedialog.h \
   qt/editaddressdialog.h \
   qt/statsexplorer.h \
   qt/guiconstants.h \
@@ -211,9 +220,11 @@ BITCOIN_QT_H = \
   qt/intro.h \
   qt/macdockiconhandler.h \
   qt/macnotificationhandler.h \
+  qt/managenamespage.h \
   qt/modaloverlay.h \
   qt/networkstyle.h \
   qt/notificator.h \
+  qt/nametablemodel.h \
   qt/openuridialog.h \
   qt/optionsdialog.h \
   qt/optionsmodel.h \
@@ -231,7 +242,6 @@ BITCOIN_QT_H = \
   qt/rpcconsole.h \
   qt/sendcoinsdialog.h \
   qt/sendcoinsentry.h \
-  qt/chatclient.h \
   qt/signverifymessagedialog.h \
   qt/splashscreen.h \
   qt/trafficgraphwidget.h \
@@ -288,6 +298,7 @@ RES_ICONS = \
   qt/res/icons/hd_enabled.png \
   qt/res/icons/history.png \
   qt/res/icons/info.png \
+  qt/res/icons/inscribe.png \
   qt/res/icons/key.png \
   qt/res/icons/lock_closed.png \
   qt/res/icons/lock_open.png \
@@ -307,6 +318,7 @@ RES_ICONS = \
   qt/res/icons/tx_input.png \
   qt/res/icons/tx_output.png \
   qt/res/icons/tx_mined.png \
+  qt/res/icons/tx_nameop.png \
   qt/res/icons/warning.png \
   qt/res/icons/verify.png
 
@@ -344,12 +356,15 @@ BITCOIN_QT_WALLET_CPP = \
   qt/addressbookpage.cpp \
   qt/addresstablemodel.cpp \
   qt/askpassphrasedialog.cpp \
-  qt/chatwindow.cpp \
   qt/blockexplorer.cpp \
+  qt/chatclient.cpp \
+  qt/chatwindow.cpp \
   qt/coincontroldialog.cpp \
   qt/coincontroltreewidget.cpp \
+  qt/configurenamedialog.cpp \
   qt/editaddressdialog.cpp \
-  qt/statsexplorer.cpp \
+  qt/managenamespage.cpp \
+  qt/nametablemodel.cpp \
   qt/openuridialog.cpp \
   qt/overviewpage.cpp \
   qt/paymentrequestplus.cpp \
@@ -361,7 +376,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/sendcoinsdialog.cpp \
   qt/sendcoinsentry.cpp \
   qt/signverifymessagedialog.cpp \
-  qt/chatclient.cpp \
+  qt/statsexplorer.cpp \
   qt/transactiondesc.cpp \
   qt/transactiondescdialog.cpp \
   qt/transactionfilterproxy.cpp \

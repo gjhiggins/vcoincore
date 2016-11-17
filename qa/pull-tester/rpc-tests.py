@@ -76,7 +76,9 @@ for arg in sys.argv[1:]:
 
 #Set env vars
 if "BITCOIND" not in os.environ:
-    os.environ["BITCOIND"] = BUILDDIR + '/src/bitcoind' + EXEEXT
+    os.environ["BITCOIND"] = BUILDDIR + '/src/vcored' + EXEEXT
+if "BITCOINCLI" not in os.environ:
+    os.environ["BITCOINCLI"] = BUILDDIR + '/src/vcore-cli' + EXEEXT
 
 if EXEEXT == ".exe" and "-win" not in opts:
     # https://github.com/bitcoin/bitcoin/commit/d52802551752140cf41f0d9a225a43e84404d3e9
@@ -85,7 +87,7 @@ if EXEEXT == ".exe" and "-win" not in opts:
     sys.exit(0)
 
 if not (ENABLE_WALLET == 1 and ENABLE_UTILS == 1 and ENABLE_BITCOIND == 1):
-    print("No rpc tests to run. Wallet, utils, and bitcoind must all be enabled")
+    print("No rpc tests to run. Wallet, utils, and vcored must all be enabled")
     sys.exit(0)
 
 # python3-zmq may not be installed. Handle this gracefully and with some helpful info
@@ -145,7 +147,21 @@ testScripts = [
     'signmessages.py',
     'p2p-compactblocks.py',
     'nulldummy.py',
+
     'importmulti.py',
+    # auxpow tests
+    'getauxblock.py',
+
+    # name tests
+    'name_expiration.py',
+    'name_list.py',
+    'name_multisig.py',
+    'name_pending.py',
+    'name_rawtx.py',
+    'name_registration.py',
+    'name_reorg.py',
+    'name_scanning.py',
+    'name_wallet.py',
 ]
 if ENABLE_ZMQ:
     testScripts.append('zmq_test.py')
@@ -157,8 +173,8 @@ testScriptsExt = [
     'bip68-sequence.py',
     'bipdersig-p2p.py',
     'bipdersig.py',
-    'getblocktemplate_longpoll.py',
-    'getblocktemplate_proposals.py',
+    # 'getblocktemplate_longpoll.py',
+    # 'getblocktemplate_proposals.py',
     'txn_doublespend.py',
     'txn_clone.py --mineblock',
     'forknotify.py',

@@ -70,7 +70,10 @@ int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParam
     // Updating time can change work required on testnet:
     if (consensusParams.fPowAllowMinDifficultyBlocks)
         pblock->nBits = GetNextWorkRequired(pindexPrev, pblock, consensusParams);
-
+    /* FIXME: resolve upstream discrepancy
+    if (consensusParams.AllowMinDifficultyBlocks(pblock->GetBlockTime()))
+        pblock->nBits = GetNextWorkRequired(pindexPrev, pblock, consensusParams);
+    */
     return nNewTime - nOldTime;
 }
 
@@ -142,11 +145,17 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     CBlockIndex* pindexPrev = chainActive.Tip();
     nHeight = pindexPrev->nHeight + 1;
 
-    pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
+    const int32_t nChainId = chainparams.GetConsensus ().nAuxpowChainId;
+    // FIXME: Active version bits after the always-auxpow fork!
+    //const int32_t nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
+    const int32_t nVersion = 4;
+    // pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
+    pblock->SetBaseVersion(nVersion, nChainId);
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios
     if (chainparams.MineBlocksOnDemand())
         pblock->nVersion = GetArg("-blockversion", pblock->nVersion);
+        // pblock->SetBaseVersion(GetArg("-blockversion", pblock->GetBaseVersion()), nChainId);
 
     pblock->nTime = GetAdjustedTime();
     const int64_t nMedianTimePast = pindexPrev->GetMedianTimePast();
@@ -237,10 +246,13 @@ bool BlockAssembler::TestPackage(uint64_t packageSize, int64_t packageSigOpsCost
 // - premature witness (in case segwit transactions are added to mempool before
 //   segwit activation)
 // - serialized size (in case -blockmaxsize is in use)
+// - Namecoin maturity conditions
 bool BlockAssembler::TestPackageTransactions(const CTxMemPool::setEntries& package)
 {
     uint64_t nPotentialBlockSize = nBlockSize; // only used with fNeedSizeAccounting
     BOOST_FOREACH (const CTxMemPool::txiter it, package) {
+        if (!TxAllowedForNamecoin(it->GetTx()))
+            return false;
         if (!IsFinalTx(it->GetTx(), nHeight, nLockTimeCutoff))
             return false;
         if (!fIncludeWitness && !it->GetTx().wit.IsNull())
@@ -299,6 +311,14 @@ bool BlockAssembler::TestForBlock(CTxMemPool::txiter iter)
         return false;
     }
 
+    // Check the DB lock limit won't be exceeded.
+    if (!DbLockLimitOk({iter}))
+        return false;
+
+    // The tx must be valid for Namecoin.
+    if (!TxAllowedForNamecoin(iter->GetTx()))
+        return false;
+
     // Must check that lock times are still valid
     // This can be removed once MTP is always enforced
     // as long as reorgs keep the mempool consistent.
@@ -306,6 +326,59 @@ bool BlockAssembler::TestForBlock(CTxMemPool::txiter iter)
         return false;
 
     return true;
+}
+
+bool
+BlockAssembler::TxAllowedForNamecoin (const CTransaction& tx) const
+{
+  if (!tx.IsNamecoin ())
+    return true;
+
+  bool nameOutFound = false;
+  CNameScript nameOpOut;
+  for (const auto& txOut : tx.vout)
+    {
+      const CNameScript op(txOut.scriptPubKey);
+      if (op.isNameOp ())
+        {
+          nameOutFound = true;
+          nameOpOut = op;
+          break;
+        }
+    }
+
+  if (nameOutFound && nameOpOut.getNameOp () == OP_NAME_FIRSTUPDATE)
+    {
+      for (const auto& txIn : tx.vin)
+        {
+          const COutPoint& prevout = txIn.prevout;
+          CCoins coins;
+          if (!pcoinsTip->GetCoins (prevout.hash, coins))
+            continue;
+
+          const CNameScript op(coins.vout[prevout.n].scriptPubKey);
+          if (op.isNameOp () && op.getNameOp () == OP_NAME_NEW)
+            {
+              const int minHeight = coins.nHeight + MIN_FIRSTUPDATE_DEPTH;
+              if (minHeight > nHeight)
+                return false;
+            }
+        }
+    }
+
+  return true;
+}
+
+bool
+BlockAssembler::DbLockLimitOk (const CTxMemPool::setEntries& candidates) const
+{
+  std::vector<CTransaction> vtx;
+  for (const auto& iter : inBlock)
+    vtx.push_back(iter->GetTx());
+  for (const auto& iter : candidates)
+    vtx.push_back(iter->GetTx());
+
+  return CheckDbLockLimit (vtx);
 }
 
 void BlockAssembler::AddToBlock(CTxMemPool::txiter iter)
@@ -483,7 +556,7 @@ void BlockAssembler::addPackageTxs()
         ancestors.insert(iter);
 
         // Test if all tx's are Final
-        if (!TestPackageTransactions(ancestors)) {
+        if (!TestPackageTransactions(ancestors) || !DbLockLimitOk(ancestors)) {
             if (fUsingModified) {
                 mapModifiedTx.get<ancestor_score>().erase(modit);
                 failedTx.insert(iter);

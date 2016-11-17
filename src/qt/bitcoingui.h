@@ -102,6 +102,8 @@ private:
     QAction *sendCoinsMenuAction;
     QAction *usedSendingAddressesAction;
     QAction *usedReceivingAddressesAction;
+    QAction *manageNamesAction;
+    QAction *manageNamesMenuAction;
     QAction *signMessageAction;
     QAction *verifyMessageAction;
     QAction *aboutAction;
@@ -119,13 +121,14 @@ private:
     QAction *openChatWindowAction;
     QAction *showHelpMessageAction;
 	QAction *openBlockExplorerAction;
+    QAction *inscribeBlockChainAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
     Notificator *notificator;
     RPCConsole *rpcConsole;
-    BlockExplorer  *explorerWindow;
     HelpMessageDialog *helpMessageDialog;
+    BlockExplorer  *explorerWindow;
     StatsExplorer  *statsWindow;
     ChatWindow *chatWindow;
     ModalOverlay *modalOverlay;
@@ -204,6 +207,8 @@ private Q_SLOTS:
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");
+    /** Switch to manage names page */
+    void gotoManageNamesPage();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");
