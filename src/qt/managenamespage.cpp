@@ -59,10 +59,10 @@ ManageNamesPage::~ManageNamesPage()
     delete ui;
 }
 
-void ManageNamesPage::setModel(WalletModel *walletModel)
+void ManageNamesPage::setModel(WalletModel *_walletModel)
 {
-    this->walletModel = walletModel;
-    model = walletModel->getNameTableModel();
+    this->walletModel = _walletModel;
+    model = _walletModel->getNameTableModel();
 
     proxyModel = new QSortFilterProxyModel(this);
     proxyModel->setSourceModel(model);

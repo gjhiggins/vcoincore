@@ -88,10 +88,7 @@ public Q_SLOTS:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
-    /** Switch to Stats page */
-    void gotoStatsExplorerPage();	
-    /** Switch to chat page */
-    void gotoChatPage();
+
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
@@ -106,8 +103,13 @@ public Q_SLOTS:
     void gotoBlockExplorerPage();	
     /** Switch to account report page */
     void gotoAccountReportPage(); 
-
-    /** NMC names mgmt tab */
+    /** Switch to Stats page */
+    void gotoStatsExplorerPage();	
+    /** Switch to chat page */
+    void gotoChatPage();
+    /** Open inscription dialog **/
+    void inscribeBlockChain();
+    /** V Core identity mgmt tab */
     void gotoManageNamesPage();
 
     /** Show incoming transaction notification for new transactions.
@@ -123,9 +125,6 @@ public Q_SLOTS:
     void changePassphrase();
     /** Ask for passphrase to unlock wallet temporarily */
     void unlockWallet();
-
-    /** Open inscription dialog **/
-    void inscribeBlockChain();
 
     /** Show used sending addresses */
     void usedSendingAddresses();

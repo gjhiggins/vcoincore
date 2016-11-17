@@ -219,15 +219,16 @@ void StatsExplorer::loadStakeChart(bool firstRun)
 
     if(!firstRun)
     {
-        uint64_t nMinWeight = 0, nMaxWeight = 0, nWeight = 0;
-        nWeight = nMinWeight * nMaxWeight;
+        uint64_t nMinWeight = 0, nMaxWeight = 0;
+        // uint64_t nWeight = 0;
+        // nWeight = nMinWeight * nMaxWeight;
         // pwalletMain->GetStakeWeight(*pwalletMain, nMinWeight, nMaxWeight, nWeight);
 
-        uint64_t nNetworkWeight = 0;
+        // uint64_t nNetworkWeight = 0;
         // if(pindexBest)
         //    nNetworkWeight = GetPoSKernelPS();
         // bool staking = nLastCoinStakeSearchInterval && nWeight;
-        bool staking = false;
+        // bool staking = false;
         // int nExpectedTime = staking ? (nTargetSpacing * nNetworkWeight / nWeight) : -1;
         /*
         ui->stakingLabel->setText(staking ? "Enabled" : "Disabled");

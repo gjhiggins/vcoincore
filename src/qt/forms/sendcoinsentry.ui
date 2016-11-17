@@ -195,10 +195,10 @@
     <item row="3" column="1">
      <widget class="QLineEdit" name="messageTextLabel">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="toolTip">
-       <string>A message that was attached to the vcoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the VCoin network.</string>
+       <string>A message that was attached to the vcore: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the V Core network.</string>
       </property>
      </widget>
     </item>

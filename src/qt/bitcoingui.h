@@ -120,6 +120,7 @@ private:
 	QAction *openStatsExplorerAction;
     QAction *openChatWindowAction;
     QAction *showHelpMessageAction;
+    QAction *accountReportAction;
 	QAction *openBlockExplorerAction;
     QAction *inscribeBlockChainAction;
 
@@ -142,7 +143,6 @@ private:
     /** Create the main UI actions. */
     void createActions();
     /** Create the menu bar and sub-menus. */
-    QAction *accountReportAction;
     void createMenuBar();
     /** Create the toolbars */
     void createToolBars();
@@ -207,20 +207,20 @@ private Q_SLOTS:
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");
-    /** Switch to manage names page */
-    void gotoManageNamesPage();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
     
+    /** Switch to Stats Page */
+    void gotoStatsExplorerPage(); 
     /** Switch to Explorer Page */
     void gotoBlockExplorerPage(); 
     /** Switch to account report page */
     void gotoAccountReportPage();
-    /** Switch to Stats Page */
-    void gotoStatsExplorerPage(); 
+    /** Switch to manage names page */
+    void gotoManageNamesPage();
 	/** Switch to chat page */
     void gotoChatPage();
 

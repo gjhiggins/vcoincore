@@ -18,21 +18,6 @@
 
 #include "chainparamsseeds.h"
 
-bool CChainParams::IsHistoricBug(const uint256& txid, unsigned nHeight, BugType& type) const
-{
-    const std::pair<unsigned, uint256> key(nHeight, txid);
-    std::map<std::pair<unsigned, uint256>, BugType>::const_iterator mi;
-
-    mi = mapHistoricBugs.find (key);
-    if (mi != mapHistoricBugs.end ())
-    {
-        type = mi->second;
-        return true;
-    }
-
-    return false;
-}
-
 static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesisOutputScript, uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
     CMutableTransaction txNew;
@@ -84,6 +69,8 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
  */
 
 class CMainParams : public CChainParams {
+// protected:
+//     Consensus::Params digishieldConsensus;
 public:
     CMainParams() {
         strNetworkID = "main";
@@ -125,6 +112,14 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = 1479168000; // November 15th, 2016.
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 1510704000; // November 15th, 2017.
 
+        // Blocks 1,500,000 -> are Digishielded
+        // digishieldConsensus = ;
+        // digishieldConsensus.nHeightEffective = 1500000;
+        // digishieldConsensus.fSimplifiedRewards = true;
+        // digishieldConsensus.fDigishieldDifficultyCalculation = true;
+        // digishieldConsensus.nPowTargetTimespan = 30; // 30s
+        // digishieldConsensus.nCoinbaseMaturity = 30;
+
         /**
          * The message start string is designed to be unlikely to occur in normal data.
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
@@ -142,6 +137,9 @@ public:
         LogPrintf("mainnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
         LogPrintf("mainnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
         LogPrintf("mainnet: %s\n", consensus.powLimit.ToString().c_str());
+
+        // digishieldConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
+
         // genesis.print();
 
         /*
@@ -182,7 +180,7 @@ public:
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,224);
         base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >(); // xpub
         base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xAD)(0xE4).convert_to_container<std::vector<unsigned char> >(); // xprv
-        base58Prefixes[EXT_COIN_TYPE]  = boost::assign::list_of(0x80000028); // BIP44 coin type is '28'
+        /* base58Prefixes[EXT_COIN_TYPE]  = boost::assign::list_of(0x80000028); // BIP44 coin type is '28' */
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
 
@@ -308,7 +306,7 @@ public:
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,255);
         base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >(); // 'tpub'
         base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >(); // 'tpriv'
-        base58Prefixes[EXT_COIN_TYPE]  = boost::assign::list_of(0x80000028); // BIP44 coin type is '28'
+        /* base58Prefixes[EXT_COIN_TYPE]  = boost::assign::list_of(0x80000028); // BIP44 coin type is '28' */
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
 
@@ -325,7 +323,6 @@ public:
             2880
         };
 
-        assert(mapHistoricBugs.empty());
     }
 
     int DefaultCheckNameDB () const
@@ -365,11 +362,6 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = 0;
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 999999999999ULL;
 
-        consensus.nAuxpowStartHeight = 0;
-        consensus.nAuxpowChainId = 0x0001;
-        consensus.fStrictChainId = true;
-        consensus.nLegacyBlocksBefore = 0;
-
         consensus.rules.reset(new Consensus::RegTestConsensus());
 
         pchMessageStart[0] = 0xfa;
@@ -408,7 +400,7 @@ public:
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
         base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >(); // 'tpub'
         base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >(); // 'tpriv'
-        base58Prefixes[EXT_COIN_TYPE]  = boost::assign::list_of(0x80000028); // BIP44 coin type is '28'
+        /* base58Prefixes[EXT_COIN_TYPE]  = boost::assign::list_of(0x80000028); // BIP44 coin type is '28' */
 
         assert(mapHistoricBugs.empty());
     }

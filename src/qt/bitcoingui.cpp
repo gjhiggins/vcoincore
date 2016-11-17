@@ -12,7 +12,6 @@
 #include "clientmodel.h"
 #include "guiconstants.h"
 #include "guiutil.h"
-#include "managenamespage.h"
 #include "modaloverlay.h"
 #include "networkstyle.h"
 #include "notificator.h"
@@ -21,7 +20,6 @@
 #include "optionsmodel.h"
 #include "platformstyle.h"
 #include "rpcconsole.h"
-#include "chatwindow.h"
 #include "utilitydialog.h"
 
 #ifdef ENABLE_WALLET
@@ -30,6 +28,8 @@
 #include "blockexplorer.h"
 #include "statsexplorer.h"
 #include "reportview.h"
+#include "managenamespage.h"
+#include "chatwindow.h"
 #endif // ENABLE_WALLET
 
 #ifdef Q_OS_MAC
@@ -340,14 +340,14 @@ void BitcoinGUI::createActions()
     accountReportAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
     tabGroup->addAction(accountReportAction);
 
-    manageNamesAction = new QAction(QIcon(":/icons/bitcoin"), tr("&Manage Names"), this);
-    manageNamesAction->setStatusTip(tr("Manage names registered via Namecoin"));
+    manageNamesAction = new QAction(platformStyle->SingleColorIcon(":/icons/names"), tr("&Names"), this);
+    manageNamesAction->setStatusTip(tr("Manage names."));
     manageNamesAction->setToolTip(manageNamesAction->statusTip());
     manageNamesAction->setCheckable(true);
     manageNamesAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
     tabGroup->addAction(manageNamesAction);
 
-    manageNamesMenuAction = new QAction(QIcon(":/icons/bitcoin"), manageNamesAction->text(), this);
+    manageNamesMenuAction = new QAction(platformStyle->SingleColorIcon(":/icons/names"), manageNamesAction->text(), this);
     manageNamesMenuAction->setStatusTip(manageNamesAction->statusTip());
     manageNamesMenuAction->setToolTip(manageNamesMenuAction->statusTip());
 
@@ -396,8 +396,6 @@ void BitcoinGUI::createActions()
     backupWalletAction = new QAction(platformStyle->TextColorIcon(":/icons/filesave"), tr("&Backup Wallet..."), this);
     backupWalletAction->setStatusTip(tr("Backup wallet to another location"));
     changePassphraseAction = new QAction(platformStyle->TextColorIcon(":/icons/key"), tr("&Change Passphrase..."), this);
-    openChatWindowAction = new QAction(platformStyle->TextColorIcon(":/icons/chat"), tr("&Chat window"), this);
-    openChatWindowAction->setStatusTip(tr("Chat window"));
 
     changePassphraseAction->setStatusTip(tr("Change the passphrase used for wallet encryption"));
     signMessageAction = new QAction(platformStyle->TextColorIcon(":/icons/edit"), tr("Sign &message..."), this);
@@ -422,10 +420,10 @@ void BitcoinGUI::createActions()
     openBlockExplorerAction->setStatusTip(tr("Block explorer window"));
     openStatsExplorerAction = new QAction(platformStyle->TextColorIcon(":/icons/stats"), tr("&Statistics explorer"), this);
     openStatsExplorerAction->setStatusTip(tr("Statistics"));
-
+    openChatWindowAction = new QAction(platformStyle->TextColorIcon(":/icons/chat"), tr("&Chat window"), this);
+    openChatWindowAction->setStatusTip(tr("Chat window"));
     inscribeBlockChainAction = new QAction(platformStyle->TextColorIcon(":/icons/inscribe"), tr("&Inscribe block"), this);
     inscribeBlockChainAction->setStatusTip(tr("Indelibly inscribe the block"));
-    
 
     showHelpMessageAction = new QAction(platformStyle->TextColorIcon(":/icons/info"), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
@@ -767,12 +765,6 @@ void BitcoinGUI::gotoSendCoinsPage(QString addr)
     if (walletFrame) walletFrame->gotoSendCoinsPage(addr);
 }
 
-void BitcoinGUI::gotoManageNamesPage()
-{
-    manageNamesAction->setChecked(true);
-    if (walletFrame) walletFrame->gotoManageNamesPage();
-}
-
 void BitcoinGUI::gotoSignMessageTab(QString addr)
 {
     if (walletFrame) walletFrame->gotoSignMessageTab(addr);
@@ -782,10 +774,29 @@ void BitcoinGUI::gotoVerifyMessageTab(QString addr)
 {
     if (walletFrame) walletFrame->gotoVerifyMessageTab(addr);
 }
+
 void BitcoinGUI::gotoStatsExplorerPage()
 {
     openStatsExplorerAction->setChecked(true);
     if (walletFrame) walletFrame->gotoStatsExplorerPage();
+}
+
+void BitcoinGUI::gotoBlockExplorerPage()
+{
+    openBlockExplorerAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoBlockExplorerPage();
+}
+
+void BitcoinGUI::gotoAccountReportPage()
+{
+    accountReportAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoAccountReportPage();
+}
+
+void BitcoinGUI::gotoManageNamesPage()
+{
+    manageNamesAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoManageNamesPage();
 }
 
 void BitcoinGUI::gotoChatPage()
@@ -1205,18 +1216,6 @@ void BitcoinGUI::showModalOverlay()
 {
     if (modalOverlay)
         modalOverlay->showHide(false, true);
-}
-
-void BitcoinGUI::gotoAccountReportPage()
-{
-		accountReportAction->setChecked(true);
-    if (walletFrame) walletFrame->gotoAccountReportPage();
-}
-
-void BitcoinGUI::gotoBlockExplorerPage()
-{
-    openBlockExplorerAction->setChecked(true);
-    if (walletFrame) walletFrame->gotoBlockExplorerPage();
 }
 
 static bool ThreadSafeMessageBox(BitcoinGUI *gui, const std::string& message, const std::string& caption, unsigned int style)
