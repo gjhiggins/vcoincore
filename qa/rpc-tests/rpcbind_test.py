@@ -43,7 +43,7 @@ class RPCBindTest(BitcoinTestFramework):
 
     def run_allowip_test(self, allow_ips, rpchost, rpcport):
         '''
-        Start a node with rpcallow IP, and request getnetworkinfo
+        Start a node with rpcallow IP, and request getinfo
         at a non-localhost IP.
         '''
         base_args = ['-disablewallet', '-nolisten'] + ['-rpcallowip='+x for x in allow_ips]
