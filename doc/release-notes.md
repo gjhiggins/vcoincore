@@ -5,8 +5,8 @@ Bitcoin Core version *version* is now available from:
 
   <https://bitcoin.org/bin/bitcoin-core-*version*/>
 
-This is a new minor version release, including ..., various bugfixes and
-performance improvements, as well as updated translations.
+This is a new major version release, including new features, various bugfixes
+and performance improvements, as well as updated translations.
 
 Please report bugs using the issue tracker at github:
 
@@ -38,17 +38,18 @@ No attempt is made to prevent installing or running the software on Windows XP,
 you can still do so at your own risk, but do not expect it to work: do not
 report issues about Windows XP to the issue tracker.
 
-From 0.13.1 onwards OS X 10.7 is no longer supported. 0.13.0 was intended to work on 10.7+, 
-but severe issues with the libc++ version on 10.7.x keep it from running reliably. 
-0.13.1 now requires 10.8+, and will communicate that to 10.7 users, rather than crashing unexpectedly.
-
 Notable changes
 ===============
 
-Example item
----------------
+Low-level RPC changes
+----------------------
 
-0.13.x Change log
+- `importprunedfunds` only accepts two required arguments. Some versions accept
+  an optional third arg, which was always ignored. Make sure to never pass more
+  than two arguments.
+
+
+0.14.0 Change log
 =================
 
 Detailed release notes follow. This overview includes changes that affect
@@ -56,13 +57,38 @@ behavior, not code moves, refactors and string updates. For convenience in locat
 the code changes and accompanying discussion, both the pull request and
 git merge commit are mentioned.
 
-(to be filled in at release time)
+### RPC and REST
+
+UTXO set query (`GET /rest/getutxos/<checkmempool>/<txid>-<n>/<txid>-<n>/.../<txid>-<n>.<bin|hex|json>`) responses
+were changed to return status code HTTP_BAD_REQUEST (400) instead of HTTP_INTERNAL_SERVER_ERROR (500) when requests
+contain invalid parameters.
+
+The first boolean argument to `getaddednodeinfo` has been removed. This is an incompatible change.
+
+Call "getmininginfo" loses the "testnet" field in favor of the more generic "chain" (which has been present for years).
+
+### Configuration and command-line options
+
+### Block and transaction handling
+
+### P2P protocol and network code
+
+### Validation
+
+### Build system
+
+### Wallet
+
+### GUI
+
+### Tests
+
+### Miscellaneous
 
 Credits
 =======
 
 Thanks to everyone who directly contributed to this release:
 
-(to be filled in at release time)
 
 As well as everyone that helped translating on [Transifex](https://www.transifex.com/projects/p/bitcoin/).

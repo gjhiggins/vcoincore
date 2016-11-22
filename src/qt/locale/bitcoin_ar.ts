@@ -23,7 +23,7 @@
     </message>
     <message>
         <source>C&amp;lose</source>
-        <translation>ا&amp;غلاق</translation>
+        <translation>&amp;اغلاق</translation>
     </message>
     <message>
         <source>Delete the currently selected address from the list</source>
@@ -41,10 +41,7 @@
         <source>&amp;Delete</source>
         <translation>&amp;أمسح</translation>
     </message>
-    </context>
-<context>
-    <name>AddressTableModel</name>
-    </context>
+</context>
 <context>
     <name>AskPassphraseDialog</name>
     <message>
@@ -63,7 +60,7 @@
         <source>Repeat new passphrase</source>
         <translation>ادخل كلمة المرور الجديدة مرة أخرى</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>BanTableModel</name>
     <message>
@@ -414,7 +411,7 @@
         <source>Priority</source>
         <translation>أفضلية</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>EditAddressDialog</name>
     <message>
@@ -437,7 +434,7 @@
         <source>&amp;Address</source>
         <translation>&amp;العنوان</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>FreespaceChecker</name>
     <message>
@@ -541,7 +538,7 @@
         <source>Select payment request file</source>
         <translation>حدد ملف طلب الدفع</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>OptionsDialog</name>
     <message>
@@ -665,9 +662,6 @@
     </message>
     </context>
 <context>
-    <name>PaymentServer</name>
-    </context>
-<context>
     <name>PeerTableModel</name>
     </context>
 <context>
@@ -688,9 +682,6 @@
         <source>N/A</source>
         <translation>غير معروف</translation>
     </message>
-    </context>
-<context>
-    <name>QRImageWidget</name>
     </context>
 <context>
     <name>RPCConsole</name>
@@ -877,7 +868,7 @@
         <source>Remove</source>
         <translation>ازل</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>ReceiveRequestDialog</name>
     <message>
@@ -896,10 +887,7 @@
         <source>&amp;Save Image...</source>
         <translation>&amp;حفظ الصورة</translation>
     </message>
-    </context>
-<context>
-    <name>RecentRequestsTableModel</name>
-    </context>
+</context>
 <context>
     <name>SendCoinsDialog</name>
     <message>
@@ -990,7 +978,7 @@
         <source>S&amp;end</source>
         <translation>&amp;ارسال</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>SendCoinsEntry</name>
     <message>
@@ -1041,9 +1029,6 @@
         <source>Pay To:</source>
         <translation>ادفع &amp;الى :</translation>
     </message>
-    </context>
-<context>
-    <name>SendConfirmationDialog</name>
     </context>
 <context>
     <name>ShutdownWindow</name>
@@ -1114,32 +1099,14 @@
     <name>TrafficGraphWidget</name>
     </context>
 <context>
-    <name>TransactionDesc</name>
-    </context>
-<context>
     <name>TransactionDescDialog</name>
     <message>
         <source>This pane shows a detailed description of the transaction</source>
         <translation>يبين هذا الجزء وصفا مفصلا لهده المعاملة</translation>
     </message>
-    </context>
-<context>
-    <name>TransactionTableModel</name>
-    </context>
-<context>
-    <name>TransactionView</name>
-    </context>
+</context>
 <context>
     <name>UnitDisplayStatusBarControl</name>
-    </context>
-<context>
-    <name>WalletFrame</name>
-    </context>
-<context>
-    <name>WalletModel</name>
-    </context>
-<context>
-    <name>WalletView</name>
     </context>
 <context>
     <name>bitcoin-core</name>

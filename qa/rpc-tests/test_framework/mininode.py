@@ -526,7 +526,6 @@ class CTransaction(object):
         return "CTransaction(nVersion=%i vin=%s vout=%s wit=%s nLockTime=%i)" \
             % (self.nVersion, repr(self.vin), repr(self.vout), repr(self.wit), self.nLockTime)
 
-/*
 class CAuxPow(CTransaction):
     def __init__(self):
         super(CAuxPow, self).__init__()
@@ -556,7 +555,6 @@ class CAuxPow(CTransaction):
         r += struct.pack("<I", self.nChainIndex)
         r += self.parentBlock.serialize()
         return r
-*/
 
 class CBlockHeader(object):
     def __init__(self, header=None):

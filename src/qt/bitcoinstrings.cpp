@@ -84,8 +84,8 @@ QT_TRANSLATE_NOOP("v-core", ""
 "Fees (in %s/kB) smaller than this are considered zero fee for transaction "
 "creation (default: %s)"),
 QT_TRANSLATE_NOOP("v-core", ""
-"Force relay of transactions from whitelisted peers even if they violate "
-"local relay policy (default: %d)"),
+"Force relay of transactions from whitelisted peers even they violate local "
+"relay policy (default: %d)"),
 QT_TRANSLATE_NOOP("v-core", ""
 "How thorough the block verification of -checkblocks is (0-4, default: %u)"),
 QT_TRANSLATE_NOOP("v-core", ""
@@ -325,7 +325,6 @@ QT_TRANSLATE_NOOP("v-core", "Specify pid file (default: %s)"),
 QT_TRANSLATE_NOOP("v-core", "Specify wallet file (within data directory)"),
 QT_TRANSLATE_NOOP("v-core", "Specify your own public address"),
 QT_TRANSLATE_NOOP("v-core", "Spend unconfirmed change when sending transactions (default: %u)"),
-QT_TRANSLATE_NOOP("v-core", "Starting network threads..."),
 QT_TRANSLATE_NOOP("v-core", "The source code is available from %s."),
 QT_TRANSLATE_NOOP("v-core", "The transaction amount is too small to pay the fee"),
 QT_TRANSLATE_NOOP("v-core", "This is experimental software."),
