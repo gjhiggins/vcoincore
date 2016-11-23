@@ -15,7 +15,6 @@ class SendCoinsRecipient;
 
 namespace Ui {
     class HelpMessageDialog;
-    class InscriptionDialog;
 }
 
 /** "Help message" dialog box */
@@ -50,31 +49,6 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *event);
-};
-
-
-/** "Inscription" dialog box */
-class InscriptionDialog : public QDialog
-{
-    Q_OBJECT
-
-public:
-    explicit InscriptionDialog(QWidget *parent);
-    ~InscriptionDialog();
-
-    void setModel(WalletModel *model);
-
-private:
-    Ui::InscriptionDialog *ui;
-    WalletModel *model;
-    void processSendCoinsReturn(const WalletModel::SendCoinsReturn &sendCoinsReturn, const QString &msgArg = QString());
-
-private Q_SLOTS:
-    void on_insertButton_clicked();
-    void on_pushButton_clicked();
-    
-Q_SIGNALS: 
-    void message(const QString &title, const QString &message, unsigned int style);
 };
 
 #endif // BITCOIN_QT_UTILITYDIALOG_H

@@ -109,10 +109,7 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry)
     entry.push_back(Pair("vsize", (int)::GetVirtualTransactionSize(tx)));
     entry.push_back(Pair("version", tx.nVersion));
     entry.push_back(Pair("locktime", (int64_t)tx.nLockTime));
-    if (tx.nVersion > 1) {
-       entry.push_back(Pair("tx-reference", tx.strTxReference));
-       entry.push_back(Pair("product-id", (boost::int64_t)tx.nSemTypeID));
-    }
+
     UniValue vin(UniValue::VARR);
     for (unsigned int i = 0; i < tx.vin.size(); i++) {
         const CTxIn& txin = tx.vin[i];

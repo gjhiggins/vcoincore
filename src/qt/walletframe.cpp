@@ -230,13 +230,6 @@ void WalletFrame::gotoBlockExplorerPage()
         i.value()->gotoBlockExplorerPage();
 }
 
-void WalletFrame::inscribeBlockChain()
-{
-    WalletView *walletView = currentWalletView();
-    if (walletView)
-        walletView->inscribeBlockChain();
-}
-
 void WalletFrame::gotoManageNamesPage()
 {
     QMap<QString, WalletView*>::const_iterator i;

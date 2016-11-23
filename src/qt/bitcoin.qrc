@@ -30,7 +30,6 @@
         <file alias="edit">res/icons/edit.png</file>
         <file alias="explorer">res/icons/explorer.png</file>
         <file alias="history">res/icons/history.png</file>
-        <file alias="inscribe">res/icons/inscribe.png</file>
         <file alias="logo">res/icons/logo.png</file>
         <file alias="names">res/icons/names.png</file>
         <file alias="overview">res/icons/overview.png</file>

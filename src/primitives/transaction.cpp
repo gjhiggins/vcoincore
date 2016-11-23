@@ -170,13 +170,6 @@ int64_t GetTransactionWeight(const CTransaction& tx)
     return ::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) * (WITNESS_SCALE_FACTOR -1) + ::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION);
 }
 
-// Inscription Fee
-int64_t CTransaction::GetInscriptionFee() const {
-    int64_t nInscriptionFee = 0;
-    nInscriptionFee = REFERENCE_FEE_PER_CHAR * strTxReference.size();
-    return nInscriptionFee;
-}
-
 // OP_RETURN Fees: Encourage use of services
 // You get 1 stealth secret free for each non OP_RETURN Output
 // But you pay for non OP_Return outputs

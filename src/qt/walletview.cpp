@@ -225,16 +225,6 @@ void WalletView::gotoSendCoinsPage(QString addr)
         sendCoinsPage->setAddress(addr);
 }
 
-void WalletView::gotoStatsExplorerPage()
-{
-    setCurrentWidget(statsExplorerPage);
-}
-
-void WalletView::gotoManageNamesPage()
-{
-    setCurrentWidget(manageNamesPage);
-}
-
 void WalletView::gotoSignMessageTab(QString addr)
 {
     // calls show() in showTab_SM()
@@ -387,12 +377,12 @@ void WalletView::gotoChatPage()
     setCurrentWidget(chatWindow);
 }
 
-void WalletView::inscribeBlockChain()
+void WalletView::gotoStatsExplorerPage()
 {
-    if(!walletModel)
-        return;
+    setCurrentWidget(statsExplorerPage);
+}
 
-    InscriptionDialog dlg(this);
-    dlg.setModel(walletModel);
-    dlg.exec();
+void WalletView::gotoManageNamesPage()
+{
+    setCurrentWidget(manageNamesPage);
 }

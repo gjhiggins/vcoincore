@@ -122,8 +122,8 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     trayIconMenu(0),
     notificator(0),
     rpcConsole(0),
-    explorerWindow(0),
     helpMessageDialog(0),
+    explorerWindow(0),
     statsWindow(0),
     chatWindow(0),
     modalOverlay(0),
@@ -422,8 +422,6 @@ void BitcoinGUI::createActions()
     openStatsExplorerAction->setStatusTip(tr("Statistics"));
     openChatWindowAction = new QAction(platformStyle->TextColorIcon(":/icons/chat"), tr("&Chat window"), this);
     openChatWindowAction->setStatusTip(tr("Chat window"));
-    inscribeBlockChainAction = new QAction(platformStyle->TextColorIcon(":/icons/inscribe"), tr("&Inscribe block"), this);
-    inscribeBlockChainAction->setStatusTip(tr("Indelibly inscribe the block"));    
 
     showHelpMessageAction = new QAction(platformStyle->TextColorIcon(":/icons/info"), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
@@ -450,7 +448,6 @@ void BitcoinGUI::createActions()
         connect(usedSendingAddressesAction, SIGNAL(triggered()), walletFrame, SLOT(usedSendingAddresses()));
         connect(usedReceivingAddressesAction, SIGNAL(triggered()), walletFrame, SLOT(usedReceivingAddresses()));
         connect(openAction, SIGNAL(triggered()), this, SLOT(openClicked()));
-        connect(inscribeBlockChainAction, SIGNAL(triggered()), walletFrame, SLOT(inscribeBlockChain()));
     }
 #endif // ENABLE_WALLET
 
@@ -489,7 +486,6 @@ void BitcoinGUI::createMenuBar()
         settings->addAction(encryptWalletAction);
         settings->addAction(changePassphraseAction);
         settings->addSeparator();
-        settings->addSeparator();
     }
     settings->addAction(optionsAction);
 
@@ -497,7 +493,6 @@ void BitcoinGUI::createMenuBar()
     if(walletFrame)
     {
         data->addAction(openBlockExplorerAction);
-        data->addAction(inscribeBlockChainAction);
         data->addAction(openStatsExplorerAction);
     	data->addAction(openChatWindowAction);
     }
@@ -625,7 +620,6 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     usedReceivingAddressesAction->setEnabled(enabled);
     openAction->setEnabled(enabled);
     accountReportAction->setEnabled(enabled);
-    inscribeBlockChainAction->setEnabled(enabled);
     openChatWindowAction->setEnabled(enabled);
 }
 

@@ -16,7 +16,6 @@ class WalletModel;
 class ChatWindow;
 class WalletView;
 class BlockExplorer;
-class InscriptionDialog;
 class statsExplorer;
 
 QT_BEGIN_NAMESPACE
@@ -80,8 +79,6 @@ public Q_SLOTS:
     void gotoBlockExplorerPage();	
     /** Switch to account report page */
     void gotoAccountReportPage();
-    /** Open inscription dialog **/
-    void inscribeBlockChain();
     /** Switch to manage names page */
     void gotoManageNamesPage();
 	/** Switch to chat page */

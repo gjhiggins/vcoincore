@@ -2165,8 +2165,7 @@ bool CWallet::FundTransaction(CMutableTransaction& tx, CAmount& nFeeRet, bool ov
 
     CReserveKey reservekey(this);
     CWalletTx wtx;
-    std::string strTxReference = "";
-    if (!CreateTransaction(vecSend, NULL, wtx, reservekey, nFeeRet, nChangePosInOut, strFailReason, strTxReference, &coinControl, false))
+    if (!CreateTransaction(vecSend, NULL, wtx, reservekey, nFeeRet, nChangePosInOut, strFailReason, &coinControl, false))
         return false;
 
     if (nChangePosInOut != -1)
@@ -2198,7 +2197,6 @@ bool CWallet::CreateTransaction(
      CAmount& nFeeRet,
      int& nChangePosInOut,
      std::string& strFailReason,
-     std::string& strTxReference,
      const CCoinControl* coinControl,
      bool sign)
 {
@@ -2258,14 +2256,6 @@ bool CWallet::CreateTransaction(
     CMutableTransaction txNew;
     if (isNamecoin)
         txNew.SetNamecoin();
-
-    // Semantic type
-    wtxNew.nSemTypeID = 1;
-    // Public reference
-    wtxNew.strTxReference = strTxReference;
-    if (wtxNew.strTxReference.length() > MAX_TX_REFERENCE_LEN) {
-           wtxNew.strTxReference.resize(MAX_TX_REFERENCE_LEN);
-    }
 
     // Discourage fee sniping.
     //

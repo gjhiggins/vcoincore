@@ -263,8 +263,6 @@ void SendCoinsDialog::on_sendButton_clicked()
     if(!model || !model->getOptionsModel())
         return;
 
-    QString txreference = ui->editTxComment->text();
-
     QList<SendCoinsRecipient> recipients;
     bool valid = true;
 
@@ -302,11 +300,9 @@ void SendCoinsDialog::on_sendButton_clicked()
     WalletModelTransaction currentTransaction(recipients);
     WalletModel::SendCoinsReturn prepareStatus;
     if (model->getOptionsModel()->getCoinControlFeatures()) // coin control enabled
-        // FIXME: Add txreference
-        prepareStatus = model->prepareTransaction(currentTransaction, txreference, CoinControlDialog::coinControl);
+        prepareStatus = model->prepareTransaction(currentTransaction, CoinControlDialog::coinControl);
     else
-        // FIXME: Add txreference
-        prepareStatus = model->prepareTransaction(currentTransaction, txreference);
+        prepareStatus = model->prepareTransaction(currentTransaction);
 
     // process prepareStatus and on error generate message shown to user
     processSendCoinsReturn(prepareStatus,
