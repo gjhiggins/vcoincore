@@ -25,7 +25,7 @@ CTxMemPoolEntry::CTxMemPoolEntry(const CTransaction& _tx, const CAmount& _nFee,
                                  int64_t _nTime, double _entryPriority, unsigned int _entryHeight,
                                  bool poolHasNoInputsOf, CAmount _inChainInputValue,
                                  bool _spendsCoinbase, int64_t _sigOpsCost, LockPoints lp):
-    tx(std::make_shared<CTransaction>(_tx)), nFee(_nFee), nTime(_nTime), entryPriority(_entryPriority), entryHeight(_entryHeight),
+    tx(MakeTransactionRef(_tx)), nFee(_nFee), nTime(_nTime), entryPriority(_entryPriority), entryHeight(_entryHeight),
     hadNoDependencies(poolHasNoInputsOf), inChainInputValue(_inChainInputValue),
     spendsCoinbase(_spendsCoinbase), sigOpCost(_sigOpsCost), lockPoints(lp),
     nameOp()
@@ -524,7 +524,7 @@ void CTxMemPool::CalculateDescendants(txiter entryit, setEntries &setDescendants
     }
 }
 
-void CTxMemPool::removeRecursive(const CTransaction &origTx, std::vector<std::shared_ptr<const CTransaction>>* removed)
+void CTxMemPool::removeRecursive(const CTransaction &origTx, std::vector<CTransactionRef>* removed)
 {
     // Remove transaction from memory pool
     {
@@ -597,7 +597,7 @@ void CTxMemPool::removeForReorg(const CCoinsViewCache *pcoins, unsigned int nMem
     RemoveStaged(setAllRemoves, false);
 }
 
-void CTxMemPool::removeConflicts(const CTransaction &tx, std::vector<std::shared_ptr<const CTransaction>>* removed, std::list<CTransaction>& removedNames)
+void CTxMemPool::removeConflicts(const CTransaction &tx, std::vector<CTransactionRef>* removed, std::list<CTransaction>& removedNames)
 {
     // Remove transactions which depend on inputs of tx, recursively
     LOCK(cs);
@@ -614,30 +614,28 @@ void CTxMemPool::removeConflicts(const CTransaction &tx, std::vector<std::shared
     }
 
     /* Remove conflicting name registrations.  */
-    names.removeConflicts (tx, removedNames);
+    names.removeConflicts (tx, removedNames, NULL, NULL);
 }
 
 /**
  * Called when a block is connected. Removes from mempool and updates the miner fee estimator.
  */
-void CTxMemPool::removeForBlock(const std::vector<CTransaction>& vtx, unsigned int nBlockHeight,
-                                std::vector<std::shared_ptr<const CTransaction>>* conflicts,
-                                std::list<CTransaction>& nameConflicts,
-                                bool fCurrentEstimate)
+void CTxMemPool::removeForBlock(const std::vector<CTransactionRef>& vtx, unsigned int nBlockHeight,
+                                std::vector<CTransactionRef>* conflicts, bool fCurrentEstimate, std::list<CTransaction>& nameConflicts,)
 {
     LOCK(cs);
     std::vector<CTxMemPoolEntry> entries;
-    BOOST_FOREACH(const CTransaction& tx, vtx)
+    for (const auto& tx : vtx)
     {
-        uint256 hash = tx.GetHash();
+        uint256 hash = tx->GetHash();
 
         indexed_transaction_set::iterator i = mapTx.find(hash);
         if (i != mapTx.end())
             entries.push_back(*i);
     }
-    BOOST_FOREACH(const CTransaction& tx, vtx)
+    for (const auto& tx : vtx)
     {
-        txiter it = mapTx.find(tx.GetHash());
+        txiter it = mapTx.find(tx->GetHash());
         if (it != mapTx.end()) {
             setEntries stage;
             stage.insert(it);
@@ -880,7 +878,7 @@ std::vector<TxMempoolInfo> CTxMemPool::infoAll() const
     return ret;
 }
 
-std::shared_ptr<const CTransaction> CTxMemPool::get(const uint256& hash) const
+CTransactionRef CTxMemPool::get(const uint256& hash) const
 {
     LOCK(cs);
     indexed_transaction_set::const_iterator i = mapTx.find(hash);
@@ -1007,7 +1005,7 @@ bool CCoinsViewMemPool::GetCoins(const uint256 &txid, CCoins &coins) const {
     // If an entry in the mempool exists, always return that one, as it's guaranteed to never
     // conflict with the underlying cache, and it cannot have pruned entries (as it contains full)
     // transactions. First checking the underlying cache risks returning a pruned entry instead.
-    shared_ptr<const CTransaction> ptx = mempool.get(txid);
+    CTransactionRef ptx = mempool.get(txid);
     if (ptx) {
         coins = CCoins(*ptx, MEMPOOL_HEIGHT);
         return true;
