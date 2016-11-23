@@ -23,7 +23,6 @@ class WalletModel;
 class AddressBookPage;
 class ReportView;
 class BlockExplorer;
-class InscriptionDialog;
 class StatsExplorer;
 
 QT_BEGIN_NAMESPACE
@@ -88,10 +87,6 @@ public Q_SLOTS:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
-    /** Switch to Stats page */
-    void gotoStatsExplorerPage();	
-    /** Switch to chat page */
-    void gotoChatPage();
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
@@ -104,10 +99,12 @@ public Q_SLOTS:
     
     /** Switch to explorer page */
     void gotoBlockExplorerPage();	
+    /** Switch to Stats page */
+    void gotoStatsExplorerPage();	
+    /** Switch to chat page */
+    void gotoChatPage();
     /** Switch to account report page */
     void gotoAccountReportPage(); 
-    /** Open inscription dialog **/
-    void inscribeBlockChain();
     /** V Core identity mgmt tab */
     void gotoManageNamesPage();
 

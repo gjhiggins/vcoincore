@@ -117,11 +117,11 @@ private:
     QAction *aboutQtAction;
     QAction *openRPCConsoleAction;
     QAction *openAction;
+    QAction *showHelpMessageAction;
 	QAction *openStatsExplorerAction;
     QAction *openChatWindowAction;
-    QAction *showHelpMessageAction;
 	QAction *openBlockExplorerAction;
-    QAction *inscribeBlockChainAction;
+    QAction *accountReportAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
@@ -142,7 +142,6 @@ private:
     /** Create the main UI actions. */
     void createActions();
     /** Create the menu bar and sub-menus. */
-    QAction *accountReportAction;
     void createMenuBar();
     /** Create the toolbars */
     void createToolBars();

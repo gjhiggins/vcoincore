@@ -800,7 +800,6 @@ public:
         CAmount& nFeeRet,
         int& nChangePosRet,
         std::string& strFailReason,
-        std::string& strTxReference,
         const CCoinControl *coinControl = NULL,
         bool sign = true);
     bool CommitTransaction(CWalletTx& wtxNew, CReserveKey& reservekey, CConnman* connman);
