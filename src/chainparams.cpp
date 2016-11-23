@@ -120,6 +120,10 @@ public:
         // digishieldConsensus.nPowTargetTimespan = 30; // 30s
         // digishieldConsensus.nCoinbaseMaturity = 30;
 
+        // The best chain should have at least this much work.
+        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000002cb971dd56d1c583c20f90");
+
+
         /**
          * The message start string is designed to be unlikely to occur in normal data.
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
@@ -286,6 +290,10 @@ public:
         pchMessageStart[2] = 0xfe;
         pchMessageStart[3] = 0x05;
         nDefaultPort = 55534;
+
+        // The best chain should have at least this much work.
+        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000198b4def2baa9338d6");
+
         nPruneAfterHeight = 1000;
 
         genesis = CreateGenesisBlock(1441062000, 1173545, 0x1e0fffff, 1, 1 * COIN);
@@ -314,6 +322,7 @@ public:
         fDefaultConsistencyChecks = false;
         fRequireStandard = false;
         fMineBlocksOnDemand = false;
+
 
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
@@ -363,6 +372,9 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 999999999999ULL;
 
         consensus.rules.reset(new Consensus::RegTestConsensus());
+
+        // The best chain should have at least this much work.
+        consensus.nMinimumChainWork = uint256S("0x00");
 
         pchMessageStart[0] = 0xfa;
         pchMessageStart[1] = 0x0f;

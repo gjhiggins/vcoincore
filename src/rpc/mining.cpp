@@ -133,8 +133,7 @@ UniValue generateBlocks(boost::shared_ptr<CReserveScript> coinbaseScript, int nG
         if (pblock->nNonce == nInnerLoopCount) {
             continue;
         }
-        CValidationState state;
-        if (!ProcessNewBlock(state, Params(), NULL, pblock, true, NULL))
+        if (!ProcessNewBlock(Params(), pblock, true, NULL, NULL))
             throw JSONRPCError(RPC_INTERNAL_ERROR, "ProcessNewBlock, block not accepted");
         ++nHeight;
         blockHashes.push_back(pblock->GetHash().GetHex());
@@ -232,7 +231,7 @@ UniValue getmininginfo(const JSONRPCRequest& request)
             "  \"difficulty\": xxx.xxxxx    (numeric) The current difficulty\n"
             "  \"errors\": \"...\"            (string) Current errors\n"
             "  \"networkhashps\": nnn,      (numeric) The network hashes per second\n"
-            "  \"pooledtx\": n              (numeric) The size of the mem pool\n"
+            "  \"pooledtx\": n              (numeric) The size of the mempool\n"
             "  \"chain\": \"xxxx\",           (string) current network name as defined in BIP70 (main, test, regtest)\n"
             "}\n"
             "\nExamples:\n"
@@ -756,10 +755,9 @@ UniValue submitblock(const JSONRPCRequest& request)
         }
     }
 
-    CValidationState state;
     submitblock_StateCatcher sc(block.GetHash());
     RegisterValidationInterface(&sc);
-    bool fAccepted = ProcessNewBlock(state, Params(), NULL, &block, true, NULL);
+    bool fAccepted = ProcessNewBlock(Params(), &block, true, NULL, NULL);
     UnregisterValidationInterface(&sc);
     if (fBlockPresent)
     {
@@ -767,13 +765,9 @@ UniValue submitblock(const JSONRPCRequest& request)
             return "duplicate-inconclusive";
         return "duplicate";
     }
-    if (fAccepted)
-    {
-        if (!sc.found)
-            return "inconclusive";
-        state = sc.state;
-    }
-    return BIP22ValidationResult(state);
+    if (!sc.found)
+        return "inconclusive";
+    return BIP22ValidationResult(sc.state);
 }
 
 UniValue estimatefee(const JSONRPCRequest& request)
@@ -812,7 +806,7 @@ UniValue estimatepriority(const JSONRPCRequest& request)
     if (request.fHelp || request.params.size() != 1)
         throw runtime_error(
             "estimatepriority nblocks\n"
-            "\nEstimates the approximate priority a zero-fee transaction needs to begin\n"
+            "\nDEPRECATED. Estimates the approximate priority a zero-fee transaction needs to begin\n"
             "confirmation within nblocks blocks.\n"
             "\nArguments:\n"
             "1. nblocks     (numeric)\n"
@@ -875,7 +869,7 @@ UniValue estimatesmartpriority(const JSONRPCRequest& request)
     if (request.fHelp || request.params.size() != 1)
         throw runtime_error(
             "estimatesmartpriority nblocks\n"
-            "\nWARNING: This interface is unstable and may disappear or change!\n"
+            "\nDEPRECATED. WARNING: This interface is unstable and may disappear or change!\n"
             "\nEstimates the approximate priority a zero-fee transaction needs to begin\n"
             "confirmation within nblocks blocks if possible and return the number of blocks\n"
             "for which the estimate is valid.\n"

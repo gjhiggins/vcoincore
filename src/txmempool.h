@@ -6,9 +6,12 @@
 #ifndef BITCOIN_TXMEMPOOL_H
 #define BITCOIN_TXMEMPOOL_H
 
-#include <list>
 #include <memory>
 #include <set>
+#include <map>
+#include <vector>
+#include <utility>
+#include <string>
 
 #include "amount.h"
 #include "coins.h"
@@ -357,6 +360,9 @@ struct TxMempoolInfo
 
     /** Feerate of the transaction. */
     CFeeRate feeRate;
+
+    /** The fee delta. */
+    int64_t nFeeDelta;
 };
 
 /**
@@ -560,11 +566,11 @@ public:
     bool addUnchecked(const uint256& hash, const CTxMemPoolEntry &entry, bool fCurrentEstimate = true);
     bool addUnchecked(const uint256& hash, const CTxMemPoolEntry &entry, setEntries &setAncestors, bool fCurrentEstimate = true);
 
-    void removeRecursive(const CTransaction &tx, std::list<CTransaction>& removed);
+    void removeRecursive(const CTransaction &tx, std::vector<std::shared_ptr<const CTransaction>>* removed = NULL);
     void removeForReorg(const CCoinsViewCache *pcoins, unsigned int nMemPoolHeight, int flags);
-    void removeConflicts(const CTransaction &tx, std::list<CTransaction>& removed, std::list<CTransaction>& removedNames);
+    void removeConflicts(const CTransaction &tx, std::vector<std::shared_ptr<const CTransaction>>* removed, std::list<CTransaction>& removedNames);
     void removeForBlock(const std::vector<CTransaction>& vtx, unsigned int nBlockHeight,
-                        std::list<CTransaction>& conflicts,
+                        std::vector<std::shared_ptr<const CTransaction>>* conflicts,
                         std::list<CTransaction>& nameConflicts,
                         bool fCurrentEstimate = true);
     void clear();

@@ -91,7 +91,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     unitDisplayControl(0),
     labelWalletEncryptionIcon(0),
     labelWalletHDStatusIcon(0),
-    labelConnectionsIcon(0),
+    connectionsControl(0),
     labelBlocksIcon(0),
     progressBarLabel(0),
     progressBar(0),
@@ -210,7 +210,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     unitDisplayControl = new UnitDisplayStatusBarControl(platformStyle);
     labelWalletEncryptionIcon = new QLabel();
     labelWalletHDStatusIcon = new QLabel();
-    labelConnectionsIcon = new QLabel();
+    connectionsControl = new NetworkToggleStatusBarControl();
     labelBlocksIcon = new QLabel();
     if(enableWallet)
     {
@@ -221,7 +221,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
         frameBlocksLayout->addWidget(labelWalletHDStatusIcon);
     }
     frameBlocksLayout->addStretch();
-    frameBlocksLayout->addWidget(labelConnectionsIcon);
+    frameBlocksLayout->addWidget(connectionsControl);
     frameBlocksLayout->addStretch();
     frameBlocksLayout->addWidget(labelBlocksIcon);
     frameBlocksLayout->addStretch();
@@ -535,8 +535,9 @@ void BitcoinGUI::setClientModel(ClientModel *_clientModel)
         createTrayIconMenu();
 
         // Keep up to date with client
-        setNumConnections(_clientModel->getNumConnections());
+        updateNetworkState();
         connect(_clientModel, SIGNAL(numConnectionsChanged(int)), this, SLOT(setNumConnections(int)));
+        connect(_clientModel, SIGNAL(networkActiveChanged(bool)), this, SLOT(setNetworkActive(bool)));
 
         setNumBlocks(_clientModel->getNumBlocks(), _clientModel->getLastBlockDate(), _clientModel->getVerificationProgress(NULL), false);
         connect(_clientModel, SIGNAL(numBlocksChanged(int,QDateTime,double,bool)), this, SLOT(setNumBlocks(int,QDateTime,double,bool)));
@@ -555,6 +556,7 @@ void BitcoinGUI::setClientModel(ClientModel *_clientModel)
         }
 #endif // ENABLE_WALLET
         unitDisplayControl->setOptionsModel(_clientModel->getOptionsModel());
+        connectionsControl->setClientModel(_clientModel);
         
         OptionsModel* optionsModel = _clientModel->getOptionsModel();
         if(optionsModel)
@@ -800,8 +802,9 @@ void BitcoinGUI::gotoChatPage()
 }
 #endif // ENABLE_WALLET
 
-void BitcoinGUI::setNumConnections(int count)
+void BitcoinGUI::updateNetworkState()
 {
+    int count = clientModel->getNumConnections();
     QString icon;
     switch(count)
     {
@@ -811,21 +814,36 @@ void BitcoinGUI::setNumConnections(int count)
     case 7: case 8: case 9: icon = ":/icons/connect_3"; break;
     default: icon = ":/icons/connect_4"; break;
     }
+
+    if (clientModel->getNetworkActive()) {
+        connectionsControl->setToolTip(tr("%n active connection(s) to Bitcoin network", "", count));
+    } else {
+        connectionsControl->setToolTip(tr("Network activity disabled"));
+        icon = ":/icons/network_disabled";
+    }
+
     labelConnectionsIcon->setPixmap(platformStyle->SingleColorIcon(icon).pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-    labelConnectionsIcon->setToolTip(tr("%n active connection(s) to V Core network", "", count));
+    connectionsControl->setPixmap(platformStyle->SingleColorIcon(icon).pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+}
+
+void BitcoinGUI::setNumConnections(int count)
+{
+    updateNetworkState();
+}
+
+void BitcoinGUI::setNetworkActive(bool networkActive)
+{
+    updateNetworkState();
 }
 
 void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate, double nVerificationProgress, bool header)
 {
     if (modalOverlay)
     {
-        if (header) {
-            /* use clientmodels getHeaderTipHeight and getHeaderTipTime because the NotifyHeaderTip signal does not fire when updating the best header */
-            modalOverlay->setKnownBestHeight(clientModel->getHeaderTipHeight(), QDateTime::fromTime_t(clientModel->getHeaderTipTime()));
-        }
-        else {
+        if (header)
+            modalOverlay->setKnownBestHeight(count, blockDate);
+        else
             modalOverlay->tipUpdate(count, blockDate, nVerificationProgress);
-        }
     }
     if (!clientModel)
         return;
@@ -1314,5 +1332,20 @@ void UnitDisplayStatusBarControl::onMenuSelection(QAction* action)
     if (action)
     {
         optionsModel->setDisplayUnit(action->data());
+    }
+}
+
+void NetworkToggleStatusBarControl::mousePressEvent(QMouseEvent *event)
+{
+    if (clientModel) {
+        clientModel->setNetworkActive(!clientModel->getNetworkActive());
+    }
+}
+
+/** Lets the control know about the Client Model */
+void NetworkToggleStatusBarControl::setClientModel(ClientModel *_clientModel)
+{
+    if (_clientModel) {
+        this->clientModel = _clientModel;
     }
 }

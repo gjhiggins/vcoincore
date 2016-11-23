@@ -140,8 +140,7 @@ void TestPackageSelection(const CChainParams& chainparams, CScript scriptPubKey,
     // Test that packages above the min relay fee do get included, even if one
     // of the transactions is below the min relay fee
     // Remove the low fee transaction and replace with a higher fee transaction
-    std::list<CTransaction> dummy;
-    mempool.removeRecursive(tx, dummy);
+    mempool.removeRecursive(tx);
     tx.vout[0].nValue -= 2; // Now we should be just over the min relay fee
     hashLowFeeTx = tx.GetHash();
     mempool.addUnchecked(hashLowFeeTx, entry.Fee(feeToUse+2).FromTx(tx));
@@ -226,9 +225,7 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
             txFirst.push_back(new CTransaction(pblock->vtx[0]));
         pblock->hashMerkleRoot = BlockMerkleRoot(*pblock);
         pblock->nNonce = blockinfo[i].nonce;
-        CValidationState state;
-        BOOST_CHECK(ProcessNewBlock(state, chainparams, NULL, pblock, true, NULL));
-        BOOST_CHECK(state.IsValid());
+        BOOST_CHECK(ProcessNewBlock(chainparams, pblock, true, NULL, NULL));
         pblock->hashPrevBlock = pblock->GetHash();
     }
 
