@@ -268,8 +268,6 @@ void SendCoinsDialog::on_sendButton_clicked()
     if(!model || !model->getOptionsModel())
         return;
 
-    QString txreference = ui->editTxComment->text();
-
     QList<SendCoinsRecipient> recipients;
     bool valid = true;
 

@@ -161,9 +161,7 @@ public:
     };
 
     // prepare transaction for getting txfee before sending coins
-    // FIXED: Added txreference
-    SendCoinsReturn prepareTransaction(WalletModelTransaction &transaction, const QString &txreference, const CCoinControl *coinControl = NULL);
-    // SendCoinsReturn prepareTransaction(WalletModelTransaction &transaction, const CCoinControl *coinControl = NULL);
+    SendCoinsReturn prepareTransaction(WalletModelTransaction &transaction, const CCoinControl *coinControl = NULL);
 
     // Send coins to a list of recipients
     SendCoinsReturn sendCoins(WalletModelTransaction &transaction);
