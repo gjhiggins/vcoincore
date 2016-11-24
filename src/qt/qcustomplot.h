@@ -28,6 +28,8 @@
 #ifndef QCUSTOMPLOT_H
 #define QCUSTOMPLOT_H
 
+
+#include <QLatin1String>
 #include <QObject>
 #include <QPointer>
 #include <QWidget>

@@ -9,7 +9,7 @@
 #include "primitives/transaction.h"
 #include "script/script.h"
 #include "serialize.h"
-
+#include "rpc/server.h"
 #include "../univalue/include/univalue.h"
 
 #include <map>
@@ -508,8 +508,8 @@ extern std::map<std::string, NameNewReturn > pendingNameFirstUpdate;
 
 /* We need the following functions declared for use in the QT UI */
 // in wallet/rpcwallet.cpp
-extern UniValue name_list(const UniValue& params, bool fHelp);
+extern UniValue name_list(const JSONRPCRequest& request);
 // in rpc/names.cpp
-extern UniValue name_show(const UniValue& params, bool fHelp);
+extern UniValue name_show(const JSONRPCRequest& request);
 
 #endif // H_BITCOIN_NAMES_COMMON

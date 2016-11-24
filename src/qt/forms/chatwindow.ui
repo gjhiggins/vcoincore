@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Statistics Explorer</string>
+   <string>Chat Window</string>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -42,6 +42,9 @@
        <string notr="true"/>
       </property>
       <widget class="QTabWidget" name="tab">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -57,7 +60,7 @@
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+         <number>0</number>
        </property>
        <property name="tabsClosable">
         <bool>false</bool>
@@ -93,6 +96,9 @@
          <width>16777215</width>
          <height>30</height>
         </size>
+        </property>
+        <property name="clearButtonEnabled">
+         <bool>true</bool>
        </property>
       </widget>
       <widget class="QListView" name="userView">
