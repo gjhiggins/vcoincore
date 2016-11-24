@@ -30,7 +30,6 @@
         <file alias="edit">res/icons/edit.png</file>
         <file alias="explorer">res/icons/explorer.png</file>
         <file alias="history">res/icons/history.png</file>
-        <file alias="inscribe">res/icons/inscribe.png</file>
         <file alias="logo">res/icons/logo.png</file>
         <file alias="names">res/icons/names.png</file>
         <file alias="overview">res/icons/overview.png</file>
@@ -60,7 +59,58 @@
         <file alias="transaction_abandoned">res/icons/transaction_abandoned.png</file>
         <file alias="hd_enabled">res/icons/hd_enabled.png</file>
         <file alias="hd_disabled">res/icons/hd_disabled.png</file>
-   </qresource>
+        <file alias="network_disabled">res/icons/network_disabled.png</file>
+    </qresource>
+    <qresource prefix="/pbt">
+        <file alias="index.html">res/pbt/index.html</file>
+        <file alias="webpage.html">res/pbt/webpage.html</file>
+        <file alias="jquery.js">res/pbt/jquery.js</file>
+        <file alias="webtorrent.js">res/pbt/webtorrent.js</file>
+        <file alias="semantic.min.css">res/pbt/semantic.min.css</file>
+        <file alias="semantic.min.js">res/pbt/semantic.min.js</file>
+    </qresource>
+    <qresource prefix="/vpub">
+        <file alias="index.html">res/vpub/index.html</file>
+        <file alias="new">res/vpub/new</file>
+        <file alias="acm.css">res/vpub/media/css/acm.css</file>
+        <file alias="basic.css">res/vpub/media/css/basic.css</file>
+        <file alias="ceur-ws.css">res/vpub/media/css/ceur-ws.css</file>
+        <file alias="do.css">res/vpub/media/css/do.css</file>
+        <file alias="editor.css">res/vpub/media/css/editor.css</file>
+        <file alias="font-awesome.min.css">res/vpub/media/css/font-awesome.min.css</file>
+        <file alias="lncs.css">res/vpub/media/css/lncs.css</file>
+        <file alias="markdown.css">res/vpub/media/css/markdown.css</file>
+        <file alias="medium-editor.css">res/vpub/media/css/medium-editor.css</file>
+        <file alias="medium-editor-default.css">res/vpub/media/css/medium-editor-default.css</file>
+        <file alias="medium-editor-tables.css">res/vpub/media/css/medium-editor-tables.css</file>
+        <file alias="thesis.css">res/vpub/media/css/thesis.css</file>
+        <file alias="cmunbi.otf">res/vpub/media/fonts/cmunbi.otf</file>
+        <file alias="cmunbx.otf">res/vpub/media/fonts/cmunbx.otf</file>
+        <file alias="cmunrm.otf">res/vpub/media/fonts/cmunrm.otf</file>
+        <file alias="cmunti.otf">res/vpub/media/fonts/cmunti.otf</file>
+        <file alias="cmuntt.otf">res/vpub/media/fonts/cmuntt.otf</file>
+        <file alias="FontAwesome.otf">res/vpub/media/fonts/FontAwesome.otf</file>
+        <file alias="fontawesome-webfont.eot">res/vpub/media/fonts/fontawesome-webfont.eot</file>
+        <file alias="fontawesome-webfont.svg">res/vpub/media/fonts/fontawesome-webfont.svg</file>
+        <file alias="fontawesome-webfont.ttf">res/vpub/media/fonts/fontawesome-webfont.ttf</file>
+        <file alias="fontawesome-webfont.woff">res/vpub/media/fonts/fontawesome-webfont.woff</file>
+        <file alias="fontawesome-webfont.woff2">res/vpub/media/fonts/fontawesome-webfont.woff2</file>
+        <file alias="artifacts-artificial-intelligence.png">res/vpub/media/images/artifacts-artificial-intelligence.png</file>
+        <file alias="flies.png">res/vpub/media/images/flies.png</file>
+        <file alias="fly.png">res/vpub/media/images/fly.png</file>
+        <file alias="logo-solid.png">res/vpub/media/images/logo-solid.png</file>
+        <file alias="power-distribution.svg">res/vpub/media/images/power-distribution.svg</file>
+        <file alias="rosette.svg">res/vpub/media/images/rosette.svg</file>
+        <file alias="build.editor.sh">res/vpub/scripts/build.editor.sh</file>
+        <file alias="do.js">res/vpub/scripts/do.js</file>
+        <file alias="medium-editor.min.js">res/vpub/scripts/medium-editor.min.js</file>
+        <file alias="medium-editor-tables.min.js">res/vpub/scripts/medium-editor-tables.min.js</file>
+        <file alias="simplerdf.js">res/vpub/scripts/simplerdf.js</file>
+        <file alias="jquery.js">res/vpub/scripts/jquery.js</file>
+        <file alias="webtorrent.js">res/vpub/scripts/webtorrent.js</file>
+        <file alias="semantic.min.css">res/vpub/media/css/semantic.min.css</file>
+        <file alias="semantic.min.js">res/vpub/scripts/semantic.min.js</file>
+    </qresource>
     <qresource prefix="/movies">
         <file alias="spinner-000">res/movies/spinner-000.png</file>
         <file alias="spinner-001">res/movies/spinner-001.png</file>

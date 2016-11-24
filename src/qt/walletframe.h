@@ -16,8 +16,9 @@ class WalletModel;
 class ChatWindow;
 class WalletView;
 class BlockExplorer;
-class InscriptionDialog;
 class statsExplorer;
+class PublisherPage;
+class EssentialsPage;
 
 QT_BEGIN_NAMESPACE
 class QStackedWidget;
@@ -80,12 +81,14 @@ public Q_SLOTS:
     void gotoBlockExplorerPage();	
     /** Switch to account report page */
     void gotoAccountReportPage();
-    /** Open inscription dialog **/
-    void inscribeBlockChain();
     /** Switch to manage names page */
     void gotoManageNamesPage();
 	/** Switch to chat page */
     void gotoChatPage();
+    /** Switch to Publishing page */
+    void gotoPublisherPage();	
+    /** Switch to Essentials page */
+    void gotoEssentialsPage();   
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");

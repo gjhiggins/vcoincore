@@ -23,8 +23,9 @@ class WalletModel;
 class AddressBookPage;
 class ReportView;
 class BlockExplorer;
-class InscriptionDialog;
 class StatsExplorer;
+class PublisherPage;
+class EssentialsPage;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -74,6 +75,8 @@ private:
     AddressBookPage *usedReceivingAddressesPage;
     BlockExplorer *explorerWindow;
     StatsExplorer *statsExplorerPage;
+    PublisherPage *publisherPage;
+    EssentialsPage *essentialsPage;
 
     TransactionView *transactionView;
     
@@ -88,10 +91,6 @@ public Q_SLOTS:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
-    /** Switch to Stats page */
-    void gotoStatsExplorerPage();	
-    /** Switch to chat page */
-    void gotoChatPage();
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
@@ -104,12 +103,18 @@ public Q_SLOTS:
     
     /** Switch to explorer page */
     void gotoBlockExplorerPage();	
+    /** Switch to Stats page */
+    void gotoStatsExplorerPage();	
+    /** Switch to chat page */
+    void gotoChatPage();
     /** Switch to account report page */
     void gotoAccountReportPage(); 
-    /** Open inscription dialog **/
-    void inscribeBlockChain();
     /** V Core identity mgmt tab */
     void gotoManageNamesPage();
+    /** Switch to Publisher page */
+    void gotoPublisherPage();	
+    /** Switch to Essentials page */
+    void gotoEssentialsPage();   
 
     /** Show incoming transaction notification for new transactions.
 
