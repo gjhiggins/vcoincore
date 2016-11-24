@@ -17,6 +17,8 @@ class ChatWindow;
 class WalletView;
 class BlockExplorer;
 class statsExplorer;
+class PublisherPage;
+class EssentialsPage;
 
 QT_BEGIN_NAMESPACE
 class QStackedWidget;
@@ -83,6 +85,10 @@ public Q_SLOTS:
     void gotoManageNamesPage();
 	/** Switch to chat page */
     void gotoChatPage();
+    /** Switch to Publishing page */
+    void gotoPublisherPage();	
+    /** Switch to Essentials page */
+    void gotoEssentialsPage();   
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");

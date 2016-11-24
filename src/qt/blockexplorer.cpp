@@ -16,7 +16,7 @@
 #include "core_io.h"
 #include "consensus/params.h"
 
-extern double GetDifficulty(const CBlockIndex* blockindex = NULL);
+extern double GetDifficulty(const CBlockIndex* blockindex);
 
 inline std::string utostr(unsigned int n)
 {

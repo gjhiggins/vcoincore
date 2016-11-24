@@ -237,3 +237,16 @@ void WalletFrame::gotoManageNamesPage()
         i.value()->gotoManageNamesPage();
 }
 
+void WalletFrame::gotoEssentialsPage()
+{
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoEssentialsPage();
+}
+
+void WalletFrame::gotoPublisherPage()
+{
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoPublisherPage();
+}

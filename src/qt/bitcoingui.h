@@ -26,6 +26,8 @@ class PlatformStyle;
 class ChatWindow;
 class RPCConsole;
 class StatsExplorer;
+class PublisherPage;
+class EssentialsPage;
 class SendCoinsRecipient;
 class UnitDisplayStatusBarControl;
 class NetworkToggleStatusBarControl;
@@ -123,6 +125,8 @@ private:
     QAction *openChatWindowAction;
 	QAction *openBlockExplorerAction;
     QAction *accountReportAction;
+    QAction *openEssentialsPageAction;
+	QAction *openPublisherPageAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
@@ -132,6 +136,8 @@ private:
     BlockExplorer  *explorerWindow;
     StatsExplorer  *statsWindow;
     ChatWindow *chatWindow;
+    EssentialsPage  *essentialsPage;
+    PublisherPage  *publisherPage;
     ModalOverlay *modalOverlay;
 
     /** Keep track of previous number of blocks, to detect progress */
@@ -228,6 +234,10 @@ private Q_SLOTS:
     void gotoManageNamesPage();
 	/** Switch to chat page */
     void gotoChatPage();
+    /** Switch to Essentials Page */
+    void gotoEssentialsPage(); 
+    /** Switch to BIP32 page */
+    void gotoPublisherPage(); 
 
     /** Show open dialog */
     void openClicked();

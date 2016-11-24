@@ -416,6 +416,10 @@ public:
             UpdateHash();
         }
     }
+    }
+
+    template <typename Stream>
+    CTransaction(deserialize_type, Stream& s) : CTransaction(CMutableTransaction(deserialize, s)) {}
 
     template <typename Stream>
     CTransaction(deserialize_type, Stream& s) : CTransaction(CMutableTransaction(deserialize, s)) {}

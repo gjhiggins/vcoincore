@@ -24,7 +24,7 @@
 #include "primitives/transaction.h"
 #include "names/common.h"
 #include "rpc/server.h"
-// #include "rpc/client.h"
+#include "rpc/client.h"
 #include "util.h"
 
 #include <stdint.h>
@@ -397,7 +397,6 @@ AddressTableModel *WalletModel::getAddressTableModel()
     return addressTableModel;
 }
 
-
 NameTableModel *WalletModel::getNameTableModel()
 {
       return nameTableModel;
@@ -715,15 +714,15 @@ bool WalletModel::abandonTransaction(uint256 hash) const
 /* FIXME: Need general remapping from old UniValue params to JSONRPCRequest */
 bool WalletModel::nameAvailable(const QString &name)
 {
-    UniValue params (UniValue::VOBJ);
-    UniValue res, array, isExpired;
-
+    // UniValue params (UniValue::VOBJ);
+    // UniValue res, array, isExpired;
     const std::string strName = name.toStdString();
-    params.push_back (Pair("name", strName));
+    // params.push_back (Pair("name", strName));
 
-    /*
+    UniValue res, isExpired;
+
     const std::string strMethod = "name";
-    JSONRPCRequestObj request;
+    JSONRPCRequest request;
     request.strMethod = strMethod;
     request.params = RPCConvertValues(strMethod, boost::assign::list_of(strName));
     request.fHelp = false;
@@ -737,7 +736,7 @@ bool WalletModel::nameAvailable(const QString &name)
     isExpired = find_value( res, "expired");
     if(isExpired.get_bool())
       return true;
-    */
+
     return false;
 }
 

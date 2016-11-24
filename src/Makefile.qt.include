@@ -101,6 +101,7 @@ QT_FORMS_UI = \
   qt/forms/coincontroldialog.ui \
   qt/forms/configurenamedialog.ui \
   qt/forms/editaddressdialog.ui \
+  qt/forms/essentialspage.ui \
   qt/forms/helpmessagedialog.ui \
   qt/forms/intro.ui \
   qt/forms/managenamespage.ui \
@@ -108,6 +109,7 @@ QT_FORMS_UI = \
   qt/forms/openuridialog.ui \
   qt/forms/optionsdialog.ui \
   qt/forms/overviewpage.ui \
+  qt/forms/publisherpage.ui \
   qt/forms/receivecoinsdialog.ui \
   qt/forms/receiverequestdialog.ui \
   qt/forms/debugwindow.ui \
@@ -135,6 +137,7 @@ QT_MOC_CPP = \
   qt/moc_configurenamedialog.cpp \
   qt/moc_csvmodelwriter.cpp \
   qt/moc_editaddressdialog.cpp \
+  qt/moc_essentialspage.cpp \
   qt/moc_guiutil.cpp \
   qt/moc_intro.cpp \
   qt/moc_macdockiconhandler.cpp \
@@ -149,6 +152,7 @@ QT_MOC_CPP = \
   qt/moc_overviewpage.cpp \
   qt/moc_peertablemodel.cpp \
   qt/moc_paymentserver.cpp \
+  qt/moc_publisherpage.cpp \
   qt/moc_qcustomplot.cpp \
   qt/moc_qvalidatedlineedit.cpp \
   qt/moc_qvaluecombobox.cpp \
@@ -157,6 +161,7 @@ QT_MOC_CPP = \
   qt/moc_receiverequestdialog.cpp \
   qt/moc_recentrequeststablemodel.cpp \
   qt/moc_reportview.cpp \
+  qt/moc_rpcconsole.cpp \
   qt/moc_sendcoinsdialog.cpp \
   qt/moc_sendcoinsentry.cpp \
   qt/moc_signverifymessagedialog.cpp \
@@ -200,18 +205,18 @@ BITCOIN_QT_H = \
   qt/bantablemodel.h \
   qt/bitcoinaddressvalidator.h \
   qt/bitcoinamountfield.h \
-  qt/chatwindow.h \
   qt/bitcoingui.h \
   qt/bitcoinunits.h \
   qt/blockexplorer.h \
   qt/chatclient.h \
+  qt/chatwindow.h \
   qt/clientmodel.h \
   qt/coincontroldialog.h \
   qt/coincontroltreewidget.h \
   qt/configurenamedialog.h \
   qt/csvmodelwriter.h \
   qt/editaddressdialog.h \
-  qt/statsexplorer.h \
+  qt/essentialspage.h \
   qt/guiconstants.h \
   qt/guiutil.h \
   qt/intro.h \
@@ -230,17 +235,21 @@ BITCOIN_QT_H = \
   qt/paymentserver.h \
   qt/peertablemodel.h \
   qt/platformstyle.h \
+  qt/publisherpreviewpage.h \
+  qt/publisherpage.h \
   qt/qcustomplot.h \
   qt/qvalidatedlineedit.h \
   qt/qvaluecombobox.h \
   qt/receivecoinsdialog.h \
   qt/receiverequestdialog.h \
   qt/recentrequeststablemodel.h \
+  qt/reportview.h \
   qt/rpcconsole.h \
   qt/sendcoinsdialog.h \
   qt/sendcoinsentry.h \
   qt/signverifymessagedialog.h \
   qt/splashscreen.h \
+  qt/statsexplorer.h \
   qt/trafficgraphwidget.h \
   qt/transactiondesc.h \
   qt/transactiondescdialog.h \
@@ -249,7 +258,6 @@ BITCOIN_QT_H = \
   qt/transactiontablemodel.h \
   qt/transactionview.h \
   qt/utilitydialog.h \
-  qt/reportview.h \
   qt/walletframe.h \
   qt/walletmodel.h \
   qt/walletmodeltransaction.h \
@@ -331,6 +339,7 @@ BITCOIN_QT_BASE_CPP = \
   qt/chatwindow.cpp \
   qt/clientmodel.cpp \
   qt/csvmodelwriter.cpp \
+  qt/essentialspage.cpp \
   qt/guiutil.cpp \
   qt/intro.cpp \
   qt/modaloverlay.cpp \
@@ -340,6 +349,7 @@ BITCOIN_QT_BASE_CPP = \
   qt/optionsmodel.cpp \
   qt/peertablemodel.cpp \
   qt/platformstyle.cpp \
+  qt/publisherpage.cpp \
   qt/qcustomplot.cpp \
   qt/qvalidatedlineedit.cpp \
   qt/qvaluecombobox.cpp \
@@ -360,29 +370,31 @@ BITCOIN_QT_WALLET_CPP = \
   qt/chatwindow.cpp \
   qt/coincontroldialog.cpp \
   qt/coincontroltreewidget.cpp \
+  qt/configurenamedialog.cpp \
   qt/editaddressdialog.cpp \
-  qt/statsexplorer.cpp \
+  qt/essentialspage.cpp \
+  qt/managenamespage.cpp \
+  qt/nametablemodel.cpp \
   qt/openuridialog.cpp \
   qt/overviewpage.cpp \
   qt/paymentrequestplus.cpp \
   qt/paymentserver.cpp \
+  qt/publisherpage.cpp \
   qt/qcustomplot.cpp \
   qt/receivecoinsdialog.cpp \
   qt/receiverequestdialog.cpp \
   qt/recentrequeststablemodel.cpp \
+  qt/reportview.cpp \
   qt/sendcoinsdialog.cpp \
   qt/sendcoinsentry.cpp \
-  qt/managenamespage.cpp \
-  qt/configurenamedialog.cpp \
-  qt/nametablemodel.cpp \
   qt/signverifymessagedialog.cpp \
+  qt/statsexplorer.cpp \
   qt/transactiondesc.cpp \
   qt/transactiondescdialog.cpp \
   qt/transactionfilterproxy.cpp \
   qt/transactionrecord.cpp \
   qt/transactiontablemodel.cpp \
   qt/transactionview.cpp \
-  qt/reportview.cpp \
   qt/walletframe.cpp \
   qt/walletmodel.cpp \
   qt/walletmodeltransaction.cpp \
