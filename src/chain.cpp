@@ -5,8 +5,6 @@
 
 #include "chain.h"
 
-#include "main.h"
-
 using namespace std;
 
 /**

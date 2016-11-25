@@ -2328,6 +2328,9 @@ bool DisconnectBlock(const CBlock& block, CValidationState& state, const CBlockI
         // but it must be corrected before txout nversion ever influences a network rule.
         if (outsBlock.nVersion < 0)
             outs->nVersion = outsBlock.nVersion;
+        if (*outs != outsBlock)
+            fClean = fClean && error("DisconnectBlock(): added transaction mismatch? database corrupted");
+
         // remove outputs
         outs->Clear();
         }
@@ -2448,9 +2451,8 @@ static int64_t nTimeIndex = 0;
 static int64_t nTimeCallbacks = 0;
 static int64_t nTimeTotal = 0;
 
-bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pindex, CCoinsViewCache& view,
-                  std::set<valtype>& expiredNames,
-                  const CChainParams& chainparams, bool fJustCheck)
+bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pindex,
+                  CCoinsViewCache& view, std::set<valtype>& expiredNames, const CChainParams& chainparams, bool fJustCheck)
 {
     AssertLockHeld(cs_main);
 
@@ -2523,9 +2525,6 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     // BIP16 didn't become active until Apr 1 2012
     int64_t nBIP16SwitchTime = 1333238400;
     bool fStrictPayToScriptHash = (pindex->GetBlockTime() >= nBIP16SwitchTime);
-    // FIXME: Enable strict check in the future.
-    // FIXME: is it the future yet?
-    // const bool fStrictPayToScriptHash = false;
 
     unsigned int flags = fStrictPayToScriptHash ? SCRIPT_VERIFY_P2SH : SCRIPT_VERIFY_NONE;
 
@@ -2657,11 +2656,13 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     if (fJustCheck)
         return true;
 
-    /* Remove expired names from the UTXO set.  They become permanently
+    /* FIXME: inappropriately commented-out code
+       Remove expired names from the UTXO set.  They become permanently
        unspendable.  Note that we use nHeight+1 here because a possible
        spending transaction would be at least at that height.  This has
        to be done after checking the transactions themselves, because
-       spending a name would still be valid in the current block.  */
+       spending a name would still be valid in the current block.
+    */
     // if (!ExpireNames(pindex->nHeight + 1, view, blockundo, expiredNames))
     //    return error("%s : ExpireNames failed", __func__);
 
@@ -2866,14 +2867,6 @@ void static UpdateTip(CBlockIndex *pindexNew, const CChainParams& chainParams) {
                 ++nUpgraded;
             pindex = pindex->pprev;
         }
-        /* FIXME: resolve upstream discrepancy
-        {
-            int32_t nExpectedVersion = ComputeBlockVersion(pindex->pprev, chainParams.GetConsensus());
-            if (pindex->GetBaseVersion() > VERSIONBITS_LAST_OLD_BLOCK_VERSION && (pindex->GetBaseVersion() & ~nExpectedVersion) != 0)
-                ++nUpgraded;
-            pindex = pindex->pprev;
-        }
-        */
         if (nUpgraded > 0)
             warningMessages.push_back(strprintf("%d of last 100 blocks have unexpected version", nUpgraded));
         if (nUpgraded > 100/2)
@@ -2922,7 +2915,7 @@ bool static DisconnectTip(CValidationState& state, const CChainParams& chainpara
     if (!FlushStateToDisk(state, FLUSH_STATE_IF_NEEDED))
         return false;
 
-    list<CTransaction> txNameConflicts;
+    std::vector<std::shared_ptr<const CTransaction>> txNameConflicts;
     if (!fBare) {
         // Resurrect mempool transactions from the disconnected block.
         std::vector<uint256> vHashUpdate;
@@ -2943,7 +2936,7 @@ bool static DisconnectTip(CValidationState& state, const CChainParams& chainpara
         // block that were added back and cleans up the mempool state.
         mempool.UpdateTransactionsFromBlock(vHashUpdate);
         // Fix the pool for conflicts due to unexpired names.
-        mempool.removeUnexpireConflicts(unexpiredNames, txNameConflicts);
+        mempool.removeUnexpireConflicts(unexpiredNames, *&txNameConflicts);
         mempool.check(pcoinsTip);
     }
 
@@ -2952,9 +2945,9 @@ bool static DisconnectTip(CValidationState& state, const CChainParams& chainpara
     CheckNameDB (true);
     // Tell wallet about transactions that went from mempool
     // to conflicted:
-    BOOST_FOREACH(const CTransaction &tx, txNameConflicts) {
-        SyncWithWallets(tx, NULL);
-        NameConflict(tx, *pindexDelete->pprev->phashBlock);
+    BOOST_FOREACH(const CTransactionRef tx, txNameConflicts) {
+        SyncWithWallets(*tx, NULL);
+        NameConflict(*tx, *pindexDelete->pprev->phashBlock);
     }
     // Let wallets know transactions went from 1-confirmed to
     // 0-confirmed or conflicted:
@@ -3013,8 +3006,8 @@ bool static ConnectTip(CValidationState& state, const CChainParams& chainparams,
     int64_t nTime5 = GetTimeMicros(); nTimeChainState += nTime5 - nTime4;
     LogPrint("bench", "  - Writing chainstate: %.2fms [%.2fs]\n", (nTime5 - nTime4) * 0.001, nTimeChainState * 0.000001);
     // Remove conflicting transactions from the mempool.;
-    std::list<CTransaction> txNameConflicts;
-    mempool.removeForBlock(pblock->vtx, pindexNew->nHeight, &txConflicted, txNameConflicts, !IsInitialBlockDownload());
+    std::vector<CTransactionRef> txNameConflicts;
+    mempool.removeForBlock(pblock->vtx, pindexNew->nHeight, &txConflicted, &txNameConflicts, !IsInitialBlockDownload());
     // Update chainActive & related variables.
     UpdateTip(pindexNew, chainparams);
 
@@ -3545,7 +3538,7 @@ bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, unsigne
 bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW)
 {
     // Check proof of work matches claimed amount
-    if (fCheckPOW && !CheckProofOfWork(block, consensusParams))
+    if (fCheckPOW && !CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
         return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
 
     return true;
@@ -6091,17 +6084,9 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             return error("headers message count = %u", nCount);
         }
         headers.resize(nCount);
-        unsigned nSize = 0;
         for (unsigned int n = 0; n < nCount; n++) {
             vRecv >> headers[n];
             ReadCompactSize(vRecv); // ignore tx count; assume it is 0.
-
-            nSize += GetSerializeSize(headers[n], SER_NETWORK, PROTOCOL_VERSION);
-            if (pfrom->nVersion >= SIZE_HEADERS_LIMIT_VERSION
-                  && nSize > MAX_HEADERS_SIZE) {
-                Misbehaving(pfrom->GetId(), 20);
-                return error("headers message size = %u", nSize);
-            }
         }
 
         {
@@ -6166,21 +6151,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         assert(pindexLast);
         UpdateBlockAvailability(pfrom->GetId(), pindexLast->GetBlockHash());
 
-        // If we already know the last header in the message, then it contains
-        // no new information for us.  In this case, we do not request
-        // more headers later.  This prevents multiple chains of redundant
-        // getheader requests from running in parallel if triggered by incoming
-        // blocks while the node is still in initial headers sync.
-        const bool hasNewHeaders = (mapBlockIndex.count(headers.back().GetHash()) == 0);
-
-        bool maxSize = (nCount == MAX_HEADERS_RESULTS);
-        if (pfrom->nVersion >= SIZE_HEADERS_LIMIT_VERSION
-              && nSize >= THRESHOLD_HEADERS_SIZE)
-            maxSize = true;
-        // FIXME: This change (with hasNewHeaders) is rolled back in Bitcoin,
-        // but I think it should stay here for merge-mined coins.  Try to get
-        // it fixed again upstream and then update the fix.
-        if (maxSize && hasNewHeaders) {
+        if (nCount == MAX_HEADERS_RESULTS) {
             // Headers message had its maximum size; the peer may have more headers.
             // TODO: optimize: if pindexLast is an ancestor of chainActive.Tip or pindexBestHeader, continue
             // from there instead.

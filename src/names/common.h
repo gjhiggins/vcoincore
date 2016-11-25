@@ -9,6 +9,7 @@
 #include "primitives/transaction.h"
 #include "script/script.h"
 #include "serialize.h"
+#include "rpc/client.h"
 #include "rpc/server.h"
 #include "../univalue/include/univalue.h"
 
@@ -74,8 +75,7 @@ public:
   ADD_SERIALIZE_METHODS;
 
   template<typename Stream, typename Operation>
-    inline void SerializationOp (Stream& s, Operation ser_action,
-                                 int nType, int nVersion)
+    inline void SerializationOp (Stream& s, Operation ser_action)
   {
     READWRITE (value);
     READWRITE (nHeight);
@@ -179,8 +179,7 @@ public:
   ADD_SERIALIZE_METHODS;
 
   template<typename Stream, typename Operation>
-    inline void SerializationOp (Stream& s, Operation ser_action,
-                                 int nType, int nVersion)
+    inline void SerializationOp (Stream& s, Operation ser_action)
   {
     READWRITE (data);
   }
@@ -321,30 +320,37 @@ public:
     /* Default copy and assignment.  */
 
     inline size_t
-    GetSerializeSize (int nType, int nVersion) const
+    GetSerializeSize () const
     {
-      return sizeof (nHeight) + ::GetSerializeSize (name, nType, nVersion);
+        // return sizeof (nHeight) + ::GetSerializeSize (name, nType, nVersion);
+        return sizeof (nHeight) + ValtypeToString(name).length();
     }
 
     template<typename Stream>
       inline void
-      Serialize (Stream& s, int nType, int nVersion) const
+      // Serialize (Stream& s, int nType, int nVersion) const
+      Serialize (Stream& s) const
     {
       /* Flip the byte order of nHeight to big endian.  */
       const uint32_t nHeightFlipped = htobe32 (nHeight);
 
-      ::Serialize (s, nHeightFlipped, nType, nVersion);
-      ::Serialize (s, name, nType, nVersion);
+      // ::Serialize (s, nHeightFlipped, nType, nVersion);
+      ::Serialize (s, nHeightFlipped);
+      // ::Serialize (s, name, nType, nVersion);
+      ::Serialize (s, name);
     }
 
     template<typename Stream>
       inline void
-      Unserialize (Stream& s, int nType, int nVersion)
+      // Unserialize (Stream& s, int nType, int nVersion)
+      Unserialize (Stream& s)
     {
       uint32_t nHeightFlipped;
 
-      ::Unserialize (s, nHeightFlipped, nType, nVersion);
-      ::Unserialize (s, name, nType, nVersion);
+      // ::Unserialize (s, nHeightFlipped, nType, nVersion);
+      ::Unserialize (s, nHeightFlipped);
+      // ::Unserialize (s, name, nType, nVersion);
+      ::Unserialize (s, name);
 
       /* Unflip the byte order.  */
       nHeight = be32toh (nHeightFlipped);
@@ -508,6 +514,7 @@ extern std::map<std::string, NameNewReturn > pendingNameFirstUpdate;
 
 /* We need the following functions declared for use in the QT UI */
 // in wallet/rpcwallet.cpp
+// extern UniValue name_list(const UniValue& params, bool fHelp);
 extern UniValue name_list(const JSONRPCRequest& request);
 // in rpc/names.cpp
 extern UniValue name_show(const JSONRPCRequest& request);

@@ -75,7 +75,8 @@ public:
 
         UniValue names;
         try {
-            names = name_list(NullUniValue, false).get_array();
+            JSONRPCRequest jreq = JSONRPCRequest();
+            names = name_list(jreq).get_array();
         } catch (const UniValue& e) {
             LogPrintf ("name_list lookup error: %s\n", e.getValStr().c_str());
         }

@@ -15,7 +15,7 @@
 
 namespace Consensus {
 
-/**
+/** FIXME: adjust consensus params
  * Interface for classes that define consensus behaviour in more
  * complex ways than just by a set of constants.
  */
@@ -126,7 +126,6 @@ struct Params {
     /** Proof of work parameters */
     uint256 powLimit;
     bool fPowAllowMinDifficultyBlocks;
-    int64_t nMinDifficultySince;
     bool fPowNoRetargeting;
     int64_t nPowTargetSpacing;
     int64_t nPowTargetTimespan;

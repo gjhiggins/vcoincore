@@ -217,7 +217,8 @@ std::string BlockToString(CBlockIndex* pBlock)
     std::string TxContent = table + makeHTMLTableRow(TxLabels, sizeof(TxLabels)/sizeof(std::string));
     for (unsigned int i = 0; i < block.vtx.size(); i++)
     {
-        const CTransaction& tx = block.vtx[i];
+        // FIXME: check dereferencing
+        const CTransaction& tx = *block.vtx[i];
         TxContent += TxToRow(tx);
 
         int64_t In = getTxIn(tx);

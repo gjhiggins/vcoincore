@@ -191,7 +191,9 @@ void StatsExplorer::loadStakeChart(bool firstRun)
                 double blockOutAmount = 0;
                 for(uint j=0; j<block.vtx.size(); j++)
                 {
-                    blockOutAmount += block.vtx[j].GetValueOut() / COIN;
+                    // FIXME: check dereferencing
+                    CTransaction vtx = *block.vtx[j];
+                    blockOutAmount += vtx.GetValueOut() / COIN;
                 }
                 velMax = std::max<double>(velMax, blockOutAmount);
                 velAmountData.append(blockOutAmount);

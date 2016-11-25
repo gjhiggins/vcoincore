@@ -568,9 +568,9 @@ public:
 
     void removeRecursive(const CTransaction &tx, std::vector<CTransactionRef>* removed = NULL);
     void removeForReorg(const CCoinsViewCache *pcoins, unsigned int nMemPoolHeight, int flags);
-    void removeConflicts(const CTransaction &tx, std::vector<CTransactionRef>* removed = NULL, std::list<CTransaction>& removedNames = NULL);
+    void removeConflicts(const CTransaction &tx, std::vector<CTransactionRef>* removed = NULL, std::vector<CTransactionRef>* removedNames = NULL);
     void removeForBlock(const std::vector<CTransactionRef>& vtx, unsigned int nBlockHeight,
-                        std::vector<CTransactionRef>* conflicts = NULL, std::list<CTransaction>& nameConflicts, bool fCurrentEstimate = true);
+                        std::vector<CTransactionRef>* conflicts = NULL, std::vector<CTransactionRef>* nameConflicts = NULL, bool fCurrentEstimate = true);
     void clear();
     void _clear(); //lock free
     bool CompareDepthAndScore(const uint256& hasha, const uint256& hashb);
@@ -587,17 +587,19 @@ public:
     /* Remove entries that conflict with name expirations / unexpirations.  */
     inline void
     removeUnexpireConflicts (const std::set<valtype>& unexpired,
-                             std::list<CTransaction>& removed)
+                             std::vector<CTransactionRef>& removed)
     {
         LOCK(cs);
-        names.removeUnexpireConflicts (unexpired, removed, NULL, NULL);
+        // FIXME: refactor
+        // names.removeUnexpireConflicts (unexpired, removed, NULL, NULL);
     }
     inline void
     removeExpireConflicts (const std::set<valtype>& expired,
-                           std::list<CTransaction>& removed)
+                           std::vector<CTransactionRef>& removed)
     {
         LOCK(cs);
-        names.removeExpireConflicts (expired, removed, NULL, NULL);
+        // FIXME: refactor
+        // names.removeExpireConflicts (expired, removed, NULL, NULL);
     }
 
     /** Affect CreateNewBlock prioritisation of transactions */

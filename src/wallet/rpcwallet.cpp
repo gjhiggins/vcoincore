@@ -358,8 +358,10 @@ void SendMoneyToScript(const CScript &scriptPubKey, const CTxIn* withInput, CAmo
     if (pwalletMain->GetBroadcastTransactions() && !g_connman)
         throw JSONRPCError(RPC_CLIENT_P2P_DISABLED, "Error: Peer-to-peer functionality missing or disabled");
 
+    /* NOTE: already done in SendMoney wrapper
     // Parse Bitcoin address
-    // CScript _scriptPubKey = GetScriptForDestination(address);
+    CScript scriptPubKey = GetScriptForDestination(address);
+    */
 
     // Create and send the transaction
     CReserveKey reservekey(pwalletMain);
@@ -2607,11 +2609,13 @@ extern UniValue importprunedfunds(const JSONRPCRequest& request);
 extern UniValue removeprunedfunds(const JSONRPCRequest& request);
 extern UniValue importmulti(const JSONRPCRequest& request);
 
+/*
 extern UniValue name_list(const JSONRPCRequest& request); // in rpcnames.cpp
 extern UniValue name_new(const JSONRPCRequest& request);
 extern UniValue name_firstupdate(const JSONRPCRequest& request);
 extern UniValue name_update(const JSONRPCRequest& request);
 extern UniValue sendtoname(const JSONRPCRequest& request);
+*/
 
 static const CRPCCommand commands[] =
 { //  category              name                        actor (function)           okSafeMode
@@ -2663,11 +2667,14 @@ static const CRPCCommand commands[] =
     { "wallet",             "walletpassphrasechange",   &walletpassphrasechange,   true  },
     { "wallet",             "walletpassphrase",         &walletpassphrase,         true  },
     { "wallet",             "removeprunedfunds",        &removeprunedfunds,        true  },
+    /*
+    // Name calls.
     { "wallet",             "name_list",                &name_list,                false },
     { "wallet",             "name_new",                 &name_new,                 false },
     { "wallet",             "name_firstupdate",         &name_firstupdate,         false },
     { "wallet",             "name_update",              &name_update,              false },
     { "wallet",             "sendtoname",               &sendtoname,               false },
+    */
 };
 
 void RegisterWalletRPCCommands(CRPCTable &t)

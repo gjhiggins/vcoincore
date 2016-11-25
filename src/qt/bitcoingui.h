@@ -136,8 +136,8 @@ private:
     BlockExplorer  *explorerWindow;
     StatsExplorer  *statsWindow;
     ChatWindow *chatWindow;
-    EssentialsPage  *essentialsPage;
     PublisherPage  *publisherPage;
+    EssentialsPage  *essentialsPage;
     ModalOverlay *modalOverlay;
 
     /** Keep track of previous number of blocks, to detect progress */
