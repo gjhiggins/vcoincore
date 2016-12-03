@@ -9,7 +9,6 @@
 #include "checkpoints.h"
 #include "coins.h"
 #include "consensus/validation.h"
-#include "core_io.h"
 #include "main.h"
 #include "policy/policy.h"
 #include "primitives/transaction.h"

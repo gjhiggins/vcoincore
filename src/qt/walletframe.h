@@ -81,8 +81,6 @@ public Q_SLOTS:
     void gotoBlockExplorerPage();	
     /** Switch to account report page */
     void gotoAccountReportPage();
-    /** Switch to manage names page */
-    void gotoManageNamesPage();
 	/** Switch to chat page */
     void gotoChatPage();
     /** Switch to Publishing page */

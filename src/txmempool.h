@@ -17,10 +17,8 @@
 #include "coins.h"
 #include "indirectmap.h"
 #include "primitives/transaction.h"
-#include "names/main.h"
-#include "random.h"
 #include "sync.h"
-#include "script/names.h"
+#include "random.h"
 
 #undef foreach
 #include "boost/multi_index_container.hpp"
@@ -112,9 +110,6 @@ private:
     CAmount nModFeesWithAncestors;
     int64_t nSigOpCostWithAncestors;
 
-    /* Cache name operation (if any) performed by this tx.  */
-    CNameScript nameOp;
-
 public:
     CTxMemPoolEntry(const CTransaction& _tx, const CAmount& _nFee,
                     int64_t _nTime, double _entryPriority, unsigned int _entryHeight,
@@ -160,32 +155,6 @@ public:
     uint64_t GetSizeWithAncestors() const { return nSizeWithAncestors; }
     CAmount GetModFeesWithAncestors() const { return nModFeesWithAncestors; }
     int64_t GetSigOpCostWithAncestors() const { return nSigOpCostWithAncestors; }
-
-    inline bool
-    isNameNew() const
-    {
-        return nameOp.isNameOp() && nameOp.getNameOp() == OP_NAME_NEW;
-    }
-    inline bool
-    isNameRegistration() const
-    {
-        return nameOp.isNameOp() && nameOp.getNameOp() == OP_NAME_FIRSTUPDATE;
-    }
-    inline bool
-    isNameUpdate() const
-    {
-        return nameOp.isNameOp() && nameOp.getNameOp() == OP_NAME_UPDATE;
-    }
-    inline const valtype&
-    getNameNewHash() const
-    {
-        return nameOp.getOpHash();
-    }
-    inline const valtype&
-    getName() const
-    {
-        return nameOp.getOpName();
-    }
 
     mutable size_t vTxHashesIdx; //!< Index in mempool's vTxHashes
 };
@@ -461,14 +430,6 @@ private:
     mutable bool blockSinceLastRollingFeeBump;
     mutable double rollingMinimumFeeRate; //!< minimum fee to get into the pool, decreases exponentially
 
-    /** Name-related mempool data.  */
-    CNameMemPool names;
-    /**
-     * Whether tx verification is turned off when checking mempool consistency.
-     * This is done for Namecoin unit tests.
-     */
-    bool fCheckInputs;
-
     void trackPackageRemoved(const CFeeRate& rate);
 
 public:
@@ -557,7 +518,7 @@ public:
      * check does nothing.
      */
     void check(const CCoinsViewCache *pcoins) const;
-    void setSanityCheck(double dFrequency = 1.0, bool _fCheckInputs = true) { nCheckFrequency = dFrequency * 4294967295.0; fCheckInputs = _fCheckInputs; }
+    void setSanityCheck(double dFrequency = 1.0) { nCheckFrequency = dFrequency * 4294967295.0; }
 
     // addUnchecked must updated state for all ancestors of a given transaction,
     // to track size/count of descendant transactions.  First version of
@@ -568,9 +529,9 @@ public:
 
     void removeRecursive(const CTransaction &tx, std::vector<CTransactionRef>* removed = NULL);
     void removeForReorg(const CCoinsViewCache *pcoins, unsigned int nMemPoolHeight, int flags);
-    void removeConflicts(const CTransaction &tx, std::vector<CTransactionRef>* removed = NULL, std::vector<CTransactionRef>* removedNames = NULL);
+    void removeConflicts(const CTransaction &tx, std::vector<CTransactionRef>* removed = NULL);
     void removeForBlock(const std::vector<CTransactionRef>& vtx, unsigned int nBlockHeight,
-                        std::vector<CTransactionRef>* conflicts = NULL, std::vector<CTransactionRef>* nameConflicts = NULL, bool fCurrentEstimate = true);
+                        std::vector<CTransactionRef>* conflicts = NULL, bool fCurrentEstimate = true);
     void clear();
     void _clear(); //lock free
     bool CompareDepthAndScore(const uint256& hasha, const uint256& hashb);
@@ -583,24 +544,6 @@ public:
      * the tx is not dependent on other mempool transactions to be included in a block.
      */
     bool HasNoInputsOf(const CTransaction& tx) const;
-
-    /* Remove entries that conflict with name expirations / unexpirations.  */
-    inline void
-    removeUnexpireConflicts (const std::set<valtype>& unexpired,
-                             std::vector<CTransactionRef>& removed)
-    {
-        LOCK(cs);
-        // FIXME: refactor
-        // names.removeUnexpireConflicts (unexpired, removed, NULL, NULL);
-    }
-    inline void
-    removeExpireConflicts (const std::set<valtype>& expired,
-                           std::vector<CTransactionRef>& removed)
-    {
-        LOCK(cs);
-        // FIXME: refactor
-        // names.removeExpireConflicts (expired, removed, NULL, NULL);
-    }
 
     /** Affect CreateNewBlock prioritisation of transactions */
     void PrioritiseTransaction(const uint256 hash, const std::string strHash, double dPriorityDelta, const CAmount& nFeeDelta);
@@ -678,39 +621,6 @@ public:
     {
         LOCK(cs);
         return (mapTx.count(hash) != 0);
-    }
-
-    inline bool
-    registersName(const valtype& name) const
-    {
-        AssertLockHeld(cs);
-        return names.registersName(name);
-    }
-    inline bool
-    updatesName(const valtype& name) const
-    {
-        AssertLockHeld(cs);
-        return names.updatesName(name);
-    }
-    inline uint256
-    getTxForName (const valtype& name) const
-    {
-        AssertLockHeld(cs);
-        return names.getTxForName(name);
-    }
-
-    /**
-     * Check if a tx can be added to it according to name criteria.
-     * (The non-name criteria are checked in main.cpp and not here, we
-     * leave it there for as little changes as possible.)
-     * @param tx The tx that should be added.
-     * @return True if it doesn't conflict.
-     */
-    inline bool
-    checkNameOps (const CTransaction& tx) const
-    {
-        AssertLockHeld(cs);
-        return names.checkTx (tx);
     }
 
     CTransactionRef get(const uint256& hash) const;

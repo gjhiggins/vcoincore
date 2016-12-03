@@ -31,7 +31,6 @@
         <file alias="explorer">res/icons/explorer.png</file>
         <file alias="history">res/icons/history.png</file>
         <file alias="logo">res/icons/logo.png</file>
-        <file alias="names">res/icons/names.png</file>
         <file alias="overview">res/icons/overview.png</file>
         <file alias="publish">res/icons/publish.png</file>
         <file alias="export">res/icons/export.png</file>
@@ -42,7 +41,6 @@
         <file alias="tx_input">res/icons/tx_input.png</file>
         <file alias="tx_output">res/icons/tx_output.png</file>
         <file alias="tx_inout">res/icons/tx_inout.png</file>
-        <file alias="tx_nameop">res/icons/tx_nameop.png</file>
         <file alias="lock_closed">res/icons/lock_closed.png</file>
         <file alias="lock_open">res/icons/lock_open.png</file>
         <file alias="key">res/icons/key.png</file>
@@ -69,6 +67,52 @@
         <file alias="webtorrent.js">res/pbt/webtorrent.js</file>
         <file alias="semantic.min.css">res/pbt/semantic.min.css</file>
         <file alias="semantic.min.js">res/pbt/semantic.min.js</file>
+    </qresource>
+    <!--
+    <qresource prefix="/ess">
+        <file alias="index.html">res/ess/index.html</file>
+        <file alias="example.css">res/ess/example.css</file>
+        <file alias="example.js">res/ess/example.js</file>
+        <file alias="sjcl.js">res/ess/sjcl.js</file>
+        <file alias="form.js">res/ess/form.js</file>
+        <file alias="alpha-arrow.png">res/ess/alpha-arrow.png</file>
+        <file alias="semanticui.min.css">res/ess/semantic.min.css</file>
+        <file alias="semanticui.min.js">res/ess/semantic.min.js</file>
+    </qresource>
+    -->
+    <qresource prefix="/post">
+        <file alias="index.html">res/post/index.html</file>
+        <file alias="app.js">res/post/app/app.js</file>
+        <file alias="solid.js">res/post/app/solid.js</file>
+        <file alias="config.json">res/post/config.json</file>
+        <file alias="favicon.png">res/post/favicon.png</file>
+        <file alias="manifest.json">res/post/manifest.json</file>
+        <file alias="blog.css">res/post/css/blog.css</file>
+        <file alias="font-awesome.min.css">res/post/css/font-awesome.min.css</file>
+        <file alias="grids-responsive-min.css">res/post/css/grids-responsive-min.css</file>
+        <file alias="pure-min.css">res/post/css/pure-min.css</file>
+        <file alias="simplemde.min.css">res/post/css/simplemde.min.css</file>
+        <file alias="dropdown.js">res/post/js/dropdown.js</file>
+        <file alias="moment.min.js">res/post/js/moment.min.js</file>
+        <file alias="rdflib.min.js">res/post/js/rdflib.min.js</file>
+        <file alias="simplemde.min.js">res/post/js/simplemde.min.js</file>
+        <file alias="icon-blue.svg">res/post/img/icon-blue.svg</file>
+        <file alias="logo-white.svg">res/post/img/logo-white.svg</file>
+        <file alias="icon.png">res/post/img/icon.png</file>
+        <file alias="icon.svg">res/post/img/icon.svg</file>
+        <file alias="logo.png">res/post/img/logo.png</file>
+        <file alias="logo.svg">res/post/img/logo.svg</file>
+        <file alias="fontawesome-webfont.eot">res/post/css/fonts/fontawesome-webfont.eot</file>
+        <file alias="fontawesome-webfont.svg">res/post/css/fonts/fontawesome-webfont.svg</file>
+        <file alias="fontawesome-webfont.ttf">res/post/css/fonts/fontawesome-webfont.ttf</file>
+        <file alias="fontawesome-webfont.woff">res/post/css/fonts/fontawesome-webfont.woff</file>
+        <file alias="fontawesome-webfont.woff2">res/post/css/fonts/fontawesome-webfont.woff2</file>
+        <file alias="roboto-light.eot">res/post/css/fonts/roboto-light.eot</file>
+        <file alias="roboto-light.ttf">res/post/css/fonts/roboto-light.ttf</file>
+        <file alias="roboto-light.woff">res/post/css/fonts/roboto-light.woff</file>
+        <file alias="roboto-regular.eot">res/post/css/fonts/roboto-regular.eot</file>
+        <file alias="roboto-regular.ttf">res/post/css/fonts/roboto-regular.ttf</file>
+        <file alias="roboto-regular.woff">res/post/css/fonts/roboto-regular.woff</file>
     </qresource>
     <qresource prefix="/vpub">
         <file alias="index.html">res/vpub/index.html</file>

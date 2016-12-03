@@ -7,7 +7,6 @@
 #define BITCOIN_UNDO_H
 
 #include "compressor.h" 
-#include "names/main.h"
 #include "primitives/transaction.h"
 #include "serialize.h"
 
@@ -69,18 +68,11 @@ class CBlockUndo
 public:
     std::vector<CTxUndo> vtxundo; // for all but the coinbase
 
-    /** Stack of operations done to the name database.  */
-    std::vector<CNameTxUndo> vnameundo;
-    /** Undo information for expired name coins.  */
-    std::vector<CTxInUndo> vexpired;
-
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action) {
         READWRITE(vtxundo);
-        READWRITE(vnameundo);
-        READWRITE(vexpired);
     }
 };
 

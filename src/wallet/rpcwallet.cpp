@@ -338,14 +338,6 @@ UniValue getaddressesbyaccount(const JSONRPCRequest& request)
 
 static void SendMoney(const CTxDestination &address, CAmount nValue, bool fSubtractFeeFromAmount, CWalletTx& wtxNew)
 {
-    // Parse Bitcoin address
-    CScript scriptPubKey = GetScriptForDestination(address);
-
-    return SendMoneyToScript(scriptPubKey, NULL, nValue, fSubtractFeeFromAmount, wtxNew);
-}
-
-void SendMoneyToScript(const CScript &scriptPubKey, const CTxIn* withInput, CAmount nValue, bool fSubtractFeeFromAmount, CWalletTx& wtxNew)
-{
     CAmount curBalance = pwalletMain->GetBalance();
 
     // Check amount
@@ -358,10 +350,8 @@ void SendMoneyToScript(const CScript &scriptPubKey, const CTxIn* withInput, CAmo
     if (pwalletMain->GetBroadcastTransactions() && !g_connman)
         throw JSONRPCError(RPC_CLIENT_P2P_DISABLED, "Error: Peer-to-peer functionality missing or disabled");
 
-    /* NOTE: already done in SendMoney wrapper
     // Parse Bitcoin address
     CScript scriptPubKey = GetScriptForDestination(address);
-    */
 
     // Create and send the transaction
     CReserveKey reservekey(pwalletMain);
@@ -371,7 +361,7 @@ void SendMoneyToScript(const CScript &scriptPubKey, const CTxIn* withInput, CAmo
     int nChangePosRet = -1;
     CRecipient recipient = {scriptPubKey, nValue, fSubtractFeeFromAmount};
     vecSend.push_back(recipient);
-    if (!pwalletMain->CreateTransaction(vecSend, withInput, wtxNew, reservekey, nFeeRequired, nChangePosRet, strError, NULL, false)) {
+    if (!pwalletMain->CreateTransaction(vecSend, wtxNew, reservekey, nFeeRequired, nChangePosRet, strError)) {
         if (!fSubtractFeeFromAmount && nValue + nFeeRequired > pwalletMain->GetBalance())
             strError = strprintf("Error: This transaction requires a transaction fee of at least %s", FormatMoney(nFeeRequired));
         throw JSONRPCError(RPC_WALLET_ERROR, strError);
@@ -416,10 +406,7 @@ UniValue sendtoaddress(const JSONRPCRequest& request)
 
     CBitcoinAddress address(request.params[0].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid V Core address");
-
-    /* Note that the code below is duplicated in sendtoname.  Make sure
-       to update it accordingly with changes made here.  */
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Bitcoin address");
 
     // Amount
     CAmount nAmount = AmountFromValue(request.params[1]);
@@ -973,7 +960,7 @@ UniValue sendmany(const JSONRPCRequest& request)
     CAmount nFeeRequired = 0;
     int nChangePosRet = -1;
     string strFailReason;
-    bool fCreated = pwalletMain->CreateTransaction(vecSend, NULL, wtx, keyChange, nFeeRequired, nChangePosRet, strFailReason, NULL, false);
+    bool fCreated = pwalletMain->CreateTransaction(vecSend, wtx, keyChange, nFeeRequired, nChangePosRet, strFailReason);
     if (!fCreated)
         throw JSONRPCError(RPC_WALLET_INSUFFICIENT_FUNDS, strFailReason);
     CValidationState state;
@@ -1363,8 +1350,6 @@ void ListTransactions(const CWalletTx& wtx, const string& strAccount, int nMinDe
                 entry.push_back(Pair("involvesWatchonly", true));
             entry.push_back(Pair("account", strSentAccount));
             MaybePushAddress(entry, s.destination);
-            if(!s.nameOp.empty())
-                entry.push_back(Pair("name", s.nameOp));
             entry.push_back(Pair("category", "send"));
             entry.push_back(Pair("amount", ValueFromAmount(-s.amount)));
             if (pwalletMain->mapAddressBook.count(s.destination))
@@ -1393,8 +1378,6 @@ void ListTransactions(const CWalletTx& wtx, const string& strAccount, int nMinDe
                     entry.push_back(Pair("involvesWatchonly", true));
                 entry.push_back(Pair("account", account));
                 MaybePushAddress(entry, r.destination);
-                if(!r.nameOp.empty())
-                    entry.push_back(Pair("name", r.nameOp));
                 if (wtx.IsCoinBase())
                 {
                     if (wtx.GetDepthInMainChain() < 1)
@@ -1797,7 +1780,7 @@ UniValue gettransaction(const JSONRPCRequest& request)
     CAmount nCredit = wtx.GetCredit(filter);
     CAmount nDebit = wtx.GetDebit(filter);
     CAmount nNet = nCredit - nDebit;
-    CAmount nFee = (wtx.IsFromMe(filter) ? wtx.GetValueOut(true) - nDebit : 0);
+    CAmount nFee = (wtx.IsFromMe(filter) ? wtx.GetValueOut() - nDebit : 0);
 
     entry.push_back(Pair("amount", ValueFromAmount(nNet - nFee)));
     if (wtx.IsFromMe(filter))
@@ -2453,7 +2436,7 @@ UniValue listunspent(const JSONRPCRequest& request)
             if (pwalletMain->mapAddressBook.count(address))
                 entry.push_back(Pair("account", pwalletMain->mapAddressBook[address].name));
 
-            if (scriptPubKey.IsPayToScriptHash(true)) {
+            if (scriptPubKey.IsPayToScriptHash()) {
                 const CScriptID& hash = boost::get<CScriptID>(address);
                 CScript redeemScript;
                 if (pwalletMain->GetCScript(hash, redeemScript))
@@ -2609,14 +2592,6 @@ extern UniValue importprunedfunds(const JSONRPCRequest& request);
 extern UniValue removeprunedfunds(const JSONRPCRequest& request);
 extern UniValue importmulti(const JSONRPCRequest& request);
 
-/*
-extern UniValue name_list(const JSONRPCRequest& request); // in rpcnames.cpp
-extern UniValue name_new(const JSONRPCRequest& request);
-extern UniValue name_firstupdate(const JSONRPCRequest& request);
-extern UniValue name_update(const JSONRPCRequest& request);
-extern UniValue sendtoname(const JSONRPCRequest& request);
-*/
-
 static const CRPCCommand commands[] =
 { //  category              name                        actor (function)           okSafeMode
     //  --------------------- ------------------------    -----------------------    ----------
@@ -2667,14 +2642,6 @@ static const CRPCCommand commands[] =
     { "wallet",             "walletpassphrasechange",   &walletpassphrasechange,   true  },
     { "wallet",             "walletpassphrase",         &walletpassphrase,         true  },
     { "wallet",             "removeprunedfunds",        &removeprunedfunds,        true  },
-    /*
-    // Name calls.
-    { "wallet",             "name_list",                &name_list,                false },
-    { "wallet",             "name_new",                 &name_new,                 false },
-    { "wallet",             "name_firstupdate",         &name_firstupdate,         false },
-    { "wallet",             "name_update",              &name_update,              false },
-    { "wallet",             "sendtoname",               &sendtoname,               false },
-    */
 };
 
 void RegisterWalletRPCCommands(CRPCTable &t)

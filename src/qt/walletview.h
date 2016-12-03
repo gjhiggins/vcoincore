@@ -16,7 +16,6 @@ class PlatformStyle;
 class ReceiveCoinsDialog;
 class SendCoinsDialog;
 class SendCoinsRecipient;
-class ManageNamesPage;
 class TransactionView;
 class ChatWindow;
 class WalletModel;
@@ -70,7 +69,6 @@ private:
     QWidget *transactionsPage;
     ReceiveCoinsDialog *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
-    ManageNamesPage *manageNamesPage;
     AddressBookPage *usedSendingAddressesPage;
     AddressBookPage *usedReceivingAddressesPage;
     BlockExplorer *explorerWindow;
@@ -109,8 +107,6 @@ public Q_SLOTS:
     void gotoChatPage();
     /** Switch to account report page */
     void gotoAccountReportPage(); 
-    /** V Core identity mgmt tab */
-    void gotoManageNamesPage();
     /** Switch to Publisher page */
     void gotoPublisherPage();	
     /** Switch to Essentials page */

@@ -5,7 +5,6 @@
 
 #include "script.h"
 
-#include "script/names.h"
 #include "tinyformat.h"
 #include "utilstrencodings.h"
 
@@ -22,9 +21,9 @@ const char* GetOpName(opcodetype opcode)
     case OP_PUSHDATA4              : return "OP_PUSHDATA4";
     case OP_1NEGATE                : return "-1";
     case OP_RESERVED               : return "OP_RESERVED";
-    case OP_1                      : return "OP_NAME_NEW";
-    case OP_2                      : return "OP_NAME_FIRSTUPDATE";
-    case OP_3                      : return "OP_NAME_UPDATE";
+    case OP_1                      : return "1";
+    case OP_2                      : return "2";
+    case OP_3                      : return "3";
     case OP_4                      : return "4";
     case OP_5                      : return "5";
     case OP_6                      : return "6";
@@ -180,7 +179,7 @@ unsigned int CScript::GetSigOpCount(bool fAccurate) const
 
 unsigned int CScript::GetSigOpCount(const CScript& scriptSig) const
 {
-    if (!IsPayToScriptHash(true))
+    if (!IsPayToScriptHash())
         return GetSigOpCount(true);
 
     // This is a pay-to-script-hash scriptPubKey;
@@ -202,31 +201,21 @@ unsigned int CScript::GetSigOpCount(const CScript& scriptSig) const
     return subscript.GetSigOpCount(true);
 }
 
-bool CScript::IsPayToScriptHash(bool allowNames) const
+bool CScript::IsPayToScriptHash() const
 {
     // Extra-fast test for pay-to-script-hash CScripts:
-    if (!allowNames)
-        return (this->size() == 23 &&
-                (*this)[0] == OP_HASH160 &&
-                (*this)[1] == 0x14 &&
-                (*this)[22] == OP_EQUAL);
-
-    // Strip off a name prefix if present.
-    const CNameScript nameOp(*this);
-    return nameOp.getAddress().IsPayToScriptHash(false);
+    return (this->size() == 23 &&
+            (*this)[0] == OP_HASH160 &&
+            (*this)[1] == 0x14 &&
+            (*this)[22] == OP_EQUAL);
 }
 
-bool CScript::IsPayToWitnessScriptHash(bool allowNames) const
+bool CScript::IsPayToWitnessScriptHash() const
 {
     // Extra-fast test for pay-to-witness-script-hash CScripts:
-    if (!allowNames)
-        return (this->size() == 34 &&
-                (*this)[0] == OP_0 &&
-                (*this)[1] == 0x20);
-
-    // Strip off a name prefix if present.
-    const CNameScript nameOp(*this);
-    return nameOp.getAddress().IsPayToWitnessScriptHash(false);
+    return (this->size() == 34 &&
+            (*this)[0] == OP_0 &&
+            (*this)[1] == 0x20);
 }
 
 // A witness program is any valid CScript that consists of a 1-byte push opcode

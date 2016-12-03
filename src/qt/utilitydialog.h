@@ -7,11 +7,9 @@
 
 #include <QDialog>
 #include <QObject>
-#include "walletmodel.h"
 
 class BitcoinGUI;
 class ClientModel;
-class SendCoinsRecipient;
 
 namespace Ui {
     class HelpMessageDialog;

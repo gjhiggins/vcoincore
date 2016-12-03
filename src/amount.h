@@ -19,9 +19,6 @@ static const CAmount CENT = 1000000;
 
 extern const std::string CURRENCY_UNIT;
 
-/* Dust Hard Limit, ignored as wallet inputs (mininput default) */
-static const int64_t DUST_HARD_LIMIT = CENT;
-
 /** No amount larger than this (in satoshi) is valid.
  *
  * Note that this constant is *not* the total money supply, which in Bitcoin

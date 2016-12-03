@@ -29,8 +29,6 @@ class QUrl;
 class QWidget;
 QT_END_NAMESPACE
 
-const int defaultConfirmTarget = 25;
-
 /** Utility functions used by the Bitcoin Qt UI.
  */
 namespace GUIUtil
@@ -43,7 +41,7 @@ namespace GUIUtil
     QFont fixedPitchFont();
 
     // Set up widgets for address and amounts
-    void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent, bool fAllowEmpty = false);
+    void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent);
     void setupAmountWidget(QLineEdit *widget, QWidget *parent);
 
     // Parse "bitcoin:" URI into recipient object, return true on successful parsing

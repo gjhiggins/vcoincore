@@ -77,8 +77,7 @@ public:
         SendToOther,
         RecvWithAddress,
         RecvFromOther,
-        SendToSelf,
-        NameOp,
+        SendToSelf
     };
 
     /** Number of confirmation recommended for accepting a transaction */

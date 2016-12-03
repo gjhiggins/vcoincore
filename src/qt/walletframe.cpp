@@ -230,13 +230,6 @@ void WalletFrame::gotoBlockExplorerPage()
         i.value()->gotoBlockExplorerPage();
 }
 
-void WalletFrame::gotoManageNamesPage()
-{
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoManageNamesPage();
-}
-
 void WalletFrame::gotoEssentialsPage()
 {
     QMap<QString, WalletView*>::const_iterator i;

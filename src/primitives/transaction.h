@@ -160,6 +160,7 @@ public:
         return (nValue == -1);
     }
 
+    /* TODO: tests required */
     bool IsOpReturn() const {
        std::vector<uint8_t> vchR;
        opcodetype opCode;
@@ -173,8 +174,6 @@ public:
        }
        return false;
     }
-
-    uint256 GetHash() const;
 
     CAmount GetDustThreshold(const CFeeRate &minRelayTxFee) const
     {
@@ -371,15 +370,7 @@ private:
 
 public:
     // Default transaction version.
-
-    // versions
-    //    1 : launch
-    //    2 : after pivot
-    static const int CURRENT_VERSION = 2;
-    static const int PREVIOUS_VERSION = 1;
-    // static const int32_t CURRENT_VERSION=1;
-    // static const int PREVIOUS_VERSION = 1;
-    static const int32_t NAMECOIN_VERSION=0x7100; // 28928
+    static const int32_t CURRENT_VERSION=1;
 
     // Changing the default transaction version requires a two step process: first
     // adapting relay policy by bumping MAX_STANDARD_VERSION, and then later date
@@ -432,7 +423,7 @@ public:
     uint256 GetWitnessHash() const;
 
     // Return sum of txouts.
-    CAmount GetValueOut(bool fExcludeNames = false) const;
+    CAmount GetValueOut() const;
     // GetValueIn() is a method on CCoinsViewCache, because
     // inputs must be known to compute value in.
 
@@ -452,11 +443,6 @@ public:
     bool IsCoinBase() const
     {
         return (vin.size() == 1 && vin[0].prevout.IsNull());
-    }
-
-    bool IsNamecoin() const
-    {
-        return nVersion == NAMECOIN_VERSION;
     }
 
     friend bool operator==(const CTransaction& a, const CTransaction& b)
@@ -503,16 +489,9 @@ struct CMutableTransaction
      */
     uint256 GetHash() const;
 
-
-    /** Get Inscription Fees
-    */
-    int64_t GetOpRetFee() const;
-
-    /**
-     * Turn this into a Namecoin version transaction.  It is assumed
-     * that it isn't already.
+    /* TODO: test get of inscription fees
      */
-    void SetNamecoin();
+    int64_t GetOpRetFee() const;
 };
 
 typedef std::shared_ptr<const CTransaction> CTransactionRef;

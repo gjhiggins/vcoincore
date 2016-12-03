@@ -147,21 +147,7 @@ testScripts = [
     'signmessages.py',
     'p2p-compactblocks.py',
     'nulldummy.py',
-
     'importmulti.py',
-    # auxpow tests
-    'getauxblock.py',
-
-    # name tests
-    'name_expiration.py',
-    'name_list.py',
-    'name_multisig.py',
-    'name_pending.py',
-    'name_rawtx.py',
-    'name_registration.py',
-    'name_reorg.py',
-    'name_scanning.py',
-    'name_wallet.py',
 ]
 if ENABLE_ZMQ:
     testScripts.append('zmq_test.py')
@@ -173,8 +159,8 @@ testScriptsExt = [
     'bip68-sequence.py',
     'bipdersig-p2p.py',
     'bipdersig.py',
-    # 'getblocktemplate_longpoll.py',
-    # 'getblocktemplate_proposals.py',
+    'getblocktemplate_longpoll.py',
+    'getblocktemplate_proposals.py',
     'txn_doublespend.py',
     'txn_clone.py --mineblock',
     'forknotify.py',

@@ -16,7 +16,6 @@
 #include "policy/policy.h"
 #include "primitives/transaction.h"
 #include "rpc/server.h"
-#include "script/names.h"
 #include "script/script.h"
 #include "script/script_error.h"
 #include "script/sign.h"
@@ -42,53 +41,12 @@ void ScriptPubKeyToJSON(const CScript& scriptPubKey, UniValue& out, bool fInclud
     vector<CTxDestination> addresses;
     int nRequired;
 
-    const CNameScript nameOp(scriptPubKey);
-    if (nameOp.isNameOp ())
-    {
-        UniValue jsonOp(UniValue::VOBJ);
-        switch (nameOp.getNameOp ())
-        {
-        case OP_NAME_NEW:
-            jsonOp.push_back (Pair("op", "name_new"));
-            jsonOp.push_back (Pair("hash", HexStr (nameOp.getOpHash ())));
-            break;
-
-        case OP_NAME_FIRSTUPDATE:
-        {
-            const std::string name = ValtypeToString (nameOp.getOpName ());
-            const std::string value = ValtypeToString (nameOp.getOpValue ());
-
-            jsonOp.push_back (Pair("op", "name_firstupdate"));
-            jsonOp.push_back (Pair("name", name));
-            jsonOp.push_back (Pair("value", value));
-            jsonOp.push_back (Pair("rand", HexStr (nameOp.getOpRand ())));
-            break;
-        }
-
-        case OP_NAME_UPDATE:
-        {
-            const std::string name = ValtypeToString (nameOp.getOpName ());
-            const std::string value = ValtypeToString (nameOp.getOpValue ());
-
-            jsonOp.push_back (Pair("op", "name_update"));
-            jsonOp.push_back (Pair("name", name));
-            jsonOp.push_back (Pair("value", value));
-            break;
-        }
-
-        default:
-            assert (false);
-        }
-
-        out.push_back (Pair("nameOp", jsonOp));
-    }
-
     out.push_back(Pair("asm", ScriptToAsmStr(scriptPubKey)));
     if (fIncludeHex)
         out.push_back(Pair("hex", HexStr(scriptPubKey.begin(), scriptPubKey.end())));
 
     if (!ExtractDestinations(scriptPubKey, type, addresses, nRequired)) {
-        out.push_back(Pair("type", GetTxnOutputType(TX_NONSTANDARD)));
+        out.push_back(Pair("type", GetTxnOutputType(type)));
         return;
     }
 
@@ -379,17 +337,14 @@ UniValue verifytxoutproof(const JSONRPCRequest& request)
 
 UniValue createrawtransaction(const JSONRPCRequest& request)
 {
-    if (request.fHelp || request.params.size() < 2 || request.params.size() > 4)
+    if (request.fHelp || request.params.size() < 2 || request.params.size() > 3)
         throw runtime_error(
-            "createrawtransaction [{\"txid\":\"id\",\"vout\":n},...] {\"address\":amount,\"data\":\"hex\",...} (name operation) (locktime)\n"
+            "createrawtransaction [{\"txid\":\"id\",\"vout\":n},...] {\"address\":amount,\"data\":\"hex\",...} (locktime)\n"
             "\nCreate a transaction spending the given inputs and creating new outputs.\n"
             "Outputs can be addresses or data.\n"
             "Returns hex-encoded raw transaction.\n"
             "Note that the transaction's inputs are not signed, and\n"
             "it is not stored in the wallet or transmitted to the network.\n"
-
-            "\nOptionally, a name update operation can be performed.  The name input must be added\n"
-            "manually.  (name_show gives the necessary data.)\n"
 
             "\nArguments:\n"
             "1. \"transactions\"        (string, required) A json array of json objects\n"
@@ -407,22 +362,13 @@ UniValue createrawtransaction(const JSONRPCRequest& request)
             "      \"data\": \"hex\",     (string, required) The key is \"data\", the value is hex encoded data\n"
             "      ...\n"
             "    }\n"
-            "3. \"name operation\"      (string, optional) json object for name operation\n"
-            "    {\n"
-            "      \"op\": \"name_update\",\n"
-            "      \"name\": xxx,       (string, required) the name to update\n"
-            "      \"value\": xxx,      (string, required) the new value\n"
-            "      \"address\": xxx,    (string, required) address to send it to\n"
-            "    }\n"
-
-            "4. locktime                (numeric, optional, default=0) Raw locktime. Non-0 value also locktime-activates inputs\n"
+            "3. locktime                (numeric, optional, default=0) Raw locktime. Non-0 value also locktime-activates inputs\n"
             "\nResult:\n"
             "\"transaction\"            (string) hex string of the transaction\n"
 
             "\nExamples\n"
             + HelpExampleCli("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\" \"{\\\"address\\\":0.01}\"")
             + HelpExampleCli("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\" \"{\\\"data\\\":\\\"00010203\\\"}\"")
-            + HelpExampleCli("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\" \"{}\" \"{\\\"op\""":\\\"name_update\\\",\\\"name\\\":\\\"my-name\\\",\\\"value\\\":\\\"new value\\\",\\\"address\\\":\\\"NFt4cuHJ97dxfsNZpz5qKxAxnQVAUShwdX\\\"}\"")
             + HelpExampleRpc("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\", \"{\\\"address\\\":0.01}\"")
             + HelpExampleRpc("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\", \"{\\\"data\\\":\\\"00010203\\\"}\"")
         );
@@ -436,8 +382,8 @@ UniValue createrawtransaction(const JSONRPCRequest& request)
 
     CMutableTransaction rawTx;
 
-    if (request.params.size() > 3 && !request.params[3].isNull()) {
-        int64_t nLockTime = request.params[3].get_int64();
+    if (request.params.size() > 2 && !request.params[2].isNull()) {
+        int64_t nLockTime = request.params[2].get_int64();
         if (nLockTime < 0 || nLockTime > std::numeric_limits<uint32_t>::max())
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, locktime out of range");
         rawTx.nLockTime = nLockTime;
@@ -498,9 +444,6 @@ UniValue createrawtransaction(const JSONRPCRequest& request)
             rawTx.vout.push_back(out);
         }
     }
-
-    if (request.params.size() > 2 && !request.params[2].isNull())
-        AddRawTxNameOperation(rawTx, request.params[2].get_obj());
 
     return EncodeHexTx(rawTx);
 }
@@ -809,7 +752,7 @@ UniValue signrawtransaction(const JSONRPCRequest& request)
 
             // if redeemScript given and not using the local wallet (private keys
             // given), add redeemScript to the tempKeystore so it can be signed:
-            if (fGivenKeys && (scriptPubKey.IsPayToScriptHash(true) || scriptPubKey.IsPayToWitnessScriptHash(true))) {
+            if (fGivenKeys && (scriptPubKey.IsPayToScriptHash() || scriptPubKey.IsPayToWitnessScriptHash())) {
                 RPCTypeCheckObj(prevOut,
                     {
                         {"txid", UniValueType(UniValue::VSTR)},

@@ -99,12 +99,10 @@ QT_FORMS_UI = \
   qt/forms/blockexplorer.ui \
   qt/forms/chatwindow.ui \
   qt/forms/coincontroldialog.ui \
-  qt/forms/configurenamedialog.ui \
   qt/forms/editaddressdialog.ui \
   qt/forms/essentialspage.ui \
   qt/forms/helpmessagedialog.ui \
   qt/forms/intro.ui \
-  qt/forms/managenamespage.ui \
   qt/forms/modaloverlay.ui \
   qt/forms/openuridialog.ui \
   qt/forms/optionsdialog.ui \
@@ -134,7 +132,6 @@ QT_MOC_CPP = \
   qt/moc_clientmodel.cpp \
   qt/moc_coincontroldialog.cpp \
   qt/moc_coincontroltreewidget.cpp \
-  qt/moc_configurenamedialog.cpp \
   qt/moc_csvmodelwriter.cpp \
   qt/moc_editaddressdialog.cpp \
   qt/moc_essentialspage.cpp \
@@ -142,9 +139,7 @@ QT_MOC_CPP = \
   qt/moc_intro.cpp \
   qt/moc_macdockiconhandler.cpp \
   qt/moc_macnotificationhandler.cpp \
-  qt/moc_managenamespage.cpp \
   qt/moc_modaloverlay.cpp \
-  qt/moc_nametablemodel.cpp \
   qt/moc_notificator.cpp \
   qt/moc_openuridialog.cpp \
   qt/moc_optionsdialog.cpp \
@@ -212,7 +207,6 @@ BITCOIN_QT_H = \
   qt/clientmodel.h \
   qt/coincontroldialog.h \
   qt/coincontroltreewidget.h \
-  qt/configurenamedialog.h \
   qt/csvmodelwriter.h \
   qt/editaddressdialog.h \
   qt/essentialspage.h \
@@ -221,9 +215,7 @@ BITCOIN_QT_H = \
   qt/intro.h \
   qt/macdockiconhandler.h \
   qt/macnotificationhandler.h \
-  qt/managenamespage.h \
   qt/modaloverlay.h \
-  qt/nametablemodel.h \
   qt/networkstyle.h \
   qt/notificator.h \
   qt/openuridialog.h \
@@ -305,7 +297,6 @@ RES_ICONS = \
   qt/res/icons/key.png \
   qt/res/icons/lock_closed.png \
   qt/res/icons/lock_open.png \
-  qt/res/icons/names.png \
   qt/res/icons/network_disabled.png \
   qt/res/icons/open.png \
   qt/res/icons/overview.png \
@@ -324,7 +315,6 @@ RES_ICONS = \
   qt/res/icons/tx_input.png \
   qt/res/icons/tx_output.png \
   qt/res/icons/tx_mined.png \
-  qt/res/icons/tx_nameop.png \
   qt/res/icons/warning.png \
   qt/res/icons/verify.png \
   qt/res/icons/transaction_abandoned.png
@@ -370,11 +360,8 @@ BITCOIN_QT_WALLET_CPP = \
   qt/chatwindow.cpp \
   qt/coincontroldialog.cpp \
   qt/coincontroltreewidget.cpp \
-  qt/configurenamedialog.cpp \
   qt/editaddressdialog.cpp \
   qt/essentialspage.cpp \
-  qt/managenamespage.cpp \
-  qt/nametablemodel.cpp \
   qt/openuridialog.cpp \
   qt/overviewpage.cpp \
   qt/paymentrequestplus.cpp \

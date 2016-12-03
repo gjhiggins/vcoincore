@@ -715,7 +715,7 @@ UniValue processImport(const UniValue& data) {
             CScript redeemScript = CScript(vData.begin(), vData.end());
 
             // Invalid P2SH address
-            if (!script.IsPayToScriptHash(false)) {
+            if (!script.IsPayToScriptHash()) {
                 throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid P2SH address / script");
             }
 

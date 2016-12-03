@@ -17,7 +17,6 @@
 
 #include "base58.h"
 #include "wallet/coincontrol.h"
-
 #include "main.h" // mempool and minRelayTxFee
 #include "ui_interface.h"
 #include "txmempool.h"

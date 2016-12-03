@@ -5,7 +5,6 @@
 #include "blockencodings.h"
 #include "consensus/merkle.h"
 #include "chainparams.h"
-#include "primitives/pureheader.h"
 #include "random.h"
 
 #include "test/test_bitcoin.h"
@@ -17,11 +16,6 @@ struct RegtestingSetup : public TestingSetup {
 };
 
 BOOST_FIXTURE_TEST_SUITE(blockencodings_tests, RegtestingSetup)
-
-static void SetBlockVersion(CPureBlockHeader& header, int32_t baseVersion) {
-  const int32_t nChainId = Params().GetConsensus().nAuxpowChainId;
-  header.SetBaseVersion(baseVersion, nChainId);
-}
 
 static CBlock BuildBlockTestCase() {
     CBlock block;

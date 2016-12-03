@@ -5,7 +5,6 @@
 #ifndef BITCOIN_QT_WALLETMODEL_H
 #define BITCOIN_QT_WALLETMODEL_H
 
-#include "names/common.h"
 #include "paymentrequestplus.h"
 #include "walletmodeltransaction.h"
 
@@ -20,7 +19,6 @@ class AddressTableModel;
 class OptionsModel;
 class PlatformStyle;
 class RecentRequestsTableModel;
-class NameTableModel;
 class TransactionTableModel;
 class WalletModelTransaction;
 
@@ -129,7 +127,6 @@ public:
     OptionsModel *getOptionsModel();
     AddressTableModel *getAddressTableModel();
     TransactionTableModel *getTransactionTableModel();
-    NameTableModel *getNameTableModel();
     RecentRequestsTableModel *getRecentRequestsTableModel();
 
     CAmount getBalance(const CCoinControl *coinControl = NULL) const;
@@ -209,24 +206,6 @@ public:
 
     bool transactionCanBeAbandoned(uint256 hash) const;
     bool abandonTransaction(uint256 hash) const;
-    bool nameAvailable(const QString &name);
-
-    // Register new name
-    // Requires unlocked wallet; can throw exception instead of returning error
-    NameNewReturn nameNew(const QString &name);
-
-    // Create pending name update
-    // Requires unlocked wallet; can throw exception instead of returning error
-    QString nameFirstUpdatePrepare(const QString &name, const QString &data);
-
-    // Send pending name updates, if they are 12 blocks old
-    void sendPendingNameFirstUpdates();
-
-    std::string completePendingNameFirstUpdate(std::string &name, std::string &rand, std::string &txid, std::string &data, std::string &toaddress);
-
-    // Update name
-    // Requires unlocked wallet; can throw exception instead of returning error
-    QString nameUpdate(const QString &name, const QString &data, const QString &transferToAddress);
 
     static bool isWalletEnabled();
 
@@ -245,7 +224,6 @@ private:
 
     AddressTableModel *addressTableModel;
     TransactionTableModel *transactionTableModel;
-    NameTableModel *nameTableModel;
     RecentRequestsTableModel *recentRequestsTableModel;
 
     // Cache some values to be able to detect changes

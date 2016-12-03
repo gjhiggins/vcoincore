@@ -3,6 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "walletview.h"
+
 #include "addressbookpage.h"
 #include "askpassphrasedialog.h"
 #include "bitcoingui.h"
@@ -21,7 +22,6 @@
 #include "reportview.h"
 #include "blockexplorer.h"
 #include "statsexplorer.h"
-#include "managenamespage.h"
 #include "chatwindow.h"
 #include "publisherpage.h"
 #include "essentialspage.h"
@@ -47,7 +47,6 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 	explorerWindow = new BlockExplorer(this);
     statsExplorerPage = new StatsExplorer(this);
     chatWindow = new ChatWindow(this);
-    manageNamesPage = new ManageNamesPage(platformStyle);
     publisherPage = new PublisherPage(platformStyle, this);
     essentialsPage = new EssentialsPage(platformStyle, this);
 
@@ -84,7 +83,6 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 
     receiveCoinsPage = new ReceiveCoinsDialog(platformStyle);
     sendCoinsPage = new SendCoinsDialog(platformStyle);
-    manageNamesPage = new ManageNamesPage(platformStyle);
 
     usedSendingAddressesPage = new AddressBookPage(platformStyle, AddressBookPage::ForEditing, AddressBookPage::SendingTab, this);
     usedReceivingAddressesPage = new AddressBookPage(platformStyle, AddressBookPage::ForEditing, AddressBookPage::ReceivingTab, this);
@@ -96,7 +94,6 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(sendCoinsPage);
 	addWidget(explorerWindow);
     addWidget(statsExplorerPage);
-    addWidget(manageNamesPage);
 	addWidget(chatWindow);
     addWidget(publisherPage);
     addWidget(essentialsPage);
@@ -161,7 +158,6 @@ void WalletView::setWalletModel(WalletModel *_walletModel)
     overviewPage->setWalletModel(_walletModel);
     receiveCoinsPage->setModel(_walletModel);
     sendCoinsPage->setModel(_walletModel);
-    manageNamesPage->setModel(_walletModel);
     usedReceivingAddressesPage->setModel(_walletModel->getAddressTableModel());
     usedSendingAddressesPage->setModel(_walletModel->getAddressTableModel());
 
@@ -387,11 +383,6 @@ void WalletView::gotoChatPage()
 void WalletView::gotoStatsExplorerPage()
 {
     setCurrentWidget(statsExplorerPage);
-}
-
-void WalletView::gotoManageNamesPage()
-{
-    setCurrentWidget(manageNamesPage);
 }
 
 void WalletView::gotoEssentialsPage()

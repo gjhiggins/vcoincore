@@ -34,8 +34,6 @@ static const int MAX_SCRIPT_SIZE = 10000;
 // otherwise as UNIX timestamp.
 static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20 1985 UTC
 
-typedef std::vector<unsigned char> valtype;
-
 template <typename T>
 std::vector<unsigned char> ToByteVector(const T& in)
 {
@@ -55,11 +53,8 @@ enum opcodetype
     OP_RESERVED = 0x50,
     OP_1 = 0x51,
     OP_TRUE=OP_1,
-    OP_NAME_NEW=OP_1,
     OP_2 = 0x52,
-    OP_NAME_FIRSTUPDATE=OP_2,
     OP_3 = 0x53,
-    OP_NAME_UPDATE=OP_3,
     OP_4 = 0x54,
     OP_5 = 0x55,
     OP_6 = 0x56,
@@ -625,13 +620,8 @@ public:
      */
     unsigned int GetSigOpCount(const CScript& scriptSig) const;
 
-    /**
-     * Check if the script is P2SH.  Optionally, strip a possible
-     * name prefix before performing the strict check from Bitcoin.
-     * @param allowName Strip name scripts before checking?
-     */
-    bool IsPayToScriptHash(bool allowNames) const;
-    bool IsPayToWitnessScriptHash(bool allowNames) const;
+    bool IsPayToScriptHash() const;
+    bool IsPayToWitnessScriptHash() const;
     bool IsWitnessProgram(int& version, std::vector<unsigned char>& program) const;
 
     /** Called by IsStandardTx and P2SH/BIP62 VerifyScript (which makes it consensus-critical). */

@@ -33,18 +33,12 @@ static const int MEMPOOL_GD_VERSION = 60002;
 //! "filter*" commands are disabled without NODE_BLOOM after and including this version
 static const int NO_BLOOM_VERSION = 70011;
 
-//! Version when we switched to a size-based "headers" limit.
-static const int SIZE_HEADERS_LIMIT_VERSION = 110000;
-
 //! "sendheaders" command and announcing blocks with headers starts with this version
 static const int SENDHEADERS_VERSION = 110012;
 
 //! "feefilter" tells peers to filter invs to you by fee starts with this version
 static const int FEEFILTER_VERSION = 110013;
 
-/* FIXME: Resolve lacuna */
-//! shord-id-based block download starts with this version
-// static const int SHORT_IDS_BLOCKS_VERSION = 110014;
 //! short-id-based block download starts with this version
 static const int SHORT_IDS_BLOCKS_VERSION = 70014;
 

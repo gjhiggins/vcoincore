@@ -372,7 +372,7 @@ vector<unsigned char> ParseHexUO(map<string,UniValue>& o, string strKey)
     return ParseHexUV(o[strKey], strKey);
 }
 
-CAmount AmountFromValue(const UniValue& value)
+static CAmount AmountFromValue(const UniValue& value)
 {
     if (!value.isNum() && !value.isStr())
         throw runtime_error("Amount is not a number or string");
@@ -461,8 +461,7 @@ static void MutateTxSign(CMutableTransaction& tx, const string& flagStr)
 
             // if redeemScript given and private keys given,
             // add redeemScript to the tempKeystore so it can be signed:
-            /* TODO: Check IsPayTo* for required arg */
-            if ((scriptPubKey.IsPayToScriptHash(false) || scriptPubKey.IsPayToWitnessScriptHash(false)) &&
+            if ((scriptPubKey.IsPayToScriptHash() || scriptPubKey.IsPayToWitnessScriptHash()) &&
                 prevOut.exists("redeemScript")) {
                 UniValue v = prevOut["redeemScript"];
                 vector<unsigned char> rsData(ParseHexUV(v, "redeemScript"));

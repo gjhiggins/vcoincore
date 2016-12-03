@@ -11,7 +11,6 @@
 #include "main.h"
 #include "policy/policy.h"
 #include "policy/fees.h"
-#include "script/interpreter.h"
 #include "streams.h"
 #include "timedata.h"
 #include "util.h"
@@ -27,8 +26,7 @@ CTxMemPoolEntry::CTxMemPoolEntry(const CTransaction& _tx, const CAmount& _nFee,
                                  bool _spendsCoinbase, int64_t _sigOpsCost, LockPoints lp):
     tx(MakeTransactionRef(_tx)), nFee(_nFee), nTime(_nTime), entryPriority(_entryPriority), entryHeight(_entryHeight),
     hadNoDependencies(poolHasNoInputsOf), inChainInputValue(_inChainInputValue),
-    spendsCoinbase(_spendsCoinbase), sigOpCost(_sigOpsCost), lockPoints(lp),
-    nameOp()
+    spendsCoinbase(_spendsCoinbase), sigOpCost(_sigOpsCost), lockPoints(lp)
 {
     nTxWeight = GetTransactionWeight(_tx);
     nModSize = _tx.CalculateModifiedSize(GetTxSize());
@@ -46,21 +44,6 @@ CTxMemPoolEntry::CTxMemPoolEntry(const CTransaction& _tx, const CAmount& _nFee,
     nSizeWithAncestors = GetTxSize();
     nModFeesWithAncestors = nFee;
     nSigOpCostWithAncestors = sigOpCost;
-
-    if (_tx.IsNamecoin())
-    {
-        for (const auto& txOut : _tx.vout)
-        {
-            const CNameScript curNameOp(txOut.scriptPubKey);
-            if (!curNameOp.isNameOp())
-                continue;
-
-            assert(!nameOp.isNameOp());
-            nameOp = curNameOp;
-        }
-
-        assert(nameOp.isNameOp());
-    }
 }
 
 CTxMemPoolEntry::CTxMemPoolEntry(const CTxMemPoolEntry& other)
@@ -366,8 +349,7 @@ void CTxMemPoolEntry::UpdateAncestorState(int64_t modifySize, CAmount modifyFee,
 }
 
 CTxMemPool::CTxMemPool(const CFeeRate& _minReasonableRelayFee) :
-    nTransactionsUpdated(0),
-    names(*this), fCheckInputs(true)
+    nTransactionsUpdated(0)
 {
     _clear(); //lock free clear
 
@@ -461,7 +443,6 @@ bool CTxMemPool::addUnchecked(const uint256& hash, const CTxMemPoolEntry &entry,
     nTransactionsUpdated++;
     totalTxSize += entry.GetTxSize();
     minerPolicyEstimator->processTransaction(entry, fCurrentEstimate);
-    names.addUnchecked (hash, entry);
 
     vTxHashes.emplace_back(tx.GetWitnessHash(), newit);
     newit->vTxHashesIdx = vTxHashes.size() - 1;
@@ -471,8 +452,6 @@ bool CTxMemPool::addUnchecked(const uint256& hash, const CTxMemPoolEntry &entry,
 
 void CTxMemPool::removeUnchecked(txiter it)
 {
-    names.remove (*it);
-
     const uint256 hash = it->GetTx().GetHash();
     BOOST_FOREACH(const CTxIn& txin, it->GetTx().vin)
         mapNextTx.erase(txin.prevout);
@@ -597,7 +576,7 @@ void CTxMemPool::removeForReorg(const CCoinsViewCache *pcoins, unsigned int nMem
     RemoveStaged(setAllRemoves, false);
 }
 
-void CTxMemPool::removeConflicts(const CTransaction &tx, std::vector<CTransactionRef>* removed, std::vector<CTransactionRef>* removedNames)
+void CTxMemPool::removeConflicts(const CTransaction &tx, std::vector<CTransactionRef>* removed)
 {
     // Remove transactions which depend on inputs of tx, recursively
     LOCK(cs);
@@ -612,17 +591,13 @@ void CTxMemPool::removeConflicts(const CTransaction &tx, std::vector<CTransactio
             }
         }
     }
-
-    /* Remove conflicting name registrations.  */
-    // names.removeConflicts (tx, removedNames, NULL, NULL);
-    // names.removeConflicts (tx, removedNames);
 }
 
 /**
  * Called when a block is connected. Removes from mempool and updates the miner fee estimator.
  */
 void CTxMemPool::removeForBlock(const std::vector<CTransactionRef>& vtx, unsigned int nBlockHeight,
-                                std::vector<CTransactionRef>* conflicts, std::vector<CTransactionRef>* nameConflicts, bool fCurrentEstimate)
+                                std::vector<CTransactionRef>* conflicts, bool fCurrentEstimate)
 {
     LOCK(cs);
     std::vector<CTxMemPoolEntry> entries;
@@ -642,7 +617,7 @@ void CTxMemPool::removeForBlock(const std::vector<CTransactionRef>& vtx, unsigne
             stage.insert(it);
             RemoveStaged(stage, true);
         }
-        removeConflicts(*tx, conflicts, nameConflicts);
+        removeConflicts(*tx, conflicts);
         ClearPrioritisation(tx->GetHash());
     }
     // After the txs in the new block have been removed from the mempool, update policy estimates
@@ -656,7 +631,6 @@ void CTxMemPool::_clear()
     mapLinks.clear();
     mapTx.clear();
     mapNextTx.clear();
-    names.clear();
     totalTxSize = 0;
     cachedInnerUsage = 0;
     lastRollingFeeUpdate = GetTime();
@@ -799,8 +773,6 @@ void CTxMemPool::check(const CCoinsViewCache *pcoins) const
 
     assert(totalTxSize == checkTotal);
     assert(innerUsage == cachedInnerUsage);
-
-    names.check (*pcoins);
 }
 
 bool CTxMemPool::CompareDepthAndScore(const uint256& hasha, const uint256& hashb)

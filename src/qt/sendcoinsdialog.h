@@ -6,16 +6,11 @@
 #define BITCOIN_QT_SENDCOINSDIALOG_H
 
 #include "walletmodel.h"
-#include "guiutil.h"
 
 #include <QDialog>
 #include <QMessageBox>
 #include <QString>
 #include <QTimer>
-#include <QDir>
-#include <QFile>
-#include <QFileDialog>
-#include <QDesktopServices>
 
 class ClientModel;
 class OptionsModel;
