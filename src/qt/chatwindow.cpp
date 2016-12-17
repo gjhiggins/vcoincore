@@ -63,7 +63,7 @@ void ChatWindow::tabClosing(int index)
 
 void ChatWindow::disconnectFromServer()
 {
-    QMapIterator<QString, ChatClient *> i(chatclients);
+    QMapIterator<QString, ChatClient*> i(chatclients);
 
     while(i.hasNext())
     {
@@ -159,10 +159,10 @@ void ChatWindow::connectToServer()
         ui->tab->removeTab(0);
     }
 
-    chatclients.insert("chat.freenode.net", chatclient);
+    chatclients.insert("irc.freenode.net",chatclient);
 
     chatclient->pseudo = ui->editPseudo->text();
-    chatclient->server = "chat.freenode.net";
+    chatclient->server = "irc.freenode.net";
     chatclient->port = 6667;
     chatclient->utterance = textEdit;
     chatclient->tab = ui->tab;
@@ -174,7 +174,7 @@ void ChatWindow::connectToServer()
     connect(chatclient, SIGNAL(joinTab()), this, SLOT(tabJoined()));
     connect(chatclient, SIGNAL(tabJoined()), this, SLOT(tabJoining()));
 
-    chatclient->connectToHost("chat.freenode.net", 6667);
+    chatclient->connectToHost("irc.freenode.net", 6667);
 
     ui->tab->setCurrentIndex(ui->tab->count() - 1);
 }
