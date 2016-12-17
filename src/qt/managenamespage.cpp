@@ -261,8 +261,7 @@ void ManageNamesPage::on_configureNameButton_clicked()
     }
 }
 
-void
-ManageNamesPage::on_renewNameButton_clicked ()
+void ManageNamesPage::on_renewNameButton_clicked ()
 {
     if(!ui->tableView->selectionModel())
         return;

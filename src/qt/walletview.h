@@ -24,6 +24,8 @@ class AddressBookPage;
 class ReportView;
 class BlockExplorer;
 class StatsExplorer;
+class PublisherPage;
+class EssentialsPage;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -73,6 +75,8 @@ private:
     AddressBookPage *usedReceivingAddressesPage;
     BlockExplorer *explorerWindow;
     StatsExplorer *statsExplorerPage;
+    PublisherPage *publisherPage;
+    EssentialsPage *essentialsPage;
 
     TransactionView *transactionView;
     
@@ -107,6 +111,10 @@ public Q_SLOTS:
     void gotoAccountReportPage(); 
     /** V Core identity mgmt tab */
     void gotoManageNamesPage();
+    /** Switch to Publisher page */
+    void gotoPublisherPage();	
+    /** Switch to Essentials page */
+    void gotoEssentialsPage();   
 
     /** Show incoming transaction notification for new transactions.
 

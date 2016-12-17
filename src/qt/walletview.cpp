@@ -23,6 +23,8 @@
 #include "statsexplorer.h"
 #include "managenamespage.h"
 #include "chatwindow.h"
+#include "publisherpage.h"
+#include "essentialspage.h"
 
 #include "ui_interface.h"
 
@@ -45,6 +47,9 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 	explorerWindow = new BlockExplorer(this);
     statsExplorerPage = new StatsExplorer(this);
     chatWindow = new ChatWindow(this);
+    manageNamesPage = new ManageNamesPage(platformStyle);
+    publisherPage = new PublisherPage(platformStyle, this);
+    essentialsPage = new EssentialsPage(platformStyle, this);
 
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -93,6 +98,8 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(statsExplorerPage);
     addWidget(manageNamesPage);
 	addWidget(chatWindow);
+    addWidget(publisherPage);
+    addWidget(essentialsPage);
 
         // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
@@ -386,3 +393,16 @@ void WalletView::gotoManageNamesPage()
 {
     setCurrentWidget(manageNamesPage);
 }
+
+void WalletView::gotoEssentialsPage()
+{
+    setCurrentWidget(essentialsPage);
+
+}
+
+void WalletView::gotoPublisherPage()
+{
+    setCurrentWidget(publisherPage);
+
+}
+

@@ -1200,6 +1200,10 @@ CAmount CWallet::GetCredit(const CTxOut& txout, const isminefilter& filter) cons
 {
     if (!MoneyRange(txout.nValue))
         throw std::runtime_error(std::string(__func__) + ": value out of range");
+
+    if (CNameScript::isNameScript (txout.scriptPubKey))
+        return 0;
+
     return ((IsMine(txout) & filter) ? txout.nValue : 0);
 }
 
@@ -1398,10 +1402,10 @@ void CWalletTx::GetAmounts(list<COutputEntry>& listReceived,
 
     // Compute fee:
     const bool isFromMe = IsFromMe(filter);
-    if (isFromMe)
+    CAmount nDebit = GetDebit(filter);
+    if (nDebit > 0) // debit>0 means we signed/sent this transaction
     {
-        const CAmount nDebit = GetDebit(filter);
-        const CAmount nValueOut = GetValueOut(true);
+        CAmount nValueOut = GetValueOut(true);
         nFee = nDebit - nValueOut;
     }
 
@@ -1414,7 +1418,7 @@ void CWalletTx::GetAmounts(list<COutputEntry>& listReceived,
         // Only need to handle txouts if AT LEAST one of these is true:
         //   1) they debit from us (sent)
         //   2) the output is to us (received)
-        if (isFromMe)
+        if (nDebit > 0)
         {
             // Don't report 'change' txouts, but keep names in all cases
             if (pwallet->IsChange(txout) && !nameOp.isNameOp())
@@ -1446,7 +1450,7 @@ void CWalletTx::GetAmounts(list<COutputEntry>& listReceived,
         }
 
         // If we are debited by the transaction, add the output as a "sent" entry
-        if (isFromMe)
+        if (nDebit > 0)
             listSent.push_back(output);
 
         // If we are receiving the output, add it as a "received" entry
@@ -1993,8 +1997,7 @@ void CWallet::AvailableCoins(vector<COutput>& vCoins, bool fOnlyConfirmed, const
                 isminetype mine = IsMine(pcoin->vout[i]);
                 if (!(IsSpent(wtxid, i)) && mine != ISMINE_NO &&
                     !IsLockedCoin((*it).first, i) && (pcoin->vout[i].nValue > 0 || fIncludeZeroValue) &&
-                    (!coinControl || !coinControl->HasSelected() || coinControl->fAllowOtherInputs || coinControl->IsSelected(COutPoint((*it).first, i)))
-                    && !CNameScript::isNameScript(pcoin->vout[i].scriptPubKey))
+                    (!coinControl || !coinControl->HasSelected() || coinControl->fAllowOtherInputs || coinControl->IsSelected(COutPoint((*it).first, i))) && !CNameScript::isNameScript(pcoin->vout[i].scriptPubKey))
                         vCoins.push_back(COutput(pcoin, i, nDepth,
                                                  ((mine & ISMINE_SPENDABLE) != ISMINE_NO) ||
                                                   (coinControl && coinControl->fAllowWatchOnly && (mine & ISMINE_WATCH_SOLVABLE) != ISMINE_NO),
@@ -2261,16 +2264,10 @@ bool CWallet::FundTransaction(CMutableTransaction& tx, CAmount& nFeeRet, bool ov
     return true;
 }
 
-bool CWallet::CreateTransaction(
-     const vector<CRecipient>& vecSend,
+bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend,
      const CTxIn* withInput,
-     CWalletTx& wtxNew,
-     CReserveKey& reservekey,
-     CAmount& nFeeRet,
-     int& nChangePosInOut,
-     std::string& strFailReason,
-     const CCoinControl* coinControl,
-     bool sign)
+     CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet,
+     int& nChangePosInOut, std::string& strFailReason, const CCoinControl* coinControl, bool sign)
 {
     /* Initialise nFeeRet here so that SendMoney doesn't see an uninitialised
        value in case we error out earlier.  */

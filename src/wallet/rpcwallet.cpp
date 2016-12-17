@@ -358,8 +358,10 @@ void SendMoneyToScript(const CScript &scriptPubKey, const CTxIn* withInput, CAmo
     if (pwalletMain->GetBroadcastTransactions() && !g_connman)
         throw JSONRPCError(RPC_CLIENT_P2P_DISABLED, "Error: Peer-to-peer functionality missing or disabled");
 
+    /* NOTE: already done in SendMoney wrapper
     // Parse Bitcoin address
-    // CScript _scriptPubKey = GetScriptForDestination(address);
+    CScript scriptPubKey = GetScriptForDestination(address);
+    */
 
     // Create and send the transaction
     CReserveKey reservekey(pwalletMain);

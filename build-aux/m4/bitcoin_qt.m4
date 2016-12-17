@@ -393,7 +393,14 @@ AC_DEFUN([_BITCOIN_QT_FIND_LIBS_WITH_PKGCONFIG],[
       QT_LIB_PREFIX=Qt
       bitcoin_qt_got_major_vers=4
     fi
-    qt5_modules="Qt5Core Qt5Gui Qt5Network Qt5Widgets"
+    if ${PKG_CONFIG} --exists "Qt5Core >= 5.6" 2>/dev/null; then
+      dnl qt5_modules="Qt5Core Qt5Gui Qt5Network Qt5Widgets Qt5WebEngine Qt5Positioning Qt5WebChannel Qt5WebSockets Qt5WebEngineWidgets Qt5Quick Qt5WebKitWidgets  Qt5Sql"
+      qt5_modules="Qt5Core Qt5Network Qt5Qml Qt5Gui Qt5Quick Qt5Widgets Qt5Positioning Qt5WebChannel Qt5WebEngineCore Qt5WebEngineWidgets"
+      AC_MSG_WARN("Qt >= 5.6 - using WebEngine")
+    else
+      qt5_modules="Qt5Core Qt5Gui Qt5Network Qt5Widgets Qt5WebKit Qt5WebKitWidgets Qt5Sql"
+      AC_MSG_WARN("Qt <= 5.6 - using WebKit")
+    fi
     qt4_modules="QtCore QtGui QtNetwork"
     BITCOIN_QT_CHECK([
       if test x$bitcoin_qt_want_version = xqt5 || ( test x$bitcoin_qt_want_version = xauto && test x$auto_priority_version = xqt5 ); then

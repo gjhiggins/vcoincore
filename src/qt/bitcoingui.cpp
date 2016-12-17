@@ -30,6 +30,8 @@
 #include "reportview.h"
 #include "managenamespage.h"
 #include "chatwindow.h"
+#include "essentialspage.h"
+#include "publisherpage.h"
 #endif // ENABLE_WALLET
 
 #ifdef Q_OS_MAC
@@ -61,6 +63,8 @@
 #include <QTimer>
 #include <QToolBar>
 #include <QVBoxLayout>
+#include <QtWebEngineWidgets/QtWebEngineWidgets>
+#include <QWebEngineSettings>
 
 #if QT_VERSION < 0x050000
 #include <QTextDocument>
@@ -126,13 +130,18 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     explorerWindow(0),
     statsWindow(0),
     chatWindow(0),
+    publisherPage(0),
+    essentialsPage(0),
     modalOverlay(0),
     prevBlocks(0),
     spinnerFrame(0),
     platformStyle(_platformStyle)
 {
     GUIUtil::restoreWindowGeometry("nWindow", QSize(780, 480), this);
-
+    // QWebEngineSettings::globalSettings()->setAttribute(QWebEngineSettings::DeveloperExtrasEnabled, true);
+#ifdef QT_DEBUG
+    qputenv("QTWEBENGINE_REMOTE_DEBUGGING", "23654");
+#endif
     QString windowTitle = tr(PACKAGE_NAME) + " - ";
 #ifdef ENABLE_WALLET
     enableWallet = WalletModel::isWalletEnabled();
@@ -169,6 +178,8 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
         setCentralWidget(walletFrame);
         statsWindow = new StatsExplorer(this);
         chatWindow = new ChatWindow(this);
+        publisherPage = new PublisherPage(_platformStyle, this);
+        essentialsPage = new EssentialsPage(_platformStyle, this);
     } else
 #endif // ENABLE_WALLET
     {
@@ -260,6 +271,16 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
 
     // prevents an oben debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), chatWindow, SLOT(hide()));
+
+    connect(openEssentialsPageAction, SIGNAL(triggered()), essentialsPage, SLOT(show()));
+
+    // prevents an oben debug window from becoming stuck/unusable on client shutdown
+    connect(quitAction, SIGNAL(triggered()), essentialsPage, SLOT(hide()));
+
+    connect(openPublisherPageAction, SIGNAL(triggered()), publisherPage, SLOT(show()));
+
+    // prevents an oben debug window from becoming stuck/unusable on client shutdown
+    connect(quitAction, SIGNAL(triggered()), publisherPage, SLOT(hide()));
 
     // Install event filter to be able to catch status tip events (QEvent::StatusTip)
     this->installEventFilter(this);
@@ -396,7 +417,6 @@ void BitcoinGUI::createActions()
     backupWalletAction = new QAction(platformStyle->TextColorIcon(":/icons/filesave"), tr("&Backup Wallet..."), this);
     backupWalletAction->setStatusTip(tr("Backup wallet to another location"));
     changePassphraseAction = new QAction(platformStyle->TextColorIcon(":/icons/key"), tr("&Change Passphrase..."), this);
-
     changePassphraseAction->setStatusTip(tr("Change the passphrase used for wallet encryption"));
     signMessageAction = new QAction(platformStyle->TextColorIcon(":/icons/edit"), tr("Sign &message..."), this);
     signMessageAction->setStatusTip(tr("Sign messages with your V Core addresses to prove you own them"));
@@ -423,6 +443,11 @@ void BitcoinGUI::createActions()
     openChatWindowAction = new QAction(platformStyle->TextColorIcon(":/icons/chat"), tr("&Chat window"), this);
     openChatWindowAction->setStatusTip(tr("Chat window"));
 
+    openEssentialsPageAction = new QAction(platformStyle->TextColorIcon(":/icons/info"), tr("&Essentials"), this);
+    openEssentialsPageAction->setStatusTip(tr("Essentials"));
+    openPublisherPageAction = new QAction(platformStyle->TextColorIcon(":/icons/publish"), tr("&Publisher"), this);
+    openPublisherPageAction->setStatusTip(tr("Publisher"));
+
     showHelpMessageAction = new QAction(platformStyle->TextColorIcon(":/icons/info"), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
     showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible Bitcoin command-line options").arg(tr(PACKAGE_NAME)));
@@ -436,6 +461,14 @@ void BitcoinGUI::createActions()
     connect(openRPCConsoleAction, SIGNAL(triggered()), this, SLOT(showDebugWindow()));
     // prevents an open debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), rpcConsole, SLOT(hide()));
+
+    connect(openEssentialsPageAction, SIGNAL(triggered()), this, SLOT(showEssentialsPage()));
+    // prevents an open debug window from becoming stuck/unusable on client shutdown
+    connect(quitAction, SIGNAL(triggered()), essentialsPage, SLOT(hide()));
+
+    connect(openPublisherPageAction, SIGNAL(triggered()), this, SLOT(showPublisherPage()));
+    // prevents an open debug window from becoming stuck/unusable on client shutdown
+    connect(quitAction, SIGNAL(triggered()), publisherPage, SLOT(hide()));
 
 #ifdef ENABLE_WALLET
     if(walletFrame)
@@ -495,6 +528,8 @@ void BitcoinGUI::createMenuBar()
         data->addAction(openBlockExplorerAction);
         data->addAction(openStatsExplorerAction);
     	data->addAction(openChatWindowAction);
+        data->addAction(openEssentialsPageAction);
+        data->addAction(openPublisherPageAction);
     }
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
@@ -672,6 +707,8 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addAction(openRPCConsoleAction);
     trayIconMenu->addAction(openBlockExplorerAction);
     trayIconMenu->addAction(openChatWindowAction);
+    trayIconMenu->addAction(openEssentialsPageAction);
+    trayIconMenu->addAction(openPublisherPageAction);
 #ifndef Q_OS_MAC // This is built-in on Mac
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(quitAction);
@@ -799,6 +836,18 @@ void BitcoinGUI::gotoChatPage()
 {
     openChatWindowAction->setChecked(true);
     if (walletFrame) walletFrame->gotoChatPage();
+}
+
+void BitcoinGUI::gotoEssentialsPage()
+{
+    openEssentialsPageAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoEssentialsPage();
+}
+
+void BitcoinGUI::gotoPublisherPage()
+{
+    openPublisherPageAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoPublisherPage();
 }
 #endif // ENABLE_WALLET
 

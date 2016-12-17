@@ -21,20 +21,6 @@
 #include "init.h"
 #include "util.h"
 
-#include "addresstablemodel.h"
-#include "optionsmodel.h"
-#include "script/standard.h"
-#include "amount.h"
-#include "bitcoinunits.h"
-
-#ifdef ENABLE_WALLET
-#include "sendcoinsdialog.h"
-#include "sendcoinsentry.h"
-#include "coincontrol.h"
-#include "coincontroldialog.h"
-#include "walletmodel.h"
-#endif
-
 #include <stdio.h>
 
 #include <QCloseEvent>
