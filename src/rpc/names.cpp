@@ -206,7 +206,7 @@ UniValue
 name_history (const JSONRPCRequest& request)
 {
     if (request.fHelp || request.params.size() != 0)
-    throw std::runtime_error (
+        throw std::runtime_error(
         "name_history \"name\"\n"
         "\nLook up the current and all past data for the given name."
         "  -namehistory must be enabled.\n"

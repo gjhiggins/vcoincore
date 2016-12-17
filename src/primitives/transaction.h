@@ -28,7 +28,7 @@ public:
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+    inline void SerializationOp(Stream& s, Operation ser_action) {
         READWRITE(hash);
         READWRITE(n);
     }
@@ -104,7 +104,7 @@ public:
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+    inline void SerializationOp(Stream& s, Operation ser_action) {
         READWRITE(prevout);
         READWRITE(*(CScriptBase*)(&scriptSig));
         READWRITE(nSequence);
@@ -144,7 +144,7 @@ public:
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+    inline void SerializationOp(Stream& s, Operation ser_action) {
         READWRITE(nValue);
         READWRITE(*(CScriptBase*)(&scriptPubKey));
     }
@@ -159,7 +159,7 @@ public:
     {
         return (nValue == -1);
     }
-    /* FIXME: check relevance */
+
     bool IsOpReturn() const {
        std::vector<uint8_t> vchR;
        opcodetype opCode;
@@ -193,7 +193,7 @@ public:
         if (scriptPubKey.IsUnspendable())
             return 0;
 
-        size_t nSize = GetSerializeSize(SER_DISK, 0);
+        size_t nSize = GetSerializeSize(*this, SER_DISK, 0);
         int witnessversion = 0;
         std::vector<unsigned char> witnessprogram;
 
@@ -235,7 +235,7 @@ public:
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
+    inline void SerializationOp(Stream& s, Operation ser_action)
     {
         READWRITE(scriptWitness.stack);
     }
@@ -271,7 +271,7 @@ public:
     }
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
+    inline void SerializationOp(Stream& s, Operation ser_action)
     {
         for (size_t n = 0; n < vtxinwit.size(); n++) {
             READWRITE(vtxinwit[n]);
@@ -303,8 +303,8 @@ struct CMutableTransaction;
  * - uint32_t nLockTime
  */
 template<typename Stream, typename Operation, typename TxType>
-inline void SerializeTransaction(TxType& tx, Stream& s, Operation ser_action, int nType, int nVersion) {
-    const bool fAllowWitness = !(nVersion & SERIALIZE_TRANSACTION_NO_WITNESS);
+inline void SerializeTransaction(TxType& tx, Stream& s, Operation ser_action) {
+    const bool fAllowWitness = !(s.GetVersion() & SERIALIZE_TRANSACTION_NO_WITNESS);
 
     READWRITE(*const_cast<int32_t*>(&tx.nVersion));
     unsigned char flags = 0;
@@ -374,9 +374,7 @@ public:
 
     // versions
     //    1 : launch
-    //    2 : after pow
-    //        support for tx references (strTxReference)
-    //        support for semantic type identifiers (nSemTypeID)
+    //    2 : after pivot
     static const int CURRENT_VERSION = 2;
     static const int PREVIOUS_VERSION = 1;
     // static const int32_t CURRENT_VERSION=1;
@@ -399,48 +397,30 @@ public:
     const std::vector<CTxOut> vout;
     CTxWitness wit; // Not const: can change without invalidating the txid cache
     const uint32_t nLockTime;
-    std::string strTxReference;
-    unsigned int nSemTypeID;
 
     /** Construct a CTransaction that qualifies as IsNull() */
     CTransaction();
 
     /** Convert a CMutableTransaction into a CTransaction. */
     CTransaction(const CMutableTransaction &tx);
+    CTransaction(CMutableTransaction &&tx);
 
     CTransaction& operator=(const CTransaction& tx);
 
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
-        /* FIXME: replaced by uncommented code below - correctly?
-        SerializeTransaction(*this, s, ser_action, nType, nVersion);
-        */
-        READWRITE(*const_cast<int32_t*>(&this->nVersion));
-        nVersion = this->nVersion;
-        READWRITE(*const_cast<std::vector<CTxIn>*>(&vin));
-        READWRITE(*const_cast<std::vector<CTxOut>*>(&vout));
-        READWRITE(*const_cast<uint32_t*>(&nLockTime));
-        if (nVersion >= 2) {
-            READWRITE(*const_cast<std::string*>(&strTxReference));
-            READWRITE(*const_cast<uint32_t*>(&nSemTypeID));
-        }
-        if (ser_action.ForRead())
+    inline void SerializationOp(Stream& s, Operation ser_action) {
+        SerializeTransaction(*this, s, ser_action);
+        if (ser_action.ForRead()) {
             UpdateHash();
+        }
     }
 
+    template <typename Stream>
+    CTransaction(deserialize_type, Stream& s) : CTransaction(CMutableTransaction(deserialize, s)) {}
+
     bool IsNull() const {
-        /* FIXME: what was *this* supposed to be doing?
-        nTime = GetAdjustedTime();
-        if (nBestHeight >= LAST_POW_BLOCK) {
-            nVersion = CTransaction::CURRENT_VERSION;
-            strTxReference.clear();
-            nSemTypeID = VCN_NONE;
-        } else {
-            nVersion = CTransaction::PREVIOUS_VERSION;
-        }
-        */
         return vin.empty() && vout.empty();
     }
 
@@ -452,7 +432,7 @@ public:
     uint256 GetWitnessHash() const;
 
     // Return sum of txouts.
-    CAmount GetValueOut(bool fExclueNames = false) const;
+    CAmount GetValueOut(bool fExcludeNames = false) const;
     // GetValueIn() is a method on CCoinsViewCache, because
     // inputs must be known to compute value in.
 
@@ -490,7 +470,6 @@ public:
     }
 
     std::string ToString() const;
-    int64_t GetInscriptionFee() const;
     int64_t GetOpRetFee() const;
     void UpdateHash() const;
 };
@@ -503,8 +482,6 @@ struct CMutableTransaction
     std::vector<CTxOut> vout;
     CTxWitness wit;
     uint32_t nLockTime;
-    std::string strTxReference;
-    unsigned int nSemTypeID;
 
     CMutableTransaction();
     CMutableTransaction(const CTransaction& tx);
@@ -512,19 +489,13 @@ struct CMutableTransaction
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
-        /* FIXME: replaced by uncommented code below
-        SerializeTransaction(*this, s, ser_action, nType, nVersion);
-        */
-        READWRITE(this->nVersion);
-        nVersion = this->nVersion;
-        READWRITE(vin);
-        READWRITE(vout);
-        READWRITE(nLockTime);
-        if (nVersion >= 2) {
-              READWRITE(strTxReference);
-              READWRITE(nSemTypeID);
-        }
+    inline void SerializationOp(Stream& s, Operation ser_action) {
+        SerializeTransaction(*this, s, ser_action);
+    }
+
+    template <typename Stream>
+    CMutableTransaction(deserialize_type, Stream& s) {
+        Unserialize(s);
     }
 
     /** Compute the hash of this CMutableTransaction. This is computed on the
@@ -535,7 +506,6 @@ struct CMutableTransaction
 
     /** Get Inscription Fees
     */
-    int64_t GetInscriptionFee() const;
     int64_t GetOpRetFee() const;
 
     /**
@@ -544,6 +514,12 @@ struct CMutableTransaction
      */
     void SetNamecoin();
 };
+
+typedef std::shared_ptr<const CTransaction> CTransactionRef;
+static inline CTransactionRef MakeTransactionRef() { return std::make_shared<const CTransaction>(); }
+template <typename Tx> static inline CTransactionRef MakeTransactionRef(Tx&& txIn) { return std::make_shared<const CTransaction>(std::forward<Tx>(txIn)); }
+static inline CTransactionRef MakeTransactionRef(const CTransactionRef& txIn) { return txIn; }
+static inline CTransactionRef MakeTransactionRef(CTransactionRef&& txIn) { return std::move(txIn); }
 
 /** Compute the weight of a transaction, as defined by BIP 141 */
 int64_t GetTransactionWeight(const CTransaction &tx);

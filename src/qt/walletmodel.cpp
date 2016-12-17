@@ -5,6 +5,7 @@
 #include "walletmodel.h"
 
 #include "addresstablemodel.h"
+#include "consensus/validation.h"
 #include "guiconstants.h"
 #include "guiutil.h"
 #include "paymentserver.h"
@@ -23,6 +24,7 @@
 #include "primitives/transaction.h"
 #include "names/common.h"
 #include "rpc/server.h"
+#include "rpc/client.h"
 #include "util.h"
 
 #include <stdint.h>
@@ -202,9 +204,7 @@ bool WalletModel::validateAddress(const QString &address)
     return addressParsed.IsValid();
 }
 
-//WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransaction &transaction, const CCoinControl *coinControl)
-// FIXED: Added txreference
-WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransaction &transaction, const QString &txreference, const CCoinControl *coinControl)
+WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransaction &transaction, const CCoinControl *coinControl)
 {
     CAmount total = 0;
     bool fSubtractFeeFromAmount = false;
@@ -286,11 +286,10 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
         CAmount nFeeRequired = 0;
         int nChangePosRet = -1;
         std::string strFailReason;
-        std::string strTxReference = txreference.toStdString();
 
         CWalletTx *wtx = transaction.getTransaction();
         CReserveKey *keyChange = transaction.getPossibleKeyChange();
-        bool fCreated = wallet->CreateTransaction(vecSend, NULL, *wtx, *keyChange, nFeeRequired, nChangePosRet, strFailReason, strTxReference, coinControl, false);
+        bool fCreated = wallet->CreateTransaction(vecSend, NULL, *wtx, *keyChange, nFeeRequired, nChangePosRet, strFailReason, coinControl, false);
         // bool fCreated = wallet->CreateTransaction(vecSend, *newTx, *keyChange, nFeeRequired, nChangePosRet, strFailReason, coinControl);
         transaction.setTransactionFee(nFeeRequired);
         if (fSubtractFeeFromAmount && fCreated)
@@ -345,8 +344,9 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(WalletModelTransaction &tran
         }
 
         CReserveKey *keyChange = transaction.getPossibleKeyChange();
-        if(!wallet->CommitTransaction(*newTx, *keyChange, g_connman.get()))
-            return TransactionCommitFailed;
+        CValidationState state;
+        if(!wallet->CommitTransaction(*newTx, *keyChange, g_connman.get(), state))
+            return SendCoinsReturn(TransactionCommitFailed, QString::fromStdString(state.GetRejectReason()));
 
         CTransaction* t = (CTransaction*)newTx;
         CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
@@ -396,7 +396,6 @@ AddressTableModel *WalletModel::getAddressTableModel()
 {
     return addressTableModel;
 }
-
 
 NameTableModel *WalletModel::getNameTableModel()
 {
@@ -715,15 +714,22 @@ bool WalletModel::abandonTransaction(uint256 hash) const
 /* FIXME: Need general remapping from old UniValue params to JSONRPCRequest */
 bool WalletModel::nameAvailable(const QString &name)
 {
-    UniValue params (UniValue::VOBJ);
-    UniValue res, array, isExpired;
-
+    // UniValue params (UniValue::VOBJ);
+    // UniValue res, array, isExpired;
     const std::string strName = name.toStdString();
-    params.push_back (Pair("name", strName));
+    // params.push_back (Pair("name", strName));
+
+    UniValue res, isExpired;
+
+    const std::string strMethod = "name";
+    JSONRPCRequest request;
+    request.strMethod = strMethod;
+    request.params = RPCConvertValues(strMethod, boost::assign::list_of(strName));
+    request.fHelp = false;
 
     /*
     try {
-        res = name_show( params, false);
+        res = name_show( request);
     } catch (const UniValue& e) {
         return true;
     }
@@ -855,6 +861,7 @@ std::string WalletModel::completePendingNameFirstUpdate(std::string &name, std::
         errorStr = message.get_str();
         LogPrintf ("name_firstupdate error: %s\n", errorStr.c_str());
     }
+    return errorStr;
     */
     return "";
 }
@@ -1022,4 +1029,9 @@ bool WalletModel::isWalletEnabled()
 bool WalletModel::hdEnabled() const
 {
     return wallet->IsHDEnabled();
+}
+
+int WalletModel::getDefaultConfirmTarget() const
+{
+    return nTxConfirmTarget;
 }

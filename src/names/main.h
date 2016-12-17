@@ -59,8 +59,7 @@ public:
   ADD_SERIALIZE_METHODS;
 
   template<typename Stream, typename Operation>
-    inline void SerializationOp (Stream& s, Operation ser_action,
-                                 int nType, int nVersion)
+    inline void SerializationOp (Stream& s, Operation ser_action)
   {
     READWRITE (name);
     READWRITE (isNew);
@@ -196,7 +195,7 @@ public:
    * @param removed Put removed tx here.
    */
   void removeConflicts (const CTransaction& tx,
-                        std::list<CTransaction>& removed);
+                        std::vector<CTransactionRef>& removed);
 
   /**
    * Remove conflicts in the mempool due to unexpired names.  This removes
@@ -205,7 +204,7 @@ public:
    * @param removed Put removed tx here.
    */
   void removeUnexpireConflicts (const std::set<valtype>& unexpired,
-                                std::list<CTransaction>& removed);
+                                std::vector<CTransactionRef>& removed);
   /**
    * Remove conflicts in the mempool due to expired names.  This removes
    * conflicting name updates that are no longer possible.
@@ -213,7 +212,7 @@ public:
    * @param removed Put removed tx here.
    */
   void removeExpireConflicts (const std::set<valtype>& expired,
-                              std::list<CTransaction>& removed);
+                              std::vector<CTransactionRef>& removed);
 
   /**
    * Perform sanity checks.  Throws if it fails.

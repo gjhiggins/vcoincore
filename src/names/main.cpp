@@ -146,7 +146,7 @@ CNameMemPool::remove (const CTxMemPoolEntry& entry)
 
 void
 CNameMemPool::removeConflicts (const CTransaction& tx,
-                               std::list<CTransaction>& removed)
+                               std::vector<CTransactionRef>& removed)
 {
   AssertLockHeld (pool.cs);
 
@@ -164,7 +164,7 @@ CNameMemPool::removeConflicts (const CTransaction& tx,
             {
               const CTxMemPool::txiter mit2 = pool.mapTx.find (mit->second);
               assert (mit2 != pool.mapTx.end ());
-              pool.removeRecursive (mit2->GetTx (), removed);
+              pool.removeRecursive (mit2->GetTx (), &removed);
             }
         }
     }
@@ -172,7 +172,7 @@ CNameMemPool::removeConflicts (const CTransaction& tx,
 
 void
 CNameMemPool::removeUnexpireConflicts (const std::set<valtype>& unexpired,
-                                       std::list<CTransaction>& removed)
+                                       std::vector<CTransactionRef>& removed)
 {
   AssertLockHeld (pool.cs);
 
@@ -186,14 +186,14 @@ CNameMemPool::removeUnexpireConflicts (const std::set<valtype>& unexpired,
         {
           const CTxMemPool::txiter mit2 = pool.mapTx.find (mit->second);
           assert (mit2 != pool.mapTx.end ());
-          pool.removeRecursive (mit2->GetTx (), removed);
+          pool.removeRecursive (mit2->GetTx (), &removed);
         }
     }
 }
 
 void
 CNameMemPool::removeExpireConflicts (const std::set<valtype>& expired,
-                                     std::list<CTransaction>& removed)
+                                     std::vector<CTransactionRef>& removed)
 {
   AssertLockHeld (pool.cs);
 
@@ -207,7 +207,7 @@ CNameMemPool::removeExpireConflicts (const std::set<valtype>& expired,
         {
           const CTxMemPool::txiter mit2 = pool.mapTx.find (mit->second);
           assert (mit2 != pool.mapTx.end ());
-          pool.removeRecursive (mit2->GetTx (), removed);
+          pool.removeRecursive (mit2->GetTx (), &removed);
         }
     }
 }
@@ -574,7 +574,7 @@ ExpireNames (unsigned nHeight, CCoinsViewCache& view, CBlockUndo& undo,
      since the last block.  If the expiration depth changes, this could
      be multiple heights at once.  */
 
-  const Consensus::Params& params = Params ().GetConsensus ();
+  const Consensus::Params& params = Params().GetConsensus();
   const unsigned expDepthOld = params.rules->NameExpirationDepth (nHeight - 1);
   const unsigned expDepthNow = params.rules->NameExpirationDepth (nHeight);
 
