@@ -72,6 +72,50 @@ var DO = {
                 '<option value="https://creativecommons.org/licenses/by-nc-nd/4.0/" title="Creative Commons Attribution-NonCommercial-NoDerivates">CC BY-NC-ND</option>'
             ]
         },
+        Citation: {
+            'http://purl.org/spar/cito/agreesWith': 'agrees with',
+            'http://purl.org/spar/cito/cites': 'cites',
+            'http://purl.org/spar/cito/citesAsAuthority': 'cites as authority',
+            'http://purl.org/spar/cito/citesAsDataSource': 'cites as data source',
+            'http://purl.org/spar/cito/citesAsEvidence': 'cites as evidence',
+            'http://purl.org/spar/cito/citesAsMetadataDocument': 'cites as metadata document',
+            'http://purl.org/spar/cito/citesAsPotentialSolution': 'cites as potential solution',
+            'http://purl.org/spar/cito/citesAsRecommendedReading': 'cites as potential reading',
+            'http://purl.org/spar/cito/citesAsRelated': 'cites as related',
+            'http://purl.org/spar/cito/citesAsSourceDocument': 'cites as source document',
+            'http://purl.org/spar/cito/citesForInformation': 'cites for information',
+            'http://purl.org/spar/cito/compiles': 'compiles',
+            'http://purl.org/spar/cito/confirms': 'confirms',
+            'http://purl.org/spar/cito/containsAssertionFrom': 'contains assertion from',
+            'http://purl.org/spar/cito/corrects': 'corrects',
+            'http://purl.org/spar/cito/credits': 'credits',
+            'http://purl.org/spar/cito/critiques': 'critiques',
+            'http://purl.org/spar/cito/derides': 'derides',
+            'http://purl.org/spar/cito/describes': 'desribes',
+            'http://purl.org/spar/cito/disagreesWith': 'disagrees with',
+            'http://purl.org/spar/cito/discusses': 'discusses',
+            'http://purl.org/spar/cito/disputes': 'disputes',
+            'http://purl.org/spar/cito/documents': 'documents',
+            'http://purl.org/spar/cito/extends': 'extends',
+            'http://purl.org/spar/cito/includesExcerptFrom': 'includes excerpt from',
+            'http://purl.org/spar/cito/includesQuotationFrom': 'includes quotation from',
+            'http://purl.org/spar/cito/obtainsBackgroundFrom': 'obtains background from',
+            'http://purl.org/spar/cito/obtainsSupportFrom': 'obtains support from',
+            'http://purl.org/spar/cito/parodies': 'parodies',
+            'http://purl.org/spar/cito/plagiarizes': 'plagiarizes',
+            'http://purl.org/spar/cito/qualifies': 'qualifies',
+            'http://purl.org/spar/cito/refutes': 'refutes',
+            'http://purl.org/spar/cito/repliesTo': 'replies to',
+            'http://purl.org/spar/cito/retracts': 'retracts',
+            'http://purl.org/spar/cito/reviews': 'reviews',
+            'http://purl.org/spar/cito/ridicules': 'ridicules',
+            'http://purl.org/spar/cito/speculatesOn': 'speculates on',
+            'http://purl.org/spar/cito/supports': 'supports',
+            'http://purl.org/spar/cito/updates': 'updates',
+            'http://purl.org/spar/cito/usesConclusionsFrom': 'uses conclusions from',
+            'http://purl.org/spar/cito/usesDataFrom': 'uses data from',
+            'http://purl.org/spar/cito/usesMethodIn': 'uses method in'
+        },
         CitationOptions: [
             '<option value="http://purl.org/spar/cito/agreesWith">agrees with</option>',
             '<option value="http://purl.org/spar/cito/cites">cites</option>',
@@ -695,6 +739,17 @@ var DO = {
                                                 if (s.asactor && s.asactor.iri()){
                                                     noteData['creator'] = {
                                                         'iri': s.asactor.iri().toString()
+                                                    }
+                                                    var a = i.child(noteData['creator']['iri']);
+                                                    var actorName = a.foafname || a.schemaname || a.asname || undefined;
+                                                    var actorImage = a.foafimg || a.schemaimage || a.asimage || s["http://xmlns.com/foaf/0.1/depiction"] || undefined;
+                                                    actorImage = (actorImage && actorImage.iri()) ? actorImage.iri().toString() : undefined;
+
+                                                    if(typeof actorName != 'undefined') {
+                                                        noteData['creator']['name'] = actorName;
+                                                    }
+                                                    if(typeof actorImage != 'undefined') {
+                                                        noteData['creator']['image'] = actorImage;
                                                     }
                                                 }
                                                 else if(type == 'https://www.w3.org/ns/activitystreams#Dislike'){
@@ -3331,9 +3386,10 @@ console.log(inbox);
             var subject = citationGraph.child(citationURI);
             var title = subject.schemaname || subject.dctermstitle || subject.rdfslabel || '';
             title = title.replace(/ & /g, " &amp; ");
+            title = (title.length > 0) ? title + ', ' : '';
             var datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermsdate || subject.dctermscreated || '';
-            datePublished = (datePublished) ? ', ' + datePublished.substr(0,4) : '';
-            var dateAccessed = ' [Accessed: ' + DO.U.getDateTimeISO() + ']';
+            datePublished = (datePublished) ? datePublished.substr(0,4) + ', ' : '';
+            var dateAccessed = 'Accessed: ' + DO.U.getDateTimeISO();
             var authors = [], authorList = [];
 // console.log(subject);
 // console.log(subject.biboauthorList);
@@ -3388,12 +3444,16 @@ console.log(inbox);
                         authors.push(authorIRI);
                     }
                 });
-                authors = authors.join(', ');
+                authors = authors.join(', ') + ': ';
             }
 
-            var citationHTML = authors + ': ' + title + datePublished + ', <a about="#' + options.refId + '" href="' + citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + citationId + '</a>' + dateAccessed;
+            var content = ('content' in options && options.content.length > 0) ? options.content + ', ' : '';
+
+            var citationReason = 'Reason: ' + DO.C.Citation[options.citationRelation];
+
+            var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '" href="' + citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + citationId + '</a> [' + dateAccessed + ', ' + citationReason + ']';
 //console.log(citationHTML);
-            return Promise.resolve(citationHTML);
+            return citationHTML;
         },
 
         createRefName: function(familyName, givenName, refType) {
@@ -4410,7 +4470,12 @@ WHERE {\n\
         getCitationOptionsHTML: function(type) {
             var type = type || 'cites';
 
-            return DO.C.CitationOptions.join('');
+            var s = '';
+            Object.keys(DO.C.Citation).forEach(function(uri){
+                s += '<option value="' + uri + '">' + DO.C.Citation[uri]  + '</option>';
+            })
+
+            return s;
         },
 
         Editor: {
@@ -5935,8 +6000,8 @@ console.log(annotationDistribution);
                                                 });
                                             };
 
-                                            citation().then(
-                                                function(citationGraph) {
+                                            citation()
+                                                .then(function(citationGraph) {
                                                     var citationURI = '';
                                                     if(opts.url.match(/^10\.\d+\//)) {
                                                         citationURI = 'http://dx.doi.org/' + opts.url;
@@ -5953,14 +6018,8 @@ console.log(annotationDistribution);
                                                         citationURI = window.location.origin + window.location.pathname;
                                                     }
 
-                                                    return DO.U.getCitationHTML(citationGraph, citationURI, options);
-                                                },
-                                                function(reason) {
-                                                    console.log(reason);
-                                                    return Promise.reject({'message': reason});
-                                                }
-                                            ).then(
-                                                function(citation){
+                                                    var citation = DO.U.getCitationHTML(citationGraph, citationURI, options);
+
                                                     var r = document.querySelector('#references ol');
                                                     if (!r) {
                                                         var section = '<section id="references"><h2>References</h2><div><ol></ol></div></section>';
@@ -5969,12 +6028,32 @@ console.log(annotationDistribution);
                                                     }
                                                     var citationHTML = '<li id="' + id + '">' + citation + '</li>';
                                                     r.insertAdjacentHTML('beforeend', citationHTML);
-                                                },
-                                                function(reason){
-                                                    console.log(reason);
-                                                    return reason;
-                                                }
-                                            );
+
+// console.log(options.url);
+                                                    var s = citationGraph.child(citationURI);
+// console.log(s);
+                                                    if (s.ldpinbox._array.length > 0) {
+                                                        var inbox = s.ldpinbox.at(0).iri().toString();
+// console.log(inbox);
+
+                                                        var citedBy = location.href.split(location.search||location.hash||/[?#]/)[0] + '#' + options.refId;
+
+                                                        var notificationStatements = '<' + citedBy + '> <' + options.citationRelation + '> <' + options.url + '> .';
+
+                                                        var notificationData = {
+                                                            "type": ['as:Announce'],
+                                                            "inbox": inbox,
+                                                            "object": citedBy,
+                                                            "target": options.url,
+                                                            "statements": notificationStatements
+                                                        };
+
+                                                        DO.U.notifyInbox(notificationData).then(
+                                                            function(s){
+                                                                console.log('Sent Linked Data Notification: ' + options.url);
+                                                            });
+                                                    }
+                                                });
                                             break;
                                     }
                                     break;

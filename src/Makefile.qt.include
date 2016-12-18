@@ -96,6 +96,7 @@ QT_TS = \
 QT_FORMS_UI = \
   qt/forms/addressbookpage.ui \
   qt/forms/askpassphrasedialog.ui \
+  qt/forms/bip32page.ui \
   qt/forms/blockexplorer.ui \
   qt/forms/chatwindow.ui \
   qt/forms/coincontroldialog.ui \
@@ -122,6 +123,7 @@ QT_MOC_CPP = \
   qt/moc_addresstablemodel.cpp \
   qt/moc_askpassphrasedialog.cpp \
   qt/moc_bantablemodel.cpp \
+  qt/moc_bip32page.cpp \
   qt/moc_bitcoinaddressvalidator.cpp \
   qt/moc_bitcoinamountfield.cpp \
   qt/moc_bitcoingui.cpp \
@@ -197,6 +199,7 @@ BITCOIN_QT_H = \
   qt/addresstablemodel.h \
   qt/askpassphrasedialog.h \
   qt/bantablemodel.h \
+  qt/bip32page.h \
   qt/bitcoinaddressvalidator.h \
   qt/bitcoinamountfield.h \
   qt/bitcoingui.h \
@@ -307,6 +310,7 @@ RES_ICONS = \
   qt/res/icons/send.png \
   qt/res/icons/stats.png \
   qt/res/icons/synced.png \
+  qt/res/icons/bip32.png \
   qt/res/icons/transaction0.png \
   qt/res/icons/transaction2.png \
   qt/res/icons/transaction_abandoned.png \
@@ -355,6 +359,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/addressbookpage.cpp \
   qt/addresstablemodel.cpp \
   qt/askpassphrasedialog.cpp \
+  qt/bip32page.cpp \
   qt/blockexplorer.cpp \
   qt/chatclient.cpp \
   qt/chatwindow.cpp \

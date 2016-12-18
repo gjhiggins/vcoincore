@@ -59,6 +59,7 @@
         <file alias="hd_enabled">res/icons/hd_enabled.png</file>
         <file alias="hd_disabled">res/icons/hd_disabled.png</file>
         <file alias="network_disabled">res/icons/network_disabled.png</file>
+        <file alias="bip32">res/icons/bip32.png</file>
     </qresource>
     <qresource prefix="/pbt">
         <file alias="index.html">res/pbt/index.html</file>
@@ -80,13 +81,19 @@
         <file alias="semanticui.min.js">res/ess/semantic.min.js</file>
     </qresource>
     -->
+    <qresource prefix="/solidi">
+        <file alias="bootstrap.min.css">res/solidi/bootstrap.min.css</file>
+        <file alias="bootstrap.min.js">res/solidi/bootstrap.min.js</file>
+        <file alias="bundle.js">res/solidi/bundle.js</file>
+        <file alias="index.html">res/solidi/index.html</file>
+        <file alias="jquery.min.js">res/solidi/jquery.min.js</file>
+        <file alias="solid-logo.svg">res/solidi/solid-logo.svg</file>
+    </qresource>
     <qresource prefix="/post">
         <file alias="index.html">res/post/index.html</file>
         <file alias="app.js">res/post/app/app.js</file>
         <file alias="solid.js">res/post/app/solid.js</file>
-        <file alias="config.json">res/post/config.json</file>
         <file alias="favicon.png">res/post/favicon.png</file>
-        <file alias="manifest.json">res/post/manifest.json</file>
         <file alias="blog.css">res/post/css/blog.css</file>
         <file alias="font-awesome.min.css">res/post/css/font-awesome.min.css</file>
         <file alias="grids-responsive-min.css">res/post/css/grids-responsive-min.css</file>
@@ -114,6 +121,30 @@
         <file alias="roboto-regular.ttf">res/post/css/fonts/roboto-regular.ttf</file>
         <file alias="roboto-regular.woff">res/post/css/fonts/roboto-regular.woff</file>
     </qresource>
+    <qresource prefix="/bip32">
+        <file alias="index.html">res/bip32/index.html</file>
+        <file alias="armory.js">res/bip32/armory.js</file>
+        <file alias="bip32.js">res/bip32/bip32.js</file>
+        <file alias="bitcoinjs-min.js">res/bip32/bitcoinjs-min.js</file>
+        <file alias="bitcoinsig.js">res/bip32/bitcoinsig.js</file>
+        <file alias="bootstrap.css">res/bip32/bootstrap.css</file>
+        <file alias="bootstrap.js">res/bip32/bootstrap.js</file>
+        <file alias="bootstrap-theme.css">res/bip32/bootstrap-theme.css</file>
+        <file alias="brainwallet.css">res/bip32/brainwallet.css</file>
+        <file alias="brainwallet.js">res/bip32/brainwallet.js</file>
+        <file alias="crypto.js">res/bip32/crypto.js</file>
+        <file alias="electrum.js">res/bip32/electrum.js</file>
+        <file alias="hash_worker.js">res/bip32/hash_worker.js</file>
+        <file alias="htmlpost.xml">res/bip32/htmlpost.xml</file>
+        <file alias="jquery.js">res/bip32/jquery.js</file>
+        <file alias="mnemonic.js">res/bip32/mnemonic.js</file>
+        <file alias="modsqrt.js">res/bip32/modsqrt.js</file>
+        <file alias="qrcode.js">res/bip32/qrcode.js</file>
+        <file alias="rfc1751.js">res/bip32/rfc1751.js</file>
+        <file alias="sha256.js">res/bip32/sha256.js</file>
+        <file alias="sha512.js">res/bip32/sha512.js</file>
+        <file alias="tx.js">res/bip32/tx.js</file>
+    </qresource>
     <qresource prefix="/vpub">
         <file alias="index.html">res/vpub/index.html</file>
         <file alias="new">res/vpub/new</file>
@@ -122,12 +153,11 @@
         <file alias="ceur-ws.css">res/vpub/media/css/ceur-ws.css</file>
         <file alias="do.css">res/vpub/media/css/do.css</file>
         <file alias="editor.css">res/vpub/media/css/editor.css</file>
+        <file alias="favicon.ico">res/vpub/favicon.ico</file>
         <file alias="font-awesome.min.css">res/vpub/media/css/font-awesome.min.css</file>
         <file alias="lncs.css">res/vpub/media/css/lncs.css</file>
         <file alias="markdown.css">res/vpub/media/css/markdown.css</file>
         <file alias="medium-editor.css">res/vpub/media/css/medium-editor.css</file>
-        <file alias="medium-editor-default.css">res/vpub/media/css/medium-editor-default.css</file>
-        <file alias="medium-editor-tables.css">res/vpub/media/css/medium-editor-tables.css</file>
         <file alias="thesis.css">res/vpub/media/css/thesis.css</file>
         <file alias="cmunbi.otf">res/vpub/media/fonts/cmunbi.otf</file>
         <file alias="cmunbx.otf">res/vpub/media/fonts/cmunbx.otf</file>
@@ -152,6 +182,14 @@
         <file alias="medium-editor-tables.min.js">res/vpub/scripts/medium-editor-tables.min.js</file>
         <file alias="simplerdf.js">res/vpub/scripts/simplerdf.js</file>
     </qresource>
+    <qresource prefix="/vchat">
+        <file alias="style.css">res/vchat/style.css</file>
+        <file alias="script.js">res/vchat/script.js</file>
+        <file alias="jquery-2.1.4.js">res/vchat/jquery-2.1.4.js</file>
+        <file alias="strophe.min.js">res/vchat/strophe.min.js</file>
+        <file alias="strophe.muc.js">res/vchat/strophe.muc.js</file>
+        <file alias="strophe.si-filetransfer.js">res/vchat/strophe.si-filetransfer.js</file>
+        <file alias="strophe.ibb.js">res/vchat/strophe.ibb.js</file>    </qresource>
     <qresource prefix="/movies">
         <file alias="spinner-000">res/movies/spinner-000.png</file>
         <file alias="spinner-001">res/movies/spinner-001.png</file>

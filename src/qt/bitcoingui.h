@@ -33,6 +33,7 @@ class UnitDisplayStatusBarControl;
 class NetworkToggleStatusBarControl;
 class WalletFrame;
 class WalletModel;
+class BIP32Page;
 class BlockExplorer;
 class HelpMessageDialog;
 class ModalOverlay;
@@ -125,6 +126,7 @@ private:
     QAction *accountReportAction;
     QAction *openEssentialsPageAction;
 	QAction *openPublisherPageAction;
+    QAction *openBIP32PageAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
@@ -136,6 +138,7 @@ private:
     ChatWindow *chatWindow;
     PublisherPage  *publisherPage;
     EssentialsPage  *essentialsPage;
+    BIP32Page  *bip32Page;
     ModalOverlay *modalOverlay;
 
     /** Keep track of previous number of blocks, to detect progress */
@@ -232,8 +235,10 @@ private Q_SLOTS:
     void gotoChatPage();
     /** Switch to Essentials Page */
     void gotoEssentialsPage(); 
-    /** Switch to BIP32 page */
+    /** Switch to Publisher page */
     void gotoPublisherPage(); 
+    /** Switch to BIP32 page */
+    void gotoBIP32Page();
 
     /** Show open dialog */
     void openClicked();

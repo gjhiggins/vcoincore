@@ -25,6 +25,7 @@
 #include "chatwindow.h"
 #include "publisherpage.h"
 #include "essentialspage.h"
+#include "bip32page.h"
 
 #include "ui_interface.h"
 
@@ -49,6 +50,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     chatWindow = new ChatWindow(this);
     publisherPage = new PublisherPage(platformStyle, this);
     essentialsPage = new EssentialsPage(platformStyle, this);
+    bip32Page = new BIP32Page(platformStyle, this);
 
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -97,6 +99,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 	addWidget(chatWindow);
     addWidget(publisherPage);
     addWidget(essentialsPage);
+    addWidget(bip32Page);
 
         // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
@@ -397,3 +400,7 @@ void WalletView::gotoPublisherPage()
 
 }
 
+void WalletView::gotoBIP32Page()
+{
+    setCurrentWidget(bip32Page);
+}

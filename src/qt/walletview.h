@@ -25,6 +25,7 @@ class BlockExplorer;
 class StatsExplorer;
 class PublisherPage;
 class EssentialsPage;
+class BIP32Page;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -75,6 +76,7 @@ private:
     StatsExplorer *statsExplorerPage;
     PublisherPage *publisherPage;
     EssentialsPage *essentialsPage;
+    BIP32Page *bip32Page;
 
     TransactionView *transactionView;
     
@@ -111,6 +113,8 @@ public Q_SLOTS:
     void gotoPublisherPage();	
     /** Switch to Essentials page */
     void gotoEssentialsPage();   
+    /** Switch to BIP32 page */
+    void gotoBIP32Page();
 
     /** Show incoming transaction notification for new transactions.
 

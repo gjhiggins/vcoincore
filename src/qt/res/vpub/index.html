@@ -4,26 +4,27 @@
         <meta charset="utf-8" />
         <title>dokieli</title>
         <meta content="width=device-width, initial-scale=1" name="viewport" />
-        <!--
-        <link href="qrc:///vpub/semantic.min.css" media="all" rel="stylesheet" />
-        -->
+
+
         <link href="qrc:///vpub/basic.css" media="all" rel="stylesheet" title="Basic" />
         <link href="qrc:///vpub/lncs.css" media="all" rel="stylesheet alternate" title="LNCS" />
         <link href="qrc:///vpub/acm.css" media="all" rel="stylesheet alternate" title="ACM" />
         <link href="qrc:///vpub/do.css" media="all" rel="stylesheet" />
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" media="all" rel="stylesheet" />
-        <link href="qrc:///vpub/editor.css" media="all" rel="stylesheet" />
         <!--
-        <script src="qrc:///vpub/jquery.js"></script>
-        <script src="qrc:///vpub/semantic.min.js"></script>
+        <link href="qrc:///vpub/ceur-ws.css" media="all" rel="stylesheet" />
+        <link href="qrc:///vpub/thesis.css" media="all" rel="stylesheet" />
         -->
+        <link href="qrc:///vpub/editor.css" media="all" rel="stylesheet" />
+        <link href="qrc:///vpub/font-awesome.min.css" media="all" rel="stylesheet" />
+        <link href="qrc:///vpub/markdown.css" media="all" rel="stylesheet" />
+        <link href="qrc:///vpub/semantic.min.css" media="all" rel="stylesheet" />
         <script src="qrc:///vpub/simplerdf.js"></script>
         <script src="qrc:///vpub/medium-editor.min.js"></script>
         <script src="qrc:///vpub/medium-editor-tables.min.js"></script>
         <script src="qrc:///vpub/do.js"></script>
     </head>
 
-    <body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: http://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# qb: http://purl.org/linked-data/cube# schema: https://schema.org/ rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ sioc: rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms#" typeof="schema:CreativeWork sioc:Post prov:Entity">
+    <body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: http://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms#" typeof="schema:CreativeWork sioc:Post prov:Entity">
         <main>
             <article about="" typeof="schema:Article doap:Project">
                 <h1 property="schema:name doap:name">dokieli</h1>
@@ -32,6 +33,7 @@
                     <p id="introduction" property="schema:description doap:shortdesc">dokieli is a clientside editor for decentralised article publishing, annotations and social interactions.</p>
 
                     <section id="features" inlist="" rel="schema:hasPart" resource="#features">
+                        <h2 property="schema:name">Features</h2>
                         <div datatype="rdf:HTML" property="schema:description">
                             <ul>
                                 <li><a href="#publish">
@@ -39,7 +41,7 @@
                                     <span>Write and publish articles in a space you control</span><span>including locally, offline and static hosting.</span>
                                 </a></li>
                                 <li><a href="#solid">
-                                    <i class="fa fa-3x solid"><img alt="Solid logo" src="qrc:///vpub/logo-solid.png" width="128" /></i>
+                                    <i class="fa fa-3x solid"><img alt="Solid logo" src="media/images/logo-solid.png" width="128" /></i>
                                     <span>Save articles to your personal datastore and edit in place </span><span>(supports Solid / Linked Data Platform).</span>
                                 </a></li>
                                 <li><a href="#annotate">
@@ -112,11 +114,12 @@
                         <div datatype="rdf:HTML" property="schema:description">
                             <p>Wherever your article is published, readers can leave annotations and replies if they have their own personal datastore to save them to. If your article is published on a Solid server, you can offer to store annotations and replies on their behalf, and enable anonymous responses too. All annotations and replies can be saved with a <i class="fa fa-creative-commons"></i> Creative Commons license.</p>
 
-                            <video id="video-dokieli-annotation" rel="schema:hasPart" preload="none" controls="controls" width="800" height="600" poster="https://dokie.li/media/images/dokieli-annotation.jpg">
-                                <source about="#video-dokieli-annotation" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli-annotation.webm"  typeof="fabio:Film" src="https://dokie.li/media/video/dokieli-annotation.webm" type="video/webm">
-                                    <span about="https://dokie.li/media/video/dokieli-annotation.webm" property="schema:name">Video of dokieli Annotation</span>
-                                </source>
-                            </video>
+                            <figure id="figure-dokieli-annotation" rel="schema:hasPart" resource="#figure-dokieli-annotation">
+                                <video id="video-dokieli-annotation" rel="schema:hasPart" preload="none" controls="controls" width="800" poster="https://dokie.li/media/images/dokieli-annotation.jpg">
+                                    <source about="#video-dokieli-annotation" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli-annotation.webm" typeof="fabio:Film" src="https://dokie.li/media/video/dokieli-annotation.webm" type="video/webm" />
+                                </video>
+                                <figcaption property="schema:name"><a href="https://dokie.li/media/video/dokieli-annotation.webm">Video</a> of dokieli Web Annotation</figcaption>
+                            </figure>
                         </div>
                     </section>
                     <section id="notify" inlist="" rel="schema:hasPart" resource="#notify">
@@ -124,11 +127,12 @@
                         <div datatype="rdf:HTML" property="schema:description">
                             <p>dokieli implements <a about="" rel="doap:implements" href="https://www.w3.org/TR/ldn">Linked Data Notifications</a> (Working Draft at <a href="http://www.w3.org/Social/WG">W3C Social Web Working Group</a>) for notifications about articles (or any part of them). Whenever someone interacts with your article through dokieli, you'll receive a notification in the appropriate <a about="" href="inbox/" rel="ldp:inbox">inbox</a> <i class="fa fa-inbox"></i>. Right now you get notifications for annotations, replies, shares, reviews, citations/links, bookmarks and likes.</p>
 
-                            <video id="video-dokieli-share" rel="schema:hasPart" preload="none" controls="controls" width="800" height="600" poster="https://dokie.li/media/images/dokieli-share.jpg">
-                                <source about="#video-dokieli-share" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli-share.webm"  typeof="fabio:Film" src="https://dokie.li/media/video/dokieli-share.webm" type="video/webm">
-                                    <span about="https://dokie.li/media/video/dokieli-share.webm" property="schema:name">Video of dokieli Share</span>
-                                </source>
-                            </video>
+                            <figure id="figure-dokieli-share" rel="schema:hasPart" resource="#figure-dokieli-share">
+                                <video id="video-dokieli-share" rel="schema:hasPart" preload="none" controls="controls" width="800" poster="https://dokie.li/media/images/dokieli-share.jpg">
+                                    <source about="#video-dokieli-share" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli-share.webm"  typeof="fabio:Film" src="https://dokie.li/media/video/dokieli-share.webm" type="video/webm" />
+                                </video>
+                                <figcaption property="schema:name"><a href="https://dokie.li/media/video/dokieli-share.webm">Video</a> of dokieli Share</figcaption>
+                            </figure>
                         </div>
                     </section>
                     <section id="embed" inlist="" rel="schema:hasPart" resource="#embed">
@@ -156,21 +160,18 @@
                         </div>
                     </section>
 
-                    <section id="video" inlist="" rel="schema:hasPart" resource="#video-dokieli">
+                    <section id="video-overview" inlist="" rel="schema:hasPart" resource="#video-overview">
                         <h2 property="schema:name">Video dokieli</h2>
                         <div datatype="rdf:HTML">
-                            <video id="video-dokieli" rel="schema:hasPart" preload="none" controls="controls" width="800" height="600" poster="https://dokie.li/media/images/dokieli-article-fragment.svg">
-                                <source about="#video-dokieli" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli.webm"  typeof="fabio:Film" src="https://dokie.li/media/video/dokieli.webm" type="video/webm">
-                                    <span about="https://dokie.li/media/video/dokieli.webm" property="schema:name">Video of dokieli</span>
-                                </source>
-                                <track about="#track-dokieli" rel="schema:hasPart" resource="https://dokie.li/media/track/dokieli.vtt" kind="subtitles" src="https://dokie.li/media/track/dokieli.vtt" srclang="en" label="English" default="default">
+                            <figure id="figure-dokieli-overview" rel="schema:hasPart" resource="#figure-dokieli-overview">
+                                <video id="video-dokieli" rel="schema:hasPart" preload="none" controls="controls" width="800" poster="https://dokie.li/media/images/dokieli-article-fragment.svg">
+                                    <source about="#video-dokieli" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli.webm"  typeof="fabio:Film" src="https://dokie.li/media/video/dokieli.webm" type="video/webm" />
+                                    <track about="#track-dokieli" rel="schema:hasPart" resource="https://dokie.li/media/track/dokieli.vtt" kind="subtitles" src="https://dokie.li/media/track/dokieli.vtt" srclang="en" label="English" default="default" />
                                     <span about="https://dokie.li/media/track/dokieli.vtt" typeof="deo:Caption"></span>
-                                </track>
-                            </video>
+                                </video>
+                                <figcaption property="schema:name"><a href="https://dokie.li/media/video/dokieli.webm">Video</a> of dokieli</figcaption>
+                            </figure>
                         </div>
-                        <style>/*<![CDATA[*/
-                        #video h2 { display:none }
-                        /*]]>*/</style>
                     </section>
 
                     <section id="researchers" inlist="" rel="schema:hasPart" resource="#researchers">
@@ -178,21 +179,24 @@
                         <div datatype="rdf:HTML" property="schema:description">
                             <p>dokieli envisions research results, analysis and data all being produced interactively on the web and seamlessly linked to and from ‘papers’. Through annotations and notifications, the academic process of peer-review can be open, transparent and decentralised.</p>
 
-                            <video controls="controls" height="400" id="video-dokieli-citation" poster="https://dokie.li/media/images/dokieli-citation.jpg" preload="none" about="" rel="schema:hasPart" width="800">
-                                <source about="#video-dokieli-citation" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli-citation.webm" src="https://dokie.li/media/video/dokieli-citation.webm" type="video/webm" typeof="fabio:Film">
-                                    <span about="https://dokie.li/media/video/dokieli-citation.webm" property="schema:name">Video of granular semantic citations in dokieli</span>
-                                </source>
-                            </video>
+                            <figure id="figure-dokieli-citation" rel="schema:hasPart" resource="#figure-dokieli-citation">
+                                <video controls="controls" id="video-dokieli-citation" poster="https://dokie.li/media/images/dokieli-citation.jpg" preload="none" width="800" about="" rel="schema:hasPart">
+                                    <source about="#video-dokieli-citation" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli-citation.webm" src="https://dokie.li/media/video/dokieli-citation.webm" type="video/webm" typeof="fabio:Film" />
+                                </video>
+                                <figcaption property="schema:name"><a href="https://dokie.li/media/video/dokieli-citation.webm">Video</a> of semantic inline citations and notification in dokieli</figcaption>
+                            </figure>
 
                             <p id="linked-research">This is in line with the goals of the <i class="fa fa-mortar-board"></i> <a href="https://linkedresearch.org/">Linked Research</a> initiative. As an increasing number of conferences are accepting HTML submissions, you can write your paper <i class="fa fa-newspaper-o"></i> with dokieli and export to HTML or PDF for submission; we provide stylesheets for <a href="https://dokie.li/lncs-splnproc">LNCS</a> and <a href="https://dokie.li/acm-sigproc-sp">ACM</a> publication layouts out of the box. Here is <a href="http://csarven.ca/dokieli">one article, about dokieli</a>, and <a href="https://github.com/linkeddata/dokieli/wiki#examples-in-the-wild">others in the wild</a>.</p>
 
-                            <video controls="controls" height="400" id="video-dokieli-sparqlines" poster="https://dokie.li/media/images/GDP-per-capita-growth--annual---.svg" preload="none" about="" rel="schema:hasPart" width="800">
-                                <source about="#video-dokieli-sparqlines" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli-sparqlines.webm" src="https://dokie.li/media/video/dokieli-sparqlines.webm" type="video/webm" typeof="fabio:Film">
-                                    <span about="https://dokie.li/media/video/dokieli-sparqlines.webm" property="schema:name">Video of Sparqlines interaction in dokieli</span>
-                                </source>
-                            </video>
+                            <figure id="figure-dokieli-sparqlines" rel="schema:hasPart" resource="#figure-dokieli-sparqlines">
+                                <video controls="controls" id="video-dokieli-sparqlines" poster="https://dokie.li/media/images/GDP-per-capita-growth--annual---.svg" preload="none" about="" rel="schema:hasPart" width="800">
+                                    <source about="#video-dokieli-sparqlines" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli-sparqlines.webm" src="https://dokie.li/media/video/dokieli-sparqlines.webm" type="video/webm" typeof="fabio:Film" />
+                                </video>
+                                <figcaption property="schema:name"><a href="https://dokie.li/media/video/dokieli-sparqlines.webm">Video</a> of Sparqlines interaction in dokieli</figcaption>
+                            </figure>
                         </div>
                     </section>
+
                     <section id="developers" inlist="" rel="schema:hasPart" resource="#developers">
                         <h2 property="schema:name">Developers</h2>
                         <div datatype="rdf:HTML" property="schema:description">
@@ -200,6 +204,7 @@
                             <p>We’re building dokieli to be something we want to use, so we encourage dogfooding! Check out <a href="https://github.com/linkeddata/dokieli/wiki#examples-in-the-wild">examples in the wild</a>.</p>
                         </div>
                     </section>
+
                     <section id="roadmap" inlist="" rel="schema:hasPart" resource="#roadmap">
                         <h2 property="schema:name">Roadmap</h2>
                         <div datatype="rdf:HTML" property="schema:description">

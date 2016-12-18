@@ -31,6 +31,7 @@
 #include "chatwindow.h"
 #include "essentialspage.h"
 #include "publisherpage.h"
+#include "bip32page.h"
 #endif // ENABLE_WALLET
 
 #ifdef Q_OS_MAC
@@ -131,6 +132,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     chatWindow(0),
     publisherPage(0),
     essentialsPage(0),
+    bip32Page(0),
     modalOverlay(0),
     prevBlocks(0),
     spinnerFrame(0),
@@ -140,6 +142,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     // QWebEngineSettings::globalSettings()->setAttribute(QWebEngineSettings::DeveloperExtrasEnabled, true);
 #ifdef QT_DEBUG
     qputenv("QTWEBENGINE_REMOTE_DEBUGGING", "23654");
+    qputenv("CHROME_DEVEL_SANDBOX", "");
 #endif
     QString windowTitle = tr(PACKAGE_NAME) + " - ";
 #ifdef ENABLE_WALLET
@@ -179,6 +182,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
         chatWindow = new ChatWindow(this);
         publisherPage = new PublisherPage(_platformStyle, this);
         essentialsPage = new EssentialsPage(_platformStyle, this);
+    	bip32Page = new BIP32Page(_platformStyle, this);
     } else
 #endif // ENABLE_WALLET
     {
@@ -263,23 +267,28 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
 
     connect(openStatsExplorerAction, SIGNAL(triggered()), statsWindow, SLOT(show()));
 
-    // prevents an oben debug window from becoming stuck/unusable on client shutdown
+    // prevents an open debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), statsWindow, SLOT(hide()));
 
     connect(openChatWindowAction, SIGNAL(triggered()), chatWindow, SLOT(show()));
 
-    // prevents an oben debug window from becoming stuck/unusable on client shutdown
+    // prevents an open debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), chatWindow, SLOT(hide()));
 
     connect(openEssentialsPageAction, SIGNAL(triggered()), essentialsPage, SLOT(show()));
 
-    // prevents an oben debug window from becoming stuck/unusable on client shutdown
+    // prevents an open debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), essentialsPage, SLOT(hide()));
 
     connect(openPublisherPageAction, SIGNAL(triggered()), publisherPage, SLOT(show()));
 
-    // prevents an oben debug window from becoming stuck/unusable on client shutdown
+    // prevents an open debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), publisherPage, SLOT(hide()));
+
+    connect(openBIP32PageAction, SIGNAL(triggered()), bip32Page, SLOT(show()));
+
+    // prevents an open debug window from becoming stuck/unusable on client shutdown
+    connect(quitAction, SIGNAL(triggered()), bip32Page, SLOT(hide()));
 
     // Install event filter to be able to catch status tip events (QEvent::StatusTip)
     this->installEventFilter(this);
@@ -433,6 +442,8 @@ void BitcoinGUI::createActions()
     openEssentialsPageAction->setStatusTip(tr("Essentials"));
     openPublisherPageAction = new QAction(platformStyle->TextColorIcon(":/icons/publish"), tr("&Publisher"), this);
     openPublisherPageAction->setStatusTip(tr("Publisher"));
+    openBIP32PageAction = new QAction(platformStyle->TextColorIcon(":/icons/bip32"), tr("&HD/BIP32"), this);
+    openBIP32PageAction->setStatusTip(tr("BIP32"));
 
     showHelpMessageAction = new QAction(platformStyle->TextColorIcon(":/icons/info"), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
@@ -512,6 +523,7 @@ void BitcoinGUI::createMenuBar()
     if(walletFrame)
     {
         data->addAction(openBlockExplorerAction);
+        data->addAction(openBIP32PageAction);
         data->addAction(openStatsExplorerAction);
     	data->addAction(openChatWindowAction);
         data->addAction(openEssentialsPageAction);
@@ -693,6 +705,7 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addAction(openChatWindowAction);
     trayIconMenu->addAction(openEssentialsPageAction);
     trayIconMenu->addAction(openPublisherPageAction);
+    trayIconMenu->addAction(openBIP32PageAction);
 #ifndef Q_OS_MAC // This is built-in on Mac
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(quitAction);
@@ -827,6 +840,12 @@ void BitcoinGUI::gotoPublisherPage()
     openPublisherPageAction->setChecked(true);
     if (walletFrame) walletFrame->gotoPublisherPage();
 }
+
+void BitcoinGUI::gotoBIP32Page()
+{
+    openBIP32PageAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoBIP32Page();
+}
 #endif // ENABLE_WALLET
 
 void BitcoinGUI::updateNetworkState()
@@ -845,7 +864,7 @@ void BitcoinGUI::updateNetworkState()
     QString tooltip;
 
     if (clientModel->getNetworkActive()) {
-        tooltip = tr("%n active connection(s) to Bitcoin network", "", count) + QString(".<br>") + tr("Click to disable network activity.");
+        tooltip = tr("%n active connection(s) to V Core network", "", count) + QString(".<br>") + tr("Click to disable network activity.");
     } else {
         tooltip = tr("Network activity disabled.") + QString("<br>") + tr("Click to enable network activity again.");
         icon = ":/icons/network_disabled";
@@ -872,10 +891,13 @@ void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate, double nVer
 {
     if (modalOverlay)
     {
-        if (header)
-            modalOverlay->setKnownBestHeight(count, blockDate);
-        else
+        if (header) {
+            /* use clientmodels getHeaderTipHeight and getHeaderTipTime because the NotifyHeaderTip signal does not fire when updating the best header */
+            modalOverlay->setKnownBestHeight(clientModel->getHeaderTipHeight(), QDateTime::fromTime_t(clientModel->getHeaderTipTime()));
+        }
+        else {
             modalOverlay->tipUpdate(count, blockDate, nVerificationProgress);
+        }
     }
     if (!clientModel)
         return;

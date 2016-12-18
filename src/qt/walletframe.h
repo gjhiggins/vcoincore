@@ -19,6 +19,7 @@ class BlockExplorer;
 class statsExplorer;
 class PublisherPage;
 class EssentialsPage;
+class BIP32Page;
 
 QT_BEGIN_NAMESPACE
 class QStackedWidget;
@@ -87,6 +88,8 @@ public Q_SLOTS:
     void gotoPublisherPage();	
     /** Switch to Essentials page */
     void gotoEssentialsPage();   
+    /** Switch to BIP32 page */
+    void gotoBIP32Page();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");

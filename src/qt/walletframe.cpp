@@ -243,3 +243,10 @@ void WalletFrame::gotoPublisherPage()
     for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
         i.value()->gotoPublisherPage();
 }
+
+void WalletFrame::gotoBIP32Page()
+{
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoBIP32Page();
+}

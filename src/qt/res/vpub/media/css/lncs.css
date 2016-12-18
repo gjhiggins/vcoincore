@@ -840,6 +840,11 @@ float:left;
 .figure-column-2 figure:first-child {
 margin-left:0;
 }
+.figure-column-2 object,
+.figure-column-2 video,
+.figure-column-2 audio {
+max-width:100%;
+}
 
 p + math, ul + math, ol + math, dl + math, dd > math, div + math, section + math {
 text-align:center;
@@ -874,6 +879,12 @@ aside.note dd {
 text-align:left;
 }
 
+
+dl[rel="skos:hasTopConcept"] dd:after { content: "\A"; white-space:pre; }
+dl[rel="skos:hasTopConcept"] dt,
+dl[rel="skos:hasTopConcept"] dd { display:inline; }
+dl[rel="skos:hasTopConcept"] dt:after { content: ": "; }
+p + dl[rel="skos:hasTopConcept"] { margin-top:0; }
 p + dl {
 margin-top:1.25em;
 }
@@ -882,9 +893,6 @@ dt {
 margin-bottom:0.5em;
 }
 
-ul, ol {
-margin-top:1em;
-}
 ul ul,
 ol ol {
 margin-left:1em;
@@ -895,12 +903,15 @@ tfoot dl.abbr dd {
 display:inline;
 text-transform:none;
 }
+tfoot dl.abbr dd {
+margin-left:0;
+}
 tfoot dl.abbr dd:after {
 content:"\A";
 white-space:pre;
 }
 tfoot dl.abbr dt:after {
-content:":";
+content:": ";
 }
 tfoot dl.abbr {
 -webkit-column-count:2;
