@@ -307,7 +307,7 @@ bool BlockAssembler::TestForBlock(CTxMemPool::txiter iter)
     if (!IsFinalTx(iter->GetTx(), nHeight, nLockTimeCutoff))
         return false;
 
-  return true;
+    return true;
 }
 
 void BlockAssembler::AddToBlock(CTxMemPool::txiter iter)

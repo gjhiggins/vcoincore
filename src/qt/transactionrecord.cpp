@@ -103,8 +103,8 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
             // Payment to self
             CAmount nChange = wtx.GetChange();
 
-                parts.append(TransactionRecord(hash, nTime, TransactionRecord::SendToSelf, "",
-                                               -(nDebit - nChange), nCredit - nChange));
+            parts.append(TransactionRecord(hash, nTime, TransactionRecord::SendToSelf, "",
+                            -(nDebit - nChange), nCredit - nChange));
             parts.last().involvesWatchAddress = involvesWatchAddress;   // maybe pass to TransactionRecord as constructor argument
         }
         else if (fAllFromMe)

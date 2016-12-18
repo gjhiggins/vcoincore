@@ -1592,7 +1592,7 @@ CAmount CWalletTx::GetDebit(const isminefilter& filter) const
     }
     if(filter & ISMINE_WATCH_ONLY)
     {
-        if (fWatchDebitCached)
+        if(fWatchDebitCached)
             debit += nWatchDebitCached;
         else
         {
