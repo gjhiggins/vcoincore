@@ -8,7 +8,7 @@
 #include "hash.h"
 #include "tinyformat.h"
 #include "utilstrencodings.h"
-#include "main.h"
+#include "../main.h"
 #include <boost/foreach.hpp>
 
 std::string COutPoint::ToString() const
