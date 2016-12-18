@@ -12,6 +12,7 @@
 
 #include <QWidget>
 #include <QCompleter>
+#include <QThread>
 
 class ClientModel;
 class PlatformStyle;
@@ -61,8 +62,6 @@ protected:
 private Q_SLOTS:
     void on_lineEdit_returnPressed();
     void on_tabWidget_currentChanged(int index);
-    /** toggle network activity */
-    void on_toggleNetworkActiveButton_clicked();
     /** open the debug.log from the current datadir */
     void on_openDebugLogfileButton_clicked();
     /** change the time range of the network traffic graph */
@@ -148,6 +147,7 @@ private:
     QMenu *banTableContextMenu;
     int consoleFontSize;
     QCompleter *autoCompleter;
+    QThread thread;
 
     /** Update UI with latest network info from model. */
     void updateNetworkState();

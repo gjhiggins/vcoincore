@@ -10,7 +10,7 @@
 #include "core_io.h"
 #include "init.h"
 #include "keystore.h"
-#include "main.h"
+#include "validation.h"
 #include "merkleblock.h"
 #include "net.h"
 #include "policy/policy.h"
@@ -135,17 +135,17 @@ UniValue getrawtransaction(const JSONRPCRequest& request)
             "or there is an unspent output in the utxo for this transaction. To make it always work,\n"
             "you need to maintain a transaction index, using the -txindex command line option.\n"
             "\nReturn the raw transaction data.\n"
-            "\nIf verbose=0, returns a string that is serialized, hex-encoded data for 'txid'.\n"
-            "If verbose is non-zero, returns an Object with information about 'txid'.\n"
+            "\nIf verbose is 'true', returns an Object with information about 'txid'.\n"
+            "If verbose is 'false' or omitted, returns a string that is serialized, hex-encoded data for 'txid'.\n"
 
             "\nArguments:\n"
             "1. \"txid\"      (string, required) The transaction id\n"
-            "2. verbose       (numeric, optional, default=0) If 0, return a string, other return a json object\n"
+            "2. verbose       (bool, optional, default=false) If true, return a string, other return a json object\n"
 
-            "\nResult (if verbose is not set or set to 0):\n"
+            "\nResult (if verbose is not set or set to false):\n"
             "\"data\"      (string) The serialized, hex-encoded data for 'txid'\n"
 
-            "\nResult (if verbose > 0):\n"
+            "\nResult (if verbose is set to true):\n"
             "{\n"
             "  \"hex\" : \"data\",       (string) The serialized, hex-encoded data for 'txid'\n"
             "  \"txid\" : \"id\",        (string) The transaction id (same as provided)\n"
@@ -192,31 +192,45 @@ UniValue getrawtransaction(const JSONRPCRequest& request)
 
             "\nExamples:\n"
             + HelpExampleCli("getrawtransaction", "\"mytxid\"")
-            + HelpExampleCli("getrawtransaction", "\"mytxid\" 1")
-            + HelpExampleRpc("getrawtransaction", "\"mytxid\", 1")
+            + HelpExampleCli("getrawtransaction", "\"mytxid\" true")
+            + HelpExampleRpc("getrawtransaction", "\"mytxid\", true")
         );
 
     LOCK(cs_main);
 
     uint256 hash = ParseHashV(request.params[0], "parameter 1");
 
+    // Accept either a bool (true) or a num (>=1) to indicate verbose output.
     bool fVerbose = false;
-    if (request.params.size() > 1)
-        fVerbose = (request.params[1].get_int() != 0);
+    if (request.params.size() > 1) {
+        if (request.params[1].isNum()) {
+            if (request.params[1].get_int() != 0) {
+                fVerbose = true;
+            }
+        }
+        else if(request.params[1].isBool()) {
+            if(request.params[1].isTrue()) {
+                fVerbose = true;
+            }
+        }
+        else {
+            throw JSONRPCError(RPC_TYPE_ERROR, "Invalid type provided. Verbose parameter must be a boolean.");
+        } 
+    }
 
-    CTransaction tx;
+    CTransactionRef tx;
     uint256 hashBlock;
     if (!GetTransaction(hash, tx, Params().GetConsensus(), hashBlock, true))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "No information available about transaction");
 
-    string strHex = EncodeHexTx(tx);
+    string strHex = EncodeHexTx(*tx, RPCSerializationFlags());
 
     if (!fVerbose)
         return strHex;
 
     UniValue result(UniValue::VOBJ);
     result.push_back(Pair("hex", strHex));
-    TxToJSON(tx, hashBlock, result);
+    TxToJSON(*tx, hashBlock, result);
     return result;
 }
 
@@ -275,7 +289,7 @@ UniValue gettxoutproof(const JSONRPCRequest& request)
 
     if (pblockindex == NULL)
     {
-        CTransaction tx;
+        CTransactionRef tx;
         if (!GetTransaction(oneTxid, tx, Params().GetConsensus(), hashBlock, false) || hashBlock.IsNull())
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Transaction not yet in block");
         if (!mapBlockIndex.count(hashBlock))
@@ -506,13 +520,13 @@ UniValue decoderawtransaction(const JSONRPCRequest& request)
     LOCK(cs_main);
     RPCTypeCheck(request.params, boost::assign::list_of(UniValue::VSTR));
 
-    CTransaction tx;
+    CMutableTransaction mtx;
 
-    if (!DecodeHexTx(tx, request.params[0].get_str(), true))
+    if (!DecodeHexTx(mtx, request.params[0].get_str(), true))
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "TX decode failed");
 
     UniValue result(UniValue::VOBJ);
-    TxToJSON(tx, uint256(), result);
+    TxToJSON(CTransaction(std::move(mtx)), uint256(), result);
 
     return result;
 }
@@ -869,9 +883,10 @@ UniValue sendrawtransaction(const JSONRPCRequest& request)
     RPCTypeCheck(request.params, boost::assign::list_of(UniValue::VSTR)(UniValue::VBOOL));
 
     // parse hex string from parameter
-    CTransaction tx;
-    if (!DecodeHexTx(tx, request.params[0].get_str()))
+    CMutableTransaction mtx;
+    if (!DecodeHexTx(mtx, request.params[0].get_str()))
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "TX decode failed");
+    CTransaction tx(std::move(mtx));
     uint256 hashTx = tx.GetHash();
 
     bool fLimitFree = false;

@@ -6,6 +6,7 @@ src/vcored
 src/vcore-cli
 src/vcore-tx
 src/test/test_vcore
+src/test/test_vcore_fuzzy
 src/qt/test/test_vcore-qt
 
 # autoreconf
@@ -101,7 +102,6 @@ coverage_percent.txt
 linux-coverage-build
 linux-build
 win32-build
-qa/pull-tester/run-bitcoind-for-test.sh
 qa/pull-tester/tests_config.py
 qa/cache/*
 
