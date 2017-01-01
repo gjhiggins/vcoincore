@@ -204,49 +204,35 @@ void WalletFrame::outOfSyncWarningClicked()
 
 void WalletFrame::gotoStatsExplorerPage()
 {
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoStatsExplorerPage();
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoStatsExplorerPage();
 }
 
 void WalletFrame::gotoChatPage()
 {
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoChatPage();
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoChatPage();
 }
 
-void WalletFrame::gotoAccountReportPage()
+void WalletFrame::gotoInscriptionPage()
 {
     WalletView *walletView = currentWalletView();
     if (walletView)
-        walletView->gotoAccountReportPage();
+        walletView->gotoInscriptionPage();
 }
 
 void WalletFrame::gotoBlockExplorerPage()
 {
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoBlockExplorerPage();
-}
-
-void WalletFrame::gotoEssentialsPage()
-{
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoEssentialsPage();
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoBlockExplorerPage();
 }
 
 void WalletFrame::gotoPublisherPage()
 {
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoPublisherPage();
-}
-
-void WalletFrame::gotoBIP32Page()
-{
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoBIP32Page();
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoPublisherPage();
 }

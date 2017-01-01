@@ -27,12 +27,10 @@ class ChatWindow;
 class RPCConsole;
 class StatsExplorer;
 class PublisherPage;
-class EssentialsPage;
 class SendCoinsRecipient;
 class UnitDisplayStatusBarControl;
 class WalletFrame;
 class WalletModel;
-class BIP32Page;
 class BlockExplorer;
 class HelpMessageDialog;
 class ModalOverlay;
@@ -122,10 +120,8 @@ private:
 	QAction *openStatsExplorerAction;
     QAction *openChatWindowAction;
 	QAction *openBlockExplorerAction;
-    QAction *accountReportAction;
-    QAction *openEssentialsPageAction;
+    QAction *inscriptionPageAction;
 	QAction *openPublisherPageAction;
-    QAction *openBIP32PageAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
@@ -136,8 +132,6 @@ private:
     StatsExplorer  *statsWindow;
     ChatWindow *chatWindow;
     PublisherPage  *publisherPage;
-    EssentialsPage  *essentialsPage;
-    BIP32Page  *bip32Page;
     ModalOverlay *modalOverlay;
 
     /** Keep track of previous number of blocks, to detect progress */
@@ -228,16 +222,12 @@ private Q_SLOTS:
     void gotoStatsExplorerPage(); 
     /** Switch to Explorer Page */
     void gotoBlockExplorerPage(); 
-    /** Switch to account report page */
-    void gotoAccountReportPage();
+    /** Switch to inscription page */
+    void gotoInscriptionPage();
 	/** Switch to chat page */
     void gotoChatPage();
-    /** Switch to Essentials Page */
-    void gotoEssentialsPage(); 
     /** Switch to Publisher page */
     void gotoPublisherPage(); 
-    /** Switch to BIP32 page */
-    void gotoBIP32Page();
 
     /** Show open dialog */
     void openClicked();

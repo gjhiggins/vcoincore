@@ -20,12 +20,10 @@ class TransactionView;
 class ChatWindow;
 class WalletModel;
 class AddressBookPage;
-class ReportView;
+class InscriptionPage;
 class BlockExplorer;
 class StatsExplorer;
 class PublisherPage;
-class EssentialsPage;
-class BIP32Page;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -74,14 +72,12 @@ private:
     AddressBookPage *usedReceivingAddressesPage;
     BlockExplorer *explorerWindow;
     StatsExplorer *statsExplorerPage;
+    InscriptionPage *inscriptionPage;
     PublisherPage *publisherPage;
-    EssentialsPage *essentialsPage;
-    BIP32Page *bip32Page;
 
     TransactionView *transactionView;
     
-    QWidget *accountreportPage;
-    ReportView *reportView;		
+    // QWidget *inscriptionpageTab;
 
     QProgressDialog *progressDialog;
     const PlatformStyle *platformStyle;
@@ -108,13 +104,9 @@ public Q_SLOTS:
     /** Switch to chat page */
     void gotoChatPage();
     /** Switch to account report page */
-    void gotoAccountReportPage(); 
+    void gotoInscriptionPage(); 
     /** Switch to Publisher page */
     void gotoPublisherPage();	
-    /** Switch to Essentials page */
-    void gotoEssentialsPage();   
-    /** Switch to BIP32 page */
-    void gotoBIP32Page();
 
     /** Show incoming transaction notification for new transactions.
 

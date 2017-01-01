@@ -1,41 +1,45 @@
-#include "publisherpage.h"
-#include "ui_publisherpage.h"
+#include "inscriptionpage.h"
+#include "ui_inscriptionpage.h"
 
 #include "bitcoinunits.h"
-#include "clientmodel.h"
-#include "guiconstants.h"
 #include "guiutil.h"
 #include "optionsmodel.h"
+#include "amount.h"
 #include "platformstyle.h"
+#include "clientmodel.h"
 #include "walletmodel.h"
+#include "util.h"
 
-#include <QFile>
-#include <QString>
+#include "ui_interface.h"
+
 #include <QDir>
-#include <QTextStream>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QStandardItemModel>
+#include <QHeaderView>
+#include <QMessageBox>
 #include <QWebEngineView>
+#include <QTextStream>
+#include <QFile>
+#include <QMenu>
+#include <QLabel>
 
-class QWebEngineView;
-
-#define DECORATION_SIZE 64
-#define NUM_ITEMS 3
-
-PublisherPage::PublisherPage(const PlatformStyle *platformStyle, QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::PublisherPage),
+InscriptionPage::InscriptionPage(const PlatformStyle *platformStyle, QWidget *parent) :
+    QWidget(parent),
+    platformStyle(platformStyle),
+    ui(new Ui::InscriptionPage),
     clientModel(0),
     walletModel(0)
 {
     ui->setupUi(this);
-
 }
 
-PublisherPage::~PublisherPage()
+InscriptionPage::~InscriptionPage()
 {
     delete ui;
 }
 
-void PublisherPage::setClientModel(PlatformStyle *platformStyle, ClientModel *model)
+void InscriptionPage::setClientModel(ClientModel *model)
 {
     this->clientModel = model;
     if(model)
@@ -43,13 +47,12 @@ void PublisherPage::setClientModel(PlatformStyle *platformStyle, ClientModel *mo
     }
 }
 
-void PublisherPage::setWalletModel(WalletModel *model)
+void InscriptionPage::setWalletModel(WalletModel *model)
 {
     this->walletModel = model;
-
 }
 
-void PublisherPage::show()
+void InscriptionPage::show()
 {
     QWebEngineView *view = new QWebEngineView;
     QDir dir;
