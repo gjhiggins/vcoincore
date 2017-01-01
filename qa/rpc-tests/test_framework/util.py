@@ -191,22 +191,6 @@ def initialize_datadir(dirname, n):
         f.write("listenonion=0\n")
     return datadir
 
-def base_node_args(i):
-    """
-    Return base arguments to always use for node i.  These arguments
-    are those that are also present for the chain cache and must thus
-    be set for all runs.
-    """
-
-    # We choose nodes 1 and 2 to keep -namehistory, because this allows
-    # us to test both nodes with it and without it in both split
-    # network parts (0/1 vs 2/3).
-
-    if i == 1 or i == 2:
-        return ["-namehistory"]
-
-    return []
-
 def rpc_auth_pair(n):
     return 'rpcuser💻' + str(n), 'rpcpass🔑' + str(n)
 
@@ -354,7 +338,6 @@ def start_node(i, dirname, extra_args=None, rpchost=None, timewait=None, binary=
         binary = os.getenv("BITCOIND", "vcored")
     args = [ binary, "-datadir="+datadir, "-server", "-keypool=1", "-discover=0", "-rest", "-mocktime="+str(get_mocktime()) ]
     if extra_args is not None: args.extend(extra_args)
-    args.extend(base_node_args(i))
     vcored_processes[i] = subprocess.Popen(args)
     if os.getenv("PYTHON_DEBUG", ""):
         print("start_node: vcored started, waiting for RPC to come up")

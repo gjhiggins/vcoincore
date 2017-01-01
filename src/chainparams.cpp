@@ -8,9 +8,9 @@
 
 #include "tinyformat.h"
 #include "util.h"
-#include "pow.h"
+// #include "pow.h"
 #include "utilstrencodings.h"
-#include "arith_uint256.h"
+// #include "arith_uint256.h"
 
 #include <assert.h>
 
