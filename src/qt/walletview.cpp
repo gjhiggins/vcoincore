@@ -46,8 +46,8 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 	explorerWindow = new BlockExplorer(this);
     statsExplorerPage = new StatsExplorer(this);
     chatWindow = new ChatWindow(this);
-    inscriptionPage = new InscriptionPage(platformStyle, this);
-    publisherPage = new PublisherPage(platformStyle, this);
+    inscriptionPage = new InscriptionPage(this);
+    publisherPage = new PublisherPage(this);
 
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -65,11 +65,8 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     transactionsPage->setLayout(vbox);
     
     
-    // inscriptionPage = new QWidget(this);
     QVBoxLayout *vboxR = new QVBoxLayout();
     QHBoxLayout *hboxR_buttons = new QHBoxLayout();
-    // inscriptionView = new InscriptionPage(this);
-    // vboxR->addWidget(inscriptionView);
     QPushButton *exportRButton = new QPushButton(tr("&Export"), this);
     exportRButton->setToolTip(tr("Export the data in the current tab to a file"));
 #ifndef Q_OS_MAC // Icons on push buttons are very uncommon on Mac
@@ -78,7 +75,6 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     hboxR_buttons->addStretch();
     hboxR_buttons->addWidget(exportRButton);
     vboxR->addLayout(hboxR_buttons);
-    // inscriptionPage->setLayout(vboxR);
 
     receiveCoinsPage = new ReceiveCoinsDialog(platformStyle);
     sendCoinsPage = new SendCoinsDialog(platformStyle);
@@ -143,7 +139,6 @@ void WalletView::setClientModel(ClientModel *_clientModel)
 
     overviewPage->setClientModel(_clientModel);
     sendCoinsPage->setClientModel(_clientModel);
-    inscriptionPage->setClientModel(_clientModel);
 }
 
 void WalletView::setWalletModel(WalletModel *_walletModel)
@@ -152,7 +147,6 @@ void WalletView::setWalletModel(WalletModel *_walletModel)
 
     // Put transaction list in tabs
     transactionView->setModel(_walletModel);
-    inscriptionPage->setWalletModel(_walletModel);
     overviewPage->setWalletModel(_walletModel);
     receiveCoinsPage->setModel(_walletModel);
     sendCoinsPage->setModel(_walletModel);
@@ -368,9 +362,9 @@ void WalletView::gotoBlockExplorerPage()
     setCurrentWidget(explorerWindow);
 }
 
-void WalletView::gotoInscriptionPage()
+void WalletView::gotoStatsExplorerPage()
 {
-    setCurrentWidget(inscriptionPage); 
+    setCurrentWidget(statsExplorerPage);
 }
 
 void WalletView::gotoChatPage()
@@ -378,13 +372,13 @@ void WalletView::gotoChatPage()
     setCurrentWidget(chatWindow);
 }
 
-void WalletView::gotoStatsExplorerPage()
-{
-    setCurrentWidget(statsExplorerPage);
-}
-
 void WalletView::gotoPublisherPage()
 {
     setCurrentWidget(publisherPage);
 
+}
+
+void WalletView::gotoInscriptionPage()
+{
+    setCurrentWidget(inscriptionPage); 
 }

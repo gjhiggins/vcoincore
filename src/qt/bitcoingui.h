@@ -27,6 +27,7 @@ class ChatWindow;
 class RPCConsole;
 class StatsExplorer;
 class PublisherPage;
+class InscriptionPage;
 class SendCoinsRecipient;
 class UnitDisplayStatusBarControl;
 class WalletFrame;
@@ -120,7 +121,7 @@ private:
 	QAction *openStatsExplorerAction;
     QAction *openChatWindowAction;
 	QAction *openBlockExplorerAction;
-    QAction *inscriptionPageAction;
+    QAction *openInscriptionPageAction;
 	QAction *openPublisherPageAction;
 
     QSystemTrayIcon *trayIcon;
@@ -130,6 +131,7 @@ private:
     HelpMessageDialog *helpMessageDialog;
     BlockExplorer  *explorerWindow;
     StatsExplorer  *statsWindow;
+    InscriptionPage  *inscriptionPage;
     ChatWindow *chatWindow;
     PublisherPage  *publisherPage;
     ModalOverlay *modalOverlay;

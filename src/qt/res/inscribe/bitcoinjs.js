@@ -23067,6 +23067,7 @@ module.exports = {
 // Dogecoin BIP32 is a proposed standard: https://bitcointalk.org/index.php?topic=409731
 
 var networks = {
+  /*
   bitcoin: {
     magicPrefix: '\x18Bitcoin Signed Message:\n',
     bip32: {
@@ -23189,6 +23190,33 @@ var networks = {
     dustThreshold: 546, // https://github.com/zetacoin/zetacoin/blob/master/src/core.h#L159
     feePerKb: 10000, // https://github.com/zetacoin/zetacoin/blob/master/src/main.cpp#L54
     estimateFee: estimateFee('zetacoin')
+  },
+  */
+  bitcoin: {
+    magicPrefix: '\x18V Core Signed Message:\n',
+    bip32: {
+      public: 0x0488b21e,
+      private: 0x0488ade4
+    },
+    pubKeyHash: 0x46,
+    scriptHash: 0x1e,
+    wif: 0xe0,
+    dustThreshold: 10000, // https://github.com/zetacoin/zetacoin/blob/master/src/core.h#L159
+    feePerKb: 10000, // https://github.com/zetacoin/zetacoin/blob/master/src/main.cpp#L54
+    estimateFee: estimateFee('bitcoin')
+  },
+  testnet: {
+    magicPrefix: '\x18V Core Signed Message:\n',
+    bip32: {
+      public: 0x043587cf,
+      private: 0x04358394
+    },
+    pubKeyHash: 0x7f,
+    scriptHash: 0x1e,
+    wif: 0xef,
+    dustThreshold: 10000, // https://github.com/zetacoin/zetacoin/blob/master/src/core.h#L159
+    feePerKb: 10000, // https://github.com/zetacoin/zetacoin/blob/master/src/main.cpp#L54
+    estimateFee: estimateFee('testnet')
   }
 }
 

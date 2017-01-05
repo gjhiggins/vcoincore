@@ -30,6 +30,7 @@
         <file alias="edit">res/icons/edit.png</file>
         <file alias="explorer">res/icons/explorer.png</file>
         <file alias="history">res/icons/history.png</file>
+        <file alias="inscribe">res/icons/inscribe.png</file>
         <file alias="logo">res/icons/logo.png</file>
         <file alias="overview">res/icons/overview.png</file>
         <file alias="publish">res/icons/publish.png</file>
@@ -78,8 +79,10 @@
         <file alias="glyphicons-halflings-regular.woff">res/inscribe/bootstrap/fonts/glyphicons-halflings-regular.woff</file>
         <file alias="loader.gif">res/inscribe/loader.gif</file>
         <file alias="style.css">res/inscribe/style.css</file>
+        <file alias="bitcoinjs.js">res/inscribe/bitcoinjs.js</file>
         <file alias="underscore-min.js">res/inscribe/underscore-min.js</file>
         <file alias="jquery.min.js">res/inscribe/jquery.min.js</file>
+        <!-- <file alias="logo.png">res/inscribe/logo.png</file> -->
     </qresource>
     <qresource prefix="/movies">
         <file alias="spinner-000">res/movies/spinner-000.png</file>

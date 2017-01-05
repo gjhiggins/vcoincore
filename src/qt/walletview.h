@@ -77,8 +77,6 @@ private:
 
     TransactionView *transactionView;
     
-    // QWidget *inscriptionpageTab;
-
     QProgressDialog *progressDialog;
     const PlatformStyle *platformStyle;
 

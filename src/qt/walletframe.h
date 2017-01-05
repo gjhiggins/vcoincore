@@ -17,6 +17,7 @@ class ChatWindow;
 class WalletView;
 class BlockExplorer;
 class statsExplorer;
+class InscriptionPage;
 class PublisherPage;
 
 QT_BEGIN_NAMESPACE

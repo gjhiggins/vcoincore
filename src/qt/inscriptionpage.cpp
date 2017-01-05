@@ -1,35 +1,18 @@
 #include "inscriptionpage.h"
 #include "ui_inscriptionpage.h"
 
-#include "bitcoinunits.h"
 #include "guiutil.h"
-#include "optionsmodel.h"
-#include "amount.h"
-#include "platformstyle.h"
-#include "clientmodel.h"
-#include "walletmodel.h"
-#include "util.h"
 
-#include "ui_interface.h"
-
+#include <QDialog>
 #include <QDir>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QStandardItemModel>
-#include <QHeaderView>
-#include <QMessageBox>
-#include <QWebEngineView>
-#include <QTextStream>
 #include <QFile>
-#include <QMenu>
-#include <QLabel>
+#include <QString>
+#include <QTextStream>
+#include <QWebEngineView>
 
-InscriptionPage::InscriptionPage(const PlatformStyle *platformStyle, QWidget *parent) :
-    QWidget(parent),
-    platformStyle(platformStyle),
-    ui(new Ui::InscriptionPage),
-    clientModel(0),
-    walletModel(0)
+InscriptionPage::InscriptionPage(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::InscriptionPage)
 {
     ui->setupUi(this);
 }
@@ -39,26 +22,13 @@ InscriptionPage::~InscriptionPage()
     delete ui;
 }
 
-void InscriptionPage::setClientModel(ClientModel *model)
-{
-    this->clientModel = model;
-    if(model)
-    {
-    }
-}
-
-void InscriptionPage::setWalletModel(WalletModel *model)
-{
-    this->walletModel = model;
-}
-
 void InscriptionPage::show()
 {
     QWebEngineView *view = new QWebEngineView;
     QDir dir;
     QString cwd = dir.currentPath();
-    QString html = "qrc:///pbt/index.html";
-    QString fpath = "/src/qt/res/pbt/index.html";
+    QString html = "qrc:///inscribe/index.html";
+    QString fpath = "/src/qt/res/inscribe/index.html";
     QString res = cwd + fpath;
     QFile file(res);
     // QFile file("file:////res/pbt/index.html");
@@ -70,3 +40,22 @@ void InscriptionPage::show()
     view->setHtml(html, QUrl());
     view->show();
 }
+
+
+/*
+void yourClass::mainFunction()
+{
+    View = new QWebEngineView(this);
+
+    connect( View->page(), SIGNAL(loadFinished(bool)), this, SLOT(slotForRunJS(bool)));
+}
+
+void yourClass::slotForRunJS(bool ok)
+{
+    // read the js file using qfile
+    file.open("path to jsFile");
+    myJsApi = file.Readall();
+    View->page()->runJavaScript(myjsapi);
+    View->page()->runJavaScript("createRadioButton(\"button1\");");
+}
+*/

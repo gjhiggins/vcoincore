@@ -216,18 +216,18 @@ void WalletFrame::gotoChatPage()
         walletView->gotoChatPage();
 }
 
-void WalletFrame::gotoInscriptionPage()
-{
-    WalletView *walletView = currentWalletView();
-    if (walletView)
-        walletView->gotoInscriptionPage();
-}
-
 void WalletFrame::gotoBlockExplorerPage()
 {
     WalletView *walletView = currentWalletView();
     if (walletView)
         walletView->gotoBlockExplorerPage();
+}
+
+void WalletFrame::gotoInscriptionPage()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoInscriptionPage();
 }
 
 void WalletFrame::gotoPublisherPage()
