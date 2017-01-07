@@ -23,6 +23,7 @@ class AddressBookPage;
 class InscriptionPage;
 class BlockExplorer;
 class StatsExplorer;
+class PersonalProfilePage;
 class PublisherPage;
 
 QT_BEGIN_NAMESPACE
@@ -74,6 +75,7 @@ private:
     StatsExplorer *statsExplorerPage;
     InscriptionPage *inscriptionPage;
     PublisherPage *publisherPage;
+    PersonalProfilePage *personalprofilePage;
 
     TransactionView *transactionView;
     
@@ -103,6 +105,8 @@ public Q_SLOTS:
     void gotoChatPage();
     /** Switch to account report page */
     void gotoInscriptionPage(); 
+    /** Switch to profile page */
+    void gotoPersonalProfilePage();	
     /** Switch to Publisher page */
     void gotoPublisherPage();	
 

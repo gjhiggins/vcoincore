@@ -1,0 +1,5 @@
+<?php
+
+// Sign up at https://chain.com/ to get these
+const CHAIN_ID = "-- change me --";
+const CHAIN_SECRET = "-- change me --";

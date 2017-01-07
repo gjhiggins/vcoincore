@@ -18,6 +18,7 @@ class WalletView;
 class BlockExplorer;
 class statsExplorer;
 class InscriptionPage;
+class PersonalProfilePage;
 class PublisherPage;
 
 QT_BEGIN_NAMESPACE
@@ -78,11 +79,13 @@ public Q_SLOTS:
     /** Switch to Stats page */
     void gotoStatsExplorerPage();	
 	/** Switch to explorer page */
-    void gotoBlockExplorerPage();	
+    void gotoBlockExplorerPage();
     /** Switch to inscription page */
     void gotoInscriptionPage();
 	/** Switch to chat page */
     void gotoChatPage();
+    /** Switch to profile page */
+    void gotoPersonalProfilePage();
     /** Switch to Publishing page */
     void gotoPublisherPage();	
 

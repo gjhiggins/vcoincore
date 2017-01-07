@@ -230,6 +230,13 @@ void WalletFrame::gotoInscriptionPage()
         walletView->gotoInscriptionPage();
 }
 
+void WalletFrame::gotoPersonalProfilePage()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoPersonalProfilePage();
+}
+
 void WalletFrame::gotoPublisherPage()
 {
     WalletView *walletView = currentWalletView();

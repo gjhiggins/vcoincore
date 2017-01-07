@@ -33,6 +33,7 @@
         <file alias="inscribe">res/icons/inscribe.png</file>
         <file alias="logo">res/icons/logo.png</file>
         <file alias="overview">res/icons/overview.png</file>
+        <file alias="profile">res/icons/profile.png</file>
         <file alias="publish">res/icons/publish.png</file>
         <file alias="export">res/icons/export.png</file>
         <file alias="synced">res/icons/synced.png</file>
@@ -60,6 +61,16 @@
         <file alias="hd_enabled">res/icons/hd_enabled.png</file>
         <file alias="hd_disabled">res/icons/hd_disabled.png</file>
         <file alias="network_disabled">res/icons/network_disabled.png</file>
+    </qresource>
+    <qresource prefix="/ppro">
+        <file alias="index.html">res/ppro/index.html</file>
+        <file alias="ppro.css">res/ppro/ppro.css</file>
+        <file alias="ppro.js">res/ppro/ppro.js</file>
+        <file alias="semantic.min.css">res/ppro/semantic.min.css</file>
+        <file alias="jquery.js">res/ppro/jquery.js</file>
+        <file alias="semantic.min.js">res/ppro/semantic.min.js</file>
+        <file alias="foaf.js">res/ppro/foaf.js</file>
+        <file alias="sha1.js">res/ppro/foaf.js</file>
     </qresource>
     <qresource prefix="/pbt">
         <file alias="index.html">res/pbt/index.html</file>

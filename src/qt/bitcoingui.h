@@ -28,6 +28,7 @@ class RPCConsole;
 class StatsExplorer;
 class PublisherPage;
 class InscriptionPage;
+class PersonalProfilePage;
 class SendCoinsRecipient;
 class UnitDisplayStatusBarControl;
 class WalletFrame;
@@ -122,6 +123,7 @@ private:
     QAction *openChatWindowAction;
 	QAction *openBlockExplorerAction;
     QAction *openInscriptionPageAction;
+    QAction *openPersonalProfilePageAction;
 	QAction *openPublisherPageAction;
 
     QSystemTrayIcon *trayIcon;
@@ -134,6 +136,7 @@ private:
     InscriptionPage  *inscriptionPage;
     ChatWindow *chatWindow;
     PublisherPage  *publisherPage;
+    PersonalProfilePage  *personalprofilePage;
     ModalOverlay *modalOverlay;
 
     /** Keep track of previous number of blocks, to detect progress */
@@ -228,6 +231,8 @@ private Q_SLOTS:
     void gotoInscriptionPage();
 	/** Switch to chat page */
     void gotoChatPage();
+    /** Switch to profile page */
+    void gotoPersonalProfilePage();
     /** Switch to Publisher page */
     void gotoPublisherPage(); 
 
