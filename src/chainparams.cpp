@@ -8,9 +8,7 @@
 
 #include "tinyformat.h"
 #include "util.h"
-// #include "pow.h"
 #include "utilstrencodings.h"
-// #include "arith_uint256.h"
 
 #include <assert.h>
 
@@ -252,7 +250,6 @@ public:
         // nodes with support for servicebits filtering should be at the top
         vSeeds.push_back(CDNSSeedData("MinkizT", "minkiz.co"));
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,127);
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,127);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,255);

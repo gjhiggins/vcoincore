@@ -61,6 +61,11 @@
         <file alias="hd_enabled">res/icons/hd_enabled.png</file>
         <file alias="hd_disabled">res/icons/hd_disabled.png</file>
         <file alias="network_disabled">res/icons/network_disabled.png</file>
+        <file alias="bitcointalk">res/icons/bitcointalk.png</file>
+        <file alias="cryptocointalk">res/icons/cryptocointalk.png</file>
+        <file alias="facebook">res/icons/face.png</file>
+        <file alias="reddit">res/icons/reddit.png</file>
+        <file alias="twitter">res/icons/twitter.png</file>
     </qresource>
     <qresource prefix="/ppro">
         <file alias="index.html">res/ppro/index.html</file>
