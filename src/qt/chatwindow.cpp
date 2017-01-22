@@ -25,12 +25,12 @@ ChatWindow::ChatWindow(QWidget *parent)
     ui->splitter->hide();
     ui->lineEdit->setDisabled(true);
 
-	connect(ui->buttonConnect, SIGNAL(clicked()), this, SLOT(connecte()));
+	connect(ui->buttonConnect, SIGNAL(clicked()), this, SLOT(connection()));
 
 	connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
     //connect(ui->actionCloseTab, SIGNAL(triggered()), this, SLOT(closeTab()));
 
-	connect(ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(sendCommande()));
+	connect(ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(sendCommand()));
 
     connect(ui->disconnectbutton, SIGNAL(clicked()), this, SLOT(disconnectFromServer()));
     connect(ui->tab, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)) );
@@ -61,7 +61,7 @@ void ChatWindow::tabClosing(int index)
 
 void ChatWindow::disconnectFromServer() {
 
-    QMapIterator<QString, Serveur*> i(serveurs);
+    QMapIterator<QString, ChatClient*> i(chatclients);
 
     while(i.hasNext())
     {
@@ -79,11 +79,11 @@ void ChatWindow::disconnectFromServer() {
 
 }
 
-Serveur *ChatWindow::currentTab()
+ChatClient *ChatWindow::currentTab()
 {
 	QString tooltip=ui->tab->tabToolTip(ui->tab->currentIndex());
-	return serveurs[tooltip];
-	//return ui->tab->currentWidget()->findChild<Serveur *>();
+	return chatclients[tooltip];
+	//return ui->tab->currentWidget()->findChild<ChatClient *>();
 }
 
 void ChatWindow::closeTab()
@@ -93,7 +93,7 @@ void ChatWindow::closeTab()
 
 	if(txt==tooltip)
 	{
-		QMapIterator<QString, QTextEdit*> i(serveurs[tooltip]->conversations);
+		QMapIterator<QString, QTextEdit*> i(chatclients[tooltip]->conversations);
 
 		int count=ui->tab->currentIndex()+1;
 
@@ -114,17 +114,17 @@ void ChatWindow::closeTab()
 	}
 }
 
-void ChatWindow::sendCommande()
+void ChatWindow::sendCommand()
 {
 	QString tooltip=ui->tab->tabToolTip(ui->tab->currentIndex());
 	QString txt=ui->tab->tabText(ui->tab->currentIndex());
 	if(txt==tooltip)
 	{
-		currentTab()->sendData(currentTab()->parseCommande(ui->lineEdit->text(),true) );
+		currentTab()->sendData(currentTab()->parseCommand(ui->lineEdit->text(),true) );
 	}
 	else
 	{
-        currentTab()->sendData(currentTab()->parseCommande(ui->lineEdit->text()) );
+        currentTab()->sendData(currentTab()->parseCommand(ui->lineEdit->text()) );
 	}
 	ui->lineEdit->clear();
 	ui->lineEdit->setFocus();
@@ -141,10 +141,10 @@ void ChatWindow::tabJoining()
 	ui->tab->setTabsClosable(true);
 }
 
-void ChatWindow::connecte()
+void ChatWindow::connection()
 {
     ui->splitter->show();
-	Serveur *serveur=new Serveur;
+	ChatClient *chatclient=new ChatClient;
     QTextEdit *textEdit=new QTextEdit;
     ui->connecttab->hide();
 
@@ -156,22 +156,22 @@ void ChatWindow::connecte()
         ui->tab->removeTab(0);
     }
 
-    serveurs.insert("chat.freenode.net",serveur);
+    chatclients.insert("chat.freenode.net",chatclient);
 
-	serveur->pseudo=ui->editPseudo->text();
-    serveur->serveur="chat.freenode.net";
-    serveur->port=6667;
-    serveur->affichage=textEdit;
-    serveur->tab=ui->tab;
-    serveur->userList=ui->userView;
-	serveur->parent=this;
+	chatclient->pseudo=ui->editPseudo->text();
+    chatclient->chatclient="chat.freenode.net";
+    chatclient->port=6667;
+    chatclient->outstring=textEdit;
+    chatclient->tab=ui->tab;
+    chatclient->userList=ui->userView;
+	chatclient->parent=this;
 
 	textEdit->setReadOnly(true);
 
-	connect(serveur, SIGNAL(joinTab()),this, SLOT(tabJoined() ));
-	connect(serveur, SIGNAL(tabJoined()),this, SLOT(tabJoining() ));
+	connect(chatclient, SIGNAL(joinTab()),this, SLOT(tabJoined() ));
+	connect(chatclient, SIGNAL(tabJoined()),this, SLOT(tabJoining() ));
 
-    serveur->connectToHost("chat.freenode.net",6667);
+    chatclient->connectToHost("chat.freenode.net",6667);
 
 	ui->tab->setCurrentIndex(ui->tab->count()-1);
 }
@@ -180,7 +180,7 @@ void ChatWindow::closeEvent(QCloseEvent *event)
 {
 	(void) event;
 
-	QMapIterator<QString, Serveur*> i(serveurs);
+	QMapIterator<QString, ChatClient*> i(chatclients);
 
 	while(i.hasNext())
 	{
@@ -202,7 +202,7 @@ void ChatWindow::setModel(ClientModel *model)
 ChatWindow::~ChatWindow()
 {
     delete ui;
-    QMapIterator<QString, Serveur*> i(serveurs);
+    QMapIterator<QString, ChatClient*> i(chatclients);
 
     while(i.hasNext())
     {

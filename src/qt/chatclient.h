@@ -14,8 +14,8 @@
 * License along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA*/
 
-#ifndef SERVEUR_H
-#define SERVEUR_H
+#ifndef CHATCLIENT_H
+#define CHATCLIENT_H
 
 #include <QListView>
 #include <QScrollBar>
@@ -24,15 +24,15 @@
 #include <QtGui>
 #include <QtNetwork>
 
-class Serveur : public QTcpSocket
+class ChatClient : public QTcpSocket
 {
 	Q_OBJECT
 
 	public:
-        Serveur();
-		QTextEdit *affichage;
+        ChatClient();
+		QTextEdit *outstring;
         QListView *userList;
-		QString pseudo,serveur,msgQuit;
+		QString pseudo,chatclient,msgQuit;
 		int port;
         QTabWidget *tab;
 		QMap<QString,QTextEdit *> conversations;
@@ -40,7 +40,7 @@ class Serveur : public QTcpSocket
 
 		bool updateUsers;
 
-		QString parseCommande(QString comm,bool serveur=false);
+		QString parseCommand(QString comm,bool chatclient=false);
 
 		QWidget *parent;
 
@@ -51,14 +51,14 @@ class Serveur : public QTcpSocket
         void tabJoined();
 
     public Q_SLOTS:
-		void readServeur();
+		void readChatClient();
 		void errorSocket(QAbstractSocket::SocketError);
         void connected();
         void joins();
 		void sendData(QString txt);
 		void join(QString chan);
         void leave(QString chan);
-        void ecrire(QString txt,QString destChan="",QString msgTray="");
+        void writestring(QString txt,QString destChan="",QString msgTray="");
         void updateUsersList(QString chan="",QString message="");
 
     // void tabChanged(int index);

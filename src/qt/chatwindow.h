@@ -20,7 +20,7 @@
 #include <QtGui>
 #include <QtNetwork>
 #include "clientmodel.h"
-#include "serveur.h"
+#include "chatclient.h"
 
 #include <QMainWindow>
 namespace Ui
@@ -36,14 +36,14 @@ public:
     explicit ChatWindow(QWidget *parent = 0);
     ~ChatWindow();
     void setModel(ClientModel *model);
-    Serveur * currentTab();
+    ChatClient * currentTab();
 
     Q_SIGNALS:
 		void changeTab();
 
     public Q_SLOTS:
-		void sendCommande();
-        void connecte();
+		void sendCommand();
+        void connection();
 		void closeTab();
 
 		void tabChanged(int index);
@@ -56,7 +56,7 @@ public:
 private:
 	Ui::ChatWindow *ui;
     ClientModel *model;
-    QMap<QString,Serveur *> serveurs;
+    QMap<QString,ChatClient *> chatclients;
 	bool joining;
 	void closeEvent(QCloseEvent *event);
 };

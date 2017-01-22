@@ -14,13 +14,13 @@
 * License along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA*/
 
-#include "serveur.h"
+#include "chatclient.h"
 #include "chatwindow.h"
         QStringList users;
         bool delist = true;
-Serveur::Serveur()
+ChatClient::ChatClient()
 {
-	connect(this, SIGNAL(readyRead()), this, SLOT(readServeur()));
+	connect(this, SIGNAL(readyRead()), this, SLOT(readChatClient()));
 	connect(this, SIGNAL(connected()), this, SLOT(connected()));
     connect(this, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(errorSocket(QAbstractSocket::SocketError)));
 
@@ -30,40 +30,40 @@ Serveur::Serveur()
 
 
 
-void Serveur::errorSocket(QAbstractSocket::SocketError error)
+void ChatClient::errorSocket(QAbstractSocket::SocketError error)
 {
 	switch(error)
 	{
 		case QAbstractSocket::HostNotFoundError:
-            affichage->append(tr("<em>ERROR : can't find freenode server.</em>"));
+            outstring->append(tr("<em>ERROR : can't find freenode server.</em>"));
 			break;
 		case QAbstractSocket::ConnectionRefusedError:
-            affichage->append(tr("<em>ERROR : server refused connection</em>"));
+            outstring->append(tr("<em>ERROR : server refused connection</em>"));
 			break;
 		case QAbstractSocket::RemoteHostClosedError:
-            affichage->append(tr("<em>ERROR : server cut connection</em>"));
+            outstring->append(tr("<em>ERROR : server cut connection</em>"));
 			break;
 		default:
-            affichage->append(tr("<em>ERROR : ") + this->errorString() + tr("</em>"));
+            outstring->append(tr("<em>ERROR : ") + this->errorString() + tr("</em>"));
 	}
 }
 
-void Serveur::connected()
+void ChatClient::connected()
 {
-    affichage->append("Connecting...");
+    outstring->append("Connecting...");
 
-	sendData("USER "+pseudo+" localhost "+serveur+" :"+pseudo);
+	sendData("USER "+pseudo+" localhost "+chatclient+" :"+pseudo);
     sendData("NICK "+pseudo);
-    affichage->append("Connected to freenode.");
+    outstring->append("Connected to freenode.");
 
 }
 
-void Serveur::joins()
+void ChatClient::joins()
 {
     join("#vcoin");
 }
 
-void Serveur::readServeur()
+void ChatClient::readChatClient()
 {
         QString message=QString::fromUtf8(this->readAll());
 
@@ -72,8 +72,8 @@ void Serveur::readServeur()
 
 	if(message.startsWith("PING :"))
 	{
-		QStringList liste=message.split(" ");
-		QString msg="PONG "+liste.at(1);
+		QStringList _list=message.split(" ");
+		QString msg="PONG "+_list.at(1);
 		sendData(msg);
 	}
 	else if(message.contains("Nickname is already in use."))
@@ -82,7 +82,7 @@ void Serveur::readServeur()
 		pseudo.remove("\r\n");
 		sendData("NICK "+pseudo);
         Q_EMIT pseudoChanged(pseudo);
-        ecrire("-> Name changed to "+pseudo);
+        writestring("-> Name changed to "+pseudo);
 	}
         else if(updateUsers==true)
 	{
@@ -96,41 +96,41 @@ void Serveur::readServeur()
             {
                 QRegExp reg(":([a-zA-Z0-9]+)\\![~a-zA-Z0-9]+@[a-zA-Z0-9\\/\\.-]+ PRIVMSG ([a-zA-Z0-9\\#]+) :(.+)");
                 QString msg2=msg;
-                    ecrire(msg.replace(reg,"\\2 <b>&lt;\\1&gt;</b> \\3"),"",msg2.replace(reg,"\\2 <\\1> \\3"));
+                    writestring(msg.replace(reg,"\\2 <b>&lt;\\1&gt;</b> \\3"),"",msg2.replace(reg,"\\2 <\\1> \\3"));
             }
             else if(msg.contains(QRegExp(":([a-zA-Z0-9]+)\\![~a-zA-Z0-9]+@[a-zA-Z0-9\\/\\.-]+ JOIN ([a-zA-Z0-9\\#]+)")))
             {
                 QRegExp reg(":([a-zA-Z0-9]+)\\![~a-zA-Z0-9]+@[a-zA-Z0-9\\/\\.-]+ JOIN ([a-zA-Z0-9\\#]+)");
                 QString msg2=msg;
-                ecrire(msg.replace(reg,"\\2 <i>-> \\1 join \\2</i><br />"),"",msg2.replace(reg,"-> \\1 join \\2"));
+                writestring(msg.replace(reg,"\\2 <i>-> \\1 join \\2</i><br />"),"",msg2.replace(reg,"-> \\1 join \\2"));
                 updateUsersList(msg.replace(reg,"\\2"));
             }
             else if(msg.contains(QRegExp(":([a-zA-Z0-9]+)\\![~a-zA-Z0-9]+@[a-zA-Z0-9\\/\\.-]+ PART ([a-zA-Z0-9\\#]+)")))
             {
                 QRegExp reg(":([a-zA-Z0-9]+)\\![~a-zA-Z0-9]+@[a-zA-Z0-9\\/\\.-]+ PART ([a-zA-Z0-9\\#]+) :(.+)");
                 QString msg2=msg;
-                ecrire(msg.replace(reg,"\\2 <i>-> \\1 quit \\2 (\\3)</i><br />"),"",msg2.replace(reg,"-> \\1 quit \\2"));
+                writestring(msg.replace(reg,"\\2 <i>-> \\1 quit \\2 (\\3)</i><br />"),"",msg2.replace(reg,"-> \\1 quit \\2"));
                 updateUsersList(msg.replace(reg,"\\2"));
             }
             else if(msg.contains(QRegExp(":([a-zA-Z0-9]+)\\![~a-zA-Z0-9]+@[a-zA-Z0-9\\/\\.-]+ QUIT (.+)")))
             {
                 QRegExp reg(":([a-zA-Z0-9]+)\\![~a-zA-Z0-9]+@[a-zA-Z0-9\\/\\.-]+ QUIT (.+)");
                 QString msg2=msg;
-                ecrire(msg.replace(reg,"\\2 <i>-> \\1 quit this server (\\2)</i><br />"),"",msg2.replace(reg,"-> \\1 left"));
+                writestring(msg.replace(reg,"\\2 <i>-> \\1 quit this server (\\2)</i><br />"),"",msg2.replace(reg,"-> \\1 left"));
                 updateUsersList(msg.replace(reg,"\\2"));
             }
             else if(msg.contains(QRegExp(":([a-zA-Z0-9]+)\\![~a-zA-Z0-9]+@[a-zA-Z0-9\\/\\.-]+ NICK :(.+)")))
             {
                 QRegExp reg(":([a-zA-Z0-9]+)\\![~a-zA-Z0-9]+@[a-zA-Z0-9\\/\\.-]+ NICK :(.+)");
                 QString msg2=msg;
-                ecrire(msg.replace(reg,"<i>\\1 is now called \\2</i><br />"),"",msg2.replace(reg,"-> \\1 is now called \\2"));
+                writestring(msg.replace(reg,"<i>\\1 is now called \\2</i><br />"),"",msg2.replace(reg,"-> \\1 is now called \\2"));
                 updateUsersList(currentChan);
             }
             else if(msg.contains(QRegExp(":([a-zA-Z0-9]+)\\![a-zA-Z0-9]+@[a-zA-Z0-9\\/\\.-]+ KICK ([a-zA-Z0-9\\#]+) ([a-zA-Z0-9]+) :(.+)")))
             { 
                 QRegExp reg(":([a-zA-Z0-9]+)\\!~[a-zA-Z0-9]+@[a-zA-Z0-9\\/\\.-]+ KICK ([a-zA-Z0-9\\#]+) ([a-zA-Z0-9]+) :(.+)");
                 QString msg2=msg;
-                ecrire(msg.replace(reg,"\\2 <i>-> \\1 kicked \\3 (\\4)</i><br />"),"",msg2.replace(reg,"-> \\1 quit \\3"));
+                writestring(msg.replace(reg,"\\2 <i>-> \\1 kicked \\3 (\\4)</i><br />"),"",msg2.replace(reg,"-> \\1 quit \\3"));
                 updateUsersList(msg.replace(reg,"\\2"));
             }
             else if(msg.contains(QRegExp(":([a-zA-Z0-9]+)\\![a-zA-Z0-9]+@[a-zA-Z0-9\\/\\.-]+ NOTICE ([a-zA-Z0-9]+) :(.+)")))
@@ -138,12 +138,12 @@ void Serveur::readServeur()
                 if(conversations.contains(currentChan))
                 {
                     QRegExp reg(":([a-zA-Z0-9]+)\\![~a-zA-Z0-9]+@[a-zA-Z0-9\\/\\.-]+ NOTICE [a-zA-Z0-9]+ :(.+)");
-                    ecrire(msg.replace(reg,"<b>[NOTICE] <i>\\1</i> : \\2 <br />"),currentChan);
+                    writestring(msg.replace(reg,"<b>[NOTICE] <i>\\1</i> : \\2 <br />"),currentChan);
                 }
-                else if(currentChan==serveur)
+                else if(currentChan==chatclient)
                 {
                     QRegExp reg(":([a-zA-Z0-9]+)\\![~a-zA-Z0-9]+@[a-zA-Z0-9\\/\\.-]+ NOTICE [a-zA-Z0-9]+ :(.+)");
-                    ecrire(msg.replace(reg,"<b>[NOTICE] <i>\\1</i> : \\2 <br />"));
+                    writestring(msg.replace(reg,"<b>[NOTICE] <i>\\1</i> : \\2 <br />"));
                 }
             }
             else if(msg.contains("/MOTD command."))
@@ -160,7 +160,7 @@ void Serveur::readServeur()
         //}
 }
 
-void Serveur::sendData(QString txt)
+void ChatClient::sendData(QString txt)
 {
 	if(this->state()==QAbstractSocket::ConnectedState)
     {
@@ -168,7 +168,7 @@ void Serveur::sendData(QString txt)
 	}
 }
 
-QString Serveur::parseCommande(QString comm,bool serveur)
+QString ChatClient::parseCommand(QString comm,bool chatclient)
 {
     if(comm.startsWith("/"))
     {
@@ -216,13 +216,13 @@ QString Serveur::parseCommande(QString comm,bool serveur)
         }
         else if(pref=="kick")
         {
-            QStringList tableau=msg.split(" ");
+            QStringList kicked=msg.split(" ");
             QString c1,c2,c3;
-            if(tableau.count() > 0) c1=" "+tableau.first();
+            if(kicked.count() > 0) c1=" "+kicked.first();
             else c1="";
-            if(tableau.count() > 1) c2=" "+tableau.at(1);
+            if(kicked.count() > 1) c2=" "+kicked.at(1);
             else c2="";
-            if(tableau.count() > 2) c3=" "+tableau.at(2);
+            if(kicked.count() > 2) c3=" "+kicked.at(2);
             else c3="";
 
             if(c1.startsWith("#"))
@@ -242,7 +242,7 @@ QString Serveur::parseCommande(QString comm,bool serveur)
         else if(pref=="nick")
         {
             Q_EMIT pseudoChanged(msg);
-                        ecrire("-> Nickname changed to "+msg);
+            writestring("-> Nickname changed to "+msg);
             return "NICK "+msg;
         }
         else if(pref=="msg")
@@ -253,12 +253,12 @@ QString Serveur::parseCommande(QString comm,bool serveur)
         else
             return pref+" "+msg;
     }
-    else if(!serveur)
+    else if(!chatclient)
 	{
         QString destChan=tab->tabText(tab->currentIndex());
                 if(comm.endsWith("<br />"))
                     comm=comm.remove(QRegExp("<br />$"));
-                ecrire("<b>&lt;"+pseudo+"&gt;</b> "+comm,destChan);
+                writestring("<b>&lt;"+pseudo+"&gt;</b> "+comm,destChan);
 
         if(comm.startsWith(":"))
             comm.insert(0,":");
@@ -271,13 +271,13 @@ QString Serveur::parseCommande(QString comm,bool serveur)
 	}
 }
 
-void Serveur::join(QString chan)
+void ChatClient::join(QString chan)
 {
-    affichage->append("Joining "+ chan +" channel");
+    outstring->append("Joining "+ chan +" channel");
     Q_EMIT joinTab();
 	QTextEdit *textEdit=new QTextEdit;
 	int index=tab->insertTab(tab->currentIndex()+1,textEdit,chan);
-	tab->setTabToolTip(index,serveur);
+	tab->setTabToolTip(index,chatclient);
 	tab->setCurrentIndex(index);
 
 	textEdit->setReadOnly(true);
@@ -288,12 +288,12 @@ void Serveur::join(QString chan)
 
     Q_EMIT tabJoined();
 }
-void Serveur::leave(QString chan)
+void ChatClient::leave(QString chan)
 {
-    sendData(parseCommande("/part "+chan+ " "+msgQuit));
+    sendData(parseCommand("/part "+chan+ " "+msgQuit));
 }
 
-void Serveur::ecrire(QString txt,QString destChan,QString msgTray)
+void ChatClient::writestring(QString txt,QString destChan,QString msgTray)
 {
 	if(destChan!="")
         {
@@ -313,33 +313,33 @@ void Serveur::ecrire(QString txt,QString destChan,QString msgTray)
         else
         {
             txt.replace("\r\n","<br />");
-            affichage->setHtml(affichage->toHtml()+txt+"<br />");
-            QScrollBar *sb = affichage->verticalScrollBar();
+            outstring->setHtml(outstring->toHtml()+txt+"<br />");
+            QScrollBar *sb = outstring->verticalScrollBar();
             sb->setValue(sb->maximum());
         }
 
 
 }
 
-void Serveur::updateUsersList(QString chan,QString message)
+void ChatClient::updateUsersList(QString chan,QString message)
 {
     message = message.replace("\r\n","");
     message = message.replace("\r","");
-    if(chan!=serveur)
+    if(chan!=chatclient)
     {
     if(updateUsers==true || message != "")
     {
-        QString liste2=message.replace(":","");
-        QStringList liste=liste2.split(" ");
+        QString __list=message.replace(":","");
+        QStringList _list=__list.split(" ");
 
         if (delist == true) users.clear();
 
-        for(int i=5; i < liste.count(); i++)
+        for(int i=5; i < _list.count(); i++)
         {
-            users.append(liste.at(i));
+            users.append(_list.at(i));
         }
         updateUsers=false;
-        if (liste.count() < 53) delist = true;
+        if (_list.count() < 53) delist = true;
         else delist = false;
 		QStringListModel *model = new QStringListModel(users);
 		userList->setModel(model);
