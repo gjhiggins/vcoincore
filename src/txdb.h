@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -72,13 +72,8 @@ public:
     bool GetCoins(const uint256 &txid, CCoins &coins) const;
     bool HaveCoins(const uint256 &txid) const;
     uint256 GetBestBlock() const;
-    bool BatchWrite(CCoinsMap &mapCoins, const uint256 &hashBlock, const CNameCache &names);
+    bool BatchWrite(CCoinsMap &mapCoins, const uint256 &hashBlock);
     CCoinsViewCursor *Cursor() const;
-    bool GetName(const valtype &name, CNameData &data) const;
-    bool GetNameHistory(const valtype &name, CNameHistory &data) const;
-    bool GetNamesForHeight(unsigned nHeight, std::set<valtype>& data) const;
-    CNameIterator* IterateNames() const;
-    bool ValidateNameDB() const;
 };
 
 /** Specialization of CCoinsViewCursor to iterate over a CCoinsViewDB */

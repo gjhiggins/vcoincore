@@ -51,17 +51,6 @@ For further reading, I found the following website to be helpful in
 explaining how the boost unit test framework works:
 [http://www.alittlemadness.com/2009/03/31/c-unit-testing-with-boosttest/](http://www.alittlemadness.com/2009/03/31/c-unit-testing-with-boosttest/).
 
-test_vcore has some built-in command-line arguments; for
-example, to run just the getarg_tests verbosely:
-
-    test_vcore --log_level=all --run_test=getarg_tests
-
-... or to run just the doubledash test:
-
-    test_vcore --run_test=getarg_tests/doubledash
-
-Run `test_vcore --help` for the full list.
-
 ### vcore-util-test.py
 
 The test directory also contains the vcore-util-test.py tool, which tests vcore utils (currently just vcore-tx). This test gets run automatically during the `make check` build process. It is also possible to run the test manually from the src directory:

@@ -6,7 +6,8 @@
 #include "guiconstants.h"
 #include "chainparams.h"
 #include "init.h"
-#include "main.h"
+#include "validation.h"
+#include <boost/foreach.hpp>
 
 #include <QAbstractItemDelegate>
 #include <QPainter>

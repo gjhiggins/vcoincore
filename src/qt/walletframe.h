@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -17,8 +17,8 @@ class ChatWindow;
 class WalletView;
 class BlockExplorer;
 class statsExplorer;
+class InscriptionPage;
 class PublisherPage;
-class EssentialsPage;
 
 QT_BEGIN_NAMESPACE
 class QStackedWidget;
@@ -79,16 +79,12 @@ public Q_SLOTS:
     void gotoStatsExplorerPage();	
 	/** Switch to explorer page */
     void gotoBlockExplorerPage();	
-    /** Switch to account report page */
-    void gotoAccountReportPage();
-    /** Switch to manage names page */
-    void gotoManageNamesPage();
+    /** Switch to inscription page */
+    void gotoInscriptionPage();
 	/** Switch to chat page */
     void gotoChatPage();
     /** Switch to Publishing page */
     void gotoPublisherPage();	
-    /** Switch to Essentials page */
-    void gotoEssentialsPage();   
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");

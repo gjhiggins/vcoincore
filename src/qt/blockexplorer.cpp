@@ -5,7 +5,7 @@
 #include "blockexplorer.h"
 #include "ui_blockexplorer.h"
 #include "utilstrencodings.h"
-#include "main.h"
+#include "validation.h"
 #include "net.h"
 #include "txdb.h"
 #include "util.h"
@@ -164,10 +164,11 @@ static std::string TxToRow(const CTransaction& tx, const CScript& Highlight = CS
 
 CTxOut getPrevOut(const COutPoint &out)
 {
-    CTransaction tx;
+    CTransactionRef tx;
     uint256 hashBlock;
+    /* FIXME: Use CTransactionRef */
     if (GetTransaction(out.hash, tx, Params().GetConsensus(), hashBlock, true))
-        return tx.vout[out.n];
+        return tx->vout[out.n];
     return CTxOut();
 }
 
@@ -536,11 +537,12 @@ bool BlockExplorer::switchTo(const QString& query)
     }
 
     // If the query is neither an integer nor a block hash, assume a transaction hash
-    CTransaction tx;
+    /* FIXME: Use CTransactionRef */
+    CTransactionRef tx;
     uint256 hashBlock = uint256S("0");
     if (GetTransaction(hash, tx, Params().GetConsensus(), hashBlock, true))
     {
-        setContent(TxToString(hashBlock, tx));
+        setContent(TxToString(hashBlock, *tx));
         return true;
     }
 

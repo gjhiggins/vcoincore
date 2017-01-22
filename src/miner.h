@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -203,13 +203,6 @@ private:
     /** Add descendants of given transactions to mapModifiedTx with ancestor
       * state updated assuming given transactions are inBlock. */
     void UpdatePackagesForAdded(const CTxMemPool::setEntries& alreadyAdded, indexed_modified_transaction_set &mapModifiedTx);
-    
-    /**
-     * Verify if a tx can be added from a Namecoin perspective.  This may not
-     * (yet) be the case if it is a NAME_FIRSTUPDATE with a not-yet-mature
-     * NAME_NEW.  Those are allowed in the mempool, but not in blocks.
-     */
-    bool TxAllowedForNamecoin(const CTransaction& tx) const;
 };
 
 /** Modify the extranonce in a block */

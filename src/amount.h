@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -18,9 +18,6 @@ static const CAmount COIN = 100000000;
 static const CAmount CENT = 1000000;
 
 extern const std::string CURRENCY_UNIT;
-
-/* Dust Hard Limit, ignored as wallet inputs (mininput default) */
-static const int64_t DUST_HARD_LIMIT = CENT;
 
 /** No amount larger than this (in satoshi) is valid.
  *

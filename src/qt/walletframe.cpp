@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -204,49 +204,35 @@ void WalletFrame::outOfSyncWarningClicked()
 
 void WalletFrame::gotoStatsExplorerPage()
 {
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoStatsExplorerPage();
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoStatsExplorerPage();
 }
 
 void WalletFrame::gotoChatPage()
 {
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoChatPage();
-}
-
-void WalletFrame::gotoAccountReportPage()
-{
     WalletView *walletView = currentWalletView();
     if (walletView)
-        walletView->gotoAccountReportPage();
+        walletView->gotoChatPage();
 }
 
 void WalletFrame::gotoBlockExplorerPage()
 {
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoBlockExplorerPage();
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoBlockExplorerPage();
 }
 
-void WalletFrame::gotoManageNamesPage()
+void WalletFrame::gotoInscriptionPage()
 {
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoManageNamesPage();
-}
-
-void WalletFrame::gotoEssentialsPage()
-{
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoEssentialsPage();
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoInscriptionPage();
 }
 
 void WalletFrame::gotoPublisherPage()
 {
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoPublisherPage();
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoPublisherPage();
 }

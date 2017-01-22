@@ -7,26 +7,16 @@
 namespace Ui {
     class PublisherPage;
 }
-class ClientModel;
-class WalletModel;
 class QDialog;
-class PlatformStyle;
 
-QT_BEGIN_NAMESPACE
-  class PublisherPage;
-QT_END_NAMESPACE
-
-/** BIP32 page widget */
+/** Publish to Torrent widget */
 class PublisherPage : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit PublisherPage(const PlatformStyle *platformStyle, QWidget *parent = 0);
+    explicit PublisherPage(QWidget *parent = 0);
     ~PublisherPage();
-
-    void setClientModel(PlatformStyle *platformStyle, ClientModel *clientModel);
-    void setWalletModel(WalletModel *walletModel);
 
 public Q_SLOTS:
 
@@ -34,12 +24,18 @@ Q_SIGNALS:
 
 private:
     Ui::PublisherPage *ui;
-    ClientModel *clientModel;
-    WalletModel *walletModel;
-    PlatformStyle *platformStyle;
+
+public Q_SLOTS:
 
 private Q_SLOTS:
     void show();
+
+Q_SIGNALS:
+    /**  Fired when a message should be reported to the user */
+    void message(const QString &title, const QString &message, unsigned int style);
+
 };
+
+
 
 #endif // PUBLISHERPAGE_H
