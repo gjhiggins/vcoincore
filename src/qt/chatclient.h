@@ -26,39 +26,40 @@
 
 class ChatClient : public QTcpSocket
 {
-    Q_OBJECT
+	Q_OBJECT
 
-public:
-    ChatClient();
-    QTextEdit *utterance;
-    QListView *userList;
-    QString pseudo, server, msgQuit;
-    int port;
-    QTabWidget *tab;
-    QMap<QString, QTextEdit *> conversations;
-    QSystemTrayIcon *tray;
+	public:
+        ChatClient();
+		QTextEdit *outstring;
+        QListView *userList;
+		QString pseudo,chatclient,msgQuit;
+		int port;
+        QTabWidget *tab;
+		QMap<QString,QTextEdit *> conversations;
+		QSystemTrayIcon *tray;
 
-    bool updateUsers;
+		bool updateUsers;
 
-    QString parseCommand(QString comm, bool chatclient = false);
+		QString parseCommand(QString comm,bool chatclient=false);
 
-    QWidget *parent;
+		QWidget *parent;
 
-Q_SIGNALS:
-    void pseudoChanged(QString newPseudo);
-    void joinTab();
-    void tabJoined();
 
-public Q_SLOTS:
-    void readClient();
-    void errorSocket(QAbstractSocket::SocketError);
-    void connected();
-    void joins();
-    void sendData(QString txt);
-    void join(QString chan);
-    void leave(QString chan);
-    void write(QString txt, QString destChan = "", QString msgTray = "");
-    void updateUsersList(QString chan = "", QString message = "");
+    Q_SIGNALS:
+		void pseudoChanged(QString newPseudo);
+		void joinTab();
+        void tabJoined();
+
+    public Q_SLOTS:
+		void readChatClient();
+		void errorSocket(QAbstractSocket::SocketError);
+        void connected();
+        void joins();
+		void sendData(QString txt);
+		void join(QString chan);
+        void leave(QString chan);
+        void writestring(QString txt,QString destChan="",QString msgTray="");
+        void updateUsersList(QString chan="",QString message="");
 
     // void tabChanged(int index);
 };

@@ -17,15 +17,15 @@
 #ifndef CHATWINDOW_H
 #define CHATWINDOW_H
 
-#include "chatclient.h"
-#include "clientmodel.h"
-#include <QMainWindow>
+#include <QtGui>
 #include <QtNetwork>
-#include <QPushButton>
+#include "clientmodel.h"
+#include "chatclient.h"
 
+#include <QMainWindow>
 namespace Ui
 {
-class ChatWindowClass;
+    class ChatWindow;
 }
 
 class ChatWindow : public QMainWindow
@@ -35,29 +35,30 @@ class ChatWindow : public QMainWindow
 public:
     explicit ChatWindow(QWidget *parent = 0);
     ~ChatWindow();
-
     void setModel(ClientModel *model);
-    ChatClient *currentTab();
+    ChatClient * currentTab();
 
-Q_SIGNALS:
-    void changeTab();
+    Q_SIGNALS:
+		void changeTab();
 
-public Q_SLOTS:
-    void sendCommand();
-    void connectToServer();
-    void closeTab();
-    void tabChanged(int index);
-    void tabJoined();
-    void tabJoining();
-    void disconnectFromServer();
-    void tabClosing(int index);
+    public Q_SLOTS:
+		void sendCommand();
+        void connection();
+		void closeTab();
+
+		void tabChanged(int index);
+
+		void tabJoined();
+		void tabJoining();
+        void disconnectFromServer();
+        void tabClosing(int index);
 
 private:
-    Ui::ChatWindowClass *ui;
+	Ui::ChatWindow *ui;
     ClientModel *model;
-    QMap<QString, ChatClient *> chatclients;
-    bool joining;
-    void closeEvent(QCloseEvent *event);
+    QMap<QString,ChatClient *> chatclients;
+	bool joining;
+	void closeEvent(QCloseEvent *event);
 };
 
 #endif // CHATWINDOW_H
