@@ -13,8 +13,9 @@ class ClientModel;
 class PlatformStyle;
 class SendCoinsRecipient;
 class WalletModel;
-class ChatWindow;
 class WalletView;
+// Additions
+class ChatWindow;
 class BlockExplorer;
 class statsExplorer;
 class InscriptionPage;
@@ -76,6 +77,7 @@ public Q_SLOTS:
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");
+    // Additions
     /** Switch to Stats page */
     void gotoStatsExplorerPage();	
 	/** Switch to explorer page */

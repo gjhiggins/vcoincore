@@ -25,7 +25,6 @@ Q_SIGNALS:
 private:
     Ui::InscriptionPage *ui;
 
-
 public Q_SLOTS:
 
 private Q_SLOTS:

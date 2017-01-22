@@ -25,6 +25,7 @@
 #ifdef ENABLE_WALLET
 #include "walletframe.h"
 #include "walletmodel.h"
+// Additions
 #include "blockexplorer.h"
 #include "statsexplorer.h"
 #include "inscriptionpage.h"
@@ -125,12 +126,14 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     notificator(0),
     rpcConsole(0),
     helpMessageDialog(0),
+    // Additions
     explorerWindow(0),
     statsWindow(0),
     inscriptionPage(0),
     chatWindow(0),
     publisherPage(0),
     personalprofilePage(0),
+    // endAdditions
     modalOverlay(0),
     prevBlocks(0),
     spinnerFrame(0),
@@ -174,8 +177,9 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     {
         /** Create wallet frame and make it the central widget */
         walletFrame = new WalletFrame(_platformStyle, this);
-        explorerWindow = new BlockExplorer(this);
         setCentralWidget(walletFrame);
+        // Additions
+        explorerWindow = new BlockExplorer(this);
         statsWindow = new StatsExplorer(this);
         chatWindow = new ChatWindow(this);
         inscriptionPage = new InscriptionPage(this);
@@ -257,26 +261,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     statusBar()->addWidget(progressBarLabel);
     statusBar()->addWidget(progressBar);
     statusBar()->addPermanentWidget(frameBlocks);
-    /*
-    connect(openBlockExplorerAction, SIGNAL(triggered()), explorerWindow, SLOT(show()));
-    // prevents an open debug window from becoming stuck/unusable on client shutdown
-    connect(quitAction, SIGNAL(triggered()), explorerWindow, SLOT(hide()));
 
-    connect(openStatsExplorerAction, SIGNAL(triggered()), statsWindow, SLOT(show()));
-    connect(quitAction, SIGNAL(triggered()), statsWindow, SLOT(hide()));
-
-    connect(openChatWindowAction, SIGNAL(triggered()), chatWindow, SLOT(show()));
-    connect(quitAction, SIGNAL(triggered()), chatWindow, SLOT(hide()));
-
-    connect(openInscriptionPageAction, SIGNAL(triggered()), inscriptionPage, SLOT(show()));
-    connect(quitAction, SIGNAL(triggered()), inscriptionPage, SLOT(hide()));
-
-    connect(openPublisherPageAction, SIGNAL(triggered()), publisherPage, SLOT(show()));
-    connect(quitAction, SIGNAL(triggered()), publisherPage, SLOT(hide()));
-
-    connect(openPersonalProfilePageAction, SIGNAL(triggered()), personalprofilePage, SLOT(show()));
-    connect(quitAction, SIGNAL(triggered()), personalprofilePagePage, SLOT(hide()));
-    */
     // Install event filter to be able to catch status tip events (QEvent::StatusTip)
     this->installEventFilter(this);
 
@@ -354,7 +339,6 @@ void BitcoinGUI::createActions()
     historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
     tabGroup->addAction(historyAction);
 
-
 #ifdef ENABLE_WALLET
     // These showNormalIfMinimized are needed because Send Coins and Receive Coins
     // can be triggered from the tray menu, and need to show the GUI to be useful.
@@ -415,6 +399,7 @@ void BitcoinGUI::createActions()
     openAction = new QAction(platformStyle->TextColorIcon(":/icons/open"), tr("Open &URI..."), this);
     openAction->setStatusTip(tr("Open a vcore: URI or payment request"));
 
+    // Additions
     openBlockExplorerAction = new QAction(platformStyle->TextColorIcon(":/icons/explorer"), tr("&Blockchain"), this);
     openBlockExplorerAction->setStatusTip(tr("Block explorer window"));
     openStatsExplorerAction = new QAction(platformStyle->TextColorIcon(":/icons/stats"), tr("&Statistics"), this);
@@ -440,6 +425,7 @@ void BitcoinGUI::createActions()
     connect(showHelpMessageAction, SIGNAL(triggered()), this, SLOT(showHelpMessageClicked()));
     connect(openRPCConsoleAction, SIGNAL(triggered()), this, SLOT(showDebugWindow()));
 
+    // Additions
     connect(openBlockExplorerAction, SIGNAL(triggered()), explorerWindow, SLOT(show()));
     connect(openStatsExplorerAction, SIGNAL(triggered()), statsWindow, SLOT(show()));
     connect(openChatWindowAction, SIGNAL(triggered()), chatWindow, SLOT(show()));
@@ -450,12 +436,13 @@ void BitcoinGUI::createActions()
 
     // prevents an open window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), rpcConsole, SLOT(hide()));
+    // Additions
     connect(quitAction, SIGNAL(triggered()), explorerWindow, SLOT(hide()));
     connect(quitAction, SIGNAL(triggered()), statsWindow, SLOT(hide()));
     connect(quitAction, SIGNAL(triggered()), chatWindow, SLOT(hide()));
     connect(quitAction, SIGNAL(triggered()), inscriptionPage, SLOT(hide()));
     connect(quitAction, SIGNAL(triggered()), publisherPage, SLOT(hide()));
-    connect(quitAction, SIGNAL(triggered()), personalprofilePagePage, SLOT(hide()));
+    connect(quitAction, SIGNAL(triggered()), personalprofilePage, SLOT(hide()));
 
 #ifdef ENABLE_WALLET
     if(walletFrame)
@@ -509,6 +496,7 @@ void BitcoinGUI::createMenuBar()
     }
     settings->addAction(optionsAction);
 
+    // Additions
     QMenu *data = appMenuBar->addMenu(tr("&Data"));
     if(walletFrame)
     {
@@ -647,8 +635,8 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     usedSendingAddressesAction->setEnabled(enabled);
     usedReceivingAddressesAction->setEnabled(enabled);
     openAction->setEnabled(enabled);
+    // Additions
     openChatWindowAction->setEnabled(enabled);
-    openPersonalProfilePageAction->setEnabled(enabled);
     openBlockExplorerAction->setEnabled(enabled);
     openStatsExplorerAction->setEnabled(enabled);
     openChatWindowAction->setEnabled(enabled);
@@ -699,8 +687,9 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addAction(verifyMessageAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(optionsAction);
-    trayIconMenu->addAction(openStatsExplorerAction);
     trayIconMenu->addAction(openRPCConsoleAction);
+    // Additions
+    trayIconMenu->addAction(openStatsExplorerAction);
     trayIconMenu->addAction(openBlockExplorerAction);
     trayIconMenu->addAction(openChatWindowAction);
     trayIconMenu->addAction(openPersonalProfilePageAction);
@@ -805,6 +794,7 @@ void BitcoinGUI::gotoVerifyMessageTab(QString addr)
     if (walletFrame) walletFrame->gotoVerifyMessageTab(addr);
 }
 
+// Additions
 void BitcoinGUI::gotoStatsExplorerPage()
 {
     if (walletFrame) walletFrame->gotoStatsExplorerPage();

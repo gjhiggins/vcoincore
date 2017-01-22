@@ -202,6 +202,7 @@ void WalletFrame::outOfSyncWarningClicked()
     Q_EMIT requestedSyncWarningInfo();
 }
 
+// Additions
 void WalletFrame::gotoStatsExplorerPage()
 {
     WalletView *walletView = currentWalletView();

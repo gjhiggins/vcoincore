@@ -23,19 +23,20 @@ class NetworkStyle;
 class Notificator;
 class OptionsModel;
 class PlatformStyle;
-class ChatWindow;
 class RPCConsole;
-class StatsExplorer;
-class PublisherPage;
-class InscriptionPage;
-class PersonalProfilePage;
 class SendCoinsRecipient;
 class UnitDisplayStatusBarControl;
 class WalletFrame;
 class WalletModel;
-class BlockExplorer;
 class HelpMessageDialog;
 class ModalOverlay;
+// Additions
+class BlockExplorer;
+class ChatWindow;
+class StatsExplorer;
+class PublisherPage;
+class InscriptionPage;
+class PersonalProfilePage;
 
 class CWallet;
 
@@ -119,18 +120,20 @@ private:
     QAction *openRPCConsoleAction;
     QAction *openAction;
     QAction *showHelpMessageAction;
-	QAction *openStatsExplorerAction;
+    // Additions
+    QAction *openStatsExplorerAction;
     QAction *openChatWindowAction;
-	QAction *openBlockExplorerAction;
+    QAction *openBlockExplorerAction;
     QAction *openInscriptionPageAction;
     QAction *openPersonalProfilePageAction;
-	QAction *openPublisherPageAction;
+    QAction *openPublisherPageAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
     Notificator *notificator;
     RPCConsole *rpcConsole;
     HelpMessageDialog *helpMessageDialog;
+    // Additions
     BlockExplorer  *explorerWindow;
     StatsExplorer  *statsWindow;
     InscriptionPage  *inscriptionPage;
@@ -222,14 +225,15 @@ private Q_SLOTS:
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
-    
+
+    //Additions
     /** Switch to Stats Page */
     void gotoStatsExplorerPage(); 
     /** Switch to Explorer Page */
     void gotoBlockExplorerPage(); 
     /** Switch to inscription page */
     void gotoInscriptionPage();
-	/** Switch to chat page */
+    /** Switch to chat page */
     void gotoChatPage();
     /** Switch to profile page */
     void gotoPersonalProfilePage();

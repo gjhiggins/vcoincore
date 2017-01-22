@@ -17,9 +17,10 @@ class ReceiveCoinsDialog;
 class SendCoinsDialog;
 class SendCoinsRecipient;
 class TransactionView;
-class ChatWindow;
 class WalletModel;
 class AddressBookPage;
+// Additions
+class ChatWindow;
 class InscriptionPage;
 class BlockExplorer;
 class StatsExplorer;
@@ -63,7 +64,6 @@ public:
 private:
     ClientModel *clientModel;
     WalletModel *walletModel;
-	ChatWindow *chatWindow;
 
     OverviewPage *overviewPage;
     QWidget *transactionsPage;
@@ -71,6 +71,8 @@ private:
     SendCoinsDialog *sendCoinsPage;
     AddressBookPage *usedSendingAddressesPage;
     AddressBookPage *usedReceivingAddressesPage;
+	// Additions
+	ChatWindow *chatWindow;
     BlockExplorer *explorerWindow;
     StatsExplorer *statsExplorerPage;
     InscriptionPage *inscriptionPage;
@@ -96,7 +98,8 @@ public Q_SLOTS:
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
-    
+
+    // Additions
     /** Switch to explorer page */
     void gotoBlockExplorerPage();	
     /** Switch to Stats page */

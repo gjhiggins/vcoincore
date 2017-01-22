@@ -19,6 +19,7 @@
 #include "transactiontablemodel.h"
 #include "transactionview.h"
 #include "walletmodel.h"
+// Additions
 #include "utilitydialog.h"
 #include "inscriptionpage.h"
 #include "blockexplorer.h"
@@ -45,6 +46,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 {
     // Create tabs
     overviewPage = new OverviewPage(platformStyle);
+    // Additions
 	explorerWindow = new BlockExplorer(this);
     statsExplorerPage = new StatsExplorer(this);
     chatWindow = new ChatWindow(this);
@@ -67,7 +69,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     vbox->addLayout(hbox_buttons);
     transactionsPage->setLayout(vbox);
     
-    
+    /*
     QVBoxLayout *vboxR = new QVBoxLayout();
     QHBoxLayout *hboxR_buttons = new QHBoxLayout();
     QPushButton *exportRButton = new QPushButton(tr("&Export"), this);
@@ -78,6 +80,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     hboxR_buttons->addStretch();
     hboxR_buttons->addWidget(exportRButton);
     vboxR->addLayout(hboxR_buttons);
+    */
 
     receiveCoinsPage = new ReceiveCoinsDialog(platformStyle);
     sendCoinsPage = new SendCoinsDialog(platformStyle);
@@ -89,12 +92,13 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(transactionsPage);
     addWidget(receiveCoinsPage);
     addWidget(sendCoinsPage);
-	addWidget(explorerWindow);
+    // Additions
+    addWidget(explorerWindow);
     addWidget(statsExplorerPage);
-	addWidget(chatWindow);
+    addWidget(chatWindow);
     addWidget(inscriptionPage);
     addWidget(publisherPage);
-    addWidget(openPersonalProfilePage);
+    addWidget(personalprofilePage);
 
         // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
@@ -361,6 +365,7 @@ void WalletView::requestedSyncWarningInfo()
     Q_EMIT outOfSyncWarningClicked();
 }
 
+// Additions
 void WalletView::gotoBlockExplorerPage()
 {
     setCurrentWidget(explorerWindow);

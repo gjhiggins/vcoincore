@@ -1,26 +1,16 @@
 #include "personalprofilepage.h"
 #include "ui_personalprofilepage.h"
 
-#include "clientmodel.h"
-#include "walletmodel.h"
-#include "bitcoinunits.h"
-#include "optionsmodel.h"
 #include "guiutil.h"
-#include "guiconstants.h"
-#include "platformstyle.h"
 
+#include <QDialog>
+#include <QDir>
 #include <QFile>
 #include <QString>
-#include <QDir>
 #include <QTextStream>
 #include <QWebEngineView>
 
-class QWebEngineView;
-
-#define DECORATION_SIZE 64
-#define NUM_ITEMS 3
-
-PersonalProfilePage::PersonalProfilePage(const PlatformStyle *platformStyle, QWidget *parent) :
+PersonalProfilePage::PersonalProfilePage(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PersonalProfilePage)
 {
@@ -37,8 +27,8 @@ void PersonalProfilePage::show()
     QWebEngineView *view = new QWebEngineView;
     QDir dir;
     QString cwd = dir.currentPath();
-    QString html = "qrc:///ppro/index.html";
-    QString fpath = "/src/qt/res/ppro/index.html";
+    QString html = "qrc:///plume/index.html";
+    QString fpath = "/src/qt/res/plume/index.html";
     QString res = cwd + fpath;
     QFile file(res);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
