@@ -14,8 +14,8 @@
 * License along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA*/
 
-#ifndef CHATCLIENT_H
-#define CHATCLIENT_H
+#ifndef SERVEUR_H
+#define SERVEUR_H
 
 #include <QListView>
 #include <QScrollBar>
@@ -24,41 +24,42 @@
 #include <QtGui>
 #include <QtNetwork>
 
-class ChatClient : public QTcpSocket
+class Serveur : public QTcpSocket
 {
-    Q_OBJECT
+	Q_OBJECT
 
-public:
-    ChatClient();
-    QTextEdit *utterance;
-    QListView *userList;
-    QString pseudo, server, msgQuit;
-    int port;
-    QTabWidget *tab;
-    QMap<QString, QTextEdit *> conversations;
-    QSystemTrayIcon *tray;
+	public:
+        Serveur();
+		QTextEdit *affichage;
+        QListView *userList;
+		QString pseudo,serveur,msgQuit;
+		int port;
+        QTabWidget *tab;
+		QMap<QString,QTextEdit *> conversations;
+		QSystemTrayIcon *tray;
 
-    bool updateUsers;
+		bool updateUsers;
 
-    QString parseCommand(QString comm, bool chatclient = false);
+		QString parseCommande(QString comm,bool serveur=false);
 
-    QWidget *parent;
+		QWidget *parent;
 
-Q_SIGNALS:
-    void pseudoChanged(QString newPseudo);
-    void joinTab();
-    void tabJoined();
 
-public Q_SLOTS:
-    void readClient();
-    void errorSocket(QAbstractSocket::SocketError);
-    void connected();
-    void joins();
-    void sendData(QString txt);
-    void join(QString chan);
-    void leave(QString chan);
-    void write(QString txt, QString destChan = "", QString msgTray = "");
-    void updateUsersList(QString chan = "", QString message = "");
+    Q_SIGNALS:
+		void pseudoChanged(QString newPseudo);
+		void joinTab();
+        void tabJoined();
+
+    public Q_SLOTS:
+		void readServeur();
+		void errorSocket(QAbstractSocket::SocketError);
+        void connected();
+        void joins();
+		void sendData(QString txt);
+		void join(QString chan);
+        void leave(QString chan);
+        void ecrire(QString txt,QString destChan="",QString msgTray="");
+        void updateUsersList(QString chan="",QString message="");
 
     // void tabChanged(int index);
 };
