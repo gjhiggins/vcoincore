@@ -10,7 +10,6 @@
 #include "chatwindow.h"
 #include "clientmodel.h"
 #include "guiutil.h"
-#include "managenamespage.h"
 #include "optionsmodel.h"
 #include "overviewpage.h"
 #include "platformstyle.h"

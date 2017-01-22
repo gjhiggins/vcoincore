@@ -69,12 +69,6 @@ static const bool DEFAULT_USE_HD_WALLET = true;
 
 extern const char * DEFAULT_WALLET_DAT;
 
-// change the string to avoid conversion to string all the time
-static const std::string sMAX_TX_REFERENCE_LEN = "512";
-// static const unsigned int MAX_TX_REFERENCE_LEN = std::atoi(sMAX_TX_REFERENCE_LEN.c_str());
-static const unsigned int MAX_TX_REFERENCE_LEN = 512;
-
-
 class CBlockIndex;
 class CCoinControl;
 class COutput;
