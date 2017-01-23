@@ -19,12 +19,15 @@
 #include "transactiontablemodel.h"
 #include "transactionview.h"
 #include "walletmodel.h"
-#include "utilitydialog.h"
-#include "inscriptionpage.h"
+// Additions
+#include "bip32hdpage.h"
 #include "blockexplorer.h"
-#include "statsexplorer.h"
 #include "chatwindow.h"
+#include "inscriptionpage.h"
+#include "personalprofilepage.h"
 #include "publisherpage.h"
+#include "statsexplorer.h"
+#include "utilitydialog.h"
 
 #include "ui_interface.h"
 
@@ -44,11 +47,14 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 {
     // Create tabs
     overviewPage = new OverviewPage(platformStyle);
-	explorerWindow = new BlockExplorer(this);
-    statsExplorerPage = new StatsExplorer(this);
+    // Additions
+    explorerWindow = new BlockExplorer(this);
+    bip32Page = new BIP32HDPage(this);
     chatWindow = new ChatWindow(this);
     inscriptionPage = new InscriptionPage(this);
+    personalprofilePage = new PersonalProfilePage(this);
     publisherPage = new PublisherPage(this);
+    statsExplorerPage = new StatsExplorer(this);
 
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -65,7 +71,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     vbox->addLayout(hbox_buttons);
     transactionsPage->setLayout(vbox);
     
-    
+    /*
     QVBoxLayout *vboxR = new QVBoxLayout();
     QHBoxLayout *hboxR_buttons = new QHBoxLayout();
     QPushButton *exportRButton = new QPushButton(tr("&Export"), this);
@@ -76,6 +82,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     hboxR_buttons->addStretch();
     hboxR_buttons->addWidget(exportRButton);
     vboxR->addLayout(hboxR_buttons);
+    */
 
     receiveCoinsPage = new ReceiveCoinsDialog(platformStyle);
     sendCoinsPage = new SendCoinsDialog(platformStyle);
@@ -87,11 +94,14 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(transactionsPage);
     addWidget(receiveCoinsPage);
     addWidget(sendCoinsPage);
-	addWidget(explorerWindow);
-    addWidget(statsExplorerPage);
-	addWidget(chatWindow);
-    addWidget(publisherPage);
+    // Additions
+    addWidget(bip32Page);
+    addWidget(chatWindow);
+    addWidget(explorerWindow);
     addWidget(inscriptionPage);
+    addWidget(personalprofilePage);
+    addWidget(publisherPage);
+    addWidget(statsExplorerPage);
 
         // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
@@ -358,14 +368,15 @@ void WalletView::requestedSyncWarningInfo()
     Q_EMIT outOfSyncWarningClicked();
 }
 
+// Additions
+void WalletView::gotoBIP32Page()
+{
+    setCurrentWidget(bip32Page);
+}
+
 void WalletView::gotoBlockExplorerPage()
 {
     setCurrentWidget(explorerWindow);
-}
-
-void WalletView::gotoStatsExplorerPage()
-{
-    setCurrentWidget(statsExplorerPage);
 }
 
 void WalletView::gotoChatPage()
@@ -373,13 +384,22 @@ void WalletView::gotoChatPage()
     setCurrentWidget(chatWindow);
 }
 
-void WalletView::gotoPublisherPage()
-{
-    setCurrentWidget(publisherPage);
-
-}
-
 void WalletView::gotoInscriptionPage()
 {
     setCurrentWidget(inscriptionPage); 
+}
+
+void WalletView::gotoPersonalProfilePage()
+{
+    setCurrentWidget(personalprofilePage);
+}
+
+void WalletView::gotoPublisherPage()
+{
+    setCurrentWidget(publisherPage);
+}
+
+void WalletView::gotoStatsExplorerPage()
+{
+    setCurrentWidget(statsExplorerPage);
 }

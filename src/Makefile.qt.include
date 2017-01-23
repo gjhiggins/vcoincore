@@ -96,6 +96,7 @@ QT_TS = \
 QT_FORMS_UI = \
   qt/forms/addressbookpage.ui \
   qt/forms/askpassphrasedialog.ui \
+  qt/forms/bip32hdpage.ui \
   qt/forms/blockexplorer.ui \
   qt/forms/chatwindow.ui \
   qt/forms/coincontroldialog.ui \
@@ -107,6 +108,7 @@ QT_FORMS_UI = \
   qt/forms/openuridialog.ui \
   qt/forms/optionsdialog.ui \
   qt/forms/overviewpage.ui \
+  qt/forms/personalprofilepage.ui \
   qt/forms/publisherpage.ui \
   qt/forms/receivecoinsdialog.ui \
   qt/forms/receiverequestdialog.ui \
@@ -122,6 +124,7 @@ QT_MOC_CPP = \
   qt/moc_addresstablemodel.cpp \
   qt/moc_askpassphrasedialog.cpp \
   qt/moc_bantablemodel.cpp \
+  qt/moc_bip32hdpage.cpp \
   qt/moc_bitcoinaddressvalidator.cpp \
   qt/moc_bitcoinamountfield.cpp \
   qt/moc_bitcoingui.cpp \
@@ -147,6 +150,7 @@ QT_MOC_CPP = \
   qt/moc_overviewpage.cpp \
   qt/moc_peertablemodel.cpp \
   qt/moc_paymentserver.cpp \
+  qt/moc_personalprofilepage.cpp \
   qt/moc_publisherpage.cpp \
   qt/moc_qcustomplot.cpp \
   qt/moc_qvalidatedlineedit.cpp \
@@ -196,6 +200,7 @@ BITCOIN_QT_H = \
   qt/addresstablemodel.h \
   qt/askpassphrasedialog.h \
   qt/bantablemodel.h \
+  qt/bip32hdpage.h \
   qt/bitcoinaddressvalidator.h \
   qt/bitcoinamountfield.h \
   qt/bitcoingui.h \
@@ -224,6 +229,7 @@ BITCOIN_QT_H = \
   qt/paymentrequestplus.h \
   qt/paymentserver.h \
   qt/peertablemodel.h \
+  qt/personalprofilepage.h \
   qt/platformstyle.h \
   qt/publisherpreviewpage.h \
   qt/publisherpage.h \
@@ -299,6 +305,7 @@ RES_ICONS = \
   qt/res/icons/network_disabled.png \
   qt/res/icons/open.png \
   qt/res/icons/overview.png \
+  qt/res/icons/profile.png \
   qt/res/icons/publish.png \
   qt/res/icons/quit.png \
   qt/res/icons/receive.png \
@@ -306,6 +313,7 @@ RES_ICONS = \
   qt/res/icons/send.png \
   qt/res/icons/stats.png \
   qt/res/icons/synced.png \
+  qt/res/icons/bip32.png \
   qt/res/icons/transaction0.png \
   qt/res/icons/transaction2.png \
   qt/res/icons/transaction_abandoned.png \
@@ -338,6 +346,7 @@ BITCOIN_QT_BASE_CPP = \
   qt/optionsmodel.cpp \
   qt/peertablemodel.cpp \
   qt/platformstyle.cpp \
+  qt/personalprofilepage.cpp \
   qt/publisherpage.cpp \
   qt/qcustomplot.cpp \
   qt/qvalidatedlineedit.cpp \
@@ -354,6 +363,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/addressbookpage.cpp \
   qt/addresstablemodel.cpp \
   qt/askpassphrasedialog.cpp \
+  qt/bip32hdpage.cpp \
   qt/blockexplorer.cpp \
   qt/chatclient.cpp \
   qt/chatwindow.cpp \
@@ -365,6 +375,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/overviewpage.cpp \
   qt/paymentrequestplus.cpp \
   qt/paymentserver.cpp \
+  qt/personalprofilepage.cpp \
   qt/publisherpage.cpp \
   qt/qcustomplot.cpp \
   qt/receivecoinsdialog.cpp \

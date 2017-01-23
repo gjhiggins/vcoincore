@@ -1,29 +1,29 @@
-#ifndef INSCRIPTIONPAGE_H
-#define INSCRIPTIONPAGE_H
+#ifndef BIP32HDPAGE_H
+#define BIP32HDPAGE_H
 
 #include <QWidget>
 #include <QDialog>
 
 namespace Ui {
-    class InscriptionPage;
+    class BIP32HDPage;
 }
 class QDialog;
 
-/** Create an inscription */
-class InscriptionPage : public QDialog
+/* BIP32 HD page */
+class BIP32HDPage : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit InscriptionPage(QWidget *parent = 0);
-    ~InscriptionPage();
+    explicit BIP32HDPage(QWidget *parent = 0);
+    ~BIP32HDPage();
 
 public Q_SLOTS:
 
 Q_SIGNALS:
 
 private:
-    Ui::InscriptionPage *ui;
+    Ui::BIP32HDPage *ui;
 
 public Q_SLOTS:
 
@@ -38,4 +38,4 @@ Q_SIGNALS:
 
 
 
-#endif // INSCRIPTIONPAGE_H
+#endif // BIP32HDPAGE_H

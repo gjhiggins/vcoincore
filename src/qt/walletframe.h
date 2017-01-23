@@ -13,12 +13,15 @@ class ClientModel;
 class PlatformStyle;
 class SendCoinsRecipient;
 class WalletModel;
-class ChatWindow;
 class WalletView;
+// Additions
+class BIP32HDPage;
 class BlockExplorer;
-class statsExplorer;
+class ChatWindow;
 class InscriptionPage;
+class PersonalProfilePage;
 class PublisherPage;
+class statsExplorer;
 
 QT_BEGIN_NAMESPACE
 class QStackedWidget;
@@ -75,16 +78,21 @@ public Q_SLOTS:
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");
-    /** Switch to Stats page */
-    void gotoStatsExplorerPage();	
-	/** Switch to explorer page */
-    void gotoBlockExplorerPage();	
+    // Additions
+    /** Switch to BIP32 page */
+    void gotoBIP32Page();
+    /** Switch to explorer page */
+    void gotoBlockExplorerPage();
+    /** Switch to chat page */
+    void gotoChatPage();
     /** Switch to inscription page */
     void gotoInscriptionPage();
-	/** Switch to chat page */
-    void gotoChatPage();
+    /** Switch to profile page */
+    void gotoPersonalProfilePage();
     /** Switch to Publishing page */
     void gotoPublisherPage();	
+    /** Switch to Stats page */
+    void gotoStatsExplorerPage();   
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");

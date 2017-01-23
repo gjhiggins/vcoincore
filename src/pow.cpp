@@ -121,10 +121,10 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
             nActualTimespan = params.nPowTargetTimespan*4;
     }else{
         // Mainnet version
-        if (nActualTimespan < params.nPowTargetTimespan)
-            nActualTimespan = params.nPowTargetTimespan;
-        if (nActualTimespan > params.nPowTargetTimespan)
-            nActualTimespan = params.nPowTargetTimespan;
+        if (nActualTimespan < nMinActualTimespan)
+            nActualTimespan = nMinActualTimespan;
+        if (nActualTimespan > nMaxActualTimespan)
+            nActualTimespan = nMaxActualTimespan;
     }
     // Retarget
     arith_uint256 bnNew;
@@ -167,10 +167,10 @@ unsigned int NewCalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t
             nActualTimespan = params.nPowTargetTimespan*4;
     }else{
         // Mainnet version
-        if (nActualTimespan < params.nPowTargetTimespan)
-            nActualTimespan = params.nPowTargetTimespan;
-        if (nActualTimespan > params.nPowTargetTimespan)
-            nActualTimespan = params.nPowTargetTimespan;
+        if (nActualTimespan < nMinActualTimespan)
+            nActualTimespan = nMinActualTimespan;
+        if (nActualTimespan > nMaxActualTimespan)
+            nActualTimespan = nMaxActualTimespan;
     }
 
     LogPrintf("nActualTimespan = %u after bounds\n", nActualTimespan);

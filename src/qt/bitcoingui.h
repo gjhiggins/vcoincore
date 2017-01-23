@@ -23,18 +23,21 @@ class NetworkStyle;
 class Notificator;
 class OptionsModel;
 class PlatformStyle;
-class ChatWindow;
 class RPCConsole;
-class StatsExplorer;
-class PublisherPage;
-class InscriptionPage;
 class SendCoinsRecipient;
 class UnitDisplayStatusBarControl;
 class WalletFrame;
 class WalletModel;
-class BlockExplorer;
 class HelpMessageDialog;
 class ModalOverlay;
+// Additions
+class BIP32HDPage;
+class BlockExplorer;
+class ChatWindow;
+class InscriptionPage;
+class PersonalProfilePage;
+class PublisherPage;
+class StatsExplorer;
 
 class CWallet;
 
@@ -118,23 +121,29 @@ private:
     QAction *openRPCConsoleAction;
     QAction *openAction;
     QAction *showHelpMessageAction;
-	QAction *openStatsExplorerAction;
+    // Additions
+    QAction *openBIP32PageAction;
+    QAction *openBlockExplorerAction;
     QAction *openChatWindowAction;
-	QAction *openBlockExplorerAction;
     QAction *openInscriptionPageAction;
-	QAction *openPublisherPageAction;
+    QAction *openPersonalProfilePageAction;
+    QAction *openPublisherPageAction;
+    QAction *openStatsExplorerAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
     Notificator *notificator;
     RPCConsole *rpcConsole;
     HelpMessageDialog *helpMessageDialog;
+    // Additions
+    BIP32HDPage  *bip32Page;
     BlockExplorer  *explorerWindow;
-    StatsExplorer  *statsWindow;
-    InscriptionPage  *inscriptionPage;
     ChatWindow *chatWindow;
-    PublisherPage  *publisherPage;
+    InscriptionPage  *inscriptionPage;
     ModalOverlay *modalOverlay;
+    PersonalProfilePage  *personalprofilePage;
+    PublisherPage  *publisherPage;
+    StatsExplorer  *statsWindow;
 
     /** Keep track of previous number of blocks, to detect progress */
     int prevBlocks;
@@ -219,17 +228,22 @@ private Q_SLOTS:
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
-    
-    /** Switch to Stats Page */
-    void gotoStatsExplorerPage(); 
+
+    //Additions
+    /** Switch to BIP32 page */
+    void gotoBIP32Page();
     /** Switch to Explorer Page */
     void gotoBlockExplorerPage(); 
+    /** Switch to chat page */
+    void gotoChatPage();
     /** Switch to inscription page */
     void gotoInscriptionPage();
-	/** Switch to chat page */
-    void gotoChatPage();
+    /** Switch to profile page */
+    void gotoPersonalProfilePage();
     /** Switch to Publisher page */
     void gotoPublisherPage(); 
+    /** Switch to Stats Page */
+    void gotoStatsExplorerPage(); 
 
     /** Show open dialog */
     void openClicked();

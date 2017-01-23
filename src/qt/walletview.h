@@ -17,13 +17,16 @@ class ReceiveCoinsDialog;
 class SendCoinsDialog;
 class SendCoinsRecipient;
 class TransactionView;
-class ChatWindow;
 class WalletModel;
 class AddressBookPage;
-class InscriptionPage;
+// Additions
+class BIP32HDPage;
 class BlockExplorer;
-class StatsExplorer;
+class ChatWindow;
+class InscriptionPage;
+class PersonalProfilePage;
 class PublisherPage;
+class StatsExplorer;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -62,7 +65,6 @@ public:
 private:
     ClientModel *clientModel;
     WalletModel *walletModel;
-	ChatWindow *chatWindow;
 
     OverviewPage *overviewPage;
     QWidget *transactionsPage;
@@ -70,10 +72,14 @@ private:
     SendCoinsDialog *sendCoinsPage;
     AddressBookPage *usedSendingAddressesPage;
     AddressBookPage *usedReceivingAddressesPage;
+	// Additions
+    BIP32HDPage *bip32Page;
+	ChatWindow *chatWindow;
     BlockExplorer *explorerWindow;
     StatsExplorer *statsExplorerPage;
     InscriptionPage *inscriptionPage;
     PublisherPage *publisherPage;
+    PersonalProfilePage *personalprofilePage;
 
     TransactionView *transactionView;
     
@@ -94,17 +100,22 @@ public Q_SLOTS:
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
-    
+
+    // Additions
+    /** Switch to BIP32 page */
+    void gotoBIP32Page();
     /** Switch to explorer page */
-    void gotoBlockExplorerPage();	
-    /** Switch to Stats page */
-    void gotoStatsExplorerPage();	
+    void gotoBlockExplorerPage();
     /** Switch to chat page */
     void gotoChatPage();
     /** Switch to account report page */
     void gotoInscriptionPage(); 
+    /** Switch to profile page */
+    void gotoPersonalProfilePage();	
     /** Switch to Publisher page */
-    void gotoPublisherPage();	
+    void gotoPublisherPage();
+    /** Switch to Stats page */
+    void gotoStatsExplorerPage();   
 
     /** Show incoming transaction notification for new transactions.
 

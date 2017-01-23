@@ -202,18 +202,12 @@ void WalletFrame::outOfSyncWarningClicked()
     Q_EMIT requestedSyncWarningInfo();
 }
 
-void WalletFrame::gotoStatsExplorerPage()
+// Additions
+void WalletFrame::gotoBIP32Page()
 {
     WalletView *walletView = currentWalletView();
     if (walletView)
-        walletView->gotoStatsExplorerPage();
-}
-
-void WalletFrame::gotoChatPage()
-{
-    WalletView *walletView = currentWalletView();
-    if (walletView)
-        walletView->gotoChatPage();
+        walletView->gotoBIP32Page();
 }
 
 void WalletFrame::gotoBlockExplorerPage()
@@ -223,6 +217,13 @@ void WalletFrame::gotoBlockExplorerPage()
         walletView->gotoBlockExplorerPage();
 }
 
+void WalletFrame::gotoChatPage()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoChatPage();
+}
+
 void WalletFrame::gotoInscriptionPage()
 {
     WalletView *walletView = currentWalletView();
@@ -230,9 +231,23 @@ void WalletFrame::gotoInscriptionPage()
         walletView->gotoInscriptionPage();
 }
 
+void WalletFrame::gotoPersonalProfilePage()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoPersonalProfilePage();
+}
+
 void WalletFrame::gotoPublisherPage()
 {
     WalletView *walletView = currentWalletView();
     if (walletView)
         walletView->gotoPublisherPage();
+}
+
+void WalletFrame::gotoStatsExplorerPage()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoStatsExplorerPage();
 }
