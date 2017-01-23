@@ -20,13 +20,14 @@
 #include "transactionview.h"
 #include "walletmodel.h"
 // Additions
-#include "utilitydialog.h"
-#include "inscriptionpage.h"
+#include "bip32hdpage.h"
 #include "blockexplorer.h"
-#include "statsexplorer.h"
 #include "chatwindow.h"
+#include "inscriptionpage.h"
 #include "personalprofilepage.h"
 #include "publisherpage.h"
+#include "statsexplorer.h"
+#include "utilitydialog.h"
 
 #include "ui_interface.h"
 
@@ -47,12 +48,13 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     // Create tabs
     overviewPage = new OverviewPage(platformStyle);
     // Additions
-	explorerWindow = new BlockExplorer(this);
-    statsExplorerPage = new StatsExplorer(this);
+    explorerWindow = new BlockExplorer(this);
+    bip32Page = new BIP32HDPage(this);
     chatWindow = new ChatWindow(this);
     inscriptionPage = new InscriptionPage(this);
     personalprofilePage = new PersonalProfilePage(this);
     publisherPage = new PublisherPage(this);
+    statsExplorerPage = new StatsExplorer(this);
 
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -93,12 +95,13 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(receiveCoinsPage);
     addWidget(sendCoinsPage);
     // Additions
-    addWidget(explorerWindow);
-    addWidget(statsExplorerPage);
+    addWidget(bip32Page);
     addWidget(chatWindow);
+    addWidget(explorerWindow);
     addWidget(inscriptionPage);
-    addWidget(publisherPage);
     addWidget(personalprofilePage);
+    addWidget(publisherPage);
+    addWidget(statsExplorerPage);
 
         // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
@@ -366,14 +369,14 @@ void WalletView::requestedSyncWarningInfo()
 }
 
 // Additions
+void WalletView::gotoBIP32Page()
+{
+    setCurrentWidget(bip32Page);
+}
+
 void WalletView::gotoBlockExplorerPage()
 {
     setCurrentWidget(explorerWindow);
-}
-
-void WalletView::gotoStatsExplorerPage()
-{
-    setCurrentWidget(statsExplorerPage);
 }
 
 void WalletView::gotoChatPage()
@@ -381,9 +384,9 @@ void WalletView::gotoChatPage()
     setCurrentWidget(chatWindow);
 }
 
-void WalletView::gotoPublisherPage()
+void WalletView::gotoInscriptionPage()
 {
-    setCurrentWidget(publisherPage);
+    setCurrentWidget(inscriptionPage); 
 }
 
 void WalletView::gotoPersonalProfilePage()
@@ -391,7 +394,12 @@ void WalletView::gotoPersonalProfilePage()
     setCurrentWidget(personalprofilePage);
 }
 
-void WalletView::gotoInscriptionPage()
+void WalletView::gotoPublisherPage()
 {
-    setCurrentWidget(inscriptionPage); 
+    setCurrentWidget(publisherPage);
+}
+
+void WalletView::gotoStatsExplorerPage()
+{
+    setCurrentWidget(statsExplorerPage);
 }

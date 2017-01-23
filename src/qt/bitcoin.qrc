@@ -66,6 +66,7 @@
         <file alias="facebook">res/icons/face.png</file>
         <file alias="reddit">res/icons/reddit.png</file>
         <file alias="twitter">res/icons/twitter.png</file>
+        <file alias="bip32">res/icons/bip32.png</file>
     </qresource>
     <qresource prefix="/pbt">
         <file alias="index.html">res/pbt/index.html</file>
@@ -88,33 +89,31 @@
         <file alias="util.js">res/ewc/js/util.js</file>
         <file alias="webcrypto.js">res/ewc/js/webcrypto.js</file>
     </qresource>
-    <!--
     <qresource prefix="/bip32">
-        <file alias="armory.js">res/bip32/armory.js</file>
-        <file alias="bip32.js">res/bip32/bip32.js</file>
-        <file alias="bip32js.js">res/bip32/bip32js.js</file>
-        <file alias="bitcoinjs-min.js">res/bip32/bitcoinjs-min.js</file>
-        <file alias="bitcoinsig.js">res/bip32/bitcoinsig.js</file>
-        <file alias="bootstrap.css">res/bip32/bootstrap.css</file>
-        <file alias="bootstrap.js">res/bip32/bootstrap.js</file>
-        <file alias="bootstrap-theme.css">res/bip32/bootstrap-theme.css</file>
-        <file alias="brainwallet.css">res/bip32/brainwallet.css</file>
-        <file alias="brainwallet.js">res/bip32/brainwallet.js</file>
-        <file alias="crypto.js">res/bip32/crypto.js</file>
-        <file alias="electrum.js">res/bip32/electrum.js</file>
-        <file alias="hash_worker.js">res/bip32/hash_worker.js</file>
-        <file alias="htmlpost.xml">res/bip32/htmlpost.xml</file>
+        <file alias="armory.js">res/bip32/js/armory.js</file>
+        <file alias="bip32.js">res/bip32/js/bip32.js</file>
+        <file alias="bip32js.js">res/bip32/js/bip32js.js</file>
+        <file alias="bitcoinjs-min.js">res/bip32/js/bitcoinjs-min.js</file>
+        <file alias="bitcoinsig.js">res/bip32/js/bitcoinsig.js</file>
+        <file alias="bootstrap.css">res/bip32/css/bootstrap.css</file>
+        <file alias="bootstrap.js">res/bip32/js/bootstrap.js</file>
+        <file alias="bootstrap-theme.css">res/bip32/css/bootstrap-theme.css</file>
+        <file alias="brainwallet.css">res/bip32/css/brainwallet.css</file>
+        <file alias="brainwallet.js">res/bip32/js/brainwallet.js</file>
+        <file alias="crypto.js">res/bip32/js/crypto.js</file>
+        <file alias="electrum.js">res/bip32/js/electrum.js</file>
+        <file alias="hash_worker.js">res/bip32/js/hash_worker.js</file>
+        <file alias="htmlpost.xml">res/bip32/js/htmlpost.xml</file>
         <file alias="index.html">res/bip32/index.html</file>
-        <file alias="jquery.js">res/bip32/jquery.js</file>
-        <file alias="mnemonic.js">res/bip32/mnemonic.js</file>
-        <file alias="modsqrt.js">res/bip32/modsqrt.js</file>
-        <file alias="qrcode.js">res/bip32/qrcode.js</file>
-        <file alias="rfc1751.js">res/bip32/rfc1751.js</file>
-        <file alias="sha256.js">res/bip32/sha256.js</file>
-        <file alias="sha512.js">res/bip32/sha512.js</file>
-        <file alias="tx.js">res/bip32/tx.js</file>
+        <file alias="jquery.js">res/bip32/js/jquery.js</file>
+        <file alias="mnemonic.js">res/bip32/js/mnemonic.js</file>
+        <file alias="modsqrt.js">res/bip32/js/modsqrt.js</file>
+        <file alias="qrcode.js">res/bip32/js/qrcode.js</file>
+        <file alias="rfc1751.js">res/bip32/js/rfc1751.js</file>
+        <file alias="sha256.js">res/bip32/js/sha256.js</file>
+        <file alias="sha512.js">res/bip32/js/sha512.js</file>
+        <file alias="tx.js">res/bip32/js/tx.js</file>
     </qresource>
-    -->
     <qresource prefix="/plume">
         <file alias="app.js">res/plume/app/app.js</file>
         <file alias="blog.css">res/plume/css/blog.css</file>

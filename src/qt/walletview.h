@@ -20,12 +20,13 @@ class TransactionView;
 class WalletModel;
 class AddressBookPage;
 // Additions
+class BIP32HDPage;
+class BlockExplorer;
 class ChatWindow;
 class InscriptionPage;
-class BlockExplorer;
-class StatsExplorer;
 class PersonalProfilePage;
 class PublisherPage;
+class StatsExplorer;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -72,6 +73,7 @@ private:
     AddressBookPage *usedSendingAddressesPage;
     AddressBookPage *usedReceivingAddressesPage;
 	// Additions
+    BIP32HDPage *bip32Page;
 	ChatWindow *chatWindow;
     BlockExplorer *explorerWindow;
     StatsExplorer *statsExplorerPage;
@@ -100,10 +102,10 @@ public Q_SLOTS:
     void gotoVerifyMessageTab(QString addr = "");
 
     // Additions
+    /** Switch to BIP32 page */
+    void gotoBIP32Page();
     /** Switch to explorer page */
-    void gotoBlockExplorerPage();	
-    /** Switch to Stats page */
-    void gotoStatsExplorerPage();	
+    void gotoBlockExplorerPage();
     /** Switch to chat page */
     void gotoChatPage();
     /** Switch to account report page */
@@ -111,7 +113,9 @@ public Q_SLOTS:
     /** Switch to profile page */
     void gotoPersonalProfilePage();	
     /** Switch to Publisher page */
-    void gotoPublisherPage();	
+    void gotoPublisherPage();
+    /** Switch to Stats page */
+    void gotoStatsExplorerPage();   
 
     /** Show incoming transaction notification for new transactions.
 

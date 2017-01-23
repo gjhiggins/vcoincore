@@ -31,12 +31,13 @@ class WalletModel;
 class HelpMessageDialog;
 class ModalOverlay;
 // Additions
+class BIP32HDPage;
 class BlockExplorer;
 class ChatWindow;
-class StatsExplorer;
-class PublisherPage;
 class InscriptionPage;
 class PersonalProfilePage;
+class PublisherPage;
+class StatsExplorer;
 
 class CWallet;
 
@@ -121,12 +122,13 @@ private:
     QAction *openAction;
     QAction *showHelpMessageAction;
     // Additions
-    QAction *openStatsExplorerAction;
-    QAction *openChatWindowAction;
+    QAction *openBIP32PageAction;
     QAction *openBlockExplorerAction;
+    QAction *openChatWindowAction;
     QAction *openInscriptionPageAction;
     QAction *openPersonalProfilePageAction;
     QAction *openPublisherPageAction;
+    QAction *openStatsExplorerAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
@@ -134,13 +136,14 @@ private:
     RPCConsole *rpcConsole;
     HelpMessageDialog *helpMessageDialog;
     // Additions
+    BIP32HDPage  *bip32Page;
     BlockExplorer  *explorerWindow;
-    StatsExplorer  *statsWindow;
-    InscriptionPage  *inscriptionPage;
     ChatWindow *chatWindow;
-    PublisherPage  *publisherPage;
-    PersonalProfilePage  *personalprofilePage;
+    InscriptionPage  *inscriptionPage;
     ModalOverlay *modalOverlay;
+    PersonalProfilePage  *personalprofilePage;
+    PublisherPage  *publisherPage;
+    StatsExplorer  *statsWindow;
 
     /** Keep track of previous number of blocks, to detect progress */
     int prevBlocks;
@@ -227,18 +230,20 @@ private Q_SLOTS:
     void gotoVerifyMessageTab(QString addr = "");
 
     //Additions
-    /** Switch to Stats Page */
-    void gotoStatsExplorerPage(); 
+    /** Switch to BIP32 page */
+    void gotoBIP32Page();
     /** Switch to Explorer Page */
     void gotoBlockExplorerPage(); 
-    /** Switch to inscription page */
-    void gotoInscriptionPage();
     /** Switch to chat page */
     void gotoChatPage();
+    /** Switch to inscription page */
+    void gotoInscriptionPage();
     /** Switch to profile page */
     void gotoPersonalProfilePage();
     /** Switch to Publisher page */
     void gotoPublisherPage(); 
+    /** Switch to Stats Page */
+    void gotoStatsExplorerPage(); 
 
     /** Show open dialog */
     void openClicked();
