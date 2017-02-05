@@ -13,19 +13,19 @@
     <link href="qrc:///bip32/favicon.ico" rel="shortcut icon" />
     <script src="qrc:///bip32/jquery.js"></script>
     <script src="qrc:///bip32/bootstrap.js"></script>
+    <script src="qrc:///bip32/armory.js"></script>
+    <script src="qrc:///bip32/bip32.js"></script>
     <script src="qrc:///bip32/bitcoinjs-min.js"></script>
-    <script src="qrc:///bip32/sha512.js"></script>
+    <script src="qrc:///bip32/bitcoinsig.js"></script>
+    <script src="qrc:///bip32/brainwallet.js"></script>
+    <script src="qrc:///bip32/electrum.js"></script>
+    <script src="qrc:///bip32/hash_worker.js"></script>
+    <script src="qrc:///bip32/mnemonic.js"></script>
     <script src="qrc:///bip32/modsqrt.js"></script>
     <script src="qrc:///bip32/qrcode.js"></script>
     <script src="qrc:///bip32/rfc1751.js"></script>
-    <script src="qrc:///bip32/mnemonic.js"></script>
-    <script src="qrc:///bip32/armory.js"></script>
-    <script src="qrc:///bip32/bip32.js"></script>
-    <script src="qrc:///bip32/electrum.js"></script>
+    <script src="qrc:///bip32/sha512.js"></script>
     <script src="qrc:///bip32/tx.js"></script>
-    <script src="qrc:///bip32/bitcoinsig.js"></script>
-    <script src="qrc:///bip32/brainwallet.js"></script>
-    <script src="qrc:///bip32/hash_worker.js"></script>
   </head>
   <body onclick="rng_seed_time();" onkeypress="rng_seed_time();">
     <header class="navbar navbar-inverse navbar-fixed-top">
@@ -41,8 +41,8 @@
             <li class="dropdown" id="crCurrency">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="crSelect"><span id="crName">VCore Mainnet</span>&nbsp;<b class="caret">&nbsp;</b></a>
               <ul class="dropdown-menu">
-                <li><a href="#" id="vcn_main">VCore Mainnet</a></li>
-                <li><a href="#" id="vcn_test">VCore Testnet</a></li>
+                <li><a href="#" id="vcore_main">VCore Mainnet</a></li>
+                <li><a href="#" id="vcore_test">VCore Testnet</a></li>
                 <!-- Unsupported right now
                 <li><a href="http://blockchain.info/address/" id="btc_main">Bitcoin Mainnet</a></li>
                 <li><a href="http://blockexplorer.com/testnet/address/" id="btc_test">Bitcoin Testnet</a></li>
@@ -269,4 +269,3 @@
     </div>
   </body>
 </html>
-

@@ -23,9 +23,11 @@
 #include "bip32hdpage.h"
 #include "blockexplorer.h"
 #include "chatwindow.h"
+#include "essentialspage.h"
 #include "inscriptionpage.h"
 #include "personalprofilepage.h"
 #include "publisherpage.h"
+#include "reportview.h"
 #include "statsexplorer.h"
 #include "utilitydialog.h"
 
@@ -48,9 +50,10 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     // Create tabs
     overviewPage = new OverviewPage(platformStyle);
     // Additions
-    explorerWindow = new BlockExplorer(this);
     bip32Page = new BIP32HDPage(this);
     chatWindow = new ChatWindow(this);
+    explorerWindow = new BlockExplorer(this);
+    essentialsPage = new EssentialsPage(platformStyle, this);
     inscriptionPage = new InscriptionPage(this);
     personalprofilePage = new PersonalProfilePage(this);
     publisherPage = new PublisherPage(this);
@@ -70,10 +73,13 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     hbox_buttons->addWidget(exportButton);
     vbox->addLayout(hbox_buttons);
     transactionsPage->setLayout(vbox);
-    
-    /*
+
+    // Additions    
+    accountreportPage = new QWidget(this);
     QVBoxLayout *vboxR = new QVBoxLayout();
     QHBoxLayout *hboxR_buttons = new QHBoxLayout();
+    reportView = new ReportView(this);
+    vboxR->addWidget(reportView);
     QPushButton *exportRButton = new QPushButton(tr("&Export"), this);
     exportRButton->setToolTip(tr("Export the data in the current tab to a file"));
 #ifndef Q_OS_MAC // Icons on push buttons are very uncommon on Mac
@@ -82,7 +88,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     hboxR_buttons->addStretch();
     hboxR_buttons->addWidget(exportRButton);
     vboxR->addLayout(hboxR_buttons);
-    */
+    accountreportPage->setLayout(vboxR);
 
     receiveCoinsPage = new ReceiveCoinsDialog(platformStyle);
     sendCoinsPage = new SendCoinsDialog(platformStyle);
@@ -95,8 +101,10 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(receiveCoinsPage);
     addWidget(sendCoinsPage);
     // Additions
+    addWidget(accountreportPage);
     addWidget(bip32Page);
     addWidget(chatWindow);
+    addWidget(essentialsPage);
     addWidget(explorerWindow);
     addWidget(inscriptionPage);
     addWidget(personalprofilePage);
@@ -163,6 +171,8 @@ void WalletView::setWalletModel(WalletModel *_walletModel)
     sendCoinsPage->setModel(_walletModel);
     usedReceivingAddressesPage->setModel(_walletModel->getAddressTableModel());
     usedSendingAddressesPage->setModel(_walletModel->getAddressTableModel());
+    // Additions
+    reportView->setModel(_walletModel);
 
     if (_walletModel)
     {
@@ -369,6 +379,11 @@ void WalletView::requestedSyncWarningInfo()
 }
 
 // Additions
+void WalletView::gotoAccountReportPage()
+{
+    setCurrentWidget(accountreportPage); 
+}
+
 void WalletView::gotoBIP32Page()
 {
     setCurrentWidget(bip32Page);
@@ -382,6 +397,12 @@ void WalletView::gotoBlockExplorerPage()
 void WalletView::gotoChatPage()
 {
     setCurrentWidget(chatWindow);
+}
+
+void WalletView::gotoEssentialsPage()
+{
+    setCurrentWidget(essentialsPage);
+
 }
 
 void WalletView::gotoInscriptionPage()

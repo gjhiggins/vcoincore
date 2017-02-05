@@ -18,6 +18,7 @@ class WalletView;
 class BIP32HDPage;
 class BlockExplorer;
 class ChatWindow;
+class EssentialsPage;
 class InscriptionPage;
 class PersonalProfilePage;
 class PublisherPage;
@@ -79,12 +80,16 @@ public Q_SLOTS:
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");
     // Additions
+    /** Switch to account report page */
+    void gotoAccountReportPage();
     /** Switch to BIP32 page */
     void gotoBIP32Page();
     /** Switch to explorer page */
     void gotoBlockExplorerPage();
     /** Switch to chat page */
     void gotoChatPage();
+    /** Switch to Essentials page */
+    void gotoEssentialsPage();   
     /** Switch to inscription page */
     void gotoInscriptionPage();
     /** Switch to profile page */

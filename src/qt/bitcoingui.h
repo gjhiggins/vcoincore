@@ -32,8 +32,9 @@ class HelpMessageDialog;
 class ModalOverlay;
 // Additions
 class BIP32HDPage;
-class BlockExplorer;
 class ChatWindow;
+class EssentialsPage;
+class BlockExplorer;
 class InscriptionPage;
 class PersonalProfilePage;
 class PublisherPage;
@@ -122,9 +123,11 @@ private:
     QAction *openAction;
     QAction *showHelpMessageAction;
     // Additions
+    QAction *accountReportAction;
     QAction *openBIP32PageAction;
     QAction *openBlockExplorerAction;
     QAction *openChatWindowAction;
+    QAction *openEssentialsPageAction;
     QAction *openInscriptionPageAction;
     QAction *openPersonalProfilePageAction;
     QAction *openPublisherPageAction;
@@ -137,13 +140,14 @@ private:
     HelpMessageDialog *helpMessageDialog;
     // Additions
     BIP32HDPage  *bip32Page;
-    BlockExplorer  *explorerWindow;
     ChatWindow *chatWindow;
+    EssentialsPage  *essentialsPage;
+    BlockExplorer  *explorerWindow;
     InscriptionPage  *inscriptionPage;
-    ModalOverlay *modalOverlay;
     PersonalProfilePage  *personalprofilePage;
     PublisherPage  *publisherPage;
     StatsExplorer  *statsWindow;
+    ModalOverlay *modalOverlay;
 
     /** Keep track of previous number of blocks, to detect progress */
     int prevBlocks;
@@ -230,6 +234,8 @@ private Q_SLOTS:
     void gotoVerifyMessageTab(QString addr = "");
 
     //Additions
+    /** Switch to account report page */
+    void gotoAccountReportPage();
     /** Switch to BIP32 page */
     void gotoBIP32Page();
     /** Switch to Explorer Page */
@@ -237,6 +243,8 @@ private Q_SLOTS:
     /** Switch to chat page */
     void gotoChatPage();
     /** Switch to inscription page */
+    /** Switch to Essentials Page */
+    void gotoEssentialsPage(); 
     void gotoInscriptionPage();
     /** Switch to profile page */
     void gotoPersonalProfilePage();

@@ -23,9 +23,11 @@ class AddressBookPage;
 class BIP32HDPage;
 class BlockExplorer;
 class ChatWindow;
+class EssentialsPage;
 class InscriptionPage;
 class PersonalProfilePage;
 class PublisherPage;
+class ReportView;
 class StatsExplorer;
 
 QT_BEGIN_NAMESPACE
@@ -68,18 +70,23 @@ private:
 
     OverviewPage *overviewPage;
     QWidget *transactionsPage;
+    // Additions
+    QWidget *accountreportPage;
+
     ReceiveCoinsDialog *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
     AddressBookPage *usedSendingAddressesPage;
     AddressBookPage *usedReceivingAddressesPage;
 	// Additions
     BIP32HDPage *bip32Page;
-	ChatWindow *chatWindow;
     BlockExplorer *explorerWindow;
-    StatsExplorer *statsExplorerPage;
+	ChatWindow *chatWindow;
+    EssentialsPage *essentialsPage;
     InscriptionPage *inscriptionPage;
-    PublisherPage *publisherPage;
     PersonalProfilePage *personalprofilePage;
+    PublisherPage *publisherPage;
+    ReportView *reportView;		
+    StatsExplorer *statsExplorerPage;
 
     TransactionView *transactionView;
     
@@ -102,6 +109,8 @@ public Q_SLOTS:
     void gotoVerifyMessageTab(QString addr = "");
 
     // Additions
+    /** Switch to account report page */
+    void gotoAccountReportPage(); 
     /** Switch to BIP32 page */
     void gotoBIP32Page();
     /** Switch to explorer page */
@@ -109,6 +118,8 @@ public Q_SLOTS:
     /** Switch to chat page */
     void gotoChatPage();
     /** Switch to account report page */
+    /** Switch to Essentials page */
+    void gotoEssentialsPage();   
     void gotoInscriptionPage(); 
     /** Switch to profile page */
     void gotoPersonalProfilePage();	

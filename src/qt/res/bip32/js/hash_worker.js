@@ -1,8 +1,9 @@
 function worker_function() {
     // all code here
-importScripts("crypto.js");
-importScripts("sha256.js");
-
+// importScripts("qrc:///bip32/crypto.js");
+// importScripts("qrc:///bip32/sha256.js");
+importScripts('https://raw.githubusercontent.com/bip32/bip32.github.io/master/js/crypto-min.js');
+importScripts('https://raw.githubusercontent.com/bip32/bip32.github.io/master/js/sha256.js');
 (function() {
     var state = 'stopped';
     var bip32_source_passphrase = null;

@@ -29,9 +29,11 @@
 #include "bip32hdpage.h"
 #include "blockexplorer.h"
 #include "chatwindow.h"
+#include "essentialspage.h"
 #include "inscriptionpage.h"
 #include "personalprofilepage.h"
 #include "publisherpage.h"
+#include "reportview.h"
 #include "statsexplorer.h"
 #endif // ENABLE_WALLET
 
@@ -130,6 +132,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     // Additions
     bip32Page(0),
     chatWindow(0),
+    essentialsPage(0),
     explorerWindow(0),
     inscriptionPage(0),
     personalprofilePage(0),
@@ -183,6 +186,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
         // Additions
         bip32Page = new BIP32HDPage(this);
         chatWindow = new ChatWindow(this);
+        essentialsPage = new EssentialsPage(_platformStyle, this);
         explorerWindow = new BlockExplorer(this);
         inscriptionPage = new InscriptionPage(this);
         personalprofilePage = new PersonalProfilePage(this);
@@ -342,6 +346,14 @@ void BitcoinGUI::createActions()
     historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
     tabGroup->addAction(historyAction);
 
+    // Additions
+    accountReportAction = new QAction(platformStyle->SingleColorIcon(":/icons/account-report"), tr("&Report"), this);
+    accountReportAction->setStatusTip(tr("Account report"));
+    accountReportAction->setToolTip(accountReportAction->statusTip());
+    accountReportAction->setCheckable(true);
+    accountReportAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
+    tabGroup->addAction(accountReportAction);
+
 #ifdef ENABLE_WALLET
     // These showNormalIfMinimized are needed because Send Coins and Receive Coins
     // can be triggered from the tray menu, and need to show the GUI to be useful.
@@ -357,6 +369,9 @@ void BitcoinGUI::createActions()
     connect(receiveCoinsMenuAction, SIGNAL(triggered()), this, SLOT(gotoReceiveCoinsPage()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(gotoHistoryPage()));
+    // Additions
+    connect(accountReportAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(accountReportAction, SIGNAL(triggered()), this, SLOT(gotoAccountReportPage()));
 #endif // ENABLE_WALLET
 
     quitAction = new QAction(platformStyle->TextColorIcon(":/icons/quit"), tr("E&xit"), this);
@@ -409,6 +424,8 @@ void BitcoinGUI::createActions()
     openBlockExplorerAction->setStatusTip(tr("Block explorer window"));
     openChatWindowAction = new QAction(platformStyle->TextColorIcon(":/icons/chat"), tr("&Chat"), this);
     openChatWindowAction->setStatusTip(tr("Chat window"));
+    openEssentialsPageAction = new QAction(platformStyle->TextColorIcon(":/icons/info"), tr("&Essentials"), this);
+    openEssentialsPageAction->setStatusTip(tr("Essentials"));
     openInscriptionPageAction = new QAction(platformStyle->TextColorIcon(":/icons/inscribe"), tr("&Inscribe"), this);
     openInscriptionPageAction->setStatusTip(tr("Inscribe"));
     openPersonalProfilePageAction = new QAction(platformStyle->TextColorIcon(":/icons/profile"), tr("&Publisher"), this);
@@ -431,20 +448,23 @@ void BitcoinGUI::createActions()
     connect(openRPCConsoleAction, SIGNAL(triggered()), this, SLOT(showDebugWindow()));
 
     // Additions
-    connect(openBlockExplorerAction, SIGNAL(triggered()), explorerWindow, SLOT(show()));
-    connect(openStatsExplorerAction, SIGNAL(triggered()), statsWindow, SLOT(show()));
-    connect(openChatWindowAction, SIGNAL(triggered()), chatWindow, SLOT(show()));
-    connect(openInscriptionPageAction, SIGNAL(triggered()), inscriptionPage, SLOT(show()));
-    connect(openPublisherPageAction, SIGNAL(triggered()), publisherPage, SLOT(show()));
-    // connect(openPublisherPageAction, SIGNAL(triggered()), this, SLOT(showPublisherPage()));
-    connect(openPersonalProfilePageAction, SIGNAL(triggered()), personalprofilePage, SLOT(show()));
     connect(openBIP32PageAction, SIGNAL(triggered()), bip32Page, SLOT(show()));
+    connect(openBlockExplorerAction, SIGNAL(triggered()), explorerWindow, SLOT(show()));
+    connect(openChatWindowAction, SIGNAL(triggered()), chatWindow, SLOT(show()));
+    connect(openEssentialsPageAction, SIGNAL(triggered()), essentialsPage, SLOT(show()));
+    connect(openInscriptionPageAction, SIGNAL(triggered()), inscriptionPage, SLOT(show()));
+    connect(openPersonalProfilePageAction, SIGNAL(triggered()), personalprofilePage, SLOT(show()));
+    connect(openPublisherPageAction, SIGNAL(triggered()), publisherPage, SLOT(show()));
+    connect(openStatsExplorerAction, SIGNAL(triggered()), statsWindow, SLOT(show()));
+
+
 
     // prevents an open window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), rpcConsole, SLOT(hide()));
     // Additions
     connect(quitAction, SIGNAL(triggered()), bip32Page, SLOT(hide()));
     connect(quitAction, SIGNAL(triggered()), chatWindow, SLOT(hide()));
+    connect(quitAction, SIGNAL(triggered()), essentialsPage, SLOT(hide()));
     connect(quitAction, SIGNAL(triggered()), explorerWindow, SLOT(hide()));
     connect(quitAction, SIGNAL(triggered()), inscriptionPage, SLOT(hide()));
     connect(quitAction, SIGNAL(triggered()), personalprofilePage, SLOT(hide()));
@@ -507,9 +527,10 @@ void BitcoinGUI::createMenuBar()
     QMenu *data = appMenuBar->addMenu(tr("&Data"));
     if(walletFrame)
     {
-        data->addAction(openChatWindowAction);
         data->addAction(openBIP32PageAction);
         data->addAction(openBlockExplorerAction);
+        data->addAction(openChatWindowAction);
+        data->addAction(openEssentialsPageAction);
         data->addAction(openInscriptionPageAction);
         data->addAction(openPersonalProfilePageAction);
         data->addAction(openPublisherPageAction);
@@ -538,6 +559,8 @@ void BitcoinGUI::createToolBars()
         toolbar->addAction(sendCoinsAction);
         toolbar->addAction(receiveCoinsAction);
         toolbar->addAction(historyAction);
+        // Additions
+        toolbar->addAction(accountReportAction);
         overviewAction->setChecked(true);
     }
 }
@@ -644,6 +667,7 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     usedReceivingAddressesAction->setEnabled(enabled);
     openAction->setEnabled(enabled);
     // Additions
+    accountReportAction->setEnabled(enabled);
     openBIP32PageAction->setEnabled(enabled);
     openBlockExplorerAction->setEnabled(enabled);
     openChatWindowAction->setEnabled(enabled);
@@ -701,6 +725,7 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addAction(openBIP32PageAction);
     trayIconMenu->addAction(openBlockExplorerAction);
     trayIconMenu->addAction(openChatWindowAction);
+    trayIconMenu->addAction(openEssentialsPageAction);
     trayIconMenu->addAction(openInscriptionPageAction);
     trayIconMenu->addAction(openPersonalProfilePageAction);
     trayIconMenu->addAction(openPublisherPageAction);
@@ -805,6 +830,12 @@ void BitcoinGUI::gotoVerifyMessageTab(QString addr)
 }
 
 // Additions
+void BitcoinGUI::gotoAccountReportPage()
+{
+    accountReportAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoAccountReportPage();
+}
+
 void BitcoinGUI::gotoBIP32Page()
 {
     if (walletFrame) walletFrame->gotoBIP32Page();
@@ -818,6 +849,11 @@ void BitcoinGUI::gotoBlockExplorerPage()
 void BitcoinGUI::gotoChatPage()
 {
     if (walletFrame) walletFrame->gotoChatPage();
+}
+
+void BitcoinGUI::gotoEssentialsPage()
+{
+    if (walletFrame) walletFrame->gotoEssentialsPage();
 }
 
 void BitcoinGUI::gotoInscriptionPage()

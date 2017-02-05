@@ -101,6 +101,7 @@ QT_FORMS_UI = \
   qt/forms/chatwindow.ui \
   qt/forms/coincontroldialog.ui \
   qt/forms/editaddressdialog.ui \
+  qt/forms/essentialspage.ui \
   qt/forms/helpmessagedialog.ui \
   qt/forms/inscriptionpage.ui \
   qt/forms/intro.ui \
@@ -137,6 +138,7 @@ QT_MOC_CPP = \
   qt/moc_coincontroltreewidget.cpp \
   qt/moc_csvmodelwriter.cpp \
   qt/moc_editaddressdialog.cpp \
+  qt/moc_essentialspage.cpp \
   qt/moc_guiutil.cpp \
   qt/moc_inscriptionpage.cpp \
   qt/moc_intro.cpp \
@@ -158,6 +160,7 @@ QT_MOC_CPP = \
   qt/moc_receivecoinsdialog.cpp \
   qt/moc_receiverequestdialog.cpp \
   qt/moc_recentrequeststablemodel.cpp \
+  qt/moc_reportview.cpp \
   qt/moc_rpcconsole.cpp \
   qt/moc_sendcoinsdialog.cpp \
   qt/moc_sendcoinsentry.cpp \
@@ -213,6 +216,7 @@ BITCOIN_QT_H = \
   qt/coincontroltreewidget.h \
   qt/csvmodelwriter.h \
   qt/editaddressdialog.h \
+  qt/essentialspage.h \
   qt/guiconstants.h \
   qt/guiutil.h \
   qt/intro.h \
@@ -239,6 +243,7 @@ BITCOIN_QT_H = \
   qt/receivecoinsdialog.h \
   qt/receiverequestdialog.h \
   qt/recentrequeststablemodel.h \
+  qt/reportview.h \
   qt/rpcconsole.h \
   qt/sendcoinsdialog.h \
   qt/sendcoinsentry.h \
@@ -336,6 +341,7 @@ BITCOIN_QT_BASE_CPP = \
   qt/chatwindow.cpp \
   qt/clientmodel.cpp \
   qt/csvmodelwriter.cpp \
+  qt/essentialspage.cpp \
   qt/guiutil.cpp \
   qt/intro.cpp \
   qt/inscriptionpage.cpp \
@@ -370,6 +376,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/coincontroldialog.cpp \
   qt/coincontroltreewidget.cpp \
   qt/editaddressdialog.cpp \
+  qt/essentialspage.cpp \
   qt/inscriptionpage.cpp \
   qt/openuridialog.cpp \
   qt/overviewpage.cpp \
@@ -381,6 +388,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/receivecoinsdialog.cpp \
   qt/receiverequestdialog.cpp \
   qt/recentrequeststablemodel.cpp \
+  qt/reportview.cpp \
   qt/sendcoinsdialog.cpp \
   qt/sendcoinsentry.cpp \
   qt/signverifymessagedialog.cpp \

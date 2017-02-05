@@ -203,6 +203,13 @@ void WalletFrame::outOfSyncWarningClicked()
 }
 
 // Additions
+void WalletFrame::gotoAccountReportPage()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoAccountReportPage();
+}
+
 void WalletFrame::gotoBIP32Page()
 {
     WalletView *walletView = currentWalletView();
@@ -222,6 +229,13 @@ void WalletFrame::gotoChatPage()
     WalletView *walletView = currentWalletView();
     if (walletView)
         walletView->gotoChatPage();
+}
+
+void WalletFrame::gotoEssentialsPage()
+{
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoEssentialsPage();
 }
 
 void WalletFrame::gotoInscriptionPage()

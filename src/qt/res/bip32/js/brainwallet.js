@@ -10,7 +10,7 @@
     var TIMEOUT = 600;
     var timeout = null;
 
-    var coin = "vcn_main";
+    var coin = "vcore_main";
 
     var COINS = {
         btc_main: {
@@ -53,22 +53,6 @@
             bip32_public: JUMBUCKS_MAINNET_PUBLIC,
             bip32_private: JUMBUCKS_MAINNET_PRIVATE
         },
-        vcn_main: {
-            name: "VCore",
-            network: "Mainnet",
-            prefix: 0x46,
-            private_prefix: 0xe0,
-            bip32_public: V_MAINNET_PUBLIC,
-            bip32_private: V_MAINNET_PRIVATE
-        },
-        vcn_test: {
-            name: "VCore",
-            network: "Testnet",
-            prefix: 0x82,
-            private_prefix: 0xef,
-            bip32_public: V_TESTNET_PUBLIC,
-            bip32_private: V_TESTNET_PRIVATE
-        },
         ltc_main: {
             name: "Litecoin",
             network: "Mainnet",
@@ -84,13 +68,29 @@
             private_prefix: 0x6f+0x80,
             bip32_public: LITECOIN_TESTNET_PUBLIC,
             bip32_private: LITECOIN_TESTNET_PRIVATE
+        },
+        vcore_main: {
+            name: "V Core",
+            network: "Mainnet",
+            prefix: 0x46,
+            private_prefix: 0xc6,
+            bip32_public: VCORE_MAINNET_PUBLIC,
+            bip32_private: VCORE_MAINNET_PRIVATE
+        },
+        vcore_test: {
+            name: "V Core",
+            network: "Testnet",
+            prefix: 0x7f,
+            private_prefix: 0x7f+0x80,
+            bip32_public: VCORE_TESTNET_PUBLIC,
+            bip32_private: VCORE_TESTNET_PRIVATE
         }
     };
 
     var PUBLIC_KEY_VERSION = 0x46;
-    var PRIVATE_KEY_VERSION = 0xe0;
+    var PRIVATE_KEY_VERSION = 0xc6;
     var ADDRESS_URL_PREFIX = ''
-    var BIP32_TYPE = V_MAINNET_PRIVATE;
+    var BIP32_TYPE = VCORE_MAINNET_PRIVATE;
 
     function pad(str, len, ch) {
         padding = '';
@@ -552,8 +552,8 @@
         $('#gen_from label input').on('change', onUpdateGenFrom );
         updateGenFrom();
 
-        $("#bip32_source_passphrase").val("crazy horse battery staple");
-        $("#bip32_source_key").val("xprv9s21ZrQH143K2JF8RafpqtKiTbsbaxEeUaMnNHsm5o6wCW3z8ySyH4UxFVSfZ8n7ESu7fgir8imbZKLYVBxFPND1pniTZ81vKfd45EHKX73");
+        $("#bip32_source_passphrase").val("collect house buttery stable");
+        $("#bip32_source_key").val("vprviSADv95qwhTr2XeMcsHdvqn8W4C7dMLSebcNQ2e4Kindx6544XyQA6ZLiMHw3kHe98mqTiuAiZJqRzKnHF2Ef6isW3K3LPJdYXioTwxKbXA");
         onInput("#bip32_source_passphrase", onUpdateSourcePassphrase);
 
         $("#checkbox_show_passphrase").on('change', onShowPassphraseChanged );
