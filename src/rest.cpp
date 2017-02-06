@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,8 +7,7 @@
 #include "chainparams.h"
 #include "primitives/block.h"
 #include "primitives/transaction.h"
-#include "main.h"
-#include "names/common.h"
+#include "validation.h"
 #include "httpserver.h"
 #include "rpc/server.h"
 #include "streams.h"
@@ -127,54 +126,6 @@ static bool CheckWarmup(HTTPRequest* req)
     return true;
 }
 
-static bool DecodeName(valtype& decoded, const std::string& encoded)
-{
-    decoded.clear();
-    for (std::string::const_iterator i = encoded.begin(); i != encoded.end(); ++i)
-    {
-        switch (*i)
-        {
-        case '+':
-            decoded.push_back(' ');
-            continue;
-
-        case '%':
-        {
-            if (i + 2 >= encoded.end())
-                return false;
-            const std::string hexStr(i + 1, i + 3);
-            i += 2;
-
-            int intChar = 0;
-            BOOST_FOREACH(char c, hexStr)
-            {
-                intChar <<= 4;
-
-                if (c >= '0' && c <= '9')
-                    intChar += c - '0';
-                else
-                {
-                    c |= (1 << 5);
-                    if (c >= 'a' && c <= 'f')
-                        intChar += c - 'a' + 10;
-                    else
-                        return false;
-                }
-            }
-
-            decoded.push_back(static_cast<char>(intChar));
-            continue;
-        }
-
-        default:
-            decoded.push_back(*i);
-            continue;
-        }
-    }
-
-    return true;
-}
-
 static bool rest_headers(HTTPRequest* req,
                          const std::string& strURIPart)
 {
@@ -277,7 +228,7 @@ static bool rest_block(HTTPRequest* req,
             return RESTERR(req, HTTP_NOT_FOUND, hashStr + " not found");
     }
 
-    CDataStream ssBlock(SER_NETWORK, PROTOCOL_VERSION);
+    CDataStream ssBlock(SER_NETWORK, PROTOCOL_VERSION | RPCSerializationFlags());
     ssBlock << block;
 
     switch (rf) {
@@ -412,12 +363,12 @@ static bool rest_tx(HTTPRequest* req, const std::string& strURIPart)
     if (!ParseHashStr(hashStr, hash))
         return RESTERR(req, HTTP_BAD_REQUEST, "Invalid hash: " + hashStr);
 
-    CTransaction tx;
+    CTransactionRef tx;
     uint256 hashBlock = uint256();
     if (!GetTransaction(hash, tx, Params().GetConsensus(), hashBlock, true))
         return RESTERR(req, HTTP_NOT_FOUND, hashStr + " not found");
 
-    CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
+    CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION | RPCSerializationFlags());
     ssTx << tx;
 
     switch (rf) {
@@ -437,7 +388,7 @@ static bool rest_tx(HTTPRequest* req, const std::string& strURIPart)
 
     case RF_JSON: {
         UniValue objTx(UniValue::VOBJ);
-        TxToJSON(tx, hashBlock, objTx);
+        TxToJSON(*tx, hashBlock, objTx);
         string strJSON = objTx.write() + "\n";
         req->WriteHeader("Content-Type", "application/json");
         req->WriteReply(HTTP_OK, strJSON);
@@ -649,61 +600,6 @@ static bool rest_getutxos(HTTPRequest* req, const std::string& strURIPart)
     return true; // continue to process further HTTP reqs on this cxn
 }
 
-static bool rest_name(HTTPRequest* req, const std::string& strURIPart)
-{
-    if (!CheckWarmup(req))
-        return false;
-    std::string encodedName;
-    const RetFormat rf = ParseDataFormat(encodedName, strURIPart);
-
-    valtype plainName;
-    if (!DecodeName(plainName, encodedName))
-        return RESTERR(req, HTTP_BAD_REQUEST,
-                       "Invalid encoded name: " + encodedName);
-
-    CNameData data;
-    if (!pcoinsTip->GetName(plainName, data))
-        return RESTERR(req, HTTP_NOT_FOUND,
-                       "'" + ValtypeToString(plainName) + "' not found");
-
-    switch (rf)
-    {
-    case RF_BINARY:
-    {
-        const std::string binVal = ValtypeToString(data.getValue());
-        req->WriteHeader("Content-Type", "application/octet-stream");
-        req->WriteReply(HTTP_OK, binVal);
-        return true;
-    }
-
-    case RF_HEX:
-    {
-        const valtype& binVal = data.getValue();
-        const std::string hexVal = HexStr(binVal.begin(), binVal.end()) + "\n";
-        req->WriteHeader("Content-Type", "text/plain");
-        req->WriteReply(HTTP_OK, hexVal);
-        return true;
-    }
-
-    case RF_JSON:
-    {
-        const UniValue obj = getNameInfo(plainName, data);
-        const std::string strJSON = obj.write() + "\n";
-        req->WriteHeader("Content-Type", "application/json");
-        req->WriteReply(HTTP_OK, strJSON);
-        return true;
-    }
-
-    default:
-        return RESTERR(req, HTTP_NOT_FOUND,
-                       "output format not found (available: "
-                        + AvailableDataFormatsString() + ")");
-    }
-
-    // not reached
-    return true; // continue to process further HTTP reqs on this cxn
-}
-
 static const struct {
     const char* prefix;
     bool (*handler)(HTTPRequest* req, const std::string& strReq);
@@ -716,7 +612,6 @@ static const struct {
       {"/rest/mempool/contents", rest_mempool_contents},
       {"/rest/headers/", rest_headers},
       {"/rest/getutxos", rest_getutxos},
-      {"/rest/name/", rest_name},
 };
 
 bool StartREST()

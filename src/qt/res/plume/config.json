@@ -1,0 +1,11 @@
+{
+    "owners": ["Me"],
+    "title": "Title here",
+    "tagline": "pithy tagline here",
+    "picture": "qrc:///plume/logo.svg",
+    "fadeText": true,
+    "showSources": true,
+    "cacheUnit": "days",
+    "defaultPath": "posts",
+    "postsURL": "qrc:///plume/publish"
+}

@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,16 +7,13 @@
 
 #include "base58.h"
 #include "consensus/validation.h"
-#include "main.h" // For CheckTransaction
+#include "validation.h" // For CheckTransaction
 #include "protocol.h"
 #include "serialize.h"
 #include "sync.h"
 #include "util.h"
 #include "utiltime.h"
 #include "wallet/wallet.h"
-
-#include "names/common.h"
-#include <univalue.h>
 
 #include <boost/version.hpp>
 #include <boost/filesystem.hpp>
@@ -178,18 +175,6 @@ bool CWalletDB::WriteMinVersion(int nVersion)
     return Write(std::string("minversion"), nVersion);
 }
 
-bool CWalletDB::WriteNameFirstUpdate(const std::string& name, const std::string& data)
-{
-    nWalletDBUpdated++;
-    return Write(std::make_pair(std::string("pending_firstupdate"), name), data);
-}
-
-bool CWalletDB::EraseNameFirstUpdate(const std::string& name)
-{
-    nWalletDBUpdated++;
-    return Erase(std::make_pair(string("pending_firstupdate"), name));
-}
-
 bool CWalletDB::ReadAccount(const string& strAccount, CAccount& account)
 {
     account.SetNull();
@@ -264,82 +249,6 @@ void CWalletDB::ListAccountCreditDebit(const string& strAccount, list<CAccountin
     }
 
     pcursor->close();
-}
-
-DBErrors CWalletDB::ReorderTransactions(CWallet* pwallet)
-{
-    LOCK(pwallet->cs_wallet);
-    // Old wallets didn't have any defined order for transactions
-    // Probably a bad idea to change the output of this
-
-    // First: get all CWalletTx and CAccountingEntry into a sorted-by-time multimap.
-    typedef pair<CWalletTx*, CAccountingEntry*> TxPair;
-    typedef multimap<int64_t, TxPair > TxItems;
-    TxItems txByTime;
-
-    for (map<uint256, CWalletTx>::iterator it = pwallet->mapWallet.begin(); it != pwallet->mapWallet.end(); ++it)
-    {
-        CWalletTx* wtx = &((*it).second);
-        txByTime.insert(make_pair(wtx->nTimeReceived, TxPair(wtx, (CAccountingEntry*)0)));
-    }
-    list<CAccountingEntry> acentries;
-    ListAccountCreditDebit("", acentries);
-    BOOST_FOREACH(CAccountingEntry& entry, acentries)
-    {
-        txByTime.insert(make_pair(entry.nTime, TxPair((CWalletTx*)0, &entry)));
-    }
-
-    int64_t& nOrderPosNext = pwallet->nOrderPosNext;
-    nOrderPosNext = 0;
-    std::vector<int64_t> nOrderPosOffsets;
-    for (TxItems::iterator it = txByTime.begin(); it != txByTime.end(); ++it)
-    {
-        CWalletTx *const pwtx = (*it).second.first;
-        CAccountingEntry *const pacentry = (*it).second.second;
-        int64_t& nOrderPos = (pwtx != 0) ? pwtx->nOrderPos : pacentry->nOrderPos;
-
-        if (nOrderPos == -1)
-        {
-            nOrderPos = nOrderPosNext++;
-            nOrderPosOffsets.push_back(nOrderPos);
-
-            if (pwtx)
-            {
-                if (!WriteTx(*pwtx))
-                    return DB_LOAD_FAIL;
-            }
-            else
-                if (!WriteAccountingEntry(pacentry->nEntryNo, *pacentry))
-                    return DB_LOAD_FAIL;
-        }
-        else
-        {
-            int64_t nOrderPosOff = 0;
-            BOOST_FOREACH(const int64_t& nOffsetStart, nOrderPosOffsets)
-            {
-                if (nOrderPos >= nOffsetStart)
-                    ++nOrderPosOff;
-            }
-            nOrderPos += nOrderPosOff;
-            nOrderPosNext = std::max(nOrderPosNext, nOrderPos + 1);
-
-            if (!nOrderPosOff)
-                continue;
-
-            // Since we're changing the order, write it back
-            if (pwtx)
-            {
-                if (!WriteTx(*pwtx))
-                    return DB_LOAD_FAIL;
-            }
-            else
-                if (!WriteAccountingEntry(pacentry->nEntryNo, *pacentry))
-                    return DB_LOAD_FAIL;
-        }
-    }
-    WriteOrderPosNext(nOrderPosNext);
-
-    return DB_LOAD_OK;
 }
 
 class CWalletScanState {
@@ -573,39 +482,6 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
 
             pwallet->LoadKeyPool(nIndex, keypool);
         }
-        else if (strType == "pending_firstupdate")
-        {
-            std::string strName, strJsonData;
-            ssKey >> strName;
-            ssValue >> strJsonData;
-            UniValue jsonData, v1, v2, v3;
-            std::string txid, rand, pendingData;
-            jsonData.read(strJsonData);
-
-            v1 = find_value (jsonData, "txid");
-            txid = v1.get_str();
-
-            v2 = find_value (jsonData, "rand");
-            rand = v2.get_str();
-
-            v3 = find_value (jsonData, "data");
-            pendingData = v3.get_str();
-
-            if(v1.type() != UniValue::VSTR ||
-               v2.type() != UniValue::VSTR ||
-               v3.type() != UniValue::VSTR) {
-                strErr = strprintf("Bad data while importing pending name firstupdate: %s\n", strName.c_str());
-                return false;
-            }
-
-            NameNewReturn ret;
-            ret.hex = txid;
-            ret.rand = rand;
-            ret.data = pendingData;
-
-            pendingNameFirstUpdate[strName] = ret;
-            LogPrintf("Loaded pending name_firstupdate %s => %s\n", strName, strJsonData);
-        }
         else if (strType == "version")
         {
             ssValue >> wss.nFileVersion;
@@ -759,7 +635,7 @@ DBErrors CWalletDB::LoadWallet(CWallet* pwallet)
         WriteVersion(CLIENT_VERSION);
 
     if (wss.fAnyUnordered)
-        result = ReorderTransactions(pwallet);
+        result = pwallet->ReorderTransactions();
 
     pwallet->laccentries.clear();
     ListAccountCreditDebit("*", pwallet->laccentries);
@@ -892,7 +768,7 @@ DBErrors CWalletDB::ZapWalletTx(CWallet* pwallet, vector<CWalletTx>& vWtx)
     return DB_LOAD_OK;
 }
 
-void ThreadFlushWalletDB(const string& strFile)
+void ThreadFlushWalletDB()
 {
     // Make this thread recognisable as the wallet flushing thread
     RenameThread("vcore-wallet");
@@ -934,6 +810,7 @@ void ThreadFlushWalletDB(const string& strFile)
                 if (nRefCount == 0)
                 {
                     boost::this_thread::interruption_point();
+                    const std::string& strFile = pwalletMain->strWalletFile;
                     map<string, int>::iterator _mi = bitdb.mapFileUseCount.find(strFile);
                     if (_mi != bitdb.mapFileUseCount.end())
                     {

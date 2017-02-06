@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -23,19 +23,22 @@ class NetworkStyle;
 class Notificator;
 class OptionsModel;
 class PlatformStyle;
-class ChatWindow;
 class RPCConsole;
-class StatsExplorer;
-class PublisherPage;
-class EssentialsPage;
 class SendCoinsRecipient;
 class UnitDisplayStatusBarControl;
-class NetworkToggleStatusBarControl;
 class WalletFrame;
 class WalletModel;
-class BlockExplorer;
 class HelpMessageDialog;
 class ModalOverlay;
+// Additions
+class BIP32HDPage;
+class ChatWindow;
+class EssentialsPage;
+class BlockExplorer;
+class InscriptionPage;
+class PersonalProfilePage;
+class PublisherPage;
+class StatsExplorer;
 
 class CWallet;
 
@@ -91,7 +94,7 @@ private:
     UnitDisplayStatusBarControl *unitDisplayControl;
     QLabel *labelWalletEncryptionIcon;
     QLabel *labelWalletHDStatusIcon;
-    NetworkToggleStatusBarControl *connectionsControl;
+    QLabel *connectionsControl;
     QLabel *labelBlocksIcon;
     QLabel *progressBarLabel;
     QProgressBar *progressBar;
@@ -105,8 +108,6 @@ private:
     QAction *sendCoinsMenuAction;
     QAction *usedSendingAddressesAction;
     QAction *usedReceivingAddressesAction;
-    QAction *manageNamesAction;
-    QAction *manageNamesMenuAction;
     QAction *signMessageAction;
     QAction *verifyMessageAction;
     QAction *aboutAction;
@@ -120,24 +121,32 @@ private:
     QAction *aboutQtAction;
     QAction *openRPCConsoleAction;
     QAction *openAction;
-	QAction *openStatsExplorerAction;
-    QAction *openChatWindowAction;
     QAction *showHelpMessageAction;
+    // Additions
     QAction *accountReportAction;
-	QAction *openBlockExplorerAction;
+    QAction *openBIP32PageAction;
+    QAction *openBlockExplorerAction;
+    QAction *openChatWindowAction;
     QAction *openEssentialsPageAction;
-	QAction *openPublisherPageAction;
+    QAction *openInscriptionPageAction;
+    QAction *openPersonalProfilePageAction;
+    QAction *openPublisherPageAction;
+    QAction *openStatsExplorerAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
     Notificator *notificator;
     RPCConsole *rpcConsole;
     HelpMessageDialog *helpMessageDialog;
-    BlockExplorer  *explorerWindow;
-    StatsExplorer  *statsWindow;
+    // Additions
+    BIP32HDPage  *bip32Page;
     ChatWindow *chatWindow;
     EssentialsPage  *essentialsPage;
+    BlockExplorer  *explorerWindow;
+    InscriptionPage  *inscriptionPage;
+    PersonalProfilePage  *personalprofilePage;
     PublisherPage  *publisherPage;
+    StatsExplorer  *statsWindow;
     ModalOverlay *modalOverlay;
 
     /** Keep track of previous number of blocks, to detect progress */
@@ -223,21 +232,26 @@ private Q_SLOTS:
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
-    
-    /** Switch to Stats Page */
-    void gotoStatsExplorerPage(); 
-    /** Switch to Explorer Page */
-    void gotoBlockExplorerPage(); 
+
+    //Additions
     /** Switch to account report page */
     void gotoAccountReportPage();
-    /** Switch to manage names page */
-    void gotoManageNamesPage();
-	/** Switch to chat page */
+    /** Switch to BIP32 page */
+    void gotoBIP32Page();
+    /** Switch to Explorer Page */
+    void gotoBlockExplorerPage(); 
+    /** Switch to chat page */
     void gotoChatPage();
+    /** Switch to inscription page */
     /** Switch to Essentials Page */
     void gotoEssentialsPage(); 
-    /** Switch to BIP32 page */
+    void gotoInscriptionPage();
+    /** Switch to profile page */
+    void gotoPersonalProfilePage();
+    /** Switch to Publisher page */
     void gotoPublisherPage(); 
+    /** Switch to Stats Page */
+    void gotoStatsExplorerPage(); 
 
     /** Show open dialog */
     void openClicked();
@@ -271,6 +285,9 @@ private Q_SLOTS:
     /** When hideTrayIcon setting is changed in OptionsModel hide or show the icon accordingly. */
     void setTrayIconVisible(bool);
 
+    /** Toggle networking */
+    void toggleNetworkActive();
+
     void showModalOverlay();
 };
 
@@ -301,19 +318,6 @@ private Q_SLOTS:
     void updateDisplayUnit(int newUnits);
     /** Tells underlying optionsModel to update its current display unit. */
     void onMenuSelection(QAction* action);
-};
-
-class NetworkToggleStatusBarControl : public QLabel
-{
-    Q_OBJECT
-    
-public:
-    void setClientModel(ClientModel *clientModel);
-protected:
-    void mousePressEvent(QMouseEvent *event);
-    
-private:
-    ClientModel *clientModel;
 };
 
 #endif // BITCOIN_QT_BITCOINGUI_H

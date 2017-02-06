@@ -1,5 +1,5 @@
 // Copyright (c) 2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -109,16 +109,9 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "prioritisetransaction", 2 },
     { "setban", 2 },
     { "setban", 3 },
+    { "setnetworkactive", 0 },
     { "getmempoolancestors", 1 },
     { "getmempooldescendants", 1 },
-    /*
-    { "name_scan", 1 },
-    { "name_filter", 1 },
-    { "name_filter", 2 },
-    { "name_filter", 3 },
-    { "sendtoname", 1 },
-    { "sendtoname", 4 },
-    */
 };
 
 class CRPCConvertTable

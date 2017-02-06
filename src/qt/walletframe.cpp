@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -202,20 +202,7 @@ void WalletFrame::outOfSyncWarningClicked()
     Q_EMIT requestedSyncWarningInfo();
 }
 
-void WalletFrame::gotoStatsExplorerPage()
-{
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoStatsExplorerPage();
-}
-
-void WalletFrame::gotoChatPage()
-{
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoChatPage();
-}
-
+// Additions
 void WalletFrame::gotoAccountReportPage()
 {
     WalletView *walletView = currentWalletView();
@@ -223,25 +210,25 @@ void WalletFrame::gotoAccountReportPage()
         walletView->gotoAccountReportPage();
 }
 
+void WalletFrame::gotoBIP32Page()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoBIP32Page();
+}
+
 void WalletFrame::gotoBlockExplorerPage()
 {
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoBlockExplorerPage();
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoBlockExplorerPage();
 }
 
-void WalletFrame::gotoManageNamesPage()
+void WalletFrame::gotoChatPage()
 {
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoManageNamesPage();
-}
-
-void WalletFrame::gotoPublisherPage()
-{
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoPublisherPage();
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoChatPage();
 }
 
 void WalletFrame::gotoEssentialsPage()
@@ -249,4 +236,32 @@ void WalletFrame::gotoEssentialsPage()
     QMap<QString, WalletView*>::const_iterator i;
     for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
         i.value()->gotoEssentialsPage();
+}
+
+void WalletFrame::gotoInscriptionPage()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoInscriptionPage();
+}
+
+void WalletFrame::gotoPersonalProfilePage()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoPersonalProfilePage();
+}
+
+void WalletFrame::gotoPublisherPage()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoPublisherPage();
+}
+
+void WalletFrame::gotoStatsExplorerPage()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoStatsExplorerPage();
 }

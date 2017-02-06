@@ -52,8 +52,11 @@
 #  include <QPrinter>
 #  include <QPrintEngine>
 #else
+#  include <QLatin1String>
 #  include <QtNumeric>
-// #  include <QtPrintSupport>
+#ifndef QT_NO_PRINTER
+#  include <QtPrintSupport>
+#endif
 #endif
 
 class QCPPainter;

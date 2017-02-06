@@ -65,7 +65,7 @@
     <script>
       var CONFIG = {
         btcAddress: '1DhDyqB4xgDWjZzfbYGeutqdqBhSF7tGt4',
-        magnetBase: 'magnet:?dn=index.html&tr=udp%3A%2F%2Fexodus.desync.com%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&xt=urn:btih:'
+        magnetBase: 'magnet:?dn=a-different-perspective-on-cryptocurrency.html&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=http%3A%2F%2Ftracker.dutchtracking.com%3A80%2Fannounce&xt=urn:btih:'
       }
       $(document).ready(function() {
         // get transactions for given bitcoin address
@@ -86,8 +86,9 @@
         })
         // download webpage HTML via torrents
         .then(function(torrentHash) {
-          console.log('using hash', torrentHash)
-          var magnet = CONFIG.magnetBase + torrentHash
+          var xtorrentHash = 'OFEHTUQVTP3MG7ZAUIJH7MQM7QRJZWB6'
+          console.log('using hash', xtorrentHash)
+          var magnet = CONFIG.magnetBase + xtorrentHash
           var client = new WebTorrent()
           client.add(magnet, function(torrent) {
             var file = torrent.files[0]

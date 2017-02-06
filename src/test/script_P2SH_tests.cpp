@@ -1,24 +1,21 @@
-// Copyright (c) 2012-2015 The Bitcoin Core developers
+// Copyright (c) 2012-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "core_io.h"
 #include "key.h"
 #include "keystore.h"
-#include "main.h"
+#include "validation.h"
 #include "policy/policy.h"
 #include "script/script.h"
 #include "script/script_error.h"
 #include "script/sign.h"
 #include "script/ismine.h"
-#include "script/names.h"
 #include "test/test_bitcoin.h"
 
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
-
-using namespace std;
 
 // Helpers:
 static std::vector<unsigned char>
@@ -81,7 +78,7 @@ BOOST_AUTO_TEST_CASE(sign)
     }
 
     CMutableTransaction txFrom;  // Funding transaction:
-    string reason;
+    std::string reason;
     txFrom.vout.resize(8);
     for (int i = 0; i < 4; i++)
     {
@@ -179,7 +176,7 @@ BOOST_AUTO_TEST_CASE(set)
     }
 
     CMutableTransaction txFrom;  // Funding transaction:
-    string reason;
+    std::string reason;
     txFrom.vout.resize(4);
     for (int i = 0; i < 4; i++)
     {
@@ -212,35 +209,29 @@ BOOST_AUTO_TEST_CASE(is)
     uint160 dummy;
     CScript p2sh;
     p2sh << OP_HASH160 << ToByteVector(dummy) << OP_EQUAL;
-    BOOST_CHECK(p2sh.IsPayToScriptHash(true));
-    BOOST_CHECK(p2sh.IsPayToScriptHash(false));
-
-    // Test stripping of name prefixes.
-    const CScript withName = CNameScript::buildNameNew(p2sh, dummy);
-    BOOST_CHECK(withName.IsPayToScriptHash(true));
-    BOOST_CHECK(!withName.IsPayToScriptHash(false));
+    BOOST_CHECK(p2sh.IsPayToScriptHash());
 
     // Not considered pay-to-script-hash if using one of the OP_PUSHDATA opcodes:
     static const unsigned char direct[] =    { OP_HASH160, 20, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, OP_EQUAL };
-    BOOST_CHECK(CScript(direct, direct+sizeof(direct)).IsPayToScriptHash(true));
+    BOOST_CHECK(CScript(direct, direct+sizeof(direct)).IsPayToScriptHash());
     static const unsigned char pushdata1[] = { OP_HASH160, OP_PUSHDATA1, 20, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, OP_EQUAL };
-    BOOST_CHECK(!CScript(pushdata1, pushdata1+sizeof(pushdata1)).IsPayToScriptHash(true));
+    BOOST_CHECK(!CScript(pushdata1, pushdata1+sizeof(pushdata1)).IsPayToScriptHash());
     static const unsigned char pushdata2[] = { OP_HASH160, OP_PUSHDATA2, 20,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, OP_EQUAL };
-    BOOST_CHECK(!CScript(pushdata2, pushdata2+sizeof(pushdata2)).IsPayToScriptHash(true));
+    BOOST_CHECK(!CScript(pushdata2, pushdata2+sizeof(pushdata2)).IsPayToScriptHash());
     static const unsigned char pushdata4[] = { OP_HASH160, OP_PUSHDATA4, 20,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, OP_EQUAL };
-    BOOST_CHECK(!CScript(pushdata4, pushdata4+sizeof(pushdata4)).IsPayToScriptHash(true));
+    BOOST_CHECK(!CScript(pushdata4, pushdata4+sizeof(pushdata4)).IsPayToScriptHash());
 
     CScript not_p2sh;
-    BOOST_CHECK(!not_p2sh.IsPayToScriptHash(true));
+    BOOST_CHECK(!not_p2sh.IsPayToScriptHash());
 
     not_p2sh.clear(); not_p2sh << OP_HASH160 << ToByteVector(dummy) << ToByteVector(dummy) << OP_EQUAL;
-    BOOST_CHECK(!not_p2sh.IsPayToScriptHash(true));
+    BOOST_CHECK(!not_p2sh.IsPayToScriptHash());
 
     not_p2sh.clear(); not_p2sh << OP_NOP << ToByteVector(dummy) << OP_EQUAL;
-    BOOST_CHECK(!not_p2sh.IsPayToScriptHash(true));
+    BOOST_CHECK(!not_p2sh.IsPayToScriptHash());
 
     not_p2sh.clear(); not_p2sh << OP_HASH160 << ToByteVector(dummy) << OP_CHECKSIG;
-    BOOST_CHECK(!not_p2sh.IsPayToScriptHash(true));
+    BOOST_CHECK(!not_p2sh.IsPayToScriptHash());
 }
 
 BOOST_AUTO_TEST_CASE(switchover)
@@ -270,7 +261,7 @@ BOOST_AUTO_TEST_CASE(AreInputsStandard)
     CCoinsViewCache coins(&coinsDummy);
     CBasicKeyStore keystore;
     CKey key[6];
-    vector<CPubKey> keys;
+    std::vector<CPubKey> keys;
     for (int i = 0; i < 6; i++)
     {
         key[i].MakeNewKey(true);
@@ -342,8 +333,8 @@ BOOST_AUTO_TEST_CASE(AreInputsStandard)
     // SignSignature doesn't know how to sign these. We're
     // not testing validating signatures, so just create
     // dummy signatures that DO include the correct P2SH scripts:
-    txTo.vin[3].scriptSig << OP_11 << OP_11 << vector<unsigned char>(oneAndTwo.begin(), oneAndTwo.end());
-    txTo.vin[4].scriptSig << vector<unsigned char>(fifteenSigops.begin(), fifteenSigops.end());
+    txTo.vin[3].scriptSig << OP_11 << OP_11 << std::vector<unsigned char>(oneAndTwo.begin(), oneAndTwo.end());
+    txTo.vin[4].scriptSig << std::vector<unsigned char>(fifteenSigops.begin(), fifteenSigops.end());
 
     BOOST_CHECK(::AreInputsStandard(txTo, coins));
     // 22 P2SH sigops for all inputs (1 for vin[0], 6 for vin[3], 15 for vin[4]
@@ -356,7 +347,7 @@ BOOST_AUTO_TEST_CASE(AreInputsStandard)
     txToNonStd1.vin.resize(1);
     txToNonStd1.vin[0].prevout.n = 5;
     txToNonStd1.vin[0].prevout.hash = txFrom.GetHash();
-    txToNonStd1.vin[0].scriptSig << vector<unsigned char>(sixteenSigops.begin(), sixteenSigops.end());
+    txToNonStd1.vin[0].scriptSig << std::vector<unsigned char>(sixteenSigops.begin(), sixteenSigops.end());
 
     BOOST_CHECK(!::AreInputsStandard(txToNonStd1, coins));
     BOOST_CHECK_EQUAL(GetP2SHSigOpCount(txToNonStd1, coins), 16U);
@@ -368,7 +359,7 @@ BOOST_AUTO_TEST_CASE(AreInputsStandard)
     txToNonStd2.vin.resize(1);
     txToNonStd2.vin[0].prevout.n = 6;
     txToNonStd2.vin[0].prevout.hash = txFrom.GetHash();
-    txToNonStd2.vin[0].scriptSig << vector<unsigned char>(twentySigops.begin(), twentySigops.end());
+    txToNonStd2.vin[0].scriptSig << std::vector<unsigned char>(twentySigops.begin(), twentySigops.end());
 
     BOOST_CHECK(!::AreInputsStandard(txToNonStd2, coins));
     BOOST_CHECK_EQUAL(GetP2SHSigOpCount(txToNonStd2, coins), 20U);

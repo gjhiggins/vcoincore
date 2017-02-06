@@ -67,16 +67,12 @@ class BitcoinTestFramework(object):
         if not split:
             connect_nodes_bi(self.nodes, 1, 2)
             sync_blocks(self.nodes[1:3])
-            # Don't sync mempools (see below).
-            # sync_mempools(self.nodes[1:3])
+            sync_mempools(self.nodes[1:3])
 
         connect_nodes_bi(self.nodes, 0, 1)
         connect_nodes_bi(self.nodes, 2, 3)
         self.is_network_split = split
-
-        # Only sync blocks here.  The mempools might not synchronise
-        # after joining a split network.
-        self.sync_all('blocks')
+        self.sync_all()
 
     def split_network(self):
         """
@@ -86,22 +82,14 @@ class BitcoinTestFramework(object):
         stop_nodes(self.nodes)
         self.setup_network(True)
 
-    def sync_all(self, mode = 'both'):
-        modes = {'both': {'blocks': True, 'mempool': True},
-                 'blocks': {'blocks': True, 'mempool': False},
-                 'mempool': {'blocks': False, 'mempool': True}}
-        assert mode in modes
+    def sync_all(self):
         if self.is_network_split:
-            if modes[mode]['blocks']:
                 sync_blocks(self.nodes[:2])
                 sync_blocks(self.nodes[2:])
-            if modes[mode]['mempool']:
                 sync_mempools(self.nodes[:2])
                 sync_mempools(self.nodes[2:])
         else:
-            if modes[mode]['blocks']:
                 sync_blocks(self.nodes)
-            if modes[mode]['mempool']:
                 sync_mempools(self.nodes)
 
     def join_network(self):
@@ -151,16 +139,11 @@ class BitcoinTestFramework(object):
 
         success = False
         try:
-            if not os.path.isdir(self.options.tmpdir):
-                os.makedirs(self.options.tmpdir)
+            os.makedirs(self.options.tmpdir, exist_ok=False)
             self.setup_chain()
-
             self.setup_network()
-
             self.run_test()
-
             success = True
-
         except JSONRPCException as e:
             print("JSONRPC error: "+e.error['message'])
             traceback.print_tb(sys.exc_info()[2])
@@ -189,7 +172,16 @@ class BitcoinTestFramework(object):
                 os.rmdir(self.options.root)
         else:
             print("Not cleaning up dir %s" % self.options.tmpdir)
-
+            if os.getenv("PYTHON_DEBUG", ""):
+                # Dump the end of the debug logs, to aid in debugging rare
+                # travis failures.
+                import glob
+                filenames = glob.glob(self.options.tmpdir + "/node*/regtest/debug.log")
+                MAX_LINES_TO_PRINT = 1000
+                for f in filenames:
+                    print("From" , f, ":")
+                    from collections import deque
+                    print("".join(deque(open(f), MAX_LINES_TO_PRINT)))
         if success:
             print("Tests successful")
             sys.exit(0)

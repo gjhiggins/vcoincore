@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -17,8 +17,7 @@
 
 #include "base58.h"
 #include "wallet/coincontrol.h"
-
-#include "main.h" // mempool and minRelayTxFee
+#include "validation.h" // mempool and minRelayTxFee
 #include "ui_interface.h"
 #include "txmempool.h"
 #include "wallet/wallet.h"
@@ -40,10 +39,6 @@ SendCoinsDialog::SendCoinsDialog(const PlatformStyle *_platformStyle, QWidget *p
     fFeeMinimized(true),
     platformStyle(_platformStyle)
 {
-
-    // vcore service ID
-    nSemTypeID = VCN_NONE;
-
     ui->setupUi(this);
 
     if (!_platformStyle->getImagesOnButtons()) {
@@ -62,8 +57,6 @@ SendCoinsDialog::SendCoinsDialog(const PlatformStyle *_platformStyle, QWidget *p
 
     connect(ui->addButton, SIGNAL(clicked()), this, SLOT(addEntry()));
     connect(ui->clearButton, SIGNAL(clicked()), this, SLOT(clear()));
-
-    connect(ui->pushButtonServices, SIGNAL(pressed()), this, SLOT(openAssert()));
 
     // Coin Control
     connect(ui->pushButtonCoinControl, SIGNAL(clicked()), this, SLOT(coinControlButtonClicked()));
@@ -121,68 +114,6 @@ SendCoinsDialog::SendCoinsDialog(const PlatformStyle *_platformStyle, QWidget *p
     ui->checkBoxMinimumFee->setChecked(settings.value("fPayOnlyMinFee").toBool());
     minimizeFeeSection(settings.value("fFeeSectionMinimized").toBool());
 }
-
-///////////////////////////////////////////////////////////////////////////////
-///
-/// Reference service: Assert
-///
-///////////////////////////////////////////////////////////////////////////////
-int sha256_file(const char *path, char outputBuffer[65])
-{
-    FILE *file = fopen(path, "rb");
-    if(!file) return -534;
-
-    boost::uint8_t hash[SHA256_DIGEST_LENGTH];
-    SHA256_CTX sha256;
-    SHA256_Init(&sha256);
-    const int bufSize = 32768;
-    boost::uint8_t *buffer = (boost::uint8_t *)malloc(bufSize);
-    int bytesRead = 0;
-    if(!buffer) return ENOMEM;
-    while((bytesRead = fread(buffer, 1, bufSize, file)))
-    {
-        SHA256_Update(&sha256, buffer, bytesRead);
-    }
-    SHA256_Final(hash, &sha256);
-
-    int i;
-    for(i = 0; i < SHA256_DIGEST_LENGTH; i++)
-    {
-        sprintf(outputBuffer + (i * 2), "%02x", hash[i]);
-    }
-
-    outputBuffer[64] = 0;
-
-    fclose(file);
-    free(buffer);
-    return 0;
-}
-
-
-void SendCoinsDialog::openAssert()
-{
-    QString filename = QFileDialog::getOpenFileName(this, tr("Choose a File"), tr("*.*"));
-    const char *path = filename.toUtf8().constData();
-
-    static char hashBuffer[65];
-    // QString qUserFeedback;
-    int result;
-    result = sha256_file(path, hashBuffer);
-    QString qUserFeedback;
-    if (result == 0) {
-        static char outputBuffer[76];
-
-        sprintf(outputBuffer, "{\"hash\":\"%s\"}", hashBuffer);
-        qUserFeedback = QString(outputBuffer);
-        nSemTypeID = VCN_ASSERT;
-    } else {
-        qUserFeedback = QString("");
-    }
-
-    ui->editTxComment->setText(qUserFeedback);
-}
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
 
 void SendCoinsDialog::setClientModel(ClientModel *_clientModel)
 {
@@ -244,7 +175,7 @@ void SendCoinsDialog::setModel(WalletModel *_model)
         // set the smartfee-sliders default value (wallets default conf.target or last stored value)
         QSettings settings;
         if (settings.value("nSmartFeeSliderPosition").toInt() == 0)
-            ui->sliderSmartFee->setValue(ui->sliderSmartFee->maximum() - model->getDefaultConfirmTarget() + 1);
+            ui->sliderSmartFee->setValue(ui->sliderSmartFee->maximum() - model->getDefaultConfirmTarget() + 2);
         else
             ui->sliderSmartFee->setValue(settings.value("nSmartFeeSliderPosition").toInt());
     }
@@ -310,7 +241,7 @@ void SendCoinsDialog::on_sendButton_clicked()
     if (model->getOptionsModel()->getCoinControlFeatures())
         ctrl = *CoinControlDialog::coinControl;
     if (ui->radioSmartFee->isChecked())
-        ctrl.nConfirmTarget = ui->sliderSmartFee->maximum() - ui->sliderSmartFee->value() + 1;
+        ctrl.nConfirmTarget = ui->sliderSmartFee->maximum() - ui->sliderSmartFee->value() + 2;
     else
         ctrl.nConfirmTarget = 0;
 
@@ -420,9 +351,6 @@ void SendCoinsDialog::on_sendButton_clicked()
 
 void SendCoinsDialog::clear()
 {
-    nSemTypeID = VCN_NONE;
-    ui->editTxComment->clear();
-
     // Remove entries until only one left
     while(ui->entries->count())
     {
@@ -486,9 +414,6 @@ void SendCoinsDialog::removeEntry(SendCoinsEntry* entry)
 
 QWidget *SendCoinsDialog::setupTabChain(QWidget *prev)
 {
-    QWidget::setTabOrder(prev, ui->editTxComment);
-    prev = ui->editTxComment;
-
     for(int i = 0; i < ui->entries->count(); ++i)
     {
         SendCoinsEntry *entry = qobject_cast<SendCoinsEntry*>(ui->entries->itemAt(i)->widget());
@@ -676,7 +601,7 @@ void SendCoinsDialog::updateGlobalFeeVariables()
 {
     if (ui->radioSmartFee->isChecked())
     {
-        int nConfirmTarget = ui->sliderSmartFee->maximum() - ui->sliderSmartFee->value() + 1;
+        int nConfirmTarget = ui->sliderSmartFee->maximum() - ui->sliderSmartFee->value() + 2;
         payTxFee = CFeeRate(0);
 
         // set nMinimumTotalFee to 0 to not accidentally pay a custom fee
@@ -721,7 +646,7 @@ void SendCoinsDialog::updateSmartFeeLabel()
     if(!model || !model->getOptionsModel())
         return;
 
-    int nBlocksToConfirm = ui->sliderSmartFee->maximum() - ui->sliderSmartFee->value() + 1;
+    int nBlocksToConfirm = ui->sliderSmartFee->maximum() - ui->sliderSmartFee->value() + 2;
     int estimateFoundAtBlocks = nBlocksToConfirm;
     CFeeRate feeRate = mempool.estimateSmartFee(nBlocksToConfirm, &estimateFoundAtBlocks);
     if (feeRate <= CFeeRate(0)) // not enough data => minfee

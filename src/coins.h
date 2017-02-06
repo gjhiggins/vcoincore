@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,7 +10,6 @@
 #include "core_memusage.h"
 #include "hash.h"
 #include "memusage.h"
-#include "names/common.h"
 #include "serialize.h"
 #include "uint256.h"
 
@@ -19,8 +18,6 @@
 
 #include <boost/foreach.hpp>
 #include <boost/unordered_map.hpp>
-
-class CTxInUndo;
 
 /** 
  * Pruned version of CTransaction: only retains metadata and unspent transaction outputs
@@ -220,7 +217,7 @@ public:
     }
 
     //! mark a vout spent
-    bool Spend(uint32_t nPos, CTxInUndo* undo = NULL);
+    bool Spend(uint32_t nPos);
 
     //! check whether a particular output is still available
     bool IsAvailable(unsigned int nPos) const {
@@ -272,6 +269,11 @@ struct CCoinsCacheEntry
     enum Flags {
         DIRTY = (1 << 0), // This cache entry is potentially different from the version in the parent view.
         FRESH = (1 << 1), // The parent view does not have this entry (or it is pruned).
+        /* Note that FRESH is a performance optimization with which we can
+         * erase coins that are fully spent if we know we do not need to
+         * flush the changes to the parent cache.  It is always safe to
+         * not mark FRESH if that condition is not guaranteed.
+         */
     };
 
     CCoinsCacheEntry() : coins(), flags(0) {}
@@ -314,27 +316,12 @@ public:
     //! Retrieve the block hash whose state this CCoinsView currently represents
     virtual uint256 GetBestBlock() const;
 
-    // Get a name (if it exists)
-    virtual bool GetName(const valtype& name, CNameData& data) const;
-
-    // Get a name's history (if it exists)
-    virtual bool GetNameHistory(const valtype& name, CNameHistory& data) const;
-
-    // Query for names that were updated at the given height
-    virtual bool GetNamesForHeight(unsigned nHeight, std::set<valtype>& names) const;
-
-    // Get a name iterator.
-    virtual CNameIterator* IterateNames() const;
-
     //! Do a bulk modification (multiple CCoins changes + BestBlock change).
     //! The passed mapCoins can be modified.
-    virtual bool BatchWrite(CCoinsMap &mapCoins, const uint256 &hashBlock, const CNameCache &names);
+    virtual bool BatchWrite(CCoinsMap &mapCoins, const uint256 &hashBlock);
 
     //! Get a cursor to iterate over the whole state
     virtual CCoinsViewCursor *Cursor() const;
-
-    // Validate the name database.
-    virtual bool ValidateNameDB() const;
 
     //! As we use CCoinsViews polymorphically, have a virtual destructor
     virtual ~CCoinsView() {}
@@ -352,14 +339,9 @@ public:
     bool GetCoins(const uint256 &txid, CCoins &coins) const;
     bool HaveCoins(const uint256 &txid) const;
     uint256 GetBestBlock() const;
-    bool GetName(const valtype& name, CNameData& data) const;
-    bool GetNameHistory(const valtype& name, CNameHistory& data) const;
-    bool GetNamesForHeight(unsigned nHeight, std::set<valtype>& names) const;
-    CNameIterator* IterateNames() const;
     void SetBackend(CCoinsView &viewIn);
-    bool BatchWrite(CCoinsMap &mapCoins, const uint256 &hashBlock, const CNameCache &names);
+    bool BatchWrite(CCoinsMap &mapCoins, const uint256 &hashBlock);
     CCoinsViewCursor *Cursor() const;
-    bool ValidateNameDB() const;
 };
 
 
@@ -401,11 +383,7 @@ protected:
     mutable CCoinsMap cacheCoins;
 
     /* Cached dynamic memory usage for the inner CCoins objects. */
-    /* TODO: Sum up also name cache usage.  */
     mutable size_t cachedCoinsUsage;
-
-    /** Name changes cache.  */
-    CNameCache cacheNames;
 
 public:
     CCoinsViewCache(CCoinsView *baseIn);
@@ -416,15 +394,7 @@ public:
     bool HaveCoins(const uint256 &txid) const;
     uint256 GetBestBlock() const;
     void SetBestBlock(const uint256 &hashBlock);
-    bool GetName(const valtype &name, CNameData &data) const;
-    bool GetNameHistory(const valtype &name, CNameHistory &data) const;
-    bool GetNamesForHeight(unsigned nHeight, std::set<valtype>& names) const;
-    CNameIterator* IterateNames() const;
-    bool BatchWrite(CCoinsMap &mapCoins, const uint256 &hashBlock, const CNameCache &names);
-
-    /* Changes to the name database.  */
-    void SetName(const valtype &name, const CNameData &data, bool undo);
-    void DeleteName(const valtype &name);
+    bool BatchWrite(CCoinsMap &mapCoins, const uint256 &hashBlock);
 
     /**
      * Check if we have the given tx already loaded in this cache.
@@ -502,7 +472,6 @@ public:
     friend class CCoinsModifier;
 
 private:
-    CCoinsMap::iterator FetchCoins(const uint256 &txid);
     CCoinsMap::const_iterator FetchCoins(const uint256 &txid) const;
 
     /**

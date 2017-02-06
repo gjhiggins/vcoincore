@@ -15,17 +15,14 @@ QT_TRANSLATE_NOOP("v-core", ""
 "(1 = keep tx meta data e.g. account owner and payment request information, 2 "
 "= drop tx meta data)"),
 QT_TRANSLATE_NOOP("v-core", ""
-"-fallbackfee is set very high! This is the transaction fee you may pay when "
-"fee estimates are not available."),
-QT_TRANSLATE_NOOP("v-core", ""
 "-maxtxfee is set very high! Fees this large could be paid on a single "
 "transaction."),
 QT_TRANSLATE_NOOP("v-core", ""
-"-paytxfee is set very high! This is the transaction fee you will pay if you "
-"send a transaction."),
-QT_TRANSLATE_NOOP("v-core", ""
 "A fee rate (in %s/kB) that will be used when fee estimation has insufficient "
 "data (default: %s)"),
+QT_TRANSLATE_NOOP("v-core", ""
+"Accept connections from outside (default: 1 if no -proxy or -connect/-"
+"noconnect)"),
 QT_TRANSLATE_NOOP("v-core", ""
 "Accept relayed transactions received from whitelisted peers even when not "
 "relaying transactions (default: %d)"),
@@ -46,6 +43,9 @@ QT_TRANSLATE_NOOP("v-core", ""
 QT_TRANSLATE_NOOP("v-core", ""
 "Cannot obtain a lock on data directory %s. %s is probably already running."),
 QT_TRANSLATE_NOOP("v-core", ""
+"Connect only to the specified node(s); -noconnect or -connect=0 alone to "
+"disable automatic connections"),
+QT_TRANSLATE_NOOP("v-core", ""
 "Create new files with system default permissions, instead of umask 077 (only "
 "effective with disabled wallet functionality)"),
 QT_TRANSLATE_NOOP("v-core", ""
@@ -55,8 +55,8 @@ QT_TRANSLATE_NOOP("v-core", ""
 "Discover own IP addresses (default: 1 when listening and no -externalip or -"
 "proxy)"),
 QT_TRANSLATE_NOOP("v-core", ""
-"Distributed under the MIT software license, see the accompanying file "
-"COPYING or <http://www.opensource.org/licenses/mit-license.php>."),
+"Distributed under the MIT software license, see the accompanying file %s or "
+"%s"),
 QT_TRANSLATE_NOOP("v-core", ""
 "Do not keep transactions in the mempool longer than <n> hours (default: %u)"),
 QT_TRANSLATE_NOOP("v-core", ""
@@ -84,8 +84,8 @@ QT_TRANSLATE_NOOP("v-core", ""
 "Fees (in %s/kB) smaller than this are considered zero fee for transaction "
 "creation (default: %s)"),
 QT_TRANSLATE_NOOP("v-core", ""
-"Force relay of transactions from whitelisted peers even they violate local "
-"relay policy (default: %d)"),
+"Force relay of transactions from whitelisted peers even if they violate "
+"local relay policy (default: %d)"),
 QT_TRANSLATE_NOOP("v-core", ""
 "How thorough the block verification of -checkblocks is (0-4, default: %u)"),
 QT_TRANSLATE_NOOP("v-core", ""
@@ -127,7 +127,7 @@ QT_TRANSLATE_NOOP("v-core", ""
 "reindex (download the whole blockchain again in case of pruned node)"),
 QT_TRANSLATE_NOOP("v-core", ""
 "Query for peer addresses via DNS lookup, if low on addresses (default: 1 "
-"unless -connect)"),
+"unless -connect/-noconnect)"),
 QT_TRANSLATE_NOOP("v-core", ""
 "Randomize credentials for every proxy connection. This enables Tor stream "
 "isolation (default: %u)"),
@@ -145,6 +145,9 @@ QT_TRANSLATE_NOOP("v-core", ""
 "Set the number of script verification threads (%u to %d, 0 = auto, <0 = "
 "leave that many cores free, default: %d)"),
 QT_TRANSLATE_NOOP("v-core", ""
+"Sets the serialization of raw transaction or block hex returned in non-"
+"verbose mode, non-segwit(0) or segwit(1) (default: %d)"),
+QT_TRANSLATE_NOOP("v-core", ""
 "Support filtering of blocks and transaction with bloom filters (default: %u)"),
 QT_TRANSLATE_NOOP("v-core", ""
 "The block database contains a block which appears to be from the future. "
@@ -157,9 +160,11 @@ QT_TRANSLATE_NOOP("v-core", ""
 "This is a pre-release test build - use at your own risk - do not use for "
 "mining or merchant applications"),
 QT_TRANSLATE_NOOP("v-core", ""
+"This is the transaction fee you may pay when fee estimates are not available."),
+QT_TRANSLATE_NOOP("v-core", ""
 "This product includes software developed by the OpenSSL Project for use in "
-"the OpenSSL Toolkit <https://www.openssl.org/> and cryptographic software "
-"written by Eric Young and UPnP software written by Thomas Bernard."),
+"the OpenSSL Toolkit %s and cryptographic software written by Eric Young and "
+"UPnP software written by Thomas Bernard."),
 QT_TRANSLATE_NOOP("v-core", ""
 "Total length of network version string (%i) exceeds maximum length (%i). "
 "Reduce the number or size of uacomments."),
@@ -188,6 +193,9 @@ QT_TRANSLATE_NOOP("v-core", ""
 "comes in the format: <USERNAME>:<SALT>$<HASH>. A canonical python script is "
 "included in share/rpcuser. This option can be specified multiple times"),
 QT_TRANSLATE_NOOP("v-core", ""
+"Wallet will not create transactions that violate mempool chain limits "
+"(default: %u)"),
+QT_TRANSLATE_NOOP("v-core", ""
 "Warning: The network does not appear to fully agree! Some miners appear to "
 "be experiencing issues."),
 QT_TRANSLATE_NOOP("v-core", ""
@@ -201,8 +209,8 @@ QT_TRANSLATE_NOOP("v-core", ""
 "Warning: We do not appear to fully agree with our peers! You may need to "
 "upgrade, or other nodes may need to upgrade."),
 QT_TRANSLATE_NOOP("v-core", ""
-"Whitelist peers connecting from the given netmask or IP address. Can be "
-"specified multiple times."),
+"Whitelist peers connecting from the given IP address (e.g. 1.2.3.4) or CIDR "
+"notated network (e.g. 1.2.3.0/24). Can be specified multiple times."),
 QT_TRANSLATE_NOOP("v-core", ""
 "Whitelisted peers cannot be DoS banned and their transactions are always "
 "relayed, even if they are already in the mempool, useful e.g. for a gateway"),
@@ -212,12 +220,12 @@ QT_TRANSLATE_NOOP("v-core", ""
 QT_TRANSLATE_NOOP("v-core", ""
 "You need to rebuild the database using -reindex-chainstate to change -txindex"),
 QT_TRANSLATE_NOOP("v-core", "%s corrupt, salvage failed"),
+QT_TRANSLATE_NOOP("v-core", "%s is set very high!"),
 QT_TRANSLATE_NOOP("v-core", "(default: %s)"),
 QT_TRANSLATE_NOOP("v-core", "(default: %u)"),
 QT_TRANSLATE_NOOP("v-core", "-maxmempool must be at least %d MB"),
 QT_TRANSLATE_NOOP("v-core", "<category> can be:"),
 QT_TRANSLATE_NOOP("v-core", "Accept command line and JSON-RPC commands"),
-QT_TRANSLATE_NOOP("v-core", "Accept connections from outside (default: 1 if no -proxy or -connect)"),
 QT_TRANSLATE_NOOP("v-core", "Accept public REST requests (default: %u)"),
 QT_TRANSLATE_NOOP("v-core", "Add a node to connect to and attempt to keep the connection open"),
 QT_TRANSLATE_NOOP("v-core", "Allow DNS lookups for -addnode, -seednode and -connect"),
@@ -229,8 +237,8 @@ QT_TRANSLATE_NOOP("v-core", "Block creation options:"),
 QT_TRANSLATE_NOOP("v-core", "Cannot downgrade wallet"),
 QT_TRANSLATE_NOOP("v-core", "Cannot resolve -%s address: '%s'"),
 QT_TRANSLATE_NOOP("v-core", "Cannot write default address"),
+QT_TRANSLATE_NOOP("v-core", "Chain selection options:"),
 QT_TRANSLATE_NOOP("v-core", "Change index out of range"),
-QT_TRANSLATE_NOOP("v-core", "Connect only to the specified node(s)"),
 QT_TRANSLATE_NOOP("v-core", "Connect through SOCKS5 proxy"),
 QT_TRANSLATE_NOOP("v-core", "Connect to a node to retrieve peer addresses, and disconnect"),
 QT_TRANSLATE_NOOP("v-core", "Connection options:"),
@@ -275,6 +283,7 @@ QT_TRANSLATE_NOOP("v-core", "Invalid amount for -paytxfee=<amount>: '%s' (must b
 QT_TRANSLATE_NOOP("v-core", "Invalid netmask specified in -whitelist: '%s'"),
 QT_TRANSLATE_NOOP("v-core", "Keep at most <n> unconnectable transactions in memory (default: %u)"),
 QT_TRANSLATE_NOOP("v-core", "Keep the transaction memory pool below <n> megabytes (default: %u)"),
+QT_TRANSLATE_NOOP("v-core", "Keypool ran out, please call keypoolrefill first"),
 QT_TRANSLATE_NOOP("v-core", "Listen for JSON-RPC connections on <port> (default: %u or testnet: %u)"),
 QT_TRANSLATE_NOOP("v-core", "Listen for connections on <port> (default: %u or testnet: %u)"),
 QT_TRANSLATE_NOOP("v-core", "Loading addresses..."),
@@ -310,6 +319,7 @@ QT_TRANSLATE_NOOP("v-core", "Rewinding blocks..."),
 QT_TRANSLATE_NOOP("v-core", "Run in the background as a daemon and accept commands"),
 QT_TRANSLATE_NOOP("v-core", "Send trace/debug info to console instead of debug.log file"),
 QT_TRANSLATE_NOOP("v-core", "Send transactions as zero-fee transactions if possible (default: %u)"),
+QT_TRANSLATE_NOOP("v-core", "Send transactions with full-RBF opt-in enabled (default: %u)"),
 QT_TRANSLATE_NOOP("v-core", "Set database cache size in megabytes (%d to %d, default: %d)"),
 QT_TRANSLATE_NOOP("v-core", "Set key pool size to <n> (default: %u)"),
 QT_TRANSLATE_NOOP("v-core", "Set maximum BIP141 block weight (default: %d)"),
@@ -325,14 +335,20 @@ QT_TRANSLATE_NOOP("v-core", "Specify pid file (default: %s)"),
 QT_TRANSLATE_NOOP("v-core", "Specify wallet file (within data directory)"),
 QT_TRANSLATE_NOOP("v-core", "Specify your own public address"),
 QT_TRANSLATE_NOOP("v-core", "Spend unconfirmed change when sending transactions (default: %u)"),
+QT_TRANSLATE_NOOP("v-core", "Starting network threads..."),
 QT_TRANSLATE_NOOP("v-core", "The source code is available from %s."),
 QT_TRANSLATE_NOOP("v-core", "The transaction amount is too small to pay the fee"),
+QT_TRANSLATE_NOOP("v-core", "The wallet will avoid paying less than the minimum relay fee."),
 QT_TRANSLATE_NOOP("v-core", "This is experimental software."),
+QT_TRANSLATE_NOOP("v-core", "This is the minimum transaction fee you pay on every transaction."),
+QT_TRANSLATE_NOOP("v-core", "This is the transaction fee you will pay if you send a transaction."),
 QT_TRANSLATE_NOOP("v-core", "Threshold for disconnecting misbehaving peers (default: %u)"),
 QT_TRANSLATE_NOOP("v-core", "Tor control port password (default: empty)"),
 QT_TRANSLATE_NOOP("v-core", "Tor control port to use if onion listening enabled (default: %s)"),
 QT_TRANSLATE_NOOP("v-core", "Transaction amount too small"),
-QT_TRANSLATE_NOOP("v-core", "Transaction amounts must be positive"),
+QT_TRANSLATE_NOOP("v-core", "Transaction amounts must not be negative"),
+QT_TRANSLATE_NOOP("v-core", "Transaction has too long of a mempool chain"),
+QT_TRANSLATE_NOOP("v-core", "Transaction must have at least one recipient"),
 QT_TRANSLATE_NOOP("v-core", "Transaction too large for fee policy"),
 QT_TRANSLATE_NOOP("v-core", "Transaction too large"),
 QT_TRANSLATE_NOOP("v-core", "Unable to bind to %s on this computer (bind returned error %s)"),
@@ -344,6 +360,7 @@ QT_TRANSLATE_NOOP("v-core", "Unsupported argument -debugnet ignored, use -debug=
 QT_TRANSLATE_NOOP("v-core", "Unsupported argument -tor found, use -onion."),
 QT_TRANSLATE_NOOP("v-core", "Upgrade wallet to latest format on startup"),
 QT_TRANSLATE_NOOP("v-core", "Use UPnP to map the listening port (default: %u)"),
+QT_TRANSLATE_NOOP("v-core", "Use the test chain"),
 QT_TRANSLATE_NOOP("v-core", "User Agent comment (%s) contains unsafe characters."),
 QT_TRANSLATE_NOOP("v-core", "Username for JSON-RPC connections"),
 QT_TRANSLATE_NOOP("v-core", "Verifying blocks..."),

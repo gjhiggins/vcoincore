@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,37 +11,28 @@
 #include "paymentserver.h"
 #include "recentrequeststablemodel.h"
 #include "transactiontablemodel.h"
-#include "nametablemodel.h"
 
 #include "base58.h"
 #include "keystore.h"
-#include "main.h"
+#include "validation.h"
+#include "net.h" // for g_connman
 #include "sync.h"
 #include "ui_interface.h"
+#include "util.h" // for GetBoolArg
 #include "wallet/wallet.h"
 #include "wallet/walletdb.h" // for BackupWallet
-#include "wallet/rpcwallet.cpp"
-#include "primitives/transaction.h"
-#include "names/common.h"
-#include "rpc/server.h"
-#include "rpc/client.h"
-#include "util.h"
 
 #include <stdint.h>
 
 #include <QDebug>
 #include <QSet>
 #include <QTimer>
-#include <QMessageBox>
 
-#include <univalue.h>
 #include <boost/foreach.hpp>
 
-#include <map>
 WalletModel::WalletModel(const PlatformStyle *platformStyle, CWallet *_wallet, OptionsModel *_optionsModel, QObject *parent) :
     QObject(parent), wallet(_wallet), optionsModel(_optionsModel), addressTableModel(0),
     transactionTableModel(0),
-    nameTableModel(0),
     recentRequestsTableModel(0),
     cachedBalance(0), cachedUnconfirmedBalance(0), cachedImmatureBalance(0),
     cachedEncryptionStatus(Unencrypted),
@@ -52,7 +43,6 @@ WalletModel::WalletModel(const PlatformStyle *platformStyle, CWallet *_wallet, O
 
     addressTableModel = new AddressTableModel(wallet, this);
     transactionTableModel = new TransactionTableModel(platformStyle, wallet, this);
-    nameTableModel = new NameTableModel(platformStyle, wallet, this);
     recentRequestsTableModel = new RecentRequestsTableModel(wallet, this);
 
     // This timer will be fired repeatedly to update the balance
@@ -77,7 +67,7 @@ CAmount WalletModel::getBalance(const CCoinControl *coinControl) const
         wallet->AvailableCoins(vCoins, true, coinControl);
         BOOST_FOREACH(const COutput& out, vCoins)
             if(out.fSpendable)
-                nBalance += out.tx->vout[out.i].nValue;
+                nBalance += out.tx->tx->vout[out.i].nValue;
 
         return nBalance;
     }
@@ -145,8 +135,6 @@ void WalletModel::pollBalanceChanged()
         checkBalanceChanged();
         if(transactionTableModel)
             transactionTableModel->updateConfirmations();
-
-        sendPendingNameFirstUpdates();
     }
 }
 
@@ -287,10 +275,9 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
         int nChangePosRet = -1;
         std::string strFailReason;
 
-        CWalletTx *wtx = transaction.getTransaction();
+        CWalletTx *newTx = transaction.getTransaction();
         CReserveKey *keyChange = transaction.getPossibleKeyChange();
-        bool fCreated = wallet->CreateTransaction(vecSend, NULL, *wtx, *keyChange, nFeeRequired, nChangePosRet, strFailReason, coinControl, false);
-        // bool fCreated = wallet->CreateTransaction(vecSend, *newTx, *keyChange, nFeeRequired, nChangePosRet, strFailReason, coinControl);
+        bool fCreated = wallet->CreateTransaction(vecSend, *newTx, *keyChange, nFeeRequired, nChangePosRet, strFailReason, coinControl);
         transaction.setTransactionFee(nFeeRequired);
         if (fSubtractFeeFromAmount && fCreated)
             transaction.reassignAmounts(nChangePosRet);
@@ -348,9 +335,8 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(WalletModelTransaction &tran
         if(!wallet->CommitTransaction(*newTx, *keyChange, g_connman.get(), state))
             return SendCoinsReturn(TransactionCommitFailed, QString::fromStdString(state.GetRejectReason()));
 
-        CTransaction* t = (CTransaction*)newTx;
         CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
-        ssTx << *t;
+        ssTx << *newTx->tx;
         transaction_array.append(&(ssTx[0]), ssTx.size());
     }
 
@@ -395,11 +381,6 @@ OptionsModel *WalletModel::getOptionsModel()
 AddressTableModel *WalletModel::getAddressTableModel()
 {
     return addressTableModel;
-}
-
-NameTableModel *WalletModel::getNameTableModel()
-{
-      return nameTableModel;
 }
 
 TransactionTableModel *WalletModel::getTransactionTableModel()
@@ -627,7 +608,7 @@ void WalletModel::listCoins(std::map<QString, std::vector<COutput> >& mapCoins) 
         int nDepth = wallet->mapWallet[outpoint.hash].GetDepthInMainChain();
         if (nDepth < 0) continue;
         COutput out(&wallet->mapWallet[outpoint.hash], outpoint.n, nDepth, true, true);
-        if (outpoint.n < out.tx->vout.size() && wallet->IsMine(out.tx->vout[outpoint.n]) == ISMINE_SPENDABLE)
+        if (outpoint.n < out.tx->tx->vout.size() && wallet->IsMine(out.tx->tx->vout[outpoint.n]) == ISMINE_SPENDABLE)
             vCoins.push_back(out);
     }
 
@@ -635,14 +616,14 @@ void WalletModel::listCoins(std::map<QString, std::vector<COutput> >& mapCoins) 
     {
         COutput cout = out;
 
-        while (wallet->IsChange(cout.tx->vout[cout.i]) && cout.tx->vin.size() > 0 && wallet->IsMine(cout.tx->vin[0]))
+        while (wallet->IsChange(cout.tx->tx->vout[cout.i]) && cout.tx->tx->vin.size() > 0 && wallet->IsMine(cout.tx->tx->vin[0]))
         {
-            if (!wallet->mapWallet.count(cout.tx->vin[0].prevout.hash)) break;
-            cout = COutput(&wallet->mapWallet[cout.tx->vin[0].prevout.hash], cout.tx->vin[0].prevout.n, 0, true, true);
+            if (!wallet->mapWallet.count(cout.tx->tx->vin[0].prevout.hash)) break;
+            cout = COutput(&wallet->mapWallet[cout.tx->tx->vin[0].prevout.hash], cout.tx->tx->vin[0].prevout.n, 0, true, true);
         }
 
         CTxDestination address;
-        if(!out.fSpendable || !ExtractDestination(cout.tx->vout[cout.i].scriptPubKey, address))
+        if(!out.fSpendable || !ExtractDestination(cout.tx->tx->vout[cout.i].scriptPubKey, address))
             continue;
         mapCoins[QString::fromStdString(CBitcoinAddress(address).ToString())].push_back(out);
     }
@@ -709,315 +690,6 @@ bool WalletModel::abandonTransaction(uint256 hash) const
 {
     LOCK2(cs_main, wallet->cs_wallet);
     return wallet->AbandonTransaction(hash);
-}
-
-/* FIXME: Need general remapping from old UniValue params to JSONRPCRequest */
-bool WalletModel::nameAvailable(const QString &name)
-{
-    // UniValue params (UniValue::VOBJ);
-    // UniValue res, array, isExpired;
-    const std::string strName = name.toStdString();
-    // params.push_back (Pair("name", strName));
-
-    UniValue res, isExpired;
-
-    const std::string strMethod = "name";
-    JSONRPCRequest request;
-    request.strMethod = strMethod;
-    request.params = RPCConvertValues(strMethod, boost::assign::list_of(strName));
-    request.fHelp = false;
-
-    try {
-        res = name_show( request);
-    } catch (const UniValue& e) {
-        return true;
-    }
-
-    isExpired = find_value( res, "expired");
-    if(isExpired.get_bool())
-      return true;
-
-    return false;
-}
-
-/* FIXME: Need general remapping from old UniValue params to JSONRPCRequest */
-NameNewReturn WalletModel::nameNew(const QString &name)
-{
-    std::string strName = name.toStdString ();
-    std::string data;
-
-    UniValue params(UniValue::VOBJ);
-    std::vector<UniValue> values;
-    UniValue res, txid, rand;
-    NameNewReturn retval;
-
-    params.push_back (Pair("name", strName));
-
-    /*
-    JSONRPCRequest request;
-    request.params = RPCConvertValues(params);
-    request.fHelp = false;
-
-    try {
-        res = name_new (request);
-    } catch (const UniValue& e) {
-        UniValue message = find_value( e, "message");
-        std::string errorStr = message.get_str();
-        LogPrintf ("nameNew error: %s\n", errorStr.c_str());
-        retval.err_msg = errorStr;
-        retval.ok = false;
-        return retval;
-    }
-
-    retval.ok = true;
-
-    values = res.getValues ();
-    txid = values[0];
-    rand = values[1];
-
-    // txid
-    retval.hex = txid.get_str ();
-    // rand
-    retval.rand = rand.get_str ();
-    */
-
-    retval.err_msg = "Not yet implemented.";
-    retval.ok = false;
-    return retval;
-}
-
-/* FIXME: Need general remapping from old UniValue params to JSONRPCRequest */
-// this gets called from configure names dialog after name_new succeeds
-QString WalletModel::nameFirstUpdatePrepare(const QString& name, const QString& data)
-{
-    if (data.isEmpty())
-        return tr("Data cannot be blank.");
-
-    const std::string strName = name.toStdString ();
-    const std::string strData = data.toStdString();
-    NameNewReturn updatedNameNewReturn;
-
-    // we need to write out everything in NameNewReturn to the wallet, essentially
-    // that's where wallet->WriteNameFirstUpdate comes in
-    // it gets loaded at wallet start, and as long as we keep it updated as
-    // things happen, we should be able to rely on it
-
-    LOCK(cs_main);
-    // pendingNameFirstUpdate is set by the time we get here inside managenamespage.cpp:134
-    std::map<std::string, NameNewReturn>::iterator it = pendingNameFirstUpdate.find(strName);
-
-    if (it == pendingNameFirstUpdate.end())
-        return tr("Cannot find stored name_new data for name");
-
-    const std::string txid = it->second.hex;
-    const std::string rand = it->second.rand;
-    const std::string toaddress = it->second.toaddress;
-
-    updatedNameNewReturn.ok = true;
-    updatedNameNewReturn.hex = txid;
-    updatedNameNewReturn.rand = rand;
-    updatedNameNewReturn.data = strData;
-    if(!toaddress.empty ())
-        updatedNameNewReturn.toaddress = toaddress;
-
-    it->second = updatedNameNewReturn;
-
-    UniValue uniNameUpdateData(UniValue::VOBJ);
-    uniNameUpdateData.pushKV ("txid", txid);
-    uniNameUpdateData.pushKV ("rand", rand);
-    uniNameUpdateData.pushKV ("data", strData);
-    if(!toaddress.empty ())
-        uniNameUpdateData.pushKV ("toaddress", toaddress);
-
-    std::string jsonData = uniNameUpdateData.write();
-    LogPrintf ("Writing name_firstupdate %s => %s\n", strName.c_str(), jsonData.c_str());
-    /*
-    wallet->WriteNameFirstUpdate(strName, jsonData);
-    */
-    return tr("");
-}
-
-/* FIXME: Need general remapping from old UniValue params to JSONRPCRequest */
-std::string WalletModel::completePendingNameFirstUpdate(std::string &name, std::string &rand, std::string &txid, std::string &data, std::string &toaddress)
-{
-    UniValue params(UniValue::VOBJ);
-    UniValue res;
-    std::string errorStr;
-
-    params.push_back (Pair("name", name));
-    params.push_back (Pair("rand", rand));
-    params.push_back (Pair("tx", txid));
-    params.push_back (Pair("value", data));
-    if(!toaddress.empty())
-        params.push_back (Pair("toaddress", toaddress));
-
-    /*
-    try {
-        res = name_firstupdate (params, false);
-    }
-    catch (const UniValue& e) {
-        UniValue message = find_value( e, "message");
-        errorStr = message.get_str();
-        LogPrintf ("name_firstupdate error: %s\n", errorStr.c_str());
-    }
-    return errorStr;
-    */
-    return "";
-}
-
-/* FIXME: Need general remapping from old UniValue params to JSONRPCRequest */
-void WalletModel::sendPendingNameFirstUpdates()
-{
-    for (std::map<std::string, NameNewReturn>::iterator i = pendingNameFirstUpdate.begin();
-         i != pendingNameFirstUpdate.end(); )
-    {
-        UniValue params1(UniValue::VOBJ);
-        UniValue res1, val;
-        // hold the error returned from name_firstupdate, via
-        // completePendingNameFirstUpdate, or empty on success
-        // this will drive the error-handling popup
-        std::string completedResult;
-
-        std::string name = i->first;
-        std::string txid = i->second.hex;
-        std::string rand = i->second.rand;
-        std::string data = i->second.data;
-        std::string toaddress = i->second.toaddress;
-
-        params1.push_back (Pair("txid", txid));
-
-        /*
-        // if we're here, the names doesn't exist
-        // should we remove it from the DB?
-        try {
-            res1 = gettransaction( params1, false);
-        }
-        catch (const UniValue& e) {
-            UniValue message = find_value( e, "message");
-            std::string errorStr = message.get_str();
-            LogPrintf ("gettransaction error for name %s: %s\n",
-                       name.c_str(), errorStr.c_str());
-            ++i;
-            continue;
-        }
-
-        val = find_value (res1, "confirmations");
-        if (!val.isNum ())
-        {
-            LogPrintf ("No confirmations for name %s\n", name.c_str());
-            ++i;
-            continue;
-        }
-
-        const int confirms = val.get_int ();
-        LogPrintf ("Pending Name FirstUpdate Confirms: %d\n", confirms);
-
-        if ( confirms < 12)
-        {
-            ++i;
-            continue;
-        }
-
-        if(getEncryptionStatus() == Locked)
-        {
-            if (QMessageBox::Yes != QMessageBox::question(this,
-                  tr("Confirm wallet unlock"),
-                  tr("V Core is about to finalize your name registration "
-                     "for name <b>%1</b>, by sending name_firstupdate. If your "
-                     "wallet is locked, you will be prompted to unlock it. "
-                     "Pressing cancel will delay your name registration by one "
-                     "block, at which point you will be prompted again. Would "
-                     "you like to proceed?").arg(QString::fromStdString(name)),
-                  QMessageBox::Yes|QMessageBox::Cancel,
-                  QMessageBox::Cancel))
-            {
-                LogPrintf ("User cancelled wallet unlock pre-name_firstupdate. Waiting 1 block.\n");
-                return;
-            }
-
-            LogPrintf ("Attempting wallet unlock ...\n");
-            WalletModel::UnlockContext ctx(this->requestUnlock ());
-            if (!ctx.isValid ())
-            {
-                return;
-            }
-            else
-            {
-                // NOTE: the reason we're doing this here and not at the same
-                // time as the one beneath it is because when ctx is destroyed
-                // (subsequently after leaving this block) the wallet is locked.
-                completedResult = this->completePendingNameFirstUpdate(name, rand, txid, data, toaddress);
-            }
-        }
-        else
-        {
-            completedResult = this->completePendingNameFirstUpdate(name, rand, txid, data, toaddress);
-        }
-
-        if(completedResult.empty())
-        {
-          ++i;
-          continue;
-        }
-        // if we got an error on name_firstupdate. prompt user for what to do
-        else
-        {
-            QString errorMsg = tr("V Core has encountered an error "
-                                  "while attempting to complete your name "
-                                  "registration for name <b>%1</b>. The "
-                                  "name_firstupdate operation caused the "
-                                  "following error to occurr:<br><br>%2"
-                                  "<br><br>Would you like to cancel the "
-                                  "pending name registration?")
-                .arg(QString::fromStdString(name))
-                .arg(QString::fromStdString(completedResult));
-            // if they didnt hit yes, move onto next pending op, otherwise
-            // the pending transaction will be deleted in the subsequent block
-            if (QMessageBox::Yes != QMessageBox::question(this, tr("Name registration error"),
-                                                          errorMsg,
-                                                          QMessageBox::Yes|QMessageBox::No,
-                                                          QMessageBox::No))
-            {
-                ++i;
-                continue;
-            }
-        }
-        pendingNameFirstUpdate.erase(i++);
-        wallet->EraseNameFirstUpdate(name);
-        */
-    }
-}
-
-/* FIXME: Need general remapping from old UniValue params to JSONRPCRequest */
-QString WalletModel::nameUpdate(const QString &name, const QString &data, const QString &transferToAddress)
-{
-    std::string strName = name.toStdString ();
-    std::string strData = data.toStdString ();
-    std::string strTransferToAddress = transferToAddress.toStdString ();
-
-    UniValue params(UniValue::VOBJ);
-    UniValue res;
-
-    std::string tx;
-
-    params.push_back (Pair("name", strName));
-    params.push_back (Pair("value", strData));
-
-    if (strTransferToAddress != "")
-        params.push_back (Pair("toaddress", strTransferToAddress));
-
-    /*
-    try {
-        res = name_update (params, false);
-    }
-    catch (const UniValue& e) {
-        UniValue message = find_value( e, "message");
-        std::string errorStr = message.get_str();
-        LogPrintf ("name_update error: %s\n", errorStr.c_str());
-        return QString::fromStdString(errorStr);
-    }
-    */
-    return tr ("");
 }
 
 bool WalletModel::isWalletEnabled()

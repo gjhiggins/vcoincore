@@ -77,8 +77,6 @@ for arg in sys.argv[1:]:
 #Set env vars
 if "BITCOIND" not in os.environ:
     os.environ["BITCOIND"] = BUILDDIR + '/src/vcored' + EXEEXT
-if "BITCOINCLI" not in os.environ:
-    os.environ["BITCOINCLI"] = BUILDDIR + '/src/vcore-cli' + EXEEXT
 
 if EXEEXT == ".exe" and "-win" not in opts:
     # https://github.com/bitcoin/bitcoin/commit/d52802551752140cf41f0d9a225a43e84404d3e9
@@ -102,92 +100,88 @@ if ENABLE_ZMQ:
 
 testScripts = [
     # longest test should go first, to favor running tests in parallel
-    'p2p-fullblocktest.py',
+    'wallet-hd.py',
     'walletbackup.py',
-    'bip68-112-113-p2p.py',
+    # vv Tests less than 5m vv
+    'p2p-fullblocktest.py',
+    'fundrawtransaction.py',
+    'p2p-compactblocks.py',
+    'segwit.py',
+    # vv Tests less than 2m vv
     'wallet.py',
     'wallet-accounts.py',
-    'wallet-hd.py',
+    'p2p-segwit.py',
     'wallet-dump.py',
     'listtransactions.py',
+    # vv Tests less than 60s vv
+    'sendheaders.py',
+    'zapwallettxes.py',
+    'importmulti.py',
+    'mempool_limit.py',
+    'merkle_blocks.py',
     'receivedby.py',
+    'abandonconflict.py',
+    'bip68-112-113-p2p.py',
+    'rawtransactions.py',
+    'reindex.py',
+    # vv Tests less than 30s vv
     'mempool_resurrect_test.py',
     'txn_doublespend.py --mineblock',
-    'p2p-segwit.py',
-    'segwit.py',
     'txn_clone.py',
     'getchaintips.py',
-    'rawtransactions.py',
     'rest.py',
     'mempool_spendcoinbase.py',
     'mempool_reorg.py',
-    'mempool_limit.py',
     'httpbasics.py',
     'multi_rpc.py',
-    'zapwallettxes.py',
     'proxy_test.py',
-    'merkle_blocks.py',
-    'fundrawtransaction.py',
     'signrawtransactions.py',
     'nodehandling.py',
-    'reindex.py',
     'decodescript.py',
     'blockchain.py',
     'disablewallet.py',
-    'sendheaders.py',
     'keypool.py',
     'p2p-mempool.py',
     'prioritise_transaction.py',
     'invalidblockrequest.py',
     'invalidtxrequest.py',
-    'abandonconflict.py',
     'p2p-versionbits-warning.py',
     'preciousblock.py',
     'importprunedfunds.py',
     'signmessages.py',
-    'p2p-compactblocks.py',
     'nulldummy.py',
-
-    'importmulti.py',
-    # auxpow tests
-    'getauxblock.py',
-
-    # name tests
-    'name_expiration.py',
-    'name_list.py',
-    'name_multisig.py',
-    'name_pending.py',
-    'name_rawtx.py',
-    'name_registration.py',
-    'name_reorg.py',
-    'name_scanning.py',
-    'name_wallet.py',
+    'import-rescan.py',
 ]
 if ENABLE_ZMQ:
     testScripts.append('zmq_test.py')
 
 testScriptsExt = [
+    'pruning.py',
+    # vv Tests less than 20m vv
+    'smartfees.py',
+    # vv Tests less than 5m vv
+    'maxuploadtarget.py',
+    'mempool_packages.py',
+    # vv Tests less than 2m vv
+    'bip68-sequence.py',
+    'getblocktemplate_longpoll.py',
+    # vv Tests less than 60s vv
     'bip9-softforks.py',
+    'p2p-feefilter.py',
+    'rpcbind_test.py',
+    # vv Tests less than 30s vv
     'bip65-cltv.py',
     'bip65-cltv-p2p.py',
-    'bip68-sequence.py',
     'bipdersig-p2p.py',
     'bipdersig.py',
-    # 'getblocktemplate_longpoll.py',
-    # 'getblocktemplate_proposals.py',
+    'getblocktemplate_proposals.py',
     'txn_doublespend.py',
     'txn_clone.py --mineblock',
     'forknotify.py',
     'invalidateblock.py',
-    'rpcbind_test.py',
-    'smartfees.py',
     'maxblocksinflight.py',
     'p2p-acceptblock.py',
-    'mempool_packages.py',
-    'maxuploadtarget.py',
     'replace-by-fee.py',
-    'p2p-feefilter.py',
-    'pruning.py', # leave pruning last as it takes a REALLY long time
 ]
 
 
@@ -262,6 +256,10 @@ class RPCTestHandler:
         self.test_list = test_list
         self.flags = flags
         self.num_running = 0
+        # In case there is a graveyard of zombie bitcoinds, we can apply a
+        # pseudorandom offset to hopefully jump over them.
+        # (625 is PORT_RANGE/MAX_NODES)
+        self.portseed_offset = int(time.time() * 1000) % 625
         self.jobs = []
 
     def get_next(self):
@@ -269,7 +267,7 @@ class RPCTestHandler:
             # Add tests
             self.num_running += 1
             t = self.test_list.pop(0)
-            port_seed = ["--portseed=%s" % len(self.test_list)]
+            port_seed = ["--portseed={}".format(len(self.test_list) + self.portseed_offset)]
             log_stdout = tempfile.SpooledTemporaryFile(max_size=2**16)
             log_stderr = tempfile.SpooledTemporaryFile(max_size=2**16)
             self.jobs.append((t,
