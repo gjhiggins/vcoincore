@@ -78,11 +78,7 @@
     </qresource>
     <qresource prefix="/vess">
         <file alias="index.html">res/vess/index.html</file>
-        <file alias="semantic.min.css">res/vess/css/semantic.min.css</file>
-        <file alias="style.css">res/vess/css/style.css</file>
-        <file alias="jquery.js">res/vess/js/jquery.js</file>
-        <file alias="jquery-migrate-3.0.0.js">res/vess/js/jquery-migrate-3.0.0.js</file>
-        <file alias="semantic.min.js">res/vess/js/semantic.min.js</file>
+        <file alias="favicon.png">res/vess/favicon.png</file>
     </qresource>
     <qresource prefix="/ewc">
         <file alias="index.html">res/ewc/index.html</file>

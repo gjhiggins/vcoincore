@@ -168,11 +168,11 @@ public:
 
         vSeeds.push_back(CDNSSeedData("Minkiz", "minkiz.co"));
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,70);
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,224);
-        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x5F)(0x1C)(0xF8).convert_to_container<std::vector<unsigned char> >(); // xpub
-        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x5F)(0x18)(0xC0).convert_to_container<std::vector<unsigned char> >(); // xprv
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,70);   // 0x46
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);   // 0x1e
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,224);  // 0xc6
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x5F)(0x1C)(0xF8).convert_to_container<std::vector<unsigned char> >(); // vpub
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x5F)(0x18)(0xC0).convert_to_container<std::vector<unsigned char> >(); // vprv
         /* base58Prefixes[EXT_COIN_TYPE]  = boost::assign::list_of(0x80000028); // BIP44 coin type is '28' */
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
@@ -250,11 +250,11 @@ public:
         // nodes with support for servicebits filtering should be at the top
         vSeeds.push_back(CDNSSeedData("MinkizT", "minkiz.co"));
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,127);
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,255);
-        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x87)(0xc9)(0x27)(0x00).convert_to_container<std::vector<unsigned char> >(); // 'tpub'
-        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x87)(0xc8)(0x30)(0x80).convert_to_container<std::vector<unsigned char> >(); // 'tpriv'
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,127); // 0x7f
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);  // 0x1e
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,255); // 0xff
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x87)(0xc9)(0x27)(0x00).convert_to_container<std::vector<unsigned char> >(); // 'Vpub'
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x87)(0xc8)(0x30)(0x80).convert_to_container<std::vector<unsigned char> >(); // 'Vpriv'
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
 

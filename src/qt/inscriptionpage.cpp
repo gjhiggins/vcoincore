@@ -27,8 +27,8 @@ void InscriptionPage::show()
     QWebEngineView *view = new QWebEngineView;
     QDir dir;
     QString cwd = dir.currentPath();
-    QString html = "qrc:///ewc/index.html";
-    QString fpath = "/src/qt/res/ewc/index.html";
+    QString html = "qrc:///riot/index.html";
+    QString fpath = "/src/qt/res/riot/index.html";
     QString res = cwd + fpath;
     QFile file(res);
     // QFile file("file:////res/pbt/index.html");
