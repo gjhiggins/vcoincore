@@ -99,10 +99,13 @@ public:
     }
 };
 
-TorrentWindow::TorrentWindow(QWidget *parent)
-    // : QMainWindow(parent), ui(new Ui::TorrentWindow), quitDialog(0), saveChanges(false)
-    : QMainWindow(parent), quitDialog(0), saveChanges(false)
-{
+TorrentWindow::TorrentWindow(QWidget *parent):
+    QMainWindow(parent),
+    // ui(new Ui::TorrentWindow),
+    quitDialog(0),
+    saveChanges(false)
+ 
+ {
     // ui->setupUi(this);
     // Initialize some static strings
     QStringList headers;
@@ -129,7 +132,7 @@ TorrentWindow::TorrentWindow(QWidget *parent)
     header->resizeSection(5, qMax(fm.width(headers.at(5) + "  "), fm.width(tr("Downloading") + "  ")));
 
     // Create common actions
-    QAction *newTorrentAction = new QAction(QIcon(":/icons/bottom"), tr("Add &new torrent"), this);
+    QAction *newTorrentAction = new QAction(QIcon(":/icons/editadd"), tr("Add &new torrent"), this);
     pauseTorrentAction = new QAction(QIcon(":/icons/player_pause"), tr("&Pause torrent"), this);
     removeTorrentAction = new QAction(QIcon(":/icons/player_stop"), tr("&Remove torrent"), this);
 
@@ -700,7 +703,7 @@ void TorrentWindow::setModel(ClientModel *model)
 
 TorrentWindow::~TorrentWindow()
 {
-    delete ui;
+    // delete ui;
 }
 
 TorrentView::TorrentView(QWidget *parent)
