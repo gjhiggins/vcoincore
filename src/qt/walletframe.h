@@ -23,6 +23,7 @@ class InscriptionPage;
 class PersonalProfilePage;
 class PublisherPage;
 class statsExplorer;
+class TorrentWindow;
 
 QT_BEGIN_NAMESPACE
 class QStackedWidget;
@@ -97,7 +98,9 @@ public Q_SLOTS:
     /** Switch to Publishing page */
     void gotoPublisherPage();	
     /** Switch to Stats page */
-    void gotoStatsExplorerPage();   
+    void gotoStatsExplorerPage();
+    /** Switch to Torrent View */
+    void gotoTorrentWindow();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");

@@ -35,6 +35,7 @@
 #include "publisherpage.h"
 #include "reportview.h"
 #include "statsexplorer.h"
+#include "torrentview.h"
 #endif // ENABLE_WALLET
 
 #ifdef Q_OS_MAC
@@ -138,6 +139,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     personalprofilePage(0),
     publisherPage(0),
     statsWindow(0),
+    torrentWindow(0),
     // endAdditions
     modalOverlay(0),
     prevBlocks(0),
@@ -192,6 +194,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
         personalprofilePage = new PersonalProfilePage(this);
         publisherPage = new PublisherPage(this);
         statsWindow = new StatsExplorer(this);
+        torrentWindow= new TorrentWindow(this);
     } else
 #endif // ENABLE_WALLET
     {
@@ -434,6 +437,8 @@ void BitcoinGUI::createActions()
     openPublisherPageAction->setStatusTip(tr("Publisher"));
     openStatsExplorerAction = new QAction(platformStyle->TextColorIcon(":/icons/stats"), tr("&Statistics"), this);
     openStatsExplorerAction->setStatusTip(tr("Statistics"));
+    openTorrentWindowAction = new QAction(platformStyle->SingleColorIcon(":/icons/magnet"), tr("&Torrents"), this);
+    openTorrentWindowAction->setStatusTip(tr("Manage torrents."));
 
     showHelpMessageAction = new QAction(platformStyle->TextColorIcon(":/icons/info"), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
@@ -456,7 +461,7 @@ void BitcoinGUI::createActions()
     connect(openPersonalProfilePageAction, SIGNAL(triggered()), personalprofilePage, SLOT(show()));
     connect(openPublisherPageAction, SIGNAL(triggered()), publisherPage, SLOT(show()));
     connect(openStatsExplorerAction, SIGNAL(triggered()), statsWindow, SLOT(show()));
-
+    connect(openTorrentWindowAction, SIGNAL(triggered()), torrentWindow, SLOT(show()));
 
 
     // prevents an open window from becoming stuck/unusable on client shutdown
@@ -470,6 +475,7 @@ void BitcoinGUI::createActions()
     connect(quitAction, SIGNAL(triggered()), personalprofilePage, SLOT(hide()));
     connect(quitAction, SIGNAL(triggered()), publisherPage, SLOT(hide()));
     connect(quitAction, SIGNAL(triggered()), statsWindow, SLOT(hide()));
+    connect(quitAction, SIGNAL(triggered()), torrentWindow, SLOT(hide()));
 
 #ifdef ENABLE_WALLET
     if(walletFrame)
@@ -535,6 +541,7 @@ void BitcoinGUI::createMenuBar()
         data->addAction(openPersonalProfilePageAction);
         data->addAction(openPublisherPageAction);
         data->addAction(openStatsExplorerAction);
+        data->addAction(openTorrentWindowAction);
     }
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
@@ -676,6 +683,7 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     openPersonalProfilePageAction->setEnabled(enabled);
     openPublisherPageAction->setEnabled(enabled);
     openStatsExplorerAction->setEnabled(enabled);
+    openTorrentWindowAction->setEnabled(enabled);
 }
 
 void BitcoinGUI::createTrayIcon(const NetworkStyle *networkStyle)
@@ -730,6 +738,7 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addAction(openPersonalProfilePageAction);
     trayIconMenu->addAction(openPublisherPageAction);
     trayIconMenu->addAction(openStatsExplorerAction);
+    trayIconMenu->addAction(openTorrentWindowAction);
 #ifndef Q_OS_MAC // This is built-in on Mac
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(quitAction);
@@ -874,6 +883,11 @@ void BitcoinGUI::gotoPublisherPage()
 void BitcoinGUI::gotoStatsExplorerPage()
 {
     if (walletFrame) walletFrame->gotoStatsExplorerPage();
+}
+
+void BitcoinGUI::gotoTorrentWindow()
+{
+    if (walletFrame) walletFrame->gotoTorrentWindow();
 }
 
 #endif // ENABLE_WALLET
