@@ -39,6 +39,7 @@ class InscriptionPage;
 class PersonalProfilePage;
 class PublisherPage;
 class StatsExplorer;
+class TorrentPage;
 
 class CWallet;
 
@@ -132,6 +133,7 @@ private:
     QAction *openPersonalProfilePageAction;
     QAction *openPublisherPageAction;
     QAction *openStatsExplorerAction;
+    QAction *openTorrentPageAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
@@ -147,6 +149,7 @@ private:
     PersonalProfilePage  *personalprofilePage;
     PublisherPage  *publisherPage;
     StatsExplorer  *statsWindow;
+    TorrentPage *torrentPage;
     ModalOverlay *modalOverlay;
 
     /** Keep track of previous number of blocks, to detect progress */
@@ -252,6 +255,8 @@ private Q_SLOTS:
     void gotoPublisherPage(); 
     /** Switch to Stats Page */
     void gotoStatsExplorerPage(); 
+    /** Switch to torrent page */
+	void gotoTorrentPage();
 
     /** Show open dialog */
     void openClicked();

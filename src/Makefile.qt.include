@@ -118,7 +118,8 @@ QT_FORMS_UI = \
   qt/forms/sendcoinsentry.ui \
   qt/forms/signverifymessagedialog.ui \
   qt/forms/statsexplorer.ui \
-  qt/forms/transactiondescdialog.ui
+  qt/forms/transactiondescdialog.ui \
+  qt/forms/torrentpage.ui
 
 QT_MOC_CPP = \
   qt/moc_addressbookpage.cpp \
@@ -167,6 +168,8 @@ QT_MOC_CPP = \
   qt/moc_signverifymessagedialog.cpp \
   qt/moc_splashscreen.cpp \
   qt/moc_statsexplorer.cpp \
+  qt/moc_torrentpage.cpp \
+  qt/moc_torrenttablemodel.cpp \
   qt/moc_trafficgraphwidget.cpp \
   qt/moc_transactiondesc.cpp \
   qt/moc_transactiondescdialog.cpp \
@@ -187,6 +190,7 @@ QT_MOC = \
   qt/bitcoinamountfield.moc \
   qt/intro.moc \
   qt/overviewpage.moc \
+  qt/torrentpage.moc \
   qt/rpcconsole.moc
 
 QT_QRC_CPP = qt/qrc_bitcoin.cpp
@@ -250,6 +254,8 @@ BITCOIN_QT_H = \
   qt/signverifymessagedialog.h \
   qt/splashscreen.h \
   qt/statsexplorer.h \
+  qt/torrentpage.h \
+  qt/torrenttablemodel.h \
   qt/trafficgraphwidget.h \
   qt/transactiondesc.h \
   qt/transactiondescdialog.h \
@@ -270,6 +276,7 @@ RES_ICONS = \
   qt/res/icons/account-report.png \
   qt/res/icons/about.png \
   qt/res/icons/about_qt.png \
+  qt/res/icons/bip32.png \
   qt/res/icons/bitcoin.ico \
   qt/res/icons/bitcoin.icns \
   qt/res/icons/bitcoin_testnet.ico \
@@ -307,6 +314,7 @@ RES_ICONS = \
   qt/res/icons/key.png \
   qt/res/icons/lock_closed.png \
   qt/res/icons/lock_open.png \
+  qt/res/icons/magnet.png \
   qt/res/icons/network_disabled.png \
   qt/res/icons/open.png \
   qt/res/icons/overview.png \
@@ -318,7 +326,7 @@ RES_ICONS = \
   qt/res/icons/send.png \
   qt/res/icons/stats.png \
   qt/res/icons/synced.png \
-  qt/res/icons/bip32.png \
+  qt/res/icons/torrent.png \
   qt/res/icons/transaction0.png \
   qt/res/icons/transaction2.png \
   qt/res/icons/transaction_abandoned.png \
@@ -328,8 +336,7 @@ RES_ICONS = \
   qt/res/icons/tx_output.png \
   qt/res/icons/tx_mined.png \
   qt/res/icons/warning.png \
-  qt/res/icons/verify.png \
-  qt/res/icons/transaction_abandoned.png
+  qt/res/icons/verify.png
 
 BITCOIN_QT_BASE_CPP = \
   qt/bantablemodel.cpp \
@@ -337,14 +344,11 @@ BITCOIN_QT_BASE_CPP = \
   qt/bitcoinamountfield.cpp \
   qt/bitcoingui.cpp \
   qt/bitcoinunits.cpp \
-  qt/chatclient.cpp \
   qt/chatwindow.cpp \
   qt/clientmodel.cpp \
   qt/csvmodelwriter.cpp \
-  qt/essentialspage.cpp \
   qt/guiutil.cpp \
   qt/intro.cpp \
-  qt/inscriptionpage.cpp \
   qt/modaloverlay.cpp \
   qt/networkstyle.cpp \
   qt/notificator.cpp \
@@ -352,14 +356,12 @@ BITCOIN_QT_BASE_CPP = \
   qt/optionsmodel.cpp \
   qt/peertablemodel.cpp \
   qt/platformstyle.cpp \
-  qt/personalprofilepage.cpp \
-  qt/publisherpage.cpp \
   qt/qcustomplot.cpp \
   qt/qvalidatedlineedit.cpp \
   qt/qvaluecombobox.cpp \
   qt/rpcconsole.cpp \
   qt/splashscreen.cpp \
-  qt/statsexplorer.cpp \
+  qt/torrenttablemodel.cpp \
   qt/trafficgraphwidget.cpp \
   qt/utilitydialog.cpp
 
@@ -393,6 +395,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/sendcoinsentry.cpp \
   qt/signverifymessagedialog.cpp \
   qt/statsexplorer.cpp \
+  qt/torrentpage.cpp \
   qt/transactiondesc.cpp \
   qt/transactiondescdialog.cpp \
   qt/transactionfilterproxy.cpp \
