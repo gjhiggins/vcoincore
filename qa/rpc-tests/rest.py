@@ -8,13 +8,11 @@
 #
 
 
-from test_framework import auxpow
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
 from struct import *
 from io import BytesIO
 from codecs import encode
-import binascii
 
 import http.client
 import urllib.parse
@@ -205,12 +203,8 @@ class RESTTest (BitcoinTestFramework):
         response = http_post_call(url.hostname, url.port, '/rest/getutxos'+json_request+self.FORMAT_SEPARATOR+'json', '', True)
         assert_equal(response.status, 200) #must be a 200 because we are within the limits
 
-        // self.nodes[0].generate(1) #generate block to not affect upcoming tests
-
-        # Generate a block to not affect upcoming tests.
-        auxpow.mineAuxpowBlock(self.nodes[0]) #generate
+        self.nodes[0].generate(1) #generate block to not affect upcoming tests
         self.sync_all()
-        bb_hash = self.nodes[0].getbestblockhash()
 
         ################
         # /rest/block/ #
@@ -225,26 +219,24 @@ class RESTTest (BitcoinTestFramework):
         # compare with block header
         response_header = http_get_call(url.hostname, url.port, '/rest/headers/1/'+bb_hash+self.FORMAT_SEPARATOR+"bin", True)
         assert_equal(response_header.status, 200)
-        headerLen = int(response_header.getheader('content-length'))
-        assert_greater_than(headerLen, 80)
+        assert_equal(int(response_header.getheader('content-length')), 80)
         response_header_str = response_header.read()
-        assert_equal(response_str[0:headerLen], response_header_str)
+        assert_equal(response_str[0:80], response_header_str)
 
         # check block hex format
         response_hex = http_get_call(url.hostname, url.port, '/rest/block/'+bb_hash+self.FORMAT_SEPARATOR+"hex", True)
         assert_equal(response_hex.status, 200)
         assert_greater_than(int(response_hex.getheader('content-length')), 160)
-        response_hex_str = response_hex.read().strip()
-        assert_equal(encode(response_str, "hex_codec"), response_hex_str)
+        response_hex_str = response_hex.read()
+        assert_equal(encode(response_str, "hex_codec")[0:160], response_hex_str[0:160])
 
         # compare with hex block header
         response_header_hex = http_get_call(url.hostname, url.port, '/rest/headers/1/'+bb_hash+self.FORMAT_SEPARATOR+"hex", True)
         assert_equal(response_header_hex.status, 200)
         assert_greater_than(int(response_header_hex.getheader('content-length')), 160)
-        response_header_hex_str = response_header_hex.read().strip()
-        headerLen = len (response_header_hex_str)
-        assert_equal(response_hex_str[0:headerLen], response_header_hex_str)
-        assert_equal(encode(response_header_str, "hex_codec"), response_header_hex_str)
+        response_header_hex_str = response_header_hex.read()
+        assert_equal(response_hex_str[0:160], response_header_hex_str[0:160])
+        assert_equal(encode(response_header_str, "hex_codec")[0:160], response_header_hex_str[0:160])
 
         # check json format
         block_json_string = http_get_call(url.hostname, url.port, '/rest/block/'+bb_hash+self.FORMAT_SEPARATOR+'json')
@@ -338,58 +330,6 @@ class RESTTest (BitcoinTestFramework):
         json_string = http_get_call(url.hostname, url.port, '/rest/chaininfo.json')
         json_obj = json.loads(json_string)
         assert_equal(json_obj['bestblockhash'], bb_hash)
-
-        # Test name handling.
-        self.name_tests(url)
-
-    def name_tests(self, url):
-        """
-        Run REST tests specific to names.
-        """
-
-        # Start by registering a test name.
-        name = "d/some weird.name++"
-        binData = bytearray ([0, 1]).decode ("ascii")
-        value = "correct value\nwith newlines\nand binary: " + binData
-        newData = self.nodes[0].name_new(name)
-        self.nodes[0].generate(10)
-        self.nodes[0].name_firstupdate(name, newData[1], newData[0], value)
-        self.nodes[0].generate(5)
-        nameData = self.nodes[0].name_show(name)
-        assert_equal(nameData['name'], name)
-        assert_equal(nameData['value'], value)
-
-        # Different variants of the encoded name that should all work.
-        variants = [urllib.parse.quote_plus(name), "d/some+weird.name%2b%2B"]
-
-        for encName in variants:
-
-            # Query JSON data of the name.
-            query = '/rest/name/' + encName + self.FORMAT_SEPARATOR + 'json'
-            res = http_get_call(url.hostname, url.port, query, True)
-            assert_equal(res.status, 200)
-            data = json.loads(res.read().decode("ascii"))
-            assert_equal(data, nameData)
-
-            # Query plain value.
-            query = '/rest/name/' + encName + self.FORMAT_SEPARATOR + 'bin'
-            res = http_get_call(url.hostname, url.port, query, True)
-            assert_equal(res.status, 200)
-            assert_equal(res.read().decode("ascii"), value)
-
-            # Query hex value.
-            query = '/rest/name/' + encName + self.FORMAT_SEPARATOR + 'hex'
-            res = http_get_call(url.hostname, url.port, query, True)
-            assert_equal(res.status, 200)
-            hexValue = binascii.hexlify(bytes(value, "ascii")) + b"\n"
-            assert_equal(res.read(), hexValue)
-
-        # Check invalid encoded names.
-        invalid = ['%', '%2', '%2x', '%x2']
-        for encName in invalid:
-            query = '/rest/name/' + encName + self.FORMAT_SEPARATOR + 'bin'
-            res = http_get_call(url.hostname, url.port, query, True)
-            assert_equal(res.status, http.client.BAD_REQUEST)
 
 if __name__ == '__main__':
     RESTTest ().main ()

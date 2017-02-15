@@ -1,5 +1,5 @@
 // Copyright (c) 2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,7 +8,6 @@
 
 #include "amount.h"
 #include "rpc/protocol.h"
-#include "script/script.h"
 #include "uint256.h"
 
 #include <list>
@@ -18,7 +17,9 @@
 
 #include <boost/function.hpp>
 
-#include "../univalue/include/univalue.h"
+#include <univalue.h>
+
+static const unsigned int DEFAULT_RPC_SERIALIZE_VERSION = 1;
 
 class CRPCCommand;
 
@@ -31,12 +32,7 @@ namespace RPCServer
 }
 
 class CBlockIndex;
-class CMutableTransaction;
-class CNameData;
 class CNetAddr;
-class COutPoint;
-class CTxIn;
-class CWalletTx;
 
 /** Wrapper for UniValue::VType, which includes typeAny:
  * Used to denote don't care type. Only used by RPCTypeCheckObj */
@@ -196,19 +192,15 @@ extern std::string HelpRequiringPassphrase();
 extern std::string HelpExampleCli(const std::string& methodname, const std::string& args);
 extern std::string HelpExampleRpc(const std::string& methodname, const std::string& args);
 
-extern bool EnsureWalletIsAvailable(bool avoidException);
 extern void EnsureWalletIsUnlocked();
-extern void SendMoneyToScript(const CScript& scriptPubKey, const CTxIn* withInput, CAmount nValue, bool fSubtractFeeFromAmount, CWalletTx& wtxNew);
-
-extern void AddRawTxNameOperation(CMutableTransaction& tx, const UniValue& obj);
-extern UniValue getNameInfo(const valtype& name, const valtype& value, const COutPoint& outp, const CScript& addr, int height);
-extern UniValue getNameInfo(const valtype& name, const CNameData& data);
-extern std::string getNameInfoHelp(const std::string& indent, const std::string& trailing);
 
 bool StartRPC();
 void InterruptRPC();
 void StopRPC();
 std::string JSONRPCExecBatch(const UniValue& vReq);
 void RPCNotifyBlockChange(bool ibd, const CBlockIndex *);
+
+// Retrieves any serialization flags requested in command line argument
+int RPCSerializationFlags();
 
 #endif // BITCOIN_RPCSERVER_H

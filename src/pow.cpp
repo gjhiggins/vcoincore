@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -121,10 +121,10 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
             nActualTimespan = params.nPowTargetTimespan*4;
     }else{
         // Mainnet version
-        if (nActualTimespan < params.nPowTargetTimespan)
-            nActualTimespan = params.nPowTargetTimespan;
-        if (nActualTimespan > params.nPowTargetTimespan)
-            nActualTimespan = params.nPowTargetTimespan;
+        if (nActualTimespan < nMinActualTimespan)
+            nActualTimespan = nMinActualTimespan;
+        if (nActualTimespan > nMaxActualTimespan)
+            nActualTimespan = nMaxActualTimespan;
     }
     // Retarget
     arith_uint256 bnNew;
@@ -167,10 +167,10 @@ unsigned int NewCalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t
             nActualTimespan = params.nPowTargetTimespan*4;
     }else{
         // Mainnet version
-        if (nActualTimespan < params.nPowTargetTimespan)
-            nActualTimespan = params.nPowTargetTimespan;
-        if (nActualTimespan > params.nPowTargetTimespan)
-            nActualTimespan = params.nPowTargetTimespan;
+        if (nActualTimespan < nMinActualTimespan)
+            nActualTimespan = nMinActualTimespan;
+        if (nActualTimespan > nMaxActualTimespan)
+            nActualTimespan = nMaxActualTimespan;
     }
 
     LogPrintf("nActualTimespan = %u after bounds\n", nActualTimespan);
@@ -209,3 +209,31 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
 
     return true;
 }
+
+/*
+// minimum amount of work that could possibly be required nTime after
+// minimum work required was nBase
+//
+unsigned int ComputeMinWork(unsigned int nBase, int64_t nTime)
+{
+    const CBigNum &bnLimit = Params().ProofOfWorkLimit();
+    // Testnet has min-difficulty blocks
+    // after nTargetSpacing*2 time between blocks:
+    if (TestNet() && nTime > nTargetSpacing*2)
+        return bnLimit.GetCompact();
+
+    CBigNum bnResult;
+    bnResult.SetCompact(nBase);
+    while (nTime > 0 && bnResult < bnLimit)
+    {
+        // Maximum adjustment...
+        bnResult *= (100 + nMaxAdjustDown);
+        bnResult /= 100;
+        // ... in best-case exactly adjustment times-normal target time
+        nTime -= nTargetTimespanAdjDown;
+    }
+    if (bnResult > bnLimit)
+        bnResult = bnLimit;
+    return bnResult.GetCompact();
+}
+*/

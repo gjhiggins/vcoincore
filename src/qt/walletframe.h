@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,12 +13,17 @@ class ClientModel;
 class PlatformStyle;
 class SendCoinsRecipient;
 class WalletModel;
-class ChatWindow;
 class WalletView;
+// Additions
+class BIP32HDPage;
 class BlockExplorer;
-class statsExplorer;
-class PublisherPage;
+class ChatWindow;
 class EssentialsPage;
+class InscriptionPage;
+class PersonalProfilePage;
+class PublisherPage;
+class statsExplorer;
+class TorrentPage;
 
 QT_BEGIN_NAMESPACE
 class QStackedWidget;
@@ -75,20 +80,27 @@ public Q_SLOTS:
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");
-    /** Switch to Stats page */
-    void gotoStatsExplorerPage();	
-	/** Switch to explorer page */
-    void gotoBlockExplorerPage();	
+    // Additions
     /** Switch to account report page */
     void gotoAccountReportPage();
-    /** Switch to manage names page */
-    void gotoManageNamesPage();
-	/** Switch to chat page */
+    /** Switch to BIP32 page */
+    void gotoBIP32Page();
+    /** Switch to explorer page */
+    void gotoBlockExplorerPage();
+    /** Switch to chat page */
     void gotoChatPage();
-    /** Switch to Publishing page */
-    void gotoPublisherPage();	
     /** Switch to Essentials page */
     void gotoEssentialsPage();   
+    /** Switch to inscription page */
+    void gotoInscriptionPage();
+    /** Switch to profile page */
+    void gotoPersonalProfilePage();
+    /** Switch to Publishing page */
+    void gotoPublisherPage();	
+    /** Switch to Stats page */
+    void gotoStatsExplorerPage();   
+    /** Switch to torrent page */
+	void gotoTorrentPage();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");

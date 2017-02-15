@@ -1,5 +1,5 @@
 // Copyright (c) 2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,9 +8,7 @@
 
 #include "tinyformat.h"
 #include "util.h"
-#include "pow.h"
 #include "utilstrencodings.h"
-#include "arith_uint256.h"
 
 #include <assert.h>
 
@@ -170,11 +168,11 @@ public:
 
         vSeeds.push_back(CDNSSeedData("Minkiz", "minkiz.co"));
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,70);
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,224);
-        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >(); // xpub
-        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xAD)(0xE4).convert_to_container<std::vector<unsigned char> >(); // xprv
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,70);   // 0x46
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);   // 0x1e
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,224);  // 0xc6
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x5F)(0x1C)(0xF8).convert_to_container<std::vector<unsigned char> >(); // vpub
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x5F)(0x18)(0xC0).convert_to_container<std::vector<unsigned char> >(); // vprv
         /* base58Prefixes[EXT_COIN_TYPE]  = boost::assign::list_of(0x80000028); // BIP44 coin type is '28' */
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
@@ -192,10 +190,6 @@ public:
                    //   (the tx=... number in the SetBestChain debug.log lines)
               2880 // * estimated number of transactions per day after checkpoint
         };
-    }
-    int DefaultCheckNameDB () const
-    {
-       return -1;
     }
 };
 static CMainParams mainParams;
@@ -256,11 +250,11 @@ public:
         // nodes with support for servicebits filtering should be at the top
         vSeeds.push_back(CDNSSeedData("MinkizT", "minkiz.co"));
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,127);
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,255);
-        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >(); // 'tpub'
-        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >(); // 'tpriv'
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,127); // 0x7f
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);  // 0x1e
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,255); // 0xff
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x87)(0xc9)(0x27)(0x00).convert_to_container<std::vector<unsigned char> >(); // 'Vpub'
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x87)(0xc8)(0x30)(0x80).convert_to_container<std::vector<unsigned char> >(); // 'Vpriv'
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
 
@@ -278,11 +272,6 @@ public:
             2880
         };
 
-    }
-
-    int DefaultCheckNameDB () const
-    {
-        return -1;
     }
 };
 static CTestNetParams testNetParams;
@@ -315,8 +304,6 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].bit = 1;
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = 0;
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 999999999999ULL;
-
-        consensus.rules.reset(new Consensus::RegTestConsensus());
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0x00");
@@ -355,13 +342,8 @@ public:
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,111);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,196);
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
-        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >(); // 'tpub'
-        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >(); // 'tpriv'
-    }
-
-    int DefaultCheckNameDB () const
-    {
-        return 0;
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x87)(0xc9)(0x27)(0x00).convert_to_container<std::vector<unsigned char> >(); // 'tpub'
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x87)(0xc8)(0x30)(0x80).convert_to_container<std::vector<unsigned char> >(); // 'tpriv'
     }
 
     void UpdateBIP9Parameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout)

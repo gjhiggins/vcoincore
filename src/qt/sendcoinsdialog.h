@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -6,16 +6,11 @@
 #define BITCOIN_QT_SENDCOINSDIALOG_H
 
 #include "walletmodel.h"
-#include "guiutil.h"
 
 #include <QDialog>
 #include <QMessageBox>
 #include <QString>
 #include <QTimer>
-#include <QDir>
-#include <QFile>
-#include <QFileDialog>
-#include <QDesktopServices>
 
 class ClientModel;
 class OptionsModel;

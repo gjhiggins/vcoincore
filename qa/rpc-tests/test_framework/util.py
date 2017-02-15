@@ -129,17 +129,19 @@ def sync_blocks(rpc_connections, *, wait=1, timeout=60):
     one node already synced to the latest, stable tip, otherwise there's a
     chance it might return before all nodes are stably synced.
     """
-    maxheight = 0
+    # Use getblockcount() instead of waitforblockheight() to determine the
+    # initial max height because the two RPCs look at different internal global
+    # variables (chainActive vs latestBlock) and the former gets updated
+    # earlier.
+    maxheight = max(x.getblockcount() for x in rpc_connections)
     start_time = cur_time = time.time()
     while cur_time <= start_time + timeout:
         tips = [r.waitforblockheight(maxheight, int(wait * 1000)) for r in rpc_connections]
-        heights = [t["height"] for t in tips]
-        if all(t == tips[0] for t in tips):
-            return
-        if all(h == heights[0] for h in heights):
+        if all(t["height"] == maxheight for t in tips):
+            if all(t["hash"] == tips[0]["hash"] for t in tips):
+                return
             raise AssertionError("Block sync failed, mismatched block hashes:{}".format(
                                  "".join("\n  {!r}".format(tip) for tip in tips)))
-        maxheight = max(heights)
         cur_time = time.time()
     raise AssertionError("Block sync to height {} timed out:{}".format(
                          maxheight, "".join("\n  {!r}".format(tip) for tip in tips)))
@@ -189,22 +191,6 @@ def initialize_datadir(dirname, n):
         f.write("listenonion=0\n")
     return datadir
 
-def base_node_args(i):
-    """
-    Return base arguments to always use for node i.  These arguments
-    are those that are also present for the chain cache and must thus
-    be set for all runs.
-    """
-
-    # We choose nodes 1 and 2 to keep -namehistory, because this allows
-    # us to test both nodes with it and without it in both split
-    # network parts (0/1 vs 2/3).
-
-    if i == 1 or i == 2:
-        return ["-namehistory"]
-
-    return []
-
 def rpc_auth_pair(n):
     return 'rpcuser💻' + str(n), 'rpcpass🔑' + str(n)
 
@@ -237,7 +223,7 @@ def wait_for_vcored_start(process, url, i):
                 raise # unknown IO error
         except JSONRPCException as e: # Initialization phase
             if e.error['code'] != -28: # RPC in warmup?
-                raise # unkown JSON RPC exception
+                raise # unknown JSON RPC exception
         time.sleep(0.25)
 
 def initialize_chain(test_dir, num_nodes, cachedir):
@@ -271,7 +257,7 @@ def initialize_chain(test_dir, num_nodes, cachedir):
                 print("initialize_chain: vcored started, waiting for RPC to come up")
             wait_for_vcored_start(vcored_processes[i], rpc_url(i), i)
             if os.getenv("PYTHON_DEBUG", ""):
-                print("initialize_chain: RPC succesfully started")
+                print("initialize_chain: RPC successfully started")
 
         rpcs = []
         for i in range(MAX_NODES):
@@ -352,14 +338,13 @@ def start_node(i, dirname, extra_args=None, rpchost=None, timewait=None, binary=
         binary = os.getenv("BITCOIND", "vcored")
     args = [ binary, "-datadir="+datadir, "-server", "-keypool=1", "-discover=0", "-rest", "-mocktime="+str(get_mocktime()) ]
     if extra_args is not None: args.extend(extra_args)
-    args.extend(base_node_args(i))
     vcored_processes[i] = subprocess.Popen(args)
     if os.getenv("PYTHON_DEBUG", ""):
         print("start_node: vcored started, waiting for RPC to come up")
     url = rpc_url(i, rpchost)
     wait_for_vcored_start(vcored_processes[i], url, i)
     if os.getenv("PYTHON_DEBUG", ""):
-        print("start_node: RPC succesfully started")
+        print("start_node: RPC successfully started")
     proxy = get_rpc_proxy(url, i, timeout=timewait)
 
     if COVERAGE_DIR:
@@ -669,16 +654,15 @@ def create_tx(node, coinbase, to_address, amount):
 
 # Create a spend of each passed-in utxo, splicing in "txouts" to each raw
 # transaction to make it large.  See gen_return_txouts() above.
-def create_lots_of_big_transactions(node, txouts, utxos, fee):
+def create_lots_of_big_transactions(node, txouts, utxos, num, fee):
     addr = node.getnewaddress()
     txids = []
-    for i in range(len(utxos)):
+    for _ in range(num):
         t = utxos.pop()
-        inputs = []
-        inputs.append({ "txid" : t["txid"], "vout" : t["vout"]})
+        inputs=[{ "txid" : t["txid"], "vout" : t["vout"]}]
         outputs = {}
-        send_value = t['amount'] - fee
-        outputs[addr] = satoshi_round(send_value)
+        change = t['amount'] - fee
+        outputs[addr] = satoshi_round(change)
         rawtx = node.createrawtransaction(inputs, outputs)
         newtx = rawtx[0:92]
         newtx = newtx + txouts
@@ -687,6 +671,19 @@ def create_lots_of_big_transactions(node, txouts, utxos, fee):
         txid = node.sendrawtransaction(signresult["hex"], True)
         txids.append(txid)
     return txids
+
+def mine_large_block(node, utxos=None):
+    # generate a 66k transaction,
+    # and 14 of them is close to the 1MB block limit
+    num = 14
+    txouts = gen_return_txouts()
+    utxos = utxos if utxos is not None else []
+    if len(utxos) < num:
+        utxos.clear()
+        utxos.extend(node.listunspent())
+    fee = 100 * node.getnetworkinfo()["relayfee"]
+    create_lots_of_big_transactions(node, txouts, utxos, num, fee=fee)
+    node.generate(1)
 
 def get_bip9_status(node, key):
     info = node.getblockchaininfo()

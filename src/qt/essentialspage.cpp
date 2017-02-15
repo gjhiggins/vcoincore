@@ -54,8 +54,8 @@ void EssentialsPage::show()
     QWebEngineView *view = new QWebEngineView;
     QDir dir;
     QString cwd = dir.currentPath();
-    QString html = "qrc:///essentials/index.html";
-    QString fpath = "/src/qt/res/essentials/index.html";
+    QString html = "qrc:///vess/index.html";
+    QString fpath = "/src/qt/res/vess/index.html";
     QString res = cwd + fpath;
     QFile file(res);
     // QFile file("file:////res/pbt/index.html");

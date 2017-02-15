@@ -1,4 +1,4 @@
-// Copyright (c) 2012-2015 The Bitcoin Core developers
+// Copyright (c) 2012-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,7 +10,6 @@
 #include <stdint.h>
 
 #include <boost/test/unit_test.hpp>
-using namespace std;
 
 BOOST_FIXTURE_TEST_SUITE(serialize_tests, BasicTestingSetup)
 
@@ -21,10 +20,10 @@ protected:
     bool boolval;
     std::string stringval;
     const char* charstrval;
-    CTransaction txval;
+    CTransactionRef txval;
 public:
     CSerializeMethodsTestSingle() = default;
-    CSerializeMethodsTestSingle(int intvalin, bool boolvalin, std::string stringvalin, const char* charstrvalin, CTransaction txvalin) : intval(intvalin), boolval(boolvalin), stringval(std::move(stringvalin)), charstrval(charstrvalin), txval(txvalin){}
+    CSerializeMethodsTestSingle(int intvalin, bool boolvalin, std::string stringvalin, const char* charstrvalin, CTransaction txvalin) : intval(intvalin), boolval(boolvalin), stringval(std::move(stringvalin)), charstrval(charstrvalin), txval(MakeTransactionRef(txvalin)){}
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
@@ -42,7 +41,7 @@ public:
                 boolval == rhs.boolval && \
                 stringval == rhs.stringval && \
                 strcmp(charstrval, rhs.charstrval) == 0 && \
-                txval == rhs.txval;
+                *txval == *rhs.txval;
     }
 };
 
@@ -227,7 +226,7 @@ BOOST_AUTO_TEST_CASE(varints_bitpatterns)
 BOOST_AUTO_TEST_CASE(compactsize)
 {
     CDataStream ss(SER_DISK, 0);
-    vector<char>::size_type i, j;
+    std::vector<char>::size_type i, j;
 
     for (i = 1; i <= MAX_SIZE; i *= 2)
     {
@@ -260,7 +259,7 @@ BOOST_AUTO_TEST_CASE(noncanonical)
     // Write some non-canonical CompactSize encodings, and
     // make sure an exception is thrown when read back.
     CDataStream ss(SER_DISK, 0);
-    vector<char>::size_type n;
+    std::vector<char>::size_type n;
 
     // zero encoded with three bytes:
     ss.write("\xfd\x00\x00", 3);

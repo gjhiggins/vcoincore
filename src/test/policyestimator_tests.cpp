@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -38,7 +38,6 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
     for (unsigned int i = 0; i < 128; i++)
         garbage.push_back('X');
     CMutableTransaction tx;
-    std::list<CTransaction> dummyConflicted, dummyNameConflicts;
     tx.vin.resize(1);
     tx.vin[0].scriptSig = garbage;
     tx.vout.resize(1);
@@ -73,7 +72,7 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
                 txHashes[9-h].pop_back();
             }
         }
-        mpool.removeForBlock(block, ++blocknum, dummyConflicted, dummyNameConflicts);
+        mpool.removeForBlock(block, ++blocknum);
         block.clear();
         if (blocknum == 30) {
             // At this point we should need to combine 5 buckets to get enough data points
@@ -96,25 +95,31 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
     // Highest feerate is 10*baseRate and gets in all blocks,
     // second highest feerate is 9*baseRate and gets in 9/10 blocks = 90%,
     // third highest feerate is 8*base rate, and gets in 8/10 blocks = 80%,
-    // so estimateFee(1) should return 10*baseRate.
+    // so estimateFee(1) would return 10*baseRate but is hardcoded to return failure
     // Second highest feerate has 100% chance of being included by 2 blocks,
     // so estimateFee(2) should return 9*baseRate etc...
     for (int i = 1; i < 10;i++) {
         origFeeEst.push_back(mpool.estimateFee(i).GetFeePerK());
-        if (i > 1) { // Fee estimates should be monotonically decreasing
+        if (i > 2) { // Fee estimates should be monotonically decreasing
             BOOST_CHECK(origFeeEst[i-1] <= origFeeEst[i-2]);
         }
         int mult = 11-i;
-        BOOST_CHECK(origFeeEst[i-1] < mult*baseRate.GetFeePerK() + deltaFee);
-        BOOST_CHECK(origFeeEst[i-1] > mult*baseRate.GetFeePerK() - deltaFee);
+        if (i > 1) {
+            BOOST_CHECK(origFeeEst[i-1] < mult*baseRate.GetFeePerK() + deltaFee);
+            BOOST_CHECK(origFeeEst[i-1] > mult*baseRate.GetFeePerK() - deltaFee);
+        }
+        else {
+            BOOST_CHECK(origFeeEst[i-1] == CFeeRate(0).GetFeePerK());
+        }
     }
 
     // Mine 50 more blocks with no transactions happening, estimates shouldn't change
     // We haven't decayed the moving average enough so we still have enough data points in every bucket
     while (blocknum < 250)
-        mpool.removeForBlock(block, ++blocknum, dummyConflicted, dummyNameConflicts);
+        mpool.removeForBlock(block, ++blocknum);
 
-    for (int i = 1; i < 10;i++) {
+    BOOST_CHECK(mpool.estimateFee(1) == CFeeRate(0));
+    for (int i = 2; i < 10;i++) {
         BOOST_CHECK(mpool.estimateFee(i).GetFeePerK() < origFeeEst[i-1] + deltaFee);
         BOOST_CHECK(mpool.estimateFee(i).GetFeePerK() > origFeeEst[i-1] - deltaFee);
     }
@@ -131,7 +136,7 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
                 txHashes[j].push_back(hash);
             }
         }
-        mpool.removeForBlock(block, ++blocknum, dummyConflicted, dummyNameConflicts);
+        mpool.removeForBlock(block, ++blocknum);
     }
 
     int answerFound;
@@ -150,9 +155,10 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
             txHashes[j].pop_back();
         }
     }
-    mpool.removeForBlock(block, 265, dummyConflicted, dummyNameConflicts);
+    mpool.removeForBlock(block, 265);
     block.clear();
-    for (int i = 1; i < 10;i++) {
+    BOOST_CHECK(mpool.estimateFee(1) == CFeeRate(0));
+    for (int i = 2; i < 10;i++) {
         BOOST_CHECK(mpool.estimateFee(i).GetFeePerK() > origFeeEst[i-1] - deltaFee);
     }
 
@@ -170,10 +176,11 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
 
             }
         }
-        mpool.removeForBlock(block, ++blocknum, dummyConflicted, dummyNameConflicts);
+        mpool.removeForBlock(block, ++blocknum);
         block.clear();
     }
-    for (int i = 1; i < 10; i++) {
+    BOOST_CHECK(mpool.estimateFee(1) == CFeeRate(0));
+    for (int i = 2; i < 10; i++) {
         BOOST_CHECK(mpool.estimateFee(i).GetFeePerK() < origFeeEst[i-1] - deltaFee);
     }
 

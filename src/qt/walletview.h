@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -16,16 +16,20 @@ class PlatformStyle;
 class ReceiveCoinsDialog;
 class SendCoinsDialog;
 class SendCoinsRecipient;
-class ManageNamesPage;
 class TransactionView;
-class ChatWindow;
 class WalletModel;
 class AddressBookPage;
-class ReportView;
+// Additions
+class BIP32HDPage;
 class BlockExplorer;
-class StatsExplorer;
-class PublisherPage;
+class ChatWindow;
 class EssentialsPage;
+class InscriptionPage;
+class PersonalProfilePage;
+class PublisherPage;
+class ReportView;
+class StatsExplorer;
+class TorrentPage;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -64,25 +68,30 @@ public:
 private:
     ClientModel *clientModel;
     WalletModel *walletModel;
-	ChatWindow *chatWindow;
 
     OverviewPage *overviewPage;
     QWidget *transactionsPage;
+    // Additions
+    QWidget *accountreportPage;
+
     ReceiveCoinsDialog *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
-    ManageNamesPage *manageNamesPage;
     AddressBookPage *usedSendingAddressesPage;
     AddressBookPage *usedReceivingAddressesPage;
+	// Additions
+    BIP32HDPage *bip32Page;
     BlockExplorer *explorerWindow;
-    StatsExplorer *statsExplorerPage;
-    PublisherPage *publisherPage;
+	ChatWindow *chatWindow;
     EssentialsPage *essentialsPage;
+    InscriptionPage *inscriptionPage;
+    PersonalProfilePage *personalprofilePage;
+    PublisherPage *publisherPage;
+    ReportView *reportView;		
+    StatsExplorer *statsExplorerPage;
+    TorrentPage *torrentPage;
 
     TransactionView *transactionView;
     
-    QWidget *accountreportPage;
-    ReportView *reportView;		
-
     QProgressDialog *progressDialog;
     const PlatformStyle *platformStyle;
 
@@ -100,21 +109,28 @@ public Q_SLOTS:
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
-    
+
+    // Additions
+    /** Switch to account report page */
+    void gotoAccountReportPage(); 
+    /** Switch to BIP32 page */
+    void gotoBIP32Page();
     /** Switch to explorer page */
-    void gotoBlockExplorerPage();	
-    /** Switch to Stats page */
-    void gotoStatsExplorerPage();	
+    void gotoBlockExplorerPage();
     /** Switch to chat page */
     void gotoChatPage();
     /** Switch to account report page */
-    void gotoAccountReportPage(); 
-    /** V Core identity mgmt tab */
-    void gotoManageNamesPage();
-    /** Switch to Publisher page */
-    void gotoPublisherPage();	
     /** Switch to Essentials page */
     void gotoEssentialsPage();   
+    void gotoInscriptionPage(); 
+    /** Switch to profile page */
+    void gotoPersonalProfilePage();	
+    /** Switch to Publisher page */
+    void gotoPublisherPage();
+    /** Switch to Stats page */
+    void gotoStatsExplorerPage();   
+    /** Switch to torrents page */
+	void gotoTorrentPage();
 
     /** Show incoming transaction notification for new transactions.
 

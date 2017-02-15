@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,7 +13,7 @@
 #include "consensus/merkle.h"
 #include "consensus/validation.h"
 #include "hash.h"
-#include "main.h"
+#include "validation.h"
 #include "net.h"
 #include "policy/policy.h"
 #include "pow.h"
@@ -84,12 +84,12 @@ BlockAssembler::BlockAssembler(const CChainParams& _chainparams)
     nBlockMaxWeight = DEFAULT_BLOCK_MAX_WEIGHT;
     nBlockMaxSize = DEFAULT_BLOCK_MAX_SIZE;
     bool fWeightSet = false;
-    if (mapArgs.count("-blockmaxweight")) {
+    if (IsArgSet("-blockmaxweight")) {
         nBlockMaxWeight = GetArg("-blockmaxweight", DEFAULT_BLOCK_MAX_WEIGHT);
         nBlockMaxSize = MAX_BLOCK_SERIALIZED_SIZE;
         fWeightSet = true;
     }
-    if (mapArgs.count("-blockmaxsize")) {
+    if (IsArgSet("-blockmaxsize")) {
         nBlockMaxSize = GetArg("-blockmaxsize", DEFAULT_BLOCK_MAX_SIZE);
         if (!fWeightSet) {
             nBlockMaxWeight = nBlockMaxSize * WITNESS_SCALE_FACTOR;
@@ -239,16 +239,13 @@ bool BlockAssembler::TestPackage(uint64_t packageSize, int64_t packageSigOpsCost
 // - premature witness (in case segwit transactions are added to mempool before
 //   segwit activation)
 // - serialized size (in case -blockmaxsize is in use)
-// - Namecoin maturity conditions
 bool BlockAssembler::TestPackageTransactions(const CTxMemPool::setEntries& package)
 {
     uint64_t nPotentialBlockSize = nBlockSize; // only used with fNeedSizeAccounting
     BOOST_FOREACH (const CTxMemPool::txiter it, package) {
-        if (!TxAllowedForNamecoin(it->GetTx()))
-            return false;
         if (!IsFinalTx(it->GetTx(), nHeight, nLockTimeCutoff))
             return false;
-        if (!fIncludeWitness && !it->GetTx().wit.IsNull())
+        if (!fIncludeWitness && it->GetTx().HasWitness())
             return false;
         if (fNeedSizeAccounting) {
             uint64_t nTxSize = ::GetSerializeSize(it->GetTx(), SER_NETWORK, PROTOCOL_VERSION);
@@ -304,11 +301,6 @@ bool BlockAssembler::TestForBlock(CTxMemPool::txiter iter)
         return false;
     }
 
-
-    // The tx must be valid for Namecoin.
-    if (!TxAllowedForNamecoin(iter->GetTx()))
-        return false;
-
     // Must check that lock times are still valid
     // This can be removed once MTP is always enforced
     // as long as reorgs keep the mempool consistent.
@@ -316,47 +308,6 @@ bool BlockAssembler::TestForBlock(CTxMemPool::txiter iter)
         return false;
 
     return true;
-}
-
-bool
-BlockAssembler::TxAllowedForNamecoin (const CTransaction& tx) const
-{
-  if (!tx.IsNamecoin ())
-    return true;
-
-  bool nameOutFound = false;
-  CNameScript nameOpOut;
-  for (const auto& txOut : tx.vout)
-    {
-      const CNameScript op(txOut.scriptPubKey);
-      if (op.isNameOp ())
-        {
-          nameOutFound = true;
-          nameOpOut = op;
-          break;
-        }
-    }
-
-  if (nameOutFound && nameOpOut.getNameOp () == OP_NAME_FIRSTUPDATE)
-    {
-      for (const auto& txIn : tx.vin)
-        {
-          const COutPoint& prevout = txIn.prevout;
-          CCoins coins;
-          if (!pcoinsTip->GetCoins (prevout.hash, coins))
-            continue;
-
-          const CNameScript op(coins.vout[prevout.n].scriptPubKey);
-          if (op.isNameOp () && op.getNameOp () == OP_NAME_NEW)
-            {
-              const int minHeight = coins.nHeight + MIN_FIRSTUPDATE_DEPTH;
-              if (minHeight > nHeight)
-                return false;
-            }
-        }
-    }
-
-  return true;
 }
 
 void BlockAssembler::AddToBlock(CTxMemPool::txiter iter)
@@ -603,7 +554,7 @@ void BlockAssembler::addPriorityTxs()
         }
 
         // cannot accept witness transactions into a non-witness block
-        if (!fIncludeWitness && !iter->GetTx().wit.IsNull())
+        if (!fIncludeWitness && iter->GetTx().HasWitness())
             continue;
 
         // If tx is dependent on other mempool txs which haven't yet been included

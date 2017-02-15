@@ -1,4 +1,4 @@
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -6,8 +6,9 @@
 
 #include "chainparams.h"
 #include "clientversion.h"
-#include "main.h"
+#include "validation.h"
 #include "net.h"
+#include "net_processing.h"
 #include "netbase.h"
 #include "protocol.h"
 #include "sync.h"

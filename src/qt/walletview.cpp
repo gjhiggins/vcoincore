@@ -1,11 +1,13 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "walletview.h"
+
 #include "addressbookpage.h"
 #include "askpassphrasedialog.h"
 #include "bitcoingui.h"
+#include "chatwindow.h"
 #include "clientmodel.h"
 #include "guiutil.h"
 #include "optionsmodel.h"
@@ -18,13 +20,18 @@
 #include "transactionview.h"
 #include "walletmodel.h"
 #include "utilitydialog.h"
-#include "reportview.h"
+// Additions
+#include "bip32hdpage.h"
 #include "blockexplorer.h"
-#include "statsexplorer.h"
-#include "managenamespage.h"
 #include "chatwindow.h"
-#include "publisherpage.h"
 #include "essentialspage.h"
+#include "inscriptionpage.h"
+#include "personalprofilepage.h"
+#include "publisherpage.h"
+#include "reportview.h"
+#include "statsexplorer.h"
+#include "torrenttablemodel.h"
+#include "torrentpage.h"
 
 #include "ui_interface.h"
 
@@ -44,12 +51,16 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 {
     // Create tabs
     overviewPage = new OverviewPage(platformStyle);
-	explorerWindow = new BlockExplorer(this);
-    statsExplorerPage = new StatsExplorer(this);
+    // Additions
+    bip32Page = new BIP32HDPage(this);
     chatWindow = new ChatWindow(this);
-    manageNamesPage = new ManageNamesPage(platformStyle);
-    publisherPage = new PublisherPage(platformStyle, this);
+    explorerWindow = new BlockExplorer(this);
     essentialsPage = new EssentialsPage(platformStyle, this);
+    inscriptionPage = new InscriptionPage(this);
+    personalprofilePage = new PersonalProfilePage(this);
+    publisherPage = new PublisherPage(this);
+    statsExplorerPage = new StatsExplorer(this);
+    torrentPage = new TorrentPage(platformStyle, this);
 
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -65,8 +76,8 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     hbox_buttons->addWidget(exportButton);
     vbox->addLayout(hbox_buttons);
     transactionsPage->setLayout(vbox);
-    
-    
+
+    // Additions    
     accountreportPage = new QWidget(this);
     QVBoxLayout *vboxR = new QVBoxLayout();
     QHBoxLayout *hboxR_buttons = new QHBoxLayout();
@@ -84,22 +95,25 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 
     receiveCoinsPage = new ReceiveCoinsDialog(platformStyle);
     sendCoinsPage = new SendCoinsDialog(platformStyle);
-    manageNamesPage = new ManageNamesPage(platformStyle);
 
     usedSendingAddressesPage = new AddressBookPage(platformStyle, AddressBookPage::ForEditing, AddressBookPage::SendingTab, this);
     usedReceivingAddressesPage = new AddressBookPage(platformStyle, AddressBookPage::ForEditing, AddressBookPage::ReceivingTab, this);
 
-    addWidget(accountreportPage);
     addWidget(overviewPage);
     addWidget(transactionsPage);
     addWidget(receiveCoinsPage);
     addWidget(sendCoinsPage);
-	addWidget(explorerWindow);
-    addWidget(statsExplorerPage);
-    addWidget(manageNamesPage);
-	addWidget(chatWindow);
-    addWidget(publisherPage);
+    // Additions
+    addWidget(accountreportPage);
+    addWidget(bip32Page);
+    addWidget(chatWindow);
     addWidget(essentialsPage);
+    addWidget(explorerWindow);
+    addWidget(inscriptionPage);
+    addWidget(personalprofilePage);
+    addWidget(publisherPage);
+    addWidget(statsExplorerPage);
+	addWidget(torrentPage);
 
         // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
@@ -110,7 +124,6 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 
     // Clicking on "Export" allows to export the transaction list
     connect(exportButton, SIGNAL(clicked()), transactionView, SLOT(exportClicked()));
-    connect(exportRButton, SIGNAL(clicked()), reportView, SLOT(exportClicked())); 
 
     // Pass through messages from sendCoinsPage
     connect(sendCoinsPage, SIGNAL(message(QString,QString,unsigned int)), this, SIGNAL(message(QString,QString,unsigned int)));
@@ -157,13 +170,14 @@ void WalletView::setWalletModel(WalletModel *_walletModel)
 
     // Put transaction list in tabs
     transactionView->setModel(_walletModel);
-    reportView->setModel(walletModel);
     overviewPage->setWalletModel(_walletModel);
     receiveCoinsPage->setModel(_walletModel);
     sendCoinsPage->setModel(_walletModel);
-    manageNamesPage->setModel(_walletModel);
     usedReceivingAddressesPage->setModel(_walletModel->getAddressTableModel());
     usedSendingAddressesPage->setModel(_walletModel->getAddressTableModel());
+    // Additions
+    reportView->setModel(_walletModel);
+    torrentPage->setModel(_walletModel->getTorrentTableModel());
 
     if (_walletModel)
     {
@@ -369,9 +383,15 @@ void WalletView::requestedSyncWarningInfo()
     Q_EMIT outOfSyncWarningClicked();
 }
 
+// Additions
 void WalletView::gotoAccountReportPage()
 {
     setCurrentWidget(accountreportPage); 
+}
+
+void WalletView::gotoBIP32Page()
+{
+    setCurrentWidget(bip32Page);
 }
 
 void WalletView::gotoBlockExplorerPage()
@@ -384,25 +404,33 @@ void WalletView::gotoChatPage()
     setCurrentWidget(chatWindow);
 }
 
-void WalletView::gotoStatsExplorerPage()
-{
-    setCurrentWidget(statsExplorerPage);
-}
-
-void WalletView::gotoManageNamesPage()
-{
-    setCurrentWidget(manageNamesPage);
-}
-
 void WalletView::gotoEssentialsPage()
 {
     setCurrentWidget(essentialsPage);
 
 }
 
+void WalletView::gotoInscriptionPage()
+{
+    setCurrentWidget(inscriptionPage); 
+}
+
+void WalletView::gotoPersonalProfilePage()
+{
+    setCurrentWidget(personalprofilePage);
+}
+
 void WalletView::gotoPublisherPage()
 {
     setCurrentWidget(publisherPage);
-
 }
 
+void WalletView::gotoStatsExplorerPage()
+{
+    setCurrentWidget(statsExplorerPage);
+}
+
+void WalletView::gotoTorrentPage()
+{
+    setCurrentWidget(torrentPage);
+}
