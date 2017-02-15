@@ -7,6 +7,7 @@
 
 #include "paymentrequestplus.h"
 #include "walletmodeltransaction.h"
+#include "torrenttablemodel.h"
 
 #include "support/allocators/secure.h"
 
@@ -19,6 +20,7 @@ class AddressTableModel;
 class OptionsModel;
 class PlatformStyle;
 class RecentRequestsTableModel;
+class TorrentTableModel;
 class TransactionTableModel;
 class WalletModelTransaction;
 
@@ -127,6 +129,7 @@ public:
     OptionsModel *getOptionsModel();
     AddressTableModel *getAddressTableModel();
     TransactionTableModel *getTransactionTableModel();
+    TorrentTableModel *getTorrentTableModel();
     RecentRequestsTableModel *getRecentRequestsTableModel();
 
     CAmount getBalance(const CCoinControl *coinControl = NULL) const;
@@ -223,6 +226,7 @@ private:
     OptionsModel *optionsModel;
 
     AddressTableModel *addressTableModel;
+    TorrentTableModel *torrentTableModel;
     TransactionTableModel *transactionTableModel;
     RecentRequestsTableModel *recentRequestsTableModel;
 

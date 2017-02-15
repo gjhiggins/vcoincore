@@ -492,12 +492,95 @@ UniValue getmemoryinfo(const JSONRPCRequest& request)
     return obj;
 }
 
+// UniValue gettorrent(const Array& params, bool fHelp)
+UniValue gettorrent(const JSONRPCRequest& request)
+{
+    if (request.fHelp || request.params.size() != 1)
+        throw runtime_error(
+            "gettorrent \"<txid>\"\n"
+            "\nRetrieves the torrent from the transaction.\n"
+            "\nArguments:\n"
+            "1. \"txid\"    (string, required) The id of the transaction.\n"
+            "\nExamples:\n"
+            + HelpExampleCli("gettorrent", "\"0142f010c62598061c7fde3c3867a0f991884afa78fc874ae118ad086cb0d1a4-000\"")
+            + HelpExampleRpc("gettorrent", "\"0142f010c62598061c7fde3c3867a0f991884afa78fc874ae118ad086cb0d1a4-000\"")
+        );
+
+    uint256 hash;
+    hash.SetHex(request.params[0].get_str());
+
+    CTransactionRef tx;
+    uint256 hashBlock;
+    if (!GetTransaction(hash, tx, Params().GetConsensus(), hashBlock, true))
+        return false;
+
+    if (tx->vout.size() < 3) // Standard TX
+    {
+         return false;
+    }
+
+    try{
+        string torrentStr;
+        for (unsigned int i = 0; i < tx->vout.size(); i++)
+        {
+            const CTxOut& txout = tx->vout[i];
+            const CScript& scriptPubKey = txout.scriptPubKey;
+            txnouttype type;
+            vector<vector<unsigned char> > vSolutions;
+            if (Solver(scriptPubKey, type, vSolutions))
+            {
+                if (type == TX_MULTISIG)
+                {
+                    /* FIXME: find out how to get asm of scriptPubKey
+                    string  asmStr  = scriptPubKey.ToString();
+                    vector<string> strs;
+                    boost::split(strs, asmStr, boost::is_any_of(" "));
+                    string t = strs[2];
+                    string s;
+                    s.assign(t,2,2);
+                    int x;
+                    sscanf(s.c_str(), "%x", &x);
+                    t.assign(t,4,x*2);
+                    torrentStr.append(t);
+                    */
+                }
+            }
+        }
+
+        int len = torrentStr.length();
+        string strReply;
+        for(int i=0; i< len; i+=2)
+        {
+            string byte = torrentStr.substr(i,2);
+            char chr = (char) (int)strtol(byte.c_str(), NULL, 16);
+            strReply.push_back(chr);
+        }
+
+        strReply = DecodeBase64(strReply);
+        UniValue valReply;
+        /* FIXME: validate transcription to a purely secular expression
+        if (read_string(strReply, valReply))
+        {
+            return valReply;
+        }
+        */
+        if (valReply.read(strReply))
+        {
+            return valReply;
+        }
+    }catch(exception &e){
+       return false;
+    }
+    return false;
+}
+
 static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         okSafeMode
   //  --------------------- ------------------------  -----------------------  ----------
     { "control",            "getinfo",                &getinfo,                true  }, /* uses wallet if enabled */
     { "control",            "getmemoryinfo",          &getmemoryinfo,          true  },
     { "util",               "validateaddress",        &validateaddress,        true  }, /* uses wallet if enabled */
+    { "util",               "gettorrent",             &gettorrent,             true  },
     { "util",               "createmultisig",         &createmultisig,         true  },
     { "util",               "verifymessage",          &verifymessage,          true  },
     { "util",               "signmessagewithprivkey", &signmessagewithprivkey, true  },

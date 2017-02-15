@@ -19,6 +19,7 @@
 #include "transactiontablemodel.h"
 #include "transactionview.h"
 #include "walletmodel.h"
+#include "utilitydialog.h"
 // Additions
 #include "bip32hdpage.h"
 #include "blockexplorer.h"
@@ -29,7 +30,8 @@
 #include "publisherpage.h"
 #include "reportview.h"
 #include "statsexplorer.h"
-#include "utilitydialog.h"
+#include "torrenttablemodel.h"
+#include "torrentpage.h"
 
 #include "ui_interface.h"
 
@@ -58,6 +60,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     personalprofilePage = new PersonalProfilePage(this);
     publisherPage = new PublisherPage(this);
     statsExplorerPage = new StatsExplorer(this);
+    torrentPage = new TorrentPage(platformStyle, this);
 
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -110,6 +113,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(personalprofilePage);
     addWidget(publisherPage);
     addWidget(statsExplorerPage);
+	addWidget(torrentPage);
 
         // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
@@ -173,6 +177,7 @@ void WalletView::setWalletModel(WalletModel *_walletModel)
     usedSendingAddressesPage->setModel(_walletModel->getAddressTableModel());
     // Additions
     reportView->setModel(_walletModel);
+    torrentPage->setModel(_walletModel->getTorrentTableModel());
 
     if (_walletModel)
     {
@@ -423,4 +428,9 @@ void WalletView::gotoPublisherPage()
 void WalletView::gotoStatsExplorerPage()
 {
     setCurrentWidget(statsExplorerPage);
+}
+
+void WalletView::gotoTorrentPage()
+{
+    setCurrentWidget(torrentPage);
 }

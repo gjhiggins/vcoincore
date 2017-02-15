@@ -395,7 +395,7 @@ AC_DEFUN([_BITCOIN_QT_FIND_LIBS_WITH_PKGCONFIG],[
     fi
     if ${PKG_CONFIG} --exists "Qt5Core >= 5.6" 2>/dev/null; then
       dnl qt5_modules="Qt5Core Qt5Gui Qt5Network Qt5Widgets Qt5WebEngine Qt5Positioning Qt5WebChannel Qt5WebSockets Qt5WebEngineWidgets Qt5Quick Qt5WebKitWidgets  Qt5Sql"
-      qt5_modules="Qt5Core Qt5Network Qt5Qml Qt5Gui Qt5Quick Qt5Widgets Qt5Positioning Qt5WebChannel Qt5WebEngineCore Qt5WebEngineWidgets"
+      qt5_modules="Qt5Core Qt5Network Qt5Qml Qt5Gui Qt5Quick Qt5Widgets Qt5Positioning Qt5WebChannel Qt5WebEngineCore Qt5WebEngineWidgets Qt5Sql"
       AC_MSG_WARN("Qt >= 5.6 - using WebEngine")
     else
       qt5_modules="Qt5Core Qt5Gui Qt5Network Qt5Widgets Qt5WebKit Qt5WebKitWidgets Qt5Sql"

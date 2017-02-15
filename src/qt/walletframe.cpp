@@ -265,3 +265,10 @@ void WalletFrame::gotoStatsExplorerPage()
     if (walletView)
         walletView->gotoStatsExplorerPage();
 }
+
+void WalletFrame::gotoTorrentPage()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoTorrentPage();
+}
