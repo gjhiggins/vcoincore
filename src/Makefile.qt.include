@@ -118,8 +118,8 @@ QT_FORMS_UI = \
   qt/forms/sendcoinsentry.ui \
   qt/forms/signverifymessagedialog.ui \
   qt/forms/statsexplorer.ui \
-  qt/forms/transactiondescdialog.ui \
-  qt/forms/torrentpage.ui
+  qt/forms/torrentpage.ui \
+  qt/forms/transactiondescdialog.ui
 
 QT_MOC_CPP = \
   qt/moc_addressbookpage.cpp \
