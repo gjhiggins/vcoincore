@@ -70,10 +70,11 @@
         <file alias="arrow-up">res/icons/arrow-up.png</file>
         <file alias="arrow-down">res/icons/arrow-down.png</file>
         <file alias="bottom">res/icons/bottom.png</file>
+        <file alias="editadd">res/icons/editadd.png</file>
+        <file alias="exit">res/icons/exit.png</file>
         <file alias="player_pause">res/icons/player_pause.png</file>
         <file alias="player_play">res/icons/player_play.png</file>
         <file alias="player_stop">res/icons/player_stop.png</file>
-        <file alias="exit">res/icons/exit.png</file>
     </qresource>
     <qresource prefix="/pbt">
         <file alias="index.html">res/pbt/index.html</file>

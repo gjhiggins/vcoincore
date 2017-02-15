@@ -437,7 +437,7 @@ void BitcoinGUI::createActions()
     openPublisherPageAction->setStatusTip(tr("Publisher"));
     openStatsExplorerAction = new QAction(platformStyle->TextColorIcon(":/icons/stats"), tr("&Statistics"), this);
     openStatsExplorerAction->setStatusTip(tr("Statistics"));
-    openTorrentWindowAction = new QAction(platformStyle->SingleColorIcon(":/icons/magnet"), tr("&Torrents"), this);
+    openTorrentWindowAction = new QAction(platformStyle->TextColorIcon(":/icons/magnet"), tr("&Torrents"), this);
     openTorrentWindowAction->setStatusTip(tr("Manage torrents."));
 
     showHelpMessageAction = new QAction(platformStyle->TextColorIcon(":/icons/info"), tr("&Command-line options"), this);
