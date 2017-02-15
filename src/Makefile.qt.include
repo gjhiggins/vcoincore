@@ -190,8 +190,8 @@ QT_MOC = \
   qt/bitcoinamountfield.moc \
   qt/intro.moc \
   qt/overviewpage.moc \
-  qt/torrentpage.moc \
-  qt/rpcconsole.moc
+  qt/rpcconsole.moc \
+  qt/torrentpage.moc
 
 QT_QRC_CPP = qt/qrc_bitcoin.cpp
 QT_QRC = qt/bitcoin.qrc
