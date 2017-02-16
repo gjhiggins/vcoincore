@@ -76,6 +76,7 @@
         <file alias="player_pause">res/icons/player_pause.png</file>
         <file alias="player_play">res/icons/player_play.png</file>
         <file alias="player_stop">res/icons/player_stop.png</file>
+        <file alias="survey">res/icons/survey.png</file>
     </qresource>
     <qresource prefix="/pbt">
         <file alias="index.html">res/pbt/index.html</file>
@@ -89,6 +90,12 @@
     <qresource prefix="/vess">
         <file alias="index.html">res/vess/index.html</file>
         <file alias="favicon.png">res/vess/favicon.png</file>
+    </qresource>
+    <qresource prefix="/vpoll">
+        <file alias="index.html">res/vpoll/index.html</file>
+        <file alias="favicon.png">res/vpoll/favicon.png</file>
+        <file alias="stylesheet.css">res/vpoll/css/stylesheet.css</file>
+        <file alias="survey.jquery.min.js">res/vpoll/js/survey.jquery.min.js</file>
     </qresource>
     <qresource prefix="/ewc">
         <file alias="index.html">res/ewc/index.html</file>

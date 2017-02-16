@@ -266,6 +266,13 @@ void WalletFrame::gotoStatsExplorerPage()
         walletView->gotoStatsExplorerPage();
 }
 
+void WalletFrame::gotoSurveyPage()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoSurveyPage();
+}
+
 void WalletFrame::gotoTorrentPage()
 {
     WalletView *walletView = currentWalletView();

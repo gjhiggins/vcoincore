@@ -14,6 +14,7 @@
 #include <QDir>
 #include <QTextStream>
 #include <QWebEngineView>
+#include <QWebEngineSettings>
 
 class QWebEngineView;
 
@@ -52,6 +53,14 @@ void EssentialsPage::setWalletModel(WalletModel *model)
 void EssentialsPage::show()
 {
     QWebEngineView *view = new QWebEngineView;
+    view->page()->settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessFileUrls, true);
+    view->page()->settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
+    view->page()->settings()->setAttribute(QWebEngineSettings::LocalStorageEnabled, true);
+
+    view->settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessFileUrls, true);
+    view->settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
+    view->settings()->setAttribute(QWebEngineSettings::LocalStorageEnabled, true);
+
     QDir dir;
     QString cwd = dir.currentPath();
     QString html = "qrc:///vess/index.html";
