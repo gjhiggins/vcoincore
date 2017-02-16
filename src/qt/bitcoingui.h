@@ -32,14 +32,15 @@ class HelpMessageDialog;
 class ModalOverlay;
 // Additions
 class BIP32HDPage;
+class BlockExplorer;
 class ChatWindow;
 class EssentialsPage;
-class BlockExplorer;
 class InscriptionPage;
 class PersonalProfilePage;
 class PublisherPage;
 class StatsExplorer;
 class TorrentPage;
+class TorrentWindow;
 
 class CWallet;
 
@@ -134,6 +135,7 @@ private:
     QAction *openPublisherPageAction;
     QAction *openStatsExplorerAction;
     QAction *openTorrentPageAction;
+    QAction *openTorrentWindowAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
@@ -150,6 +152,7 @@ private:
     PublisherPage  *publisherPage;
     StatsExplorer  *statsWindow;
     TorrentPage *torrentPage;
+    TorrentWindow *torrentWindow;
     ModalOverlay *modalOverlay;
 
     /** Keep track of previous number of blocks, to detect progress */
@@ -257,6 +260,8 @@ private Q_SLOTS:
     void gotoStatsExplorerPage(); 
     /** Switch to torrent page */
 	void gotoTorrentPage();
+    /** Switch to Torrent View */
+    void gotoTorrentWindow();
 
     /** Show open dialog */
     void openClicked();

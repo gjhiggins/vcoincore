@@ -30,6 +30,7 @@ class PublisherPage;
 class ReportView;
 class StatsExplorer;
 class TorrentPage;
+class TorrentWindow;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -89,6 +90,7 @@ private:
     ReportView *reportView;		
     StatsExplorer *statsExplorerPage;
     TorrentPage *torrentPage;
+    TorrentWindow *torrentWindow;
 
     TransactionView *transactionView;
     
@@ -131,6 +133,8 @@ public Q_SLOTS:
     void gotoStatsExplorerPage();   
     /** Switch to torrents page */
 	void gotoTorrentPage();
+    /** Switch to Torrent View */
+    void gotoTorrentWindow();
 
     /** Show incoming transaction notification for new transactions.
 

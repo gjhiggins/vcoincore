@@ -272,3 +272,10 @@ void WalletFrame::gotoTorrentPage()
     if (walletView)
         walletView->gotoTorrentPage();
 }
+
+void WalletFrame::gotoTorrentWindow()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoTorrentWindow();
+}
