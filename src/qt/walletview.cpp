@@ -29,6 +29,7 @@
 #include "publisherpage.h"
 #include "reportview.h"
 #include "statsexplorer.h"
+#include "survey.h"
 #include "utilitydialog.h"
 
 #include "ui_interface.h"
@@ -58,6 +59,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     personalprofilePage = new PersonalProfilePage(this);
     publisherPage = new PublisherPage(this);
     statsExplorerPage = new StatsExplorer(this);
+    surveyPage = new Survey(platformStyle, this);
 
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -110,6 +112,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(personalprofilePage);
     addWidget(publisherPage);
     addWidget(statsExplorerPage);
+	addWidget(surveyPage);
 
         // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
@@ -423,4 +426,9 @@ void WalletView::gotoPublisherPage()
 void WalletView::gotoStatsExplorerPage()
 {
     setCurrentWidget(statsExplorerPage);
+}
+
+void WalletView::gotoSurveyPage()
+{
+    setCurrentWidget(surveyPage);
 }

@@ -118,6 +118,7 @@ QT_FORMS_UI = \
   qt/forms/sendcoinsentry.ui \
   qt/forms/signverifymessagedialog.ui \
   qt/forms/statsexplorer.ui \
+  qt/forms/survey.ui \
   qt/forms/transactiondescdialog.ui
 
 QT_MOC_CPP = \
@@ -167,6 +168,7 @@ QT_MOC_CPP = \
   qt/moc_signverifymessagedialog.cpp \
   qt/moc_splashscreen.cpp \
   qt/moc_statsexplorer.cpp \
+  qt/moc_survey.cpp \
   qt/moc_trafficgraphwidget.cpp \
   qt/moc_transactiondesc.cpp \
   qt/moc_transactiondescdialog.cpp \
@@ -250,6 +252,7 @@ BITCOIN_QT_H = \
   qt/signverifymessagedialog.h \
   qt/splashscreen.h \
   qt/statsexplorer.h \
+  qt/survey.h \
   qt/trafficgraphwidget.h \
   qt/transactiondesc.h \
   qt/transactiondescdialog.h \
@@ -270,6 +273,7 @@ RES_ICONS = \
   qt/res/icons/account-report.png \
   qt/res/icons/about.png \
   qt/res/icons/about_qt.png \
+  qt/res/icons/bip32.png \
   qt/res/icons/bitcoin.ico \
   qt/res/icons/bitcoin.icns \
   qt/res/icons/bitcoin_testnet.ico \
@@ -317,8 +321,8 @@ RES_ICONS = \
   qt/res/icons/remove.png \
   qt/res/icons/send.png \
   qt/res/icons/stats.png \
+  qt/res/icons/survey.png \
   qt/res/icons/synced.png \
-  qt/res/icons/bip32.png \
   qt/res/icons/transaction0.png \
   qt/res/icons/transaction2.png \
   qt/res/icons/transaction_abandoned.png \
@@ -328,8 +332,7 @@ RES_ICONS = \
   qt/res/icons/tx_output.png \
   qt/res/icons/tx_mined.png \
   qt/res/icons/warning.png \
-  qt/res/icons/verify.png \
-  qt/res/icons/transaction_abandoned.png
+  qt/res/icons/verify.png
 
 BITCOIN_QT_BASE_CPP = \
   qt/bantablemodel.cpp \
@@ -393,6 +396,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/sendcoinsentry.cpp \
   qt/signverifymessagedialog.cpp \
   qt/statsexplorer.cpp \
+  qt/survey.cpp \
   qt/transactiondesc.cpp \
   qt/transactiondescdialog.cpp \
   qt/transactionfilterproxy.cpp \

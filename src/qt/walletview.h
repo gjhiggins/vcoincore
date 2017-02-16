@@ -29,6 +29,7 @@ class PersonalProfilePage;
 class PublisherPage;
 class ReportView;
 class StatsExplorer;
+class Survey;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -87,6 +88,7 @@ private:
     PublisherPage *publisherPage;
     ReportView *reportView;		
     StatsExplorer *statsExplorerPage;
+    Survey *surveyPage;
 
     TransactionView *transactionView;
     
@@ -127,6 +129,8 @@ public Q_SLOTS:
     void gotoPublisherPage();
     /** Switch to Stats page */
     void gotoStatsExplorerPage();   
+    /** Switch to Questionnaire page */
+	void gotoSurveyPage();
 
     /** Show incoming transaction notification for new transactions.
 
