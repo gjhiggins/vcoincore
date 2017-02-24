@@ -543,6 +543,14 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForCStrings(QTextCodec::codecForTr());
 #endif
 
+    // Ignore SSL-related warnings
+    // Note #1: this is to address an issue with QSslSocket not being able to
+    //          resolve some methods...
+    // Note #2: see https://github.com/opencor/opencor/issues/516 for more
+    //          information...
+ 
+    qputenv("QT_LOGGING_RULES", "qt.network.ssl.warning=false");
+
     Q_INIT_RESOURCE(bitcoin);
     Q_INIT_RESOURCE(bitcoin_locale);
 
@@ -558,6 +566,7 @@ int main(int argc, char *argv[])
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
 #if QT_VERSION >= 0x050500
+
     // Because of the POODLE attack it is recommended to disable SSLv3 (https://disablessl3.com/),
     // so set SSL protocols to TLS1.0+.
     QSslConfiguration sslconf = QSslConfiguration::defaultConfiguration();
