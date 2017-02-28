@@ -25,6 +25,7 @@
 #include "util.h"
 #include "ui_interface.h"
 #include "utilmoneystr.h"
+#include "validationinterface.h"
 
 #include <assert.h>
 
@@ -3803,5 +3804,9 @@ int CMerkleTx::GetBlocksToMaturity() const
 
 bool CMerkleTx::AcceptToMemoryPool(const CAmount& nAbsurdFee, CValidationState& state)
 {
-    return ::AcceptToMemoryPool(mempool, state, tx, true, NULL, false, nAbsurdFee);
+    bool accepted =  ::AcceptToMemoryPool(mempool, state, tx, true, NULL, false, nAbsurdFee);
+    if (accepted) {
+        GetMainSignals().AcceptedTransaction(tx);
+    }
+    return accepted;
 }

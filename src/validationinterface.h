@@ -6,8 +6,11 @@
 #ifndef BITCOIN_VALIDATIONINTERFACE_H
 #define BITCOIN_VALIDATIONINTERFACE_H
 
+#include "primitives/transaction.h"
+
 #include <boost/signals2/signal.hpp>
 #include <boost/shared_ptr.hpp>
+#include <memory>
 
 class CBlock;
 class CBlockIndex;
@@ -40,6 +43,7 @@ protected:
     virtual void BlockChecked(const CBlock&, const CValidationState&) {}
     virtual void GetScriptForMining(boost::shared_ptr<CReserveScript>&) {};
     virtual void ResetRequestCount(const uint256 &hash) {};
+    virtual void NewPoWValidBlock(const CBlockIndex *pindex, const std::shared_ptr<const CBlock>& block) {};
     friend void ::RegisterValidationInterface(CValidationInterface*);
     friend void ::UnregisterValidationInterface(CValidationInterface*);
     friend void ::UnregisterAllValidationInterfaces();
@@ -50,6 +54,7 @@ struct CMainSignals {
     boost::signals2::signal<void (const CBlockIndex *, const CBlockIndex *, bool fInitialDownload)> UpdatedBlockTip;
     /** A posInBlock value for SyncTransaction which indicates the transaction was conflicted, disconnected, or not in a block */
     static const int SYNC_TRANSACTION_NOT_IN_BLOCK = -1;
+    boost::signals2::signal<void (const CTransactionRef &)> AcceptedTransaction;
     /** Notifies listeners of updated transaction data (transaction, and optionally the block it is found in. */
     boost::signals2::signal<void (const CTransaction &, const CBlockIndex *pindex, int posInBlock)> SyncTransaction;
     /** Notifies listeners of an updated transaction without new data (for now: a coinbase potentially becoming visible). */
@@ -66,6 +71,10 @@ struct CMainSignals {
     boost::signals2::signal<void (boost::shared_ptr<CReserveScript>&)> ScriptForMining;
     /** Notifies listeners that a block has been successfully mined */
     boost::signals2::signal<void (const uint256 &)> BlockFound;
+    /**
+     * Notifies listeners that a block which builds directly on our current tip
+     * has been received and connected to the headers tree, though not validated yet */
+    boost::signals2::signal<void (const CBlockIndex *, const std::shared_ptr<const CBlock>&)> NewPoWValidBlock;
 };
 
 CMainSignals& GetMainSignals();

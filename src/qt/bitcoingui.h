@@ -19,6 +19,7 @@
 #include <QSystemTrayIcon>
 
 class ClientModel;
+class GuiNetWatch;
 class NetworkStyle;
 class Notificator;
 class OptionsModel;
@@ -122,6 +123,7 @@ private:
     QAction *backupWalletAction;
     QAction *changePassphraseAction;
     QAction *aboutQtAction;
+    QAction *NetWatchAction;
     QAction *openRPCConsoleAction;
     QAction *openAction;
     QAction *showHelpMessageAction;
@@ -142,6 +144,7 @@ private:
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
     Notificator *notificator;
+    GuiNetWatch *NetWatch;
     RPCConsole *rpcConsole;
     HelpMessageDialog *helpMessageDialog;
     // Additions
@@ -163,6 +166,7 @@ private:
     int spinnerFrame;
 
     const PlatformStyle *platformStyle;
+    const NetworkStyle *netStyle;
 
     /** Create the main UI actions. */
     void createActions();
@@ -275,6 +279,8 @@ private Q_SLOTS:
     void optionsClicked();
     /** Show about dialog */
     void aboutClicked();
+    /** Show Netwatch window */
+    void showNetWatch();
     /** Show debug window */
     void showDebugWindow();
     /** Show debug window and set focus to the console */

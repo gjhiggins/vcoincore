@@ -31,6 +31,7 @@
         <file alias="explorer">res/icons/explorer.png</file>
         <file alias="history">res/icons/history.png</file>
         <file alias="inscribe">res/icons/inscribe.png</file>
+        <file alias="netwatch">res/icons/netwatch.png</file>
         <file alias="overview">res/icons/overview.png</file>
         <file alias="profile">res/icons/profile.png</file>
         <file alias="publish">res/icons/publish.png</file>
