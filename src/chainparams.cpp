@@ -73,11 +73,17 @@ public:
     CMainParams() {
         strNetworkID = "main";
         consensus.nSubsidyHalvingInterval = 100000;
+        // Irrelevant to V and innocuous because it tests for specific antediluvian txs 
+        // that are present in the Bitcoin blockchain but absent in the V Core.
         consensus.BIP34Height = 227931;
         consensus.BIP34Hash = uint256S("0x000000000000024b89b42a942fe0d9fea3bb44ab7bd1b19115dd6a759c0808b8");
-        consensus.BIP65Height = 388381; // 000000000000000004c2b624ed5d7756c508d90fd0da2c7c679febfa6c4735f0
-        consensus.BIP66Height = 363725; // 00000000000000000379eaa19dce8c9b722d46ae6a57c2f1a988119488b50931
-        consensus.powLimit = uint256S("0x00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~arith_uint256(0) >> 20
+        // Both extant at Vcoin genesis
+        // consensus.BIP65Height = 388381; // 000000000000000004c2b624ed5d7756c508d90fd0da2c7c679febfa6c4735f0
+        // consensus.BIP66Height = 363725; // 00000000000000000379eaa19dce8c9b722d46ae6a57c2f1a988119488b50931
+        consensus.BIP65Height = 999999999; // effective at genesis, for > v2
+        consensus.BIP66Height = 999999999; // effective at genesis for > v3
+        consensus.powLimit = uint256S("0x00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~arith_uint256(0) >> 20 or 1 / 2^12 or 0.000244140625 or “20 zeroes followed by (256-20) ones”
+
         consensus.nPowTargetTimespan = 1200; // 20 minutes
         consensus.nPowTargetSpacing = 30; // 30 seconds
         // Officially removed to where?
