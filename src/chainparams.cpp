@@ -117,7 +117,7 @@ public:
 
         // Update `src/chainparams.cpp` nMinimumChainWork with information from the getblockchaininfo rpc
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000002cb971dd56d1c583c20f90");
+        consensus.nMinimumChainWork = uint256S("0x000000000000000000000000000000000000000000000004082ed452406ce1b7");
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
