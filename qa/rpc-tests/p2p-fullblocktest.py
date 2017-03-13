@@ -2,6 +2,14 @@
 # Copyright (c) 2015-2016 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
+"""Test block processing.
+
+This reimplements tests from the bitcoinj/FullBlockTestGenerator used
+by the pull-tester.
+
+We use the testing framework in which we expect a particular answer from
+each test.
+"""
 
 from test_framework.test_framework import ComparisonTestFramework
 from test_framework.util import *
@@ -16,14 +24,6 @@ class PreviousSpendableOutput(object):
     def __init__(self, tx = CTransaction(), n = -1):
         self.tx = tx
         self.n = n  # the output we're spending
-
-'''
-This reimplements tests from the bitcoinj/FullBlockTestGenerator used
-by the pull-tester.
-
-We use the testing framework in which we expect a particular answer from
-each test.
-'''
 
 #  Use this class for tests that require behavior other than normal "mininode" behavior.
 #  For now, it is used to serialize a bloated varint (b64).
@@ -398,7 +398,7 @@ class FullBlockTest(ComparisonTestFramework):
 
         # Extend the b26 chain to make sure vcored isn't accepting b26
         b27 = block(27, spend=out[7])
-        yield rejected(RejectResult(16, b'bad-prevblk'))
+        yield rejected(RejectResult(0, b'bad-prevblk'))
 
         # Now try a too-large-coinbase script
         tip(15)
@@ -410,7 +410,7 @@ class FullBlockTest(ComparisonTestFramework):
 
         # Extend the b28 chain to make sure vcored isn't accepting b28
         b29 = block(29, spend=out[7])
-        yield rejected(RejectResult(16, b'bad-prevblk'))
+        yield rejected(RejectResult(0, b'bad-prevblk'))
 
         # b30 has a max-sized coinbase scriptSig.
         tip(23)

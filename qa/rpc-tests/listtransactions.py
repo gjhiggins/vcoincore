@@ -2,8 +2,7 @@
 # Copyright (c) 2014-2016 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
-# Exercise the listtransactions API
+"""Test the listtransactions API."""
 
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
@@ -127,7 +126,11 @@ class ListTransactionsTest(BitcoinTestFramework):
         assert_array_result(self.nodes[1].listtransactions(), {"txid": txid_1}, {"bip125-replaceable":"no"})
 
         # Tx2 will build off txid_1, still not opting in to RBF.
+        utxo_to_use = get_unconfirmed_utxo_entry(self.nodes[0], txid_1)
+        assert_equal(utxo_to_use["safe"], True)
         utxo_to_use = get_unconfirmed_utxo_entry(self.nodes[1], txid_1)
+        utxo_to_use = get_unconfirmed_utxo_entry(self.nodes[1], txid_1)
+        assert_equal(utxo_to_use["safe"], False)
 
         # Create tx2 using createrawtransaction
         inputs = [{"txid":utxo_to_use["txid"], "vout":utxo_to_use["vout"]}]

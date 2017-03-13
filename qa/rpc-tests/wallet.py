@@ -2,7 +2,7 @@
 # Copyright (c) 2014-2016 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
+"""Test the wallet."""
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
 
@@ -35,7 +35,7 @@ class WalletTest (BitcoinTestFramework):
         assert_equal(len(self.nodes[1].listunspent()), 0)
         assert_equal(len(self.nodes[2].listunspent()), 0)
 
-        print("Mining blocks...")
+        self.log.info("Mining blocks...")
 
         self.nodes[0].generate(1)
 
@@ -332,7 +332,7 @@ class WalletTest (BitcoinTestFramework):
         ]
         chainlimit = 6
         for m in maintenance:
-            print("check " + m)
+            self.log.info("check " + m)
             stop_nodes(self.nodes)
             # set lower ancestor limit for later
             self.nodes = start_nodes(3, self.options.tmpdir, [[m, "-limitancestorcount="+str(chainlimit)]] * 3)
@@ -359,7 +359,6 @@ class WalletTest (BitcoinTestFramework):
         rawtx = self.nodes[0].createrawtransaction([{"txid":singletxid, "vout":0}], {chain_addrs[0]:node0_balance/2-Decimal('0.01'), chain_addrs[1]:node0_balance/2-Decimal('0.01')})
         signedtx = self.nodes[0].signrawtransaction(rawtx)
         singletxid = self.nodes[0].sendrawtransaction(signedtx["hex"])
-        txids = [singletxid, singletxid]
         self.nodes[0].generate(1)
 
         # Make a long chain of unconfirmed payments without hitting mempool limit

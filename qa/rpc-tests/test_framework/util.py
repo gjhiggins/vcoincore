@@ -2,11 +2,7 @@
 # Copyright (c) 2014-2016 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
-
-#
-# Helpful routines for regression testing
-#
+"""Helpful routines for regression testing."""
 
 import os
 import sys
@@ -19,14 +15,18 @@ import http.client
 import random
 import shutil
 import subprocess
+import tempfile
 import time
 import re
 import errno
+import logging
 
 from . import coverage
 from .authproxy import AuthServiceProxy, JSONRPCException
 
 COVERAGE_DIR = None
+
+logger = logging.getLogger("TestFramework.utils")
 
 # The maximum number of nodes a single test can spawn
 MAX_NODES = 8
@@ -240,6 +240,7 @@ def initialize_chain(test_dir, num_nodes, cachedir):
             break
 
     if create_cache:
+        logger.debug("Creating data directories from cached datadir")
 
         #find and delete old cache directories if any exist
         for i in range(MAX_NODES):
@@ -253,11 +254,9 @@ def initialize_chain(test_dir, num_nodes, cachedir):
             if i > 0:
                 args.append("-connect=127.0.0.1:"+str(p2p_port(0)))
             vcored_processes[i] = subprocess.Popen(args)
-            if os.getenv("PYTHON_DEBUG", ""):
-                print("initialize_chain: vcored started, waiting for RPC to come up")
+            logger.debug("initialize_chain: vcored started, waiting for RPC to come up")
             wait_for_vcored_start(vcored_processes[i], rpc_url(i), i)
-            if os.getenv("PYTHON_DEBUG", ""):
-                print("initialize_chain: RPC successfully started")
+            logger.debug("initialize_chain: RPC successfully started")
 
         rpcs = []
         for i in range(MAX_NODES):
@@ -309,48 +308,45 @@ def initialize_chain_clean(test_dir, num_nodes):
         datadir=initialize_datadir(test_dir, i)
 
 
-def _rpchost_to_args(rpchost):
-    '''Convert optional IP:port spec to rpcconnect/rpcport args'''
-    if rpchost is None:
-        return []
-
-    match = re.match('(\[[0-9a-fA-f:]+\]|[^:]+)(?::([0-9]+))?$', rpchost)
-    if not match:
-        raise ValueError('Invalid RPC host spec ' + rpchost)
-
-    rpcconnect = match.group(1)
-    rpcport = match.group(2)
-
-    if rpcconnect.startswith('['): # remove IPv6 [...] wrapping
-        rpcconnect = rpcconnect[1:-1]
-
-    rv = ['-rpcconnect=' + rpcconnect]
-    if rpcport:
-        rv += ['-rpcport=' + rpcport]
-    return rv
-
-def start_node(i, dirname, extra_args=None, rpchost=None, timewait=None, binary=None):
+def start_node(i, dirname, extra_args=None, rpchost=None, timewait=None, binary=None, stderr=None):
     """
     Start a vcored and return RPC connection to it
     """
     datadir = os.path.join(dirname, "node"+str(i))
     if binary is None:
         binary = os.getenv("BITCOIND", "vcored")
-    args = [ binary, "-datadir="+datadir, "-server", "-keypool=1", "-discover=0", "-rest", "-mocktime="+str(get_mocktime()) ]
+    args = [ binary, "-datadir="+datadir, "-server", "-keypool=1", "-discover=0", "-rest", "-logtimemicros", "-debug", "-mocktime="+str(get_mocktime()) ]
     if extra_args is not None: args.extend(extra_args)
-    vcored_processes[i] = subprocess.Popen(args)
-    if os.getenv("PYTHON_DEBUG", ""):
-        print("start_node: vcored started, waiting for RPC to come up")
+    vcored_processes[i] = subprocess.Popen(args, stderr=stderr)
+    logger.debug("initialize_chain: vcored started, waiting for RPC to come up")
     url = rpc_url(i, rpchost)
     wait_for_vcored_start(vcored_processes[i], url, i)
-    if os.getenv("PYTHON_DEBUG", ""):
-        print("start_node: RPC successfully started")
+    logger.debug("initialize_chain: RPC successfully started")
     proxy = get_rpc_proxy(url, i, timeout=timewait)
 
     if COVERAGE_DIR:
         coverage.write_all_rpc_commands(COVERAGE_DIR, proxy)
 
     return proxy
+
+def assert_start_raises_init_error(i, dirname, extra_args=None, expected_msg=None):
+    with tempfile.SpooledTemporaryFile(max_size=2**16) as log_stderr:
+        try:
+            node = start_node(i, dirname, extra_args, stderr=log_stderr)
+            stop_node(node, i)
+        except Exception as e:
+            assert 'bitcoind exited' in str(e) #node must have shutdown
+            if expected_msg is not None:
+                log_stderr.seek(0)
+                stderr = log_stderr.read().decode('utf-8')
+                if expected_msg not in stderr:
+                    raise AssertionError("Expected error \"" + expected_msg + "\" not found in:\n" + stderr)
+        else:
+            if expected_msg is None:
+                assert_msg = "bitcoind should have exited with an error"
+            else:
+                assert_msg = "bitcoind should have exited with expected error " + expected_msg
+            raise AssertionError(assert_msg)
 
 def start_nodes(num_nodes, dirname, extra_args=None, rpchost=None, timewait=None, binary=None):
     """
@@ -371,31 +367,23 @@ def log_filename(dirname, n_node, logname):
     return os.path.join(dirname, "node"+str(n_node), "regtest", logname)
 
 def stop_node(node, i):
+    logger.debug("Stopping node %d" % i)
     try:
         node.stop()
     except http.client.CannotSendRequest as e:
-        print("WARN: Unable to stop node: " + repr(e))
-    vcored_processes[i].wait(timeout=BITCOIND_PROC_WAIT_TIMEOUT)
+        logger.exception("Unable to stop node")
+    return_code = vcored_processes[i].wait(timeout=BITCOIND_PROC_WAIT_TIMEOUT)
+    assert_equal(return_code, 0)
     del vcored_processes[i]
 
 def stop_nodes(nodes):
-    for node in nodes:
-        try:
-            node.stop()
-        except http.client.CannotSendRequest as e:
-            print("WARN: Unable to stop node: " + repr(e))
-    del nodes[:] # Emptying array closes connections as a side effect
-    wait_vcoreds()
+    for i, node in enumerate(nodes):
+        stop_node(node, i)
+    assert not vcored_processes.values() # All connections must be gone now
 
 def set_node_times(nodes, t):
     for node in nodes:
         node.setmocktime(t)
-
-def wait_vcoreds():
-    # Wait for all vcoreds to cleanly exit
-    for vcored in vcored_processes.values():
-        vcored.wait(timeout=BITCOIND_PROC_WAIT_TIMEOUT)
-    vcored_processes.clear()
 
 def connect_nodes(from_connection, node_num):
     ip_port = "127.0.0.1:"+str(p2p_port(node_num))
@@ -455,47 +443,6 @@ def make_change(from_node, amount_in, amount_out, fee):
         outputs[from_node.getnewaddress()] = change
     return outputs
 
-def send_zeropri_transaction(from_node, to_node, amount, fee):
-    """
-    Create&broadcast a zero-priority transaction.
-    Returns (txid, hex-encoded-txdata)
-    Ensures transaction is zero-priority by first creating a send-to-self,
-    then using its output
-    """
-
-    # Create a send-to-self with confirmed inputs:
-    self_address = from_node.getnewaddress()
-    (total_in, inputs) = gather_inputs(from_node, amount+fee*2)
-    outputs = make_change(from_node, total_in, amount+fee, fee)
-    outputs[self_address] = float(amount+fee)
-
-    self_rawtx = from_node.createrawtransaction(inputs, outputs)
-    self_signresult = from_node.signrawtransaction(self_rawtx)
-    self_txid = from_node.sendrawtransaction(self_signresult["hex"], True)
-
-    vout = find_output(from_node, self_txid, amount+fee)
-    # Now immediately spend the output to create a 1-input, 1-output
-    # zero-priority transaction:
-    inputs = [ { "txid" : self_txid, "vout" : vout } ]
-    outputs = { to_node.getnewaddress() : float(amount) }
-
-    rawtx = from_node.createrawtransaction(inputs, outputs)
-    signresult = from_node.signrawtransaction(rawtx)
-    txid = from_node.sendrawtransaction(signresult["hex"], True)
-
-    return (txid, signresult["hex"])
-
-def random_zeropri_transaction(nodes, amount, min_fee, fee_increment, fee_variants):
-    """
-    Create a random zero-priority transaction.
-    Returns (txid, hex-encoded-transaction-data, fee)
-    """
-    from_node = random.choice(nodes)
-    to_node = random.choice(nodes)
-    fee = min_fee + fee_increment*random.randint(0,fee_variants)
-    (txid, txhex) = send_zeropri_transaction(from_node, to_node, amount, fee)
-    return (txid, txhex, fee)
-
 def random_transaction(nodes, amount, min_fee, fee_increment, fee_variants):
     """
     Create a random transaction.
@@ -524,13 +471,17 @@ def assert_fee_amount(fee, tx_size, fee_per_kB):
     if fee > (tx_size + 2) * fee_per_kB / 1000:
         raise AssertionError("Fee of %s BTC too high! (Should be %s BTC)"%(str(fee), str(target_fee)))
 
-def assert_equal(thing1, thing2):
-    if thing1 != thing2:
-        raise AssertionError("%s != %s"%(str(thing1),str(thing2)))
+def assert_equal(thing1, thing2, *args):
+    if thing1 != thing2 or any(thing1 != arg for arg in args):
+        raise AssertionError("not(%s)" % " == ".join(str(arg) for arg in (thing1, thing2) + args))
 
 def assert_greater_than(thing1, thing2):
     if thing1 <= thing2:
         raise AssertionError("%s <= %s"%(str(thing1),str(thing2)))
+
+def assert_greater_than_or_equal(thing1, thing2):
+    if thing1 < thing2:
+        raise AssertionError("%s < %s"%(str(thing1),str(thing2)))
 
 def assert_raises(exc, fun, *args, **kwds):
     assert_raises_message(exc, None, fun, *args, **kwds)
@@ -540,6 +491,35 @@ def assert_raises_message(exc, message, fun, *args, **kwds):
         fun(*args, **kwds)
     except exc as e:
         if message is not None and message not in e.error['message']:
+            raise AssertionError("Expected substring not found:"+e.error['message'])
+    except Exception as e:
+        raise AssertionError("Unexpected exception raised: "+type(e).__name__)
+    else:
+        raise AssertionError("No exception raised")
+
+def assert_raises_jsonrpc(code, message, fun, *args, **kwds):
+    """Run an RPC and verify that a specific JSONRPC exception code and message is raised.
+
+    Calls function `fun` with arguments `args` and `kwds`. Catches a JSONRPCException
+    and verifies that the error code and message are as expected. Throws AssertionError if
+    no JSONRPCException was returned or if the error code/message are not as expected.
+
+    Args:
+        code (int), optional: the error code returned by the RPC call (defined
+            in src/rpc/protocol.h). Set to None if checking the error code is not required.
+        message (string), optional: [a substring of] the error string returned by the
+            RPC call. Set to None if checking the error string is not required
+        fun (function): the function to call. This should be the name of an RPC.
+        args*: positional arguments for the function.
+        kwds**: named arguments for the function.
+    """
+    try:
+        fun(*args, **kwds)
+    except JSONRPCException as e:
+        # JSONRPCException was thrown as expected. Check the code and message values are correct.
+        if (code is not None) and (code != e.error["code"]):
+            raise AssertionError("Unexpected JSONRPC error code %i" % e.error["code"])
+        if (message is not None) and (message not in e.error['message']):
             raise AssertionError("Expected substring not found:"+e.error['message'])
     except Exception as e:
         raise AssertionError("Unexpected exception raised: "+type(e).__name__)

@@ -15,9 +15,10 @@
 # In case of a clean merge that is accepted by the user, the local branch with
 # name $BRANCH is overwritten with the merged result, and optionally pushed.
 from __future__ import division,print_function,unicode_literals
-import os,sys
+import os
 from sys import stdin,stdout,stderr
 import argparse
+import hashlib
 import subprocess
 import json,codecs
 try:
@@ -68,6 +69,35 @@ def ask_prompt(text):
     reply = stdin.readline().rstrip()
     print("",file=stderr)
     return reply
+
+def get_symlink_files():
+    files = sorted(subprocess.check_output([GIT, 'ls-tree', '--full-tree', '-r', 'HEAD']).splitlines())
+    ret = []
+    for f in files:
+        if (int(f.decode('utf-8').split(" ")[0], 8) & 0o170000) == 0o120000:
+            ret.append(f.decode('utf-8').split("\t")[1])
+    return ret
+
+def tree_sha512sum():
+    files = sorted(subprocess.check_output([GIT, 'ls-tree', '--full-tree', '-r', '--name-only', 'HEAD']).splitlines())
+    overall = hashlib.sha512()
+    for f in files:
+        intern = hashlib.sha512()
+        fi = open(f, 'rb')
+        while True:
+            piece = fi.read(65536)
+            if piece:
+                intern.update(piece)
+            else:
+                break
+        fi.close()
+        dig = intern.hexdigest()
+        overall.update(dig.encode("utf-8"))
+        overall.update("  ".encode("utf-8"))
+        overall.update(f)
+        overall.update("\n".encode("utf-8"))
+    return overall.hexdigest()
+
 
 def parse_arguments():
     epilog = '''
@@ -157,6 +187,9 @@ def main():
     subprocess.check_call([GIT,'checkout','-q','-b',local_merge_branch])
 
     try:
+        # Go up to the repository's root.
+        toplevel = subprocess.check_output([GIT,'rev-parse','--show-toplevel']).strip()
+        os.chdir(toplevel)
         # Create unsigned merge commit.
         if title:
             firstline = 'Merge #%s: %s' % (pull,title)
@@ -175,14 +208,31 @@ def main():
             print("ERROR: Creating merge failed (already merged?).",file=stderr)
             exit(4)
 
+        symlink_files = get_symlink_files()
+        for f in symlink_files:
+            print("ERROR: File %s was a symlink" % f)
+        if len(symlink_files) > 0:
+            exit(4)
+
+        # Put tree SHA512 into the message
+        try:
+            first_sha512 = tree_sha512sum()
+            message += '\n\nTree-SHA512: ' + first_sha512
+        except subprocess.CalledProcessError as e:
+            printf("ERROR: Unable to compute tree hash")
+            exit(4)
+        try:
+            subprocess.check_call([GIT,'commit','--amend','-m',message.encode('utf-8')])
+        except subprocess.CalledProcessError as e:
+            printf("ERROR: Cannot update message.",file=stderr)
+            exit(4)
+
         print('%s#%s%s %s %sinto %s%s' % (ATTR_RESET+ATTR_PR,pull,ATTR_RESET,title,ATTR_RESET+ATTR_PR,branch,ATTR_RESET))
         subprocess.check_call([GIT,'log','--graph','--topo-order','--pretty=format:'+COMMIT_FORMAT,base_branch+'..'+head_branch])
         print()
+
         # Run test command if configured.
         if testcmd:
-            # Go up to the repository's root.
-            toplevel = subprocess.check_output([GIT,'rev-parse','--show-toplevel']).strip()
-            os.chdir(toplevel)
             if subprocess.call(testcmd,shell=True):
                 print("ERROR: Running %s failed." % testcmd,file=stderr)
                 exit(5)
@@ -217,6 +267,11 @@ def main():
             else:
                 print("ERROR: Merge rejected.",file=stderr)
                 exit(7)
+
+        second_sha512 = tree_sha512sum()
+        if first_sha512 != second_sha512:
+            print("ERROR: Tree hash changed unexpectedly",file=stderr)
+            exit(8)
 
         # Sign the merge commit.
         reply = ask_prompt("Type 's' to sign off on the merge.")
