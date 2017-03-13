@@ -4,16 +4,21 @@ Developer Notes
 Various coding styles have been used during the history of the codebase,
 and the result is not very consistent. However, we're now trying to converge to
 a single style, so please use it in new code. Old code will be converted
-gradually.
+gradually and you are encouraged to use the provided
+[clang-format-diff script](/contrib/devtools/README.md#clang-format-diffpy)
+to clean up the patch automatically before submitting a pull request.
+
 - Basic rules specified in [src/.clang-format](/src/.clang-format).
-  Use a recent clang-format to format automatically using one of the [dev scripts]
-  (/contrib/devtools/README.md#clang-formatpy).
   - Braces on new lines for namespaces, classes, functions, methods.
   - Braces on the same line for everything else.
   - 4 space indentation (no tabs) for every block except namespaces.
-  - No indentation for public/protected/private or for namespaces.
+  - No indentation for `public`/`protected`/`private` or for `namespace`.
   - No extra spaces inside parenthesis; don't do ( this )
-  - No space after function names; one space after if, for and while.
+  - No space after function names; one space after `if`, `for` and `while`.
+  - If an `if` only has a single-statement then-clause, it can appear
+    on the same line as the if, without braces. In every other case,
+    braces are required, and the then and else clauses must appear
+    correctly indented on a new line.
   - `++i` is preferred over `i++`.
 
 Block style example:
@@ -22,14 +27,18 @@ namespace foo
 {
 class Class
 {
-    bool Function(char* psz, int n)
+    bool Function(const std::string& s, int n)
     {
         // Comment summarising what this section of code does
         for (int i = 0; i < n; ++i) {
             // When something fails, return early
-            if (!Something())
-                return false;
+            if (!Something()) return false;
             ...
+            if (SomethingElse()) {
+                DoMore();
+            } else {
+                DoLess();
+            }
         }
 
         // Success return is usually at the end
@@ -439,7 +448,7 @@ Current subtrees include:
   - Upstream at https://github.com/jgarzik/univalue ; report important PRs to Core to avoid delay.
 
 
-Git and github tips
+Git and GitHub tips
 ---------------------
 
 - For resolving merge/rebase conflicts, it can be useful to enable diff3 style using

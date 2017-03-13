@@ -39,7 +39,7 @@ def addlength(script):
     return scriptlen + script
 
 def create_witnessprogram(version, node, utxo, pubkey, encode_p2sh, amount):
-    pkscript = witness_script(version, pubkey);
+    pkscript = witness_script(version, pubkey)
     if (encode_p2sh):
         p2sh_hash = bytes_to_hex_str(ripemd160(sha256(hex_str_to_bytes(pkscript))))
         pkscript = "a914"+p2sh_hash+"87"
@@ -130,10 +130,14 @@ class SegWitTest(BitcoinTestFramework):
         print("Verify sigops are counted in GBT with pre-BIP141 rules before the fork")
         txid = self.nodes[0].sendtoaddress(self.nodes[0].getnewaddress(), 1)
         tmpl = self.nodes[0].getblocktemplate({})
+        assert(tmpl['sizelimit'] == 1000000)
+        assert('weightlimit' not in tmpl)
         assert(tmpl['sigoplimit'] == 20000)
         assert(tmpl['transactions'][0]['hash'] == txid)
         assert(tmpl['transactions'][0]['sigops'] == 2)
         tmpl = self.nodes[0].getblocktemplate({'rules':['segwit']})
+        assert(tmpl['sizelimit'] == 1000000)
+        assert('weightlimit' not in tmpl)
         assert(tmpl['sigoplimit'] == 20000)
         assert(tmpl['transactions'][0]['hash'] == txid)
         assert(tmpl['transactions'][0]['sigops'] == 2)
@@ -241,6 +245,8 @@ class SegWitTest(BitcoinTestFramework):
         print("Verify sigops are counted in GBT with BIP141 rules after the fork")
         txid = self.nodes[0].sendtoaddress(self.nodes[0].getnewaddress(), 1)
         tmpl = self.nodes[0].getblocktemplate({'rules':['segwit']})
+        assert(tmpl['sizelimit'] >= 3999577)  # actual maximum size is lower due to minimum mandatory non-witness data
+        assert(tmpl['weightlimit'] == 4000000)
         assert(tmpl['sigoplimit'] == 80000)
         assert(tmpl['transactions'][0]['txid'] == txid)
         assert(tmpl['transactions'][0]['sigops'] == 8)
@@ -250,6 +256,8 @@ class SegWitTest(BitcoinTestFramework):
         try:
             tmpl = self.nodes[0].getblocktemplate({})
             assert(len(tmpl['transactions']) == 1)  # Doesn't include witness tx
+            assert(tmpl['sizelimit'] == 1000000)
+            assert('weightlimit' not in tmpl)
             assert(tmpl['sigoplimit'] == 20000)
             assert(tmpl['transactions'][0]['hash'] == txid)
             assert(tmpl['transactions'][0]['sigops'] == 2)
