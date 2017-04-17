@@ -157,8 +157,8 @@ public:
 UniValue validateaddress(const JSONRPCRequest& request)
 {
     if (request.fHelp || request.params.size() != 1)
-        throw runtime_error(
-            "validateaddress \"vcoreaddress\"\n"
+    {
+        std::string msg = "validateaddress \"vcoreaddress\"\n"
             "\nReturn information about the given V Core address.\n"
             "\nArguments:\n"
             "1. \"vcoreaddress\"     (string, required) The V Core address to validate\n"
@@ -179,9 +179,9 @@ UniValue validateaddress(const JSONRPCRequest& request)
             "}\n"
             "\nExamples:\n"
             + HelpExampleCli("validateaddress", "\"VPSSGeFHDnKNxiEyFrD1wcEaHr9hrQDDWc\"")
-            + HelpExampleRpc("validateaddress", "\"VPSSGeFHDnKNxiEyFrD1wcEaHr9hrQDDWc\"")
-        );
-
+            + HelpExampleRpc("validateaddress", "\"VPSSGeFHDnKNxiEyFrD1wcEaHr9hrQDDWc\"");
+        throw std::runtime_error(msg);
+    }
 #ifdef ENABLE_WALLET
     CWallet * const pwallet = GetWalletForJSONRPCRequest(request);
 
@@ -351,9 +351,8 @@ UniValue createmultisig(const JSONRPCRequest& request)
 
 UniValue verifymessage(const JSONRPCRequest& request)
 {
-    if (request.fHelp || request.params.size() != 3)
-        throw runtime_error(
-            "verifymessage \"vcoreaddress\" \"signature\" \"message\"\n"
+    if (request.fHelp || request.params.size() != 3) {
+        std::string msg = "verifymessage \"vcoreaddress\" \"signature\" \"message\"\n"
             "\nVerify a signed message\n"
             "\nArguments:\n"
             "1. \"vcoreaddress\"  (string, required) The V Core address to use for the signature.\n"
@@ -369,9 +368,9 @@ UniValue verifymessage(const JSONRPCRequest& request)
             "\nVerify the signature\n"
             + HelpExampleCli("verifymessage", "\"VD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XZ\" \"signature\" \"my message\"") +
             "\nAs json rpc\n"
-            + HelpExampleRpc("verifymessage", "\"VD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XZ\", \"signature\", \"my message\"")
-        );
-
+            + HelpExampleRpc("verifymessage", "\"VD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XZ\", \"signature\", \"my message\"");
+        throw std::runtime_error(msg);
+    }
     LOCK(cs_main);
 
     std::string strAddress  = request.params[0].get_str();

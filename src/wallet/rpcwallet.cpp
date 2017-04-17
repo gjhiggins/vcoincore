@@ -240,7 +240,7 @@ UniValue setaccount(const JSONRPCRequest& request)
     }
 
     if (request.fHelp || request.params.size() < 1 || request.params.size() > 2)
-        throw runtime_error(
+        throw std::runtime_error(
             "setaccount \"vcoreaddress\" \"account\"\n"
             "\nDEPRECATED. Sets the account associated with the given address.\n"
             "\nArguments:\n"
@@ -287,7 +287,7 @@ UniValue getaccount(const JSONRPCRequest& request)
     }
 
     if (request.fHelp || request.params.size() != 1)
-        throw runtime_error(
+        throw std::runtime_error(
             "getaccount \"vcoreaddress\"\n"
             "\nDEPRECATED. Returns the account associated with the given address.\n"
             "\nArguments:\n"
@@ -398,7 +398,7 @@ UniValue sendtoaddress(const JSONRPCRequest& request)
     }
 
     if (request.fHelp || request.params.size() < 2 || request.params.size() > 5)
-        throw runtime_error(
+        throw std::runtime_error(
             "sendtoaddress \"vcoreaddress\" amount ( \"comment\" \"comment-to\" subtractfeefromamount )\n"
             "\nSend an amount to a given address.\n"
             + HelpRequiringPassphrase(pwallet) +
@@ -511,7 +511,7 @@ UniValue signmessage(const JSONRPCRequest& request)
     }
 
     if (request.fHelp || request.params.size() != 2)
-        throw runtime_error(
+        throw std::runtime_error(
             "signmessage \"vcoreaddress\" \"message\"\n"
             "\nSign a message with the private key of an address"
             + HelpRequiringPassphrase(pwallet) + "\n"
@@ -570,7 +570,7 @@ UniValue getreceivedbyaddress(const JSONRPCRequest& request)
     }
 
     if (request.fHelp || request.params.size() < 1 || request.params.size() > 2)
-        throw runtime_error(
+        throw std::runtime_error(
             "getreceivedbyaddress \"vcoreaddress\" ( minconf )\n"
             "\nReturns the total amount received by the given V Core address in transactions with at least minconf confirmations.\n"
             "\nArguments:\n"
@@ -847,10 +847,10 @@ UniValue sendfrom(const JSONRPCRequest& request)
     }
 
     if (request.fHelp || request.params.size() < 3 || request.params.size() > 6)
-        throw runtime_error(
+        throw std::runtime_error(
             "sendfrom \"fromaccount\" \"tovcoreaddress\" amount ( minconf \"comment\" \"comment-to\" )\n"
             "\nDEPRECATED (use sendtoaddress). Sent an amount from an account to a V Core address."
-            + HelpRequiringPassphrase() + "\n"
+            + HelpRequiringPassphrase(pwallet) + "\n"
             "\nArguments:\n"
             "1. \"fromaccount\"       (string, required) The name of the account to send funds from. May be the default account using \"\".\n"
             "2. \"tovcoreaddress\"  (string, required) The V Core address to send funds to.\n"
@@ -978,7 +978,7 @@ UniValue sendmany(const JSONRPCRequest& request)
     {
         CBitcoinAddress address(name_);
         if (!address.IsValid())
-            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid V Core address: ")+name_);
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid V Core address: ")+name_);
 
         if (setAddress.count(address))
             throw JSONRPCError(RPC_INVALID_PARAMETER, std::string("Invalid parameter, duplicated address: ")+name_);
@@ -2550,7 +2550,7 @@ UniValue listunspent(const JSONRPCRequest& request)
             const UniValue& input = inputs[idx];
             CBitcoinAddress address(input.get_str());
             if (!address.IsValid())
-                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid V Core address: ")+input.get_str());
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid V Core address: ")+input.get_str());
             if (setAddress.count(address))
                 throw JSONRPCError(RPC_INVALID_PARAMETER, std::string("Invalid parameter, duplicated address: ")+input.get_str());
            setAddress.insert(address);

@@ -80,7 +80,7 @@ UniValue importprivkey(const JSONRPCRequest& request)
     }
 
     if (request.fHelp || request.params.size() < 1 || request.params.size() > 3)
-        throw runtime_error(
+        throw std::runtime_error(
             "importprivkey \"vcoreprivkey\" ( \"label\" rescan )\n"
             "\nAdds a private key (as returned by dumpprivkey) to your wallet.\n"
             "\nArguments:\n"
@@ -534,7 +534,7 @@ UniValue dumpprivkey(const JSONRPCRequest& request)
     }
 
     if (request.fHelp || request.params.size() != 1)
-        throw runtime_error(
+        throw std::runtime_error(
             "dumpprivkey \"vcoreaddress\"\n"
             "\nReveals the private key corresponding to 'vcoreaddress'.\n"
             "Then the importprivkey can be used with this output\n"

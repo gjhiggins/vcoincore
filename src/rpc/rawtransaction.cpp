@@ -351,8 +351,8 @@ UniValue verifytxoutproof(const JSONRPCRequest& request)
 UniValue createrawtransaction(const JSONRPCRequest& request)
 {
     if (request.fHelp || request.params.size() < 2 || request.params.size() > 3)
-        throw runtime_error(
-            "createrawtransaction [{\"txid\":\"id\",\"vout\":n},...] {\"address\":amount,\"data\":\"hex\",...} (locktime)\n"
+        throw std::runtime_error(
+             "createrawtransaction [{\"txid\":\"id\",\"vout\":n},...] {\"address\":amount,\"data\":\"hex\",...} (locktime)\n"
             "\nCreate a transaction spending the given inputs and creating new outputs.\n"
             "Outputs can be addresses or data.\n"
             "Returns hex-encoded raw transaction.\n"
@@ -385,7 +385,6 @@ UniValue createrawtransaction(const JSONRPCRequest& request)
             + HelpExampleRpc("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\", \"{\\\"address\\\":0.01}\"")
             + HelpExampleRpc("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\", \"{\\\"data\\\":\\\"00010203\\\"}\"")
         );
-
     RPCTypeCheck(request.params, boost::assign::list_of(UniValue::VARR)(UniValue::VOBJ)(UniValue::VNUM), true);
     if (request.params[0].isNull() || request.params[1].isNull())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, arguments 1 and 2 must be non-null");
@@ -444,7 +443,7 @@ UniValue createrawtransaction(const JSONRPCRequest& request)
         } else {
             CBitcoinAddress address(name_);
             if (!address.IsValid())
-                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid V Core address: ")+name_);
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid V Core address: ")+name_);
 
             if (setAddress.count(address))
                 throw JSONRPCError(RPC_INVALID_PARAMETER, std::string("Invalid parameter, duplicated address: ")+name_);
