@@ -259,12 +259,6 @@ void WalletFrame::gotoPublisherPage()
         walletView->gotoPublisherPage();
 }
 
-void WalletFrame::gotoStatsExplorerPage()
-{
-    WalletView *walletView = currentWalletView();
-    if (walletView)
-        walletView->gotoStatsExplorerPage();
-}
 
 void WalletFrame::gotoSurveyPage()
 {

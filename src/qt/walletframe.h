@@ -22,7 +22,6 @@ class EssentialsPage;
 class InscriptionPage;
 class PersonalProfilePage;
 class PublisherPage;
-class statsExplorer;
 class Survey;
 class TorrentPage;
 class TorrentWindow;
@@ -99,8 +98,6 @@ public Q_SLOTS:
     void gotoPersonalProfilePage();
     /** Switch to Publishing page */
     void gotoPublisherPage();	
-    /** Switch to Stats page */
-    void gotoStatsExplorerPage();   
     /** Switch to Questionnaire page */
 	void gotoSurveyPage();
     /** Switch to torrent page */

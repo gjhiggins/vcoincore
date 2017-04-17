@@ -29,7 +29,6 @@
 #include "personalprofilepage.h"
 #include "publisherpage.h"
 #include "reportview.h"
-#include "statsexplorer.h"
 #include "survey.h"
 #include "torrentpage.h"
 #include "torrenttablemodel.h"
@@ -62,7 +61,6 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     inscriptionPage = new InscriptionPage(this);
     personalprofilePage = new PersonalProfilePage(this);
     publisherPage = new PublisherPage(this);
-    statsExplorerPage = new StatsExplorer(this);
     surveyPage = new Survey(platformStyle, this);
     torrentPage = new TorrentPage(platformStyle, this);
     torrentWindow = new TorrentWindow(this);
@@ -117,7 +115,6 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(inscriptionPage);
     addWidget(personalprofilePage);
     addWidget(publisherPage);
-    addWidget(statsExplorerPage);
 	addWidget(surveyPage);
 	addWidget(torrentPage);
     addWidget(torrentWindow);
@@ -430,11 +427,6 @@ void WalletView::gotoPersonalProfilePage()
 void WalletView::gotoPublisherPage()
 {
     setCurrentWidget(publisherPage);
-}
-
-void WalletView::gotoStatsExplorerPage()
-{
-    setCurrentWidget(statsExplorerPage);
 }
 
 void WalletView::gotoSurveyPage()

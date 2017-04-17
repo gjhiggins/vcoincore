@@ -164,7 +164,6 @@ QT_MOC_CPP = \
   qt/moc_peerwireclient.cpp \
   qt/moc_personalprofilepage.cpp \
   qt/moc_publisherpage.cpp \
-  qt/moc_qcustomplot.cpp \
   qt/moc_qvalidatedlineedit.cpp \
   qt/moc_qvaluecombobox.cpp \
   qt/moc_ratecontroller.cpp \
@@ -177,7 +176,6 @@ QT_MOC_CPP = \
   qt/moc_sendcoinsentry.cpp \
   qt/moc_signverifymessagedialog.cpp \
   qt/moc_splashscreen.cpp \
-  qt/moc_statsexplorer.cpp \
   qt/moc_survey.cpp \
   qt/moc_torrentclient.cpp \
   qt/moc_torrentpage.cpp \
@@ -263,7 +261,6 @@ BITCOIN_QT_H = \
   qt/platformstyle.h \
   qt/publisherpage.h \
   qt/publisherpreviewpage.h \
-  qt/qcustomplot.h \
   qt/qvalidatedlineedit.h \
   qt/qvaluecombobox.h \
   qt/ratecontroller.h \
@@ -276,7 +273,6 @@ BITCOIN_QT_H = \
   qt/sendcoinsentry.h \
   qt/signverifymessagedialog.h \
   qt/splashscreen.h \
-  qt/statsexplorer.h \
   qt/survey.h \
   qt/torrentclient.h \
   qt/torrentpage.h \
@@ -361,7 +357,6 @@ RES_ICONS = \
   qt/res/icons/receive.png \
   qt/res/icons/remove.png \
   qt/res/icons/send.png \
-  qt/res/icons/stats.png \
   qt/res/icons/stop.png \
   qt/res/icons/survey.png \
   qt/res/icons/synced.png \
@@ -403,13 +398,11 @@ BITCOIN_QT_BASE_CPP = \
   qt/peertablemodel.cpp \
   qt/peerwireclient.cpp \
   qt/platformstyle.cpp \
-  qt/qcustomplot.cpp \
   qt/qvalidatedlineedit.cpp \
   qt/qvaluecombobox.cpp \
   qt/ratecontroller.cpp \
   qt/rpcconsole.cpp \
   qt/splashscreen.cpp \
-  qt/statsexplorer.cpp \
   qt/torrentclient.cpp \
   qt/torrentserver.cpp \
   qt/torrenttablemodel.cpp \
@@ -445,7 +438,6 @@ BITCOIN_QT_WALLET_CPP = \
   qt/personalprofilepage.cpp \
   qt/peerwireclient.cpp \
   qt/publisherpage.cpp \
-  qt/qcustomplot.cpp \
   qt/ratecontroller.cpp \
   qt/receivecoinsdialog.cpp \
   qt/receiverequestdialog.cpp \
@@ -454,7 +446,6 @@ BITCOIN_QT_WALLET_CPP = \
   qt/sendcoinsdialog.cpp \
   qt/sendcoinsentry.cpp \
   qt/signverifymessagedialog.cpp \
-  qt/statsexplorer.cpp \
   qt/survey.cpp \
   qt/torrentclient.cpp \
   qt/torrentpage.cpp \

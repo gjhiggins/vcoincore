@@ -34,7 +34,7 @@
 #include "personalprofilepage.h"
 #include "publisherpage.h"
 #include "reportview.h"
-#include "statsexplorer.h"
+// #include "statsexplorer.h"
 #include "survey.h"
 #include "torrentpage.h"
 #include "torrentview.h"
@@ -156,7 +156,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     inscriptionPage(0),
     personalprofilePage(0),
     publisherPage(0),
-    statsWindow(0),
+    // statsWindow(0),
     surveyPage(0),
     torrentPage(0),
     torrentWindow(0),
@@ -213,7 +213,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
         inscriptionPage = new InscriptionPage(this);
         personalprofilePage = new PersonalProfilePage(this);
         publisherPage = new PublisherPage(this);
-        statsWindow = new StatsExplorer(this);
+        // statsWindow = new StatsExplorer(this);
         surveyPage = new Survey(_platformStyle, this);
         torrentPage = new TorrentPage(_platformStyle, this);
         torrentWindow= new TorrentWindow(this);
@@ -462,8 +462,8 @@ void BitcoinGUI::createActions()
     openPersonalProfilePageAction->setStatusTip(tr("Profile"));
     openPublisherPageAction = new QAction(platformStyle->TextColorIcon(":/icons/publish"), tr("&Publish"), this);
     openPublisherPageAction->setStatusTip(tr("Publisher"));
-    openStatsExplorerAction = new QAction(platformStyle->TextColorIcon(":/icons/stats"), tr("&Statistics"), this);
-    openStatsExplorerAction->setStatusTip(tr("Statistics"));
+    // openStatsExplorerAction = new QAction(platformStyle->TextColorIcon(":/icons/stats"), tr("&Statistics"), this);
+    // openStatsExplorerAction->setStatusTip(tr("Statistics"));
     openSurveyPageAction = new QAction(platformStyle->TextColorIcon(":/icons/survey"), tr("&Survey window"), this);
     openSurveyPageAction->setStatusTip(tr("Survey window"));
     openTorrentPageAction = new QAction(platformStyle->TextColorIcon(":/icons/torrent"), tr("&Torrents window"), this);
@@ -491,7 +491,7 @@ void BitcoinGUI::createActions()
     connect(openInscriptionPageAction, SIGNAL(triggered()), inscriptionPage, SLOT(show()));
     connect(openPersonalProfilePageAction, SIGNAL(triggered()), personalprofilePage, SLOT(show()));
     connect(openPublisherPageAction, SIGNAL(triggered()), publisherPage, SLOT(show()));
-    connect(openStatsExplorerAction, SIGNAL(triggered()), statsWindow, SLOT(show()));
+    // connect(openStatsExplorerAction, SIGNAL(triggered()), statsWindow, SLOT(show()));
     connect(openSurveyPageAction, SIGNAL(triggered()), surveyPage, SLOT(show()));
     connect(openTorrentPageAction, SIGNAL(triggered()), torrentPage, SLOT(show()));
     connect(openTorrentWindowAction, SIGNAL(triggered()), torrentWindow, SLOT(show()));
@@ -505,7 +505,7 @@ void BitcoinGUI::createActions()
     connect(quitAction, SIGNAL(triggered()), inscriptionPage, SLOT(hide()));
     connect(quitAction, SIGNAL(triggered()), personalprofilePage, SLOT(hide()));
     connect(quitAction, SIGNAL(triggered()), publisherPage, SLOT(hide()));
-    connect(quitAction, SIGNAL(triggered()), statsWindow, SLOT(hide()));
+    // connect(quitAction, SIGNAL(triggered()), statsWindow, SLOT(hide()));
     connect(quitAction, SIGNAL(triggered()), surveyPage, SLOT(hide()));
     connect(quitAction, SIGNAL(triggered()), torrentPage, SLOT(hide()));
     connect(quitAction, SIGNAL(triggered()), torrentWindow, SLOT(hide()));
@@ -573,7 +573,7 @@ void BitcoinGUI::createMenuBar()
         data->addAction(openInscriptionPageAction);
         data->addAction(openPersonalProfilePageAction);
         data->addAction(openPublisherPageAction);
-        data->addAction(openStatsExplorerAction);
+        // data->addAction(openStatsExplorerAction);
         data->addAction(openSurveyPageAction);
         data->addAction(openTorrentPageAction);
         data->addAction(openTorrentWindowAction);
@@ -720,7 +720,7 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     openInscriptionPageAction->setEnabled(enabled);
     openPersonalProfilePageAction->setEnabled(enabled);
     openPublisherPageAction->setEnabled(enabled);
-    openStatsExplorerAction->setEnabled(enabled);
+    // openStatsExplorerAction->setEnabled(enabled);
     openSurveyPageAction->setEnabled(enabled);
     openTorrentPageAction->setEnabled(enabled);
     openTorrentWindowAction->setEnabled(enabled);
@@ -777,7 +777,7 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addAction(openInscriptionPageAction);
     trayIconMenu->addAction(openPersonalProfilePageAction);
     trayIconMenu->addAction(openPublisherPageAction);
-    trayIconMenu->addAction(openStatsExplorerAction);
+    // trayIconMenu->addAction(openStatsExplorerAction);
     trayIconMenu->addAction(openSurveyPageAction);
     trayIconMenu->addAction(openTorrentPageAction);
     trayIconMenu->addAction(openTorrentWindowAction);
@@ -922,10 +922,10 @@ void BitcoinGUI::gotoPublisherPage()
     if (walletFrame) walletFrame->gotoPublisherPage();
 }
 
-void BitcoinGUI::gotoStatsExplorerPage()
-{
-    if (walletFrame) walletFrame->gotoStatsExplorerPage();
-}
+// void BitcoinGUI::gotoStatsExplorerPage()
+// {
+//     if (walletFrame) walletFrame->gotoStatsExplorerPage();
+// }
 
 void BitcoinGUI::gotoSurveyPage()
 {

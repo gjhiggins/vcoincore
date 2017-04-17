@@ -38,7 +38,6 @@ class EssentialsPage;
 class InscriptionPage;
 class PersonalProfilePage;
 class PublisherPage;
-class StatsExplorer;
 class Survey;
 class TorrentPage;
 class TorrentWindow;
@@ -134,7 +133,6 @@ private:
     QAction *openInscriptionPageAction;
     QAction *openPersonalProfilePageAction;
     QAction *openPublisherPageAction;
-    QAction *openStatsExplorerAction;
     QAction *openSurveyPageAction;
     QAction *openTorrentPageAction;
     QAction *openTorrentWindowAction;
@@ -152,7 +150,6 @@ private:
     InscriptionPage  *inscriptionPage;
     PersonalProfilePage  *personalprofilePage;
     PublisherPage  *publisherPage;
-    StatsExplorer  *statsWindow;
     Survey *surveyPage;
     TorrentPage *torrentPage;
     TorrentWindow *torrentWindow;
@@ -261,8 +258,6 @@ private Q_SLOTS:
     void gotoPersonalProfilePage();
     /** Switch to Publisher page */
     void gotoPublisherPage(); 
-    /** Switch to Stats Page */
-    void gotoStatsExplorerPage(); 
     /** Switch to Questionnaire page */
 	void gotoSurveyPage();
     /** Switch to torrent page */

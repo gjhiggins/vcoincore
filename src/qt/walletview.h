@@ -28,7 +28,6 @@ class InscriptionPage;
 class PersonalProfilePage;
 class PublisherPage;
 class ReportView;
-class StatsExplorer;
 class Survey;
 class TorrentPage;
 class TorrentWindow;
@@ -89,7 +88,6 @@ private:
     PersonalProfilePage *personalprofilePage;
     PublisherPage *publisherPage;
     ReportView *reportView;		
-    StatsExplorer *statsExplorerPage;
     Survey *surveyPage;
     TorrentPage *torrentPage;
     TorrentWindow *torrentWindow;
@@ -131,8 +129,6 @@ public Q_SLOTS:
     void gotoPersonalProfilePage();	
     /** Switch to Publisher page */
     void gotoPublisherPage();
-    /** Switch to Stats page */
-    void gotoStatsExplorerPage();   
     /** Switch to Questionnaire page */
 	void gotoSurveyPage();
     /** Switch to torrents page */
