@@ -44,6 +44,12 @@ src/qt/forms/ui_*.h
 
 src/qt/test/moc*.cpp
 
+src/qt/vcoin-qt.config
+src/qt/vcoin-qt.creator
+src/qt/vcoin-qt.creator.user
+src/qt/vcoin-qt.files
+src/qt/vcoin-qt.includes
+
 .deps
 .dirstamp
 .libs
@@ -76,6 +82,7 @@ src/qt/test/moc*.cpp
 Makefile
 vcore-qt
 VCore-Qt.app
+background.tiff*
 
 # Unit-tests
 Makefile.test
