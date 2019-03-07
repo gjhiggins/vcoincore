@@ -70,7 +70,7 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 #include <QtWebEngineWidgets/QtWebEngineWidgets>
-#include <QWebEngineSettings>
+// #include <QWebEngineSettings>
 #include <QSqlQuery>
 
 #if QT_VERSION < 0x050000
@@ -563,20 +563,20 @@ void BitcoinGUI::createMenuBar()
     settings->addAction(optionsAction);
 
     // Additions
-    QMenu *data = appMenuBar->addMenu(tr("&Data"));
+    QMenu *actions = appMenuBar->addMenu(tr("&Data"));
     if(walletFrame)
     {
-        data->addAction(openBIP32PageAction);
-        data->addAction(openBlockExplorerAction);
-        data->addAction(openChatWindowAction);
-        data->addAction(openEssentialsPageAction);
-        data->addAction(openInscriptionPageAction);
-        data->addAction(openPersonalProfilePageAction);
-        data->addAction(openPublisherPageAction);
+        actions->addAction(openBIP32PageAction);
+        actions->addAction(openBlockExplorerAction);
+        actions->addAction(openChatWindowAction);
+        actions->addAction(openEssentialsPageAction);
+        actions->addAction(openInscriptionPageAction);
+        actions->addAction(openPersonalProfilePageAction);
+        actions->addAction(openPublisherPageAction);
         // data->addAction(openStatsExplorerAction);
-        data->addAction(openSurveyPageAction);
-        data->addAction(openTorrentPageAction);
-        data->addAction(openTorrentWindowAction);
+        actions->addAction(openSurveyPageAction);
+        actions->addAction(openTorrentPageAction);
+        actions->addAction(openTorrentWindowAction);
     }
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));

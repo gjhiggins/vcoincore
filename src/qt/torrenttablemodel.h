@@ -75,8 +75,8 @@ struct TorrentTableEntry
     QString amount;
 
     TorrentTableEntry() {}
-    TorrentTableEntry(const QString &title,const QString &link,const QString &address,const QString &amount):
-        title(title),link(link),address(address),amount(amount) {}
+    TorrentTableEntry(const QString &titlestr,const QString &linkstr, const QString &addressstr, const QString &amountstr):
+        title(titlestr),link(linkstr),address(addressstr),amount(amountstr) {}
 };
 
 

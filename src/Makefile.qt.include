@@ -119,7 +119,6 @@ QT_FORMS_UI = \
   qt/forms/sendcoinsdialog.ui \
   qt/forms/sendcoinsentry.ui \
   qt/forms/signverifymessagedialog.ui \
-  qt/forms/statsexplorer.ui \
   qt/forms/survey.ui \
   qt/forms/torrentpage.ui \
   qt/forms/transactiondescdialog.ui
