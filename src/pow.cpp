@@ -27,6 +27,7 @@ static const int64_t nMaxActualTimespan = nAveragingTargetTimespan * (100 + nMax
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
 {
+    assert(pindexLast != nullptr);
     unsigned int nProofOfWorkLimit = UintToArith256(params.powLimit).GetCompact();
     // LogPrintf("GNWR: nProofOfWorkLimit: %8u, pindexLast.nBits %8u\n", nProofOfWorkLimit, pindexLast->nBits);
 
