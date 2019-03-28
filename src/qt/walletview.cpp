@@ -1,41 +1,40 @@
-// Copyright (c) 2011-2016 The Bitcoin Core developers
+// Copyright (c) 2011-2017 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "walletview.h"
+#include <qt/walletview.h>
 
-#include "addressbookpage.h"
-#include "askpassphrasedialog.h"
-#include "bitcoingui.h"
-#include "chatwindow.h"
-#include "clientmodel.h"
-#include "guiutil.h"
-#include "optionsmodel.h"
-#include "overviewpage.h"
-#include "platformstyle.h"
-#include "receivecoinsdialog.h"
-#include "sendcoinsdialog.h"
-#include "signverifymessagedialog.h"
-#include "transactiontablemodel.h"
-#include "transactionview.h"
-#include "walletmodel.h"
-#include "utilitydialog.h"
+#include <qt/addressbookpage.h>
+#include <qt/askpassphrasedialog.h>
+#include <qt/bitcoingui.h>
+#include <qt/clientmodel.h>
+#include <qt/guiutil.h>
+#include <qt/optionsmodel.h>
+#include <qt/overviewpage.h>
+#include <qt/platformstyle.h>
+#include <qt/receivecoinsdialog.h>
+#include <qt/sendcoinsdialog.h>
+#include <qt/signverifymessagedialog.h>
+#include <qt/transactiontablemodel.h>
+#include <qt/transactionview.h>
+#include <qt/walletmodel.h>
+
 // Additions
-#include "bip32hdpage.h"
-#include "blockexplorer.h"
-#include "chatwindow.h"
-#include "essentialspage.h"
-#include "inscriptionpage.h"
-#include "personalprofilepage.h"
-#include "publisherpage.h"
-#include "reportview.h"
-#include "survey.h"
-#include "torrentpage.h"
-#include "torrenttablemodel.h"
-#include "torrentview.h"
-#include "utilitydialog.h"
+#include <qt/bip32hdpage.h>
+#include <qt/blockexplorer.h>
+#include <qt/chatwindow.h>
+#include <qt/essentialspage.h>
+#include <qt/inscriptionpage.h>
+#include <qt/personalprofilepage.h>
+#include <qt/publisherpage.h>
+#include <qt/reportview.h>
+#include <qt/survey.h>
+#include <qt/torrentpage.h>
+#include <qt/torrenttablemodel.h>
+#include <qt/torrentview.h>
+#include <qt/utilitydialog.h>
 
-#include "ui_interface.h"
+#include <ui_interface.h>
 
 #include <QAction>
 #include <QActionGroup>
@@ -53,6 +52,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 {
     // Create tabs
     overviewPage = new OverviewPage(platformStyle);
+
     // Additions
     bip32Page = new BIP32HDPage(this);
     chatWindow = new ChatWindow(this);
@@ -80,7 +80,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     vbox->addLayout(hbox_buttons);
     transactionsPage->setLayout(vbox);
 
-    // Additions    
+    // Additions
     accountreportPage = new QWidget(this);
     QVBoxLayout *vboxR = new QVBoxLayout();
     QHBoxLayout *hboxR_buttons = new QHBoxLayout();
@@ -177,11 +177,11 @@ void WalletView::setWalletModel(WalletModel *_walletModel)
     overviewPage->setWalletModel(_walletModel);
     receiveCoinsPage->setModel(_walletModel);
     sendCoinsPage->setModel(_walletModel);
-    usedReceivingAddressesPage->setModel(_walletModel->getAddressTableModel());
-    usedSendingAddressesPage->setModel(_walletModel->getAddressTableModel());
+    usedReceivingAddressesPage->setModel(_walletModel ? _walletModel->getAddressTableModel() : nullptr);
+    usedSendingAddressesPage->setModel(_walletModel ? _walletModel->getAddressTableModel() : nullptr);
     // Additions
     reportView->setModel(_walletModel);
-    torrentPage->setModel(_walletModel->getTorrentTableModel());
+    torrentPage->setModel(_walletmodel ? _walletModel->getTorrentTableModel() : nullptr);
 
     if (_walletModel)
     {

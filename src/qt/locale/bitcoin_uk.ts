@@ -71,7 +71,7 @@
     </message>
     <message>
         <source>&amp;Copy Address</source>
-        <translation>&amp;Скопіювати адресу</translation>
+        <translation>&amp;Скопіювати адресу гаманця</translation>
     </message>
     <message>
         <source>Copy &amp;Label</source>
@@ -83,7 +83,7 @@
     </message>
     <message>
         <source>Export Address List</source>
-        <translation>Експотувати список адрес</translation>
+        <translation>Експортувати список адрес</translation>
     </message>
     <message>
         <source>Comma separated file (*.csv)</source>
@@ -132,6 +132,10 @@
         <translation>Повторіть пароль</translation>
     </message>
     <message>
+        <source>Show password</source>
+        <translation>Показати пароль</translation>
+    </message>
+    <message>
         <source>Enter the new passphrase to the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
         <translation>Введіть нову кодову фразу для гаманця.&lt;br/&gt;Будь ласка, використовуйте кодові фрази що містять &lt;b&gt; щонайменше десять випадкових символів &lt;/b&gt; або &lt;b&gt; щонайменше вісім слів &lt;/b&gt;.</translation>
     </message>
@@ -149,7 +153,7 @@
     </message>
     <message>
         <source>This operation needs your wallet passphrase to decrypt the wallet.</source>
-        <translation>Ця операція потребує пароль для розшифрування гаманця.</translation>
+        <translation>Ця операція потребує пароль від гаманця для його розблокування.</translation>
     </message>
     <message>
         <source>Decrypt wallet</source>
@@ -435,7 +439,7 @@
     </message>
     <message numerus="yes">
         <source>%n active connection(s) to Bitcoin network</source>
-        <translation><numerusform>%n активне з'єднання з мережею Bitcoin</numerusform><numerusform>%n активні з'єднання з мережею Bitcoin</numerusform><numerusform>%n активних з'єднань з мережею Bitcoin</numerusform></translation>
+        <translation><numerusform>%n активне з'єднання з мережею Bitcoin</numerusform><numerusform>%n активні з'єднання з мережею Bitcoin</numerusform><numerusform>%n активних з'єднань з мережею Bitcoin</numerusform><numerusform>%n активних з'єднань з мережею Bitcoin</numerusform></translation>
     </message>
     <message>
         <source>Indexing blocks on disk...</source>
@@ -447,7 +451,7 @@
     </message>
     <message numerus="yes">
         <source>Processed %n block(s) of transaction history.</source>
-        <translation><numerusform>Оброблено %n блок історії транзакцій.</numerusform><numerusform>Оброблено %n блоки історії транзакцій.</numerusform><numerusform>Оброблено %n блоків історії транзакцій.</numerusform></translation>
+        <translation><numerusform>Оброблено %n блок історії транзакцій.</numerusform><numerusform>Оброблено %n блоки історії транзакцій.</numerusform><numerusform>Оброблено %n блоків історії транзакцій.</numerusform><numerusform>Оброблено %n блоків історії транзакцій.</numerusform></translation>
     </message>
     <message>
         <source>%1 behind</source>
@@ -549,7 +553,7 @@
     </message>
     <message>
         <source>A fatal error occurred. Bitcoin can no longer continue safely and will quit.</source>
-        <translation>Сталася фатальна помилка. Помилки не сумісні з подальщою роботою. Гаманець буде закрито.</translation>
+        <translation>Сталася фатальна помилка. Гаманець буде закрито.</translation>
     </message>
 </context>
 <context>
@@ -624,19 +628,19 @@
     </message>
     <message>
         <source>Copy address</source>
-        <translation>Скопіювати адресу</translation>
+        <translation>Копіювати адресу</translation>
     </message>
     <message>
         <source>Copy label</source>
-        <translation>Скопіювати мітку</translation>
+        <translation>Копіювати мітку</translation>
     </message>
     <message>
         <source>Copy amount</source>
-        <translation>Скопіювати суму</translation>
+        <translation>Копіювати суму</translation>
     </message>
     <message>
         <source>Copy transaction ID</source>
-        <translation>Скопіювати ID транзакції </translation>
+        <translation>Копіювати ID транзакції </translation>
     </message>
     <message>
         <source>Lock unspent</source>
@@ -743,7 +747,7 @@
     </message>
     <message>
         <source>The entered address "%1" is already in the address book.</source>
-        <translation>Введена адреса «%1» вже присутня в адресній книзі.</translation>
+        <translation>Введена адреса "%1" вже присутня в адресній книзі.</translation>
     </message>
     <message>
         <source>Could not unlock wallet.</source>
@@ -836,7 +840,7 @@
     <name>Intro</name>
     <message>
         <source>Welcome</source>
-        <translation>Вітання</translation>
+        <translation>Ласкаво просимо</translation>
     </message>
     <message>
         <source>Welcome to %1.</source>
@@ -847,12 +851,40 @@
         <translation>Оскільки це перший запуск програми, ви можете обрати де %1 буде зберігати дані.</translation>
     </message>
     <message>
+        <source>When you click OK, %1 will begin to download and process the full %4 block chain (%2GB) starting with the earliest transactions in %3 when %4 initially launched.</source>
+        <translation>Після натискання кнопки «OK» %1 почне завантажувати та обробляти повний ланцюжок блоків %4 (%2 Гб), починаючи з найбільш ранніх транзакцій у %3, коли було запущено %4.</translation>
+    </message>
+    <message>
+        <source>If you have chosen to limit block chain storage (pruning), the historical data must still be downloaded and processed, but will be deleted afterward to keep your disk usage low.</source>
+        <translation>Якщо ви вирішили обмежити збереження ланцюжка блоків (відсікання), історичні дані повинні бути завантажені та оброблені, але потім можуть бути видалені, щоб зберегти потрібний простір диска.</translation>
+    </message>
+    <message>
         <source>Use the default data directory</source>
         <translation>Використовувати типовий каталог даних</translation>
     </message>
     <message>
         <source>Use a custom data directory:</source>
         <translation>Використовувати свій каталог даних:</translation>
+    </message>
+    <message>
+        <source>Bitcoin</source>
+        <translation>Bitcoin</translation>
+    </message>
+    <message>
+        <source>At least %1 GB of data will be stored in this directory, and it will grow over time.</source>
+        <translation>Принаймні, %1 ГБ даних буде збережено в цьому каталозі, і воно з часом зростатиме.</translation>
+    </message>
+    <message>
+        <source>Approximately %1 GB of data will be stored in this directory.</source>
+        <translation>Близько %1 Гб даних буде збережено в цьому каталозі.</translation>
+    </message>
+    <message>
+        <source>%1 will download and store a copy of the Bitcoin block chain.</source>
+        <translation>%1 буде завантажувати та зберігати копію ланцюжка блоків біткінів.</translation>
+    </message>
+    <message>
+        <source>The wallet will also be stored in this directory.</source>
+        <translation>Гаманець також зберігатиметься в цьому каталозі.</translation>
     </message>
     <message>
         <source>Error: Specified data directory "%1" cannot be created.</source>
@@ -864,11 +896,11 @@
     </message>
     <message numerus="yes">
         <source>%n GB of free space available</source>
-        <translation><numerusform>Доступно %n ГБ вільного простору</numerusform><numerusform>Доступно %n ГБ вільного простору</numerusform><numerusform>Доступно %n ГБ вільного простору</numerusform></translation>
+        <translation><numerusform>Доступно %n ГБ вільного простору</numerusform><numerusform>Доступно %n ГБ вільного простору</numerusform><numerusform>Доступно %n ГБ вільного простору</numerusform><numerusform>Доступно %n ГБ вільного простору</numerusform></translation>
     </message>
     <message numerus="yes">
         <source>(of %n GB needed)</source>
-        <translation><numerusform>(в той час, як необхідно %n ГБ)</numerusform><numerusform>(в той час, як необхідно %n ГБ)</numerusform><numerusform>(в той час, як необхідно %n ГБ)</numerusform></translation>
+        <translation><numerusform>(в той час, як необхідно %n ГБ)</numerusform><numerusform>(в той час, як необхідно %n ГБ)</numerusform><numerusform>(в той час, як необхідно %n ГБ)</numerusform><numerusform>(в той час, як необхідно %n ГБ)</numerusform></translation>
     </message>
 </context>
 <context>
@@ -956,10 +988,6 @@
         <translation>&amp;Головні</translation>
     </message>
     <message>
-        <source>&amp;Start %1 on system login</source>
-        <translation>&amp;Запускати %1 при вході в систему</translation>
-    </message>
-    <message>
         <source>Size of &amp;database cache</source>
         <translation>Розмір &amp;кешу бази даних</translation>
     </message>
@@ -972,16 +1000,24 @@
         <translation>Кількість потоків &amp;сценарію перевірки</translation>
     </message>
     <message>
-        <source>Accept connections from outside</source>
-        <translation>Приймати підключення ззовні</translation>
-    </message>
-    <message>
-        <source>Allow incoming connections</source>
-        <translation>Дозволити вхідні з’єднання</translation>
-    </message>
-    <message>
         <source>IP address of the proxy (e.g. IPv4: 127.0.0.1 / IPv6: ::1)</source>
         <translation>IP-адреса проксі-сервера (наприклад IPv4: 127.0.0.1 / IPv6: ::1)</translation>
+    </message>
+    <message>
+        <source>Shows if the supplied default SOCKS5 proxy is used to reach peers via this network type.</source>
+        <translation>Показує, чи типово використовується проксі SOCKS5 для досягнення рівної участі для цього типу мережі.</translation>
+    </message>
+    <message>
+        <source>Use separate SOCKS&amp;5 proxy to reach peers via Tor hidden services:</source>
+        <translation>Використовуйте окремі проксі-сервери SOCKS&amp;5 для підключення до вузлів через приховані сервіси Tor:</translation>
+    </message>
+    <message>
+        <source>Hide the icon from the system tray.</source>
+        <translation>Приховати значок із системного лотка.</translation>
+    </message>
+    <message>
+        <source>&amp;Hide tray icon</source>
+        <translation>&amp;Приховати піктограму з лотка</translation>
     </message>
     <message>
         <source>Minimize instead of exit the application when the window is closed. When this option is enabled, the application will be closed only after selecting Exit in the menu.</source>
@@ -992,12 +1028,16 @@
         <translation>Сторонні URL (наприклад, block explorer), що з'являться на вкладці транзакцій у вигляді пункту контекстного меню. %s в URL буде замінено на хеш транзакції. Для відокремлення URLів використовуйте вертикальну риску |.</translation>
     </message>
     <message>
-        <source>Third party transaction URLs</source>
-        <translation>Сторонні URL транзакцій</translation>
-    </message>
-    <message>
         <source>Active command-line options that override above options:</source>
         <translation>Активовані параметри командного рядка, що перекривають вищевказані параметри:</translation>
+    </message>
+    <message>
+        <source>Open the %1 configuration file from the working directory.</source>
+        <translation>Відкрийте %1 файл конфігурації з робочого каталогу.</translation>
+    </message>
+    <message>
+        <source>Open Configuration File</source>
+        <translation>Відкрити файл конфігурації</translation>
     </message>
     <message>
         <source>Reset all client options to default.</source>
@@ -1044,6 +1084,14 @@
         <translation>Відображення порту через &amp;UPnP</translation>
     </message>
     <message>
+        <source>Accept connections from outside.</source>
+        <translation>Приймати з'єднання ззовні.</translation>
+    </message>
+    <message>
+        <source>Allow incomin&amp;g connections</source>
+        <translation>Дозволити вхідні з'єднання</translation>
+    </message>
+    <message>
         <source>Connect to the Bitcoin network through a SOCKS5 proxy.</source>
         <translation>Підключення до мережі Bitcoin через SOCKS5 проксі.</translation>
     </message>
@@ -1068,10 +1116,6 @@
         <translation>Приєднуватися до учасників через:</translation>
     </message>
     <message>
-        <source>Shows, if the supplied default SOCKS5 proxy is used to reach peers via this network type.</source>
-        <translation>Вказує на використання наявного типового проксі SOCKS5, що використувується задля встановлення зв'язку з пірами через мережу такого типу.</translation>
-    </message>
-    <message>
         <source>IPv4</source>
         <translation>IPv4</translation>
     </message>
@@ -1088,16 +1132,8 @@
         <translation>Підключатися до мережі Bitcoin через окремий SOCKS5 проксі для прихованих сервісів Tor.</translation>
     </message>
     <message>
-        <source>Use separate SOCKS5 proxy to reach peers via Tor hidden services:</source>
-        <translation>Використовувати окремий SOCKS5-проксі для з'єднання з учасниками через приховані сервіси Tor:</translation>
-    </message>
-    <message>
         <source>&amp;Window</source>
         <translation>&amp;Вікно</translation>
-    </message>
-    <message>
-        <source>Hide tray icon</source>
-        <translation>Сховати іконку в треї</translation>
     </message>
     <message>
         <source>Show only a tray icon after minimizing the window.</source>
@@ -1120,6 +1156,10 @@
         <translation>Мов&amp;а інтерфейсу користувача:</translation>
     </message>
     <message>
+        <source>The user interface language can be set here. This setting will take effect after restarting %1.</source>
+        <translation>Встановлює мову інтерфейсу. Зміни набудуть чинності після перезапуску %1.</translation>
+    </message>
+    <message>
         <source>&amp;Unit to show amounts in:</source>
         <translation>В&amp;имірювати монети в:</translation>
     </message>
@@ -1130,6 +1170,10 @@
     <message>
         <source>Whether to show coin control features or not.</source>
         <translation>Показати або сховати керування входами.</translation>
+    </message>
+    <message>
+        <source>&amp;Third party transaction URLs</source>
+        <translation>&amp;URL-адреси транзакцій сторонніх розробників</translation>
     </message>
     <message>
         <source>&amp;OK</source>
@@ -1158,6 +1202,22 @@
     <message>
         <source>Client will be shut down. Do you want to proceed?</source>
         <translation>Клієнт буде вимкнено. Продовжити?</translation>
+    </message>
+    <message>
+        <source>Configuration options</source>
+        <translation>Редагувати параметри</translation>
+    </message>
+    <message>
+        <source>The configuration file is used to specify advanced user options which override GUI settings. Additionally, any command-line options will override this configuration file.</source>
+        <translation>Файл конфігурації використовується для вказування додаткових параметрів користувача, що перекривають настройки графічного інтерфейсу користувача. Крім того, будь-які параметри командного рядка замінять цей конфігураційний файл.</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Помилка</translation>
+    </message>
+    <message>
+        <source>The configuration file could not be opened.</source>
+        <translation>Файл конфігурції не можливо відкрити</translation>
     </message>
     <message>
         <source>This change would require a client restart.</source>
@@ -1250,10 +1310,92 @@
         <translation>Помилка запиту платежу</translation>
     </message>
     <message>
+        <source>Cannot start bitcoin: click-to-pay handler</source>
+        <translation>Не вдається запустити біткойн: обробник клацни-плати</translation>
+    </message>
+    <message>
         <source>URI handling</source>
         <translation>Обробка URI</translation>
     </message>
-    </context>
+    <message>
+        <source>Payment request fetch URL is invalid: %1</source>
+        <translation>URL запиту платежу є некоректним: %1</translation>
+    </message>
+    <message>
+        <source>Invalid payment address %1</source>
+        <translation>Помилка в адресі платежу %1</translation>
+    </message>
+    <message>
+        <source>URI cannot be parsed! This can be caused by an invalid Bitcoin address or malformed URI parameters.</source>
+        <translation>Неможливо обробити URI! Причиною цього може бути некоректна Біткойн-адреса або неправильні параметри URI.</translation>
+    </message>
+    <message>
+        <source>Payment request file handling</source>
+        <translation>Обробка файлу запиту платежу</translation>
+    </message>
+    <message>
+        <source>Payment request file cannot be read! This can be caused by an invalid payment request file.</source>
+        <translation>Неможливо прочитати файл запиту платежу! Ймовірно, файл пошкоджено.</translation>
+    </message>
+    <message>
+        <source>Payment request rejected</source>
+        <translation>Запит платежу відхилено</translation>
+    </message>
+    <message>
+        <source>Payment request network doesn't match client network.</source>
+        <translation>Мережа запиту платежу не є мережею клієнта.</translation>
+    </message>
+    <message>
+        <source>Payment request expired.</source>
+        <translation>Запит платежу прострочено.</translation>
+    </message>
+    <message>
+        <source>Payment request is not initialized.</source>
+        <translation>Запит платежу не ініціалізовано.</translation>
+    </message>
+    <message>
+        <source>Unverified payment requests to custom payment scripts are unsupported.</source>
+        <translation>
+70/5000
+Неперевірені запити на оплату до індивідуальних платіжних скриптів не підтримуються.</translation>
+    </message>
+    <message>
+        <source>Invalid payment request.</source>
+        <translation>Помилка в запиті платежу.</translation>
+    </message>
+    <message>
+        <source>Requested payment amount of %1 is too small (considered dust).</source>
+        <translation>Сума запиту платежу для %1 занадто мала (вважається пилом)</translation>
+    </message>
+    <message>
+        <source>Refund from %1</source>
+        <translation>Відшкодування з %1</translation>
+    </message>
+    <message>
+        <source>Payment request %1 is too large (%2 bytes, allowed %3 bytes).</source>
+        <translation>Запит платежу %1 занадто великий (%2 байт, дозволено %3 байт).</translation>
+    </message>
+    <message>
+        <source>Error communicating with %1: %2</source>
+        <translation>Помилка зв'язку з %1: %2</translation>
+    </message>
+    <message>
+        <source>Payment request cannot be parsed!</source>
+        <translation>Неможливо розпізнати запит платежу!</translation>
+    </message>
+    <message>
+        <source>Bad response from server %1</source>
+        <translation>Погана відповідь від сервера %1</translation>
+    </message>
+    <message>
+        <source>Network request error</source>
+        <translation>Помилка мережевого запиту</translation>
+    </message>
+    <message>
+        <source>Payment acknowledged</source>
+        <translation>Платіж підтверджено</translation>
+    </message>
+</context>
 <context>
     <name>PeerTableModel</name>
     <message>
@@ -1265,8 +1407,20 @@
         <translation>Вузол/Сервіс</translation>
     </message>
     <message>
+        <source>NodeId</source>
+        <translation>Ідентифікатор вузла</translation>
+    </message>
+    <message>
         <source>Ping</source>
         <translation>Затримка</translation>
+    </message>
+    <message>
+        <source>Sent</source>
+        <translation>Відправлено</translation>
+    </message>
+    <message>
+        <source>Received</source>
+        <translation>Отримано</translation>
     </message>
 </context>
 <context>
@@ -1307,13 +1461,69 @@
         <source>%1 ms</source>
         <translation>%1 мс</translation>
     </message>
+    <message numerus="yes">
+        <source>%n second(s)</source>
+        <translation><numerusform>%n секунда</numerusform><numerusform>%n секунд</numerusform><numerusform>%n секунд</numerusform><numerusform>%n секунд</numerusform></translation>
+    </message>
+    <message numerus="yes">
+        <source>%n minute(s)</source>
+        <translation><numerusform>%n хвилина</numerusform><numerusform>%n хвилин</numerusform><numerusform>%n хвилин</numerusform><numerusform>%n хвилин</numerusform></translation>
+    </message>
+    <message numerus="yes">
+        <source>%n hour(s)</source>
+        <translation><numerusform>%n година</numerusform><numerusform>%n годин</numerusform><numerusform>%n годин</numerusform><numerusform>%n годин</numerusform></translation>
+    </message>
+    <message numerus="yes">
+        <source>%n day(s)</source>
+        <translation><numerusform>%n день</numerusform><numerusform>%n днів</numerusform><numerusform>%n днів</numerusform><numerusform>%n днів</numerusform></translation>
+    </message>
+    <message numerus="yes">
+        <source>%n week(s)</source>
+        <translation><numerusform>%n тиждень</numerusform><numerusform>%n тижнів</numerusform><numerusform>%n тижнів</numerusform><numerusform>%n тижнів</numerusform></translation>
+    </message>
     <message>
         <source>%1 and %2</source>
         <translation>%1 та %2</translation>
     </message>
-    </context>
+    <message numerus="yes">
+        <source>%n year(s)</source>
+        <translation><numerusform>%n рік</numerusform><numerusform>%n років</numerusform><numerusform>%n років</numerusform><numerusform>%n років</numerusform></translation>
+    </message>
+    <message>
+        <source>%1 B</source>
+        <translation>%1 Б</translation>
+    </message>
+    <message>
+        <source>%1 KB</source>
+        <translation>%1 КБ</translation>
+    </message>
+    <message>
+        <source>%1 MB</source>
+        <translation>%1 МБ</translation>
+    </message>
+    <message>
+        <source>%1 GB</source>
+        <translation>%1 ГБ</translation>
+    </message>
+    <message>
+        <source>%1 didn't yet exit safely...</source>
+        <translation>%1 безпечний вихід ще не виконано...</translation>
+    </message>
+    <message>
+        <source>unknown</source>
+        <translation>невідомо</translation>
+    </message>
+</context>
 <context>
     <name>QObject::QObject</name>
+    <message>
+        <source>Error: Specified data directory "%1" does not exist.</source>
+        <translation>Помилка: Вказаного каталогу даних «%1» не існує.</translation>
+    </message>
+    <message>
+        <source>Error: Cannot parse configuration file: %1. Only use key=value syntax.</source>
+        <translation>Помилка: Неможливо обробити файл конфігурації: %1. Використовуйте синтаксис: ключ=значення.</translation>
+    </message>
     <message>
         <source>Error: %1</source>
         <translation>Помилка: %1</translation>
@@ -1365,6 +1575,10 @@
         <translation>Використовується BerkeleyDB версії</translation>
     </message>
     <message>
+        <source>Datadir</source>
+        <translation>Каталог даних</translation>
+    </message>
+    <message>
         <source>Startup time</source>
         <translation>Час запуску</translation>
     </message>
@@ -1399,6 +1613,10 @@
     <message>
         <source>Memory usage</source>
         <translation>Використання пам'яті</translation>
+    </message>
+    <message>
+        <source>&amp;Reset</source>
+        <translation>&amp;Скинути</translation>
     </message>
     <message>
         <source>Received</source>
@@ -1449,6 +1667,10 @@
         <translation>Клієнт користувача</translation>
     </message>
     <message>
+        <source>Open the %1 debug log file from the current data directory. This can take a few seconds for large log files.</source>
+        <translation>Відкрийте файл журналу налагодження %1 з поточного каталогу даних. Це може зайняти кілька секунд для файлів великого розміру.</translation>
+    </message>
+    <message>
         <source>Decrease font size</source>
         <translation>Зменшити розмір шрифту</translation>
     </message>
@@ -1489,6 +1711,10 @@
         <translation>Поточна Затримка</translation>
     </message>
     <message>
+        <source>Min Ping</source>
+        <translation>Мін Пінг</translation>
+    </message>
+    <message>
         <source>Time Offset</source>
         <translation>Різниця часу</translation>
     </message>
@@ -1507,10 +1733,6 @@
     <message>
         <source>&amp;Network Traffic</source>
         <translation>&amp;Мережевий трафік</translation>
-    </message>
-    <message>
-        <source>&amp;Clear</source>
-        <translation>&amp;Очистити</translation>
     </message>
     <message>
         <source>Totals</source>
@@ -1549,32 +1771,40 @@
         <translation>1 &amp;рік</translation>
     </message>
     <message>
-        <source>Use up and down arrows to navigate history, and &lt;b&gt;Ctrl-L&lt;/b&gt; to clear screen.</source>
-        <translation>Використовуйте стрілки вгору вниз для навігації по історії, і &lt;b&gt;Ctrl-L&lt;/b&gt; для очищення екрана.</translation>
+        <source>&amp;Disconnect</source>
+        <translation>&amp;Від'єднати</translation>
     </message>
     <message>
-        <source>Type &lt;b&gt;help&lt;/b&gt; for an overview of available commands.</source>
-        <translation>Наберіть &lt;b&gt;help&lt;/b&gt; для перегляду доступних команд.</translation>
+        <source>Ban for</source>
+        <translation>Заблокувати на</translation>
+    </message>
+    <message>
+        <source>&amp;Unban</source>
+        <translation>&amp;Розблокувати</translation>
+    </message>
+    <message>
+        <source>Welcome to the %1 RPC console.</source>
+        <translation>Ласкаво просимо до консолі RPC %1.</translation>
+    </message>
+    <message>
+        <source>Use up and down arrows to navigate history, and %1 to clear screen.</source>
+        <translation>Використовуйте стрілки вгору та вниз для навігації історії та %1 для очищення екрана.</translation>
+    </message>
+    <message>
+        <source>Type %1 for an overview of available commands.</source>
+        <translation>Введіть %1 для перегляду доступних команд.</translation>
+    </message>
+    <message>
+        <source>For more information on using this console type %1.</source>
+        <translation>Щоб отримати додаткові відомості про використання консолі введіть %1.</translation>
+    </message>
+    <message>
+        <source>WARNING: Scammers have been active, telling users to type commands here, stealing their wallet contents. Do not use this console without fully understanding the ramifications of a command.</source>
+        <translation>ПОПЕРЕДЖЕННЯ. Шахраї активно вказували вводити тут команди і отримували доступ до вмісту гаманця користувачів. Не використовуйте цю консоль без повного розуміння наслідків виконання команд.</translation>
     </message>
     <message>
         <source>Network activity disabled</source>
         <translation>Мережева активність вимкнена.</translation>
-    </message>
-    <message>
-        <source>%1 B</source>
-        <translation>%1 Б</translation>
-    </message>
-    <message>
-        <source>%1 KB</source>
-        <translation>%1 КБ</translation>
-    </message>
-    <message>
-        <source>%1 MB</source>
-        <translation>%1 МБ</translation>
-    </message>
-    <message>
-        <source>%1 GB</source>
-        <translation>%1 ГБ</translation>
     </message>
     <message>
         <source>(node id: %1)</source>
@@ -1622,14 +1852,6 @@
     <message>
         <source>&amp;Message:</source>
         <translation>&amp;Повідомлення:</translation>
-    </message>
-    <message>
-        <source>Reuse one of the previously used receiving addresses. Reusing addresses has security and privacy issues. Do not use this unless re-generating a payment request made before.</source>
-        <translation>Повторно використати одну з адрес. Повторне використання адрес створює ризики безпеки та конфіденційності. Не використовуйте її, окрім як для створення повторного запиту платежу.</translation>
-    </message>
-    <message>
-        <source>R&amp;euse an existing receiving address (not recommended)</source>
-        <translation>По&amp;вторно використати адресу для отримання (не рекомендується)</translation>
     </message>
     <message>
         <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Bitcoin network.</source>
@@ -1693,7 +1915,7 @@
     </message>
     <message>
         <source>Copy amount</source>
-        <translation>Скопіювати суму</translation>
+        <translation>Копіювати суму</translation>
     </message>
 </context>
 <context>
@@ -1715,8 +1937,16 @@
         <translation>&amp;Зберегти зображення...</translation>
     </message>
     <message>
+        <source>Request payment to %1</source>
+        <translation>Запит платежу на %1</translation>
+    </message>
+    <message>
         <source>Payment information</source>
         <translation>Інформація про платіж</translation>
+    </message>
+    <message>
+        <source>URI</source>
+        <translation>URI</translation>
     </message>
     <message>
         <source>Address</source>
@@ -1724,7 +1954,7 @@
     </message>
     <message>
         <source>Amount</source>
-        <translation>Кількість</translation>
+        <translation>Сума</translation>
     </message>
     <message>
         <source>Label</source>
@@ -1734,7 +1964,15 @@
         <source>Message</source>
         <translation>Повідомлення</translation>
     </message>
-    </context>
+    <message>
+        <source>Resulting URI too long, try to reduce the text for label / message.</source>
+        <translation>Кінцевий URI занадто довгий, спробуйте зменшити текст для мітки / повідомлення.</translation>
+    </message>
+    <message>
+        <source>Error encoding URI into QR Code.</source>
+        <translation>Помилка кодування URI в QR-код.</translation>
+    </message>
+</context>
 <context>
     <name>RecentRequestsTableModel</name>
     <message>
@@ -1829,6 +2067,14 @@
         <translation>Виберіть...</translation>
     </message>
     <message>
+        <source>Using the fallbackfee can result in sending a transaction that will take several hours or days (or never) to confirm. Consider choosing your fee manually or wait until you have validated the complete chain.</source>
+        <translation>Використання зарезервованої комісії може призвести до виконання транзакції, підтвердження котрої займе години, або дні, або ніколи не буде підтверджено. Обміркуйте можливість вибору комісії вручну, або зачекайте завершення валідації повного ланцюгу.</translation>
+    </message>
+    <message>
+        <source>Warning: Fee estimation is currently not possible.</source>
+        <translation>Попередження: оцінка розміру комісії наразі неможлива.</translation>
+    </message>
+    <message>
         <source>collapse fee-settings</source>
         <translation>згорнути налаштування оплат</translation>
     </message>
@@ -1843,10 +2089,6 @@
     <message>
         <source>Hide</source>
         <translation>Приховати</translation>
-    </message>
-    <message>
-        <source>total at least</source>
-        <translation>всього щонайменше</translation>
     </message>
     <message>
         <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks. But be aware that this can end up in a never confirming transaction once there is more demand for bitcoin transactions than the network can process.</source>
@@ -1869,14 +2111,6 @@
         <translation>(Розумну оплату ще не ініціалізовано. Це, зазвичай, триває кілька блоків...)</translation>
     </message>
     <message>
-        <source>normal</source>
-        <translation>звичайний</translation>
-    </message>
-    <message>
-        <source>fast</source>
-        <translation>швидкий</translation>
-    </message>
-    <message>
         <source>Send to multiple recipients at once</source>
         <translation>Відправити на декілька адрес</translation>
     </message>
@@ -1897,6 +2131,14 @@
         <translation>Час підтвердження:</translation>
     </message>
     <message>
+        <source>Enable Replace-By-Fee</source>
+        <translation>Увімкнути Заміна-Через-Комісію</translation>
+    </message>
+    <message>
+        <source>With Replace-By-Fee (BIP-125) you can increase a transaction's fee after it is sent. Without this, a higher fee may be recommended to compensate for increased transaction delay risk.</source>
+        <translation>З опцією Заміна-Через-Комісію (BIP-125) ви можете збільшити комісію за транзакцію після її надсилання. Інакше може бути рекомендоване збільшення розміру комісії для компенсації підвищеного ризику затримки транзакції.</translation>
+    </message>
+    <message>
         <source>Clear &amp;All</source>
         <translation>Очистити &amp;все</translation>
     </message>
@@ -1914,15 +2156,15 @@
     </message>
     <message>
         <source>Copy quantity</source>
-        <translation>Скопіювати кількість</translation>
+        <translation>Копіювати кількість</translation>
     </message>
     <message>
         <source>Copy amount</source>
-        <translation>Скопіювати суму</translation>
+        <translation>Копіювати суму</translation>
     </message>
     <message>
         <source>Copy fee</source>
-        <translation>Скопіювати комісію</translation>
+        <translation>Комісія</translation>
     </message>
     <message>
         <source>Copy after fee</source>
@@ -1930,7 +2172,7 @@
     </message>
     <message>
         <source>Copy bytes</source>
-        <translation>Скопіювати байти</translation>
+        <translation>Копіювати байти</translation>
     </message>
     <message>
         <source>Copy dust</source>
@@ -1939,6 +2181,102 @@
     <message>
         <source>Copy change</source>
         <translation>Скопіювати решту</translation>
+    </message>
+    <message>
+        <source>%1 (%2 blocks)</source>
+        <translation>%1 (%2 блоків)</translation>
+    </message>
+    <message>
+        <source>%1 to %2</source>
+        <translation>%1 до %2</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to send?</source>
+        <translation>Ви впевнені, що хочете відправити?</translation>
+    </message>
+    <message>
+        <source>added as transaction fee</source>
+        <translation>додано як комісія за транзакцію</translation>
+    </message>
+    <message>
+        <source>Total Amount %1</source>
+        <translation>Загальна сума %1</translation>
+    </message>
+    <message>
+        <source>or</source>
+        <translation>або</translation>
+    </message>
+    <message>
+        <source>You can increase the fee later (signals Replace-By-Fee, BIP-125).</source>
+        <translation>Ви можете збільшити комісію пізніше (сигналізує Заміна-Через-Комісію, BIP-125).</translation>
+    </message>
+    <message>
+        <source>Not signalling Replace-By-Fee, BIP-125.</source>
+        <translation>Не сигналізує Заміна-Через-Комісію, BIP-125.</translation>
+    </message>
+    <message>
+        <source>Confirm send coins</source>
+        <translation>Підтвердьте надсилання монет</translation>
+    </message>
+    <message>
+        <source>The recipient address is not valid. Please recheck.</source>
+        <translation>Неприпустима адреса отримувача. Будь ласка, перевірте.</translation>
+    </message>
+    <message>
+        <source>The amount to pay must be larger than 0.</source>
+        <translation>Сума платні повинна бути більше 0.</translation>
+    </message>
+    <message>
+        <source>The amount exceeds your balance.</source>
+        <translation>Сума перевищує ваш баланс.</translation>
+    </message>
+    <message>
+        <source>The total exceeds your balance when the %1 transaction fee is included.</source>
+        <translation>Після додавання комісії %1, сума перевищить ваш баланс.</translation>
+    </message>
+    <message>
+        <source>Duplicate address found: addresses should only be used once each.</source>
+        <translation>Знайдено адресу, що дублюється: кожна адреса має бути вказана тільки один раз.</translation>
+    </message>
+    <message>
+        <source>Transaction creation failed!</source>
+        <translation>Транзакцію не виконано!</translation>
+    </message>
+    <message>
+        <source>The transaction was rejected with the following reason: %1</source>
+        <translation>Транзакцію відхилено з наступної причини: %1</translation>
+    </message>
+    <message>
+        <source>A fee higher than %1 is considered an absurdly high fee.</source>
+        <translation>Комісія більша, ніж %1, вважається абсурдно високою.</translation>
+    </message>
+    <message>
+        <source>Payment request expired.</source>
+        <translation>Запит платежу прострочено.</translation>
+    </message>
+    <message>
+        <source>Pay only the required fee of %1</source>
+        <translation>Сплатіть лише обов'язкову комісію у розмірі %1</translation>
+    </message>
+    <message numerus="yes">
+        <source>Estimated to begin confirmation within %n block(s).</source>
+        <translation><numerusform>Очікуваний початок підтвердження через %n блок.</numerusform><numerusform>Очікуваний початок підтвердження протягом %n блоків.</numerusform><numerusform>Очікуваний початок підтвердження протягом %n блоків.</numerusform><numerusform>Очікуваний початок підтвердження протягом %n блоків.</numerusform></translation>
+    </message>
+    <message>
+        <source>Warning: Invalid Bitcoin address</source>
+        <translation>Увага: Неприпустима Біткойн-адреса.</translation>
+    </message>
+    <message>
+        <source>Warning: Unknown change address</source>
+        <translation>Увага: Невідома адреса для решти</translation>
+    </message>
+    <message>
+        <source>Confirm custom change address</source>
+        <translation>Підтвердити індивідуальну адресу для решти</translation>
+    </message>
+    <message>
+        <source>The address you selected for change is not part of this wallet. Any or all funds in your wallet may be sent to this address. Are you sure?</source>
+        <translation>Адреса, яку ви обрали для решти, не є частиною цього гаманця. Будь-які або всі кошти з вашого гаманця можуть бути надіслані на цю адресу. Ви впевнені?</translation>
     </message>
     <message>
         <source>(no label)</source>
@@ -1996,6 +2334,10 @@
         <translation>В&amp;ідняти комісію від суми</translation>
     </message>
     <message>
+        <source>Use available balance</source>
+        <translation>Використати наявний баланс</translation>
+    </message>
+    <message>
         <source>Message:</source>
         <translation>Повідомлення:</translation>
     </message>
@@ -2037,6 +2379,10 @@
 </context>
 <context>
     <name>ShutdownWindow</name>
+    <message>
+        <source>%1 is shutting down...</source>
+        <translation>%1 припиняє роботу...</translation>
+    </message>
     <message>
         <source>Do not shut down the computer until this window disappears.</source>
         <translation>Не вимикайте комп’ютер до зникнення цього вікна.</translation>
@@ -2197,13 +2543,57 @@
 </context>
 <context>
     <name>TransactionDesc</name>
+    <message numerus="yes">
+        <source>Open for %n more block(s)</source>
+        <translation><numerusform>Відкрито на %n блок</numerusform><numerusform>Відкрито на %n блоків</numerusform><numerusform>Відкрито на %n блоків</numerusform><numerusform>Відкрито на %n блоків</numerusform></translation>
+    </message>
     <message>
         <source>Open until %1</source>
         <translation>Відкрито до %1</translation>
     </message>
     <message>
+        <source>conflicted with a transaction with %1 confirmations</source>
+        <translation>конфліктує з транзакцією із %1 підтвердженнями</translation>
+    </message>
+    <message>
+        <source>%1/offline</source>
+        <translation>%1/вимкнено</translation>
+    </message>
+    <message>
+        <source>0/unconfirmed, %1</source>
+        <translation>0/не підтверджено, %1</translation>
+    </message>
+    <message>
+        <source>in memory pool</source>
+        <translation>в пулі пам'яті</translation>
+    </message>
+    <message>
+        <source>not in memory pool</source>
+        <translation>не в пулі пам'яті</translation>
+    </message>
+    <message>
+        <source>abandoned</source>
+        <translation>відкинуто</translation>
+    </message>
+    <message>
+        <source>%1/unconfirmed</source>
+        <translation>%1/не підтверджено</translation>
+    </message>
+    <message>
+        <source>%1 confirmations</source>
+        <translation>%1 підтверджень</translation>
+    </message>
+    <message>
         <source>Status</source>
         <translation>Статут</translation>
+    </message>
+    <message>
+        <source>, has not been successfully broadcast yet</source>
+        <translation>, ще не було успішно розіслано</translation>
+    </message>
+    <message numerus="yes">
+        <source>, broadcast through %n node(s)</source>
+        <translation><numerusform>, транслюється через %n вузол</numerusform><numerusform>, транслюється через %n вузлів</numerusform><numerusform>, транслюється через %n вузлів</numerusform><numerusform>, транслюється через %n вузлів</numerusform></translation>
     </message>
     <message>
         <source>Date</source>
@@ -2234,12 +2624,20 @@
         <translation>Власна адреса</translation>
     </message>
     <message>
+        <source>watch-only</source>
+        <translation>тільки спостереження</translation>
+    </message>
+    <message>
         <source>label</source>
         <translation>мітка</translation>
     </message>
     <message>
         <source>Credit</source>
         <translation>Кредит</translation>
+    </message>
+    <message numerus="yes">
+        <source>matures in %n more block(s)</source>
+        <translation><numerusform>дозріє через %n блок</numerusform><numerusform>дозріє через %n блоків</numerusform><numerusform>дозріє через %n блоків</numerusform><numerusform>дозріє через %n блоків</numerusform></translation>
     </message>
     <message>
         <source>not accepted</source>
@@ -2282,8 +2680,20 @@
         <translation>Розмір транзакції</translation>
     </message>
     <message>
+        <source>Output index</source>
+        <translation>Вихідний індекс</translation>
+    </message>
+    <message>
         <source>Merchant</source>
         <translation>Продавець</translation>
+    </message>
+    <message>
+        <source>Generated coins must mature %1 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to "not accepted" and it won't be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
+        <translation>Згенеровані монети стануть доступні для використання після %1 підтверджень. Коли ви згенерували цей блок, його було відправлено в мережу для внесення до ланцюжку блоків. Якщо блок не буде додано до ланцюжку блоків, його статус зміниться на «не підтверджено», і згенеровані монети неможливо буде витратити. Таке часом трапляється, якщо хтось згенерував інший блок на декілька секунд раніше.</translation>
+    </message>
+    <message>
+        <source>Debug information</source>
+        <translation>Налагоджувальна інформація</translation>
     </message>
     <message>
         <source>Transaction</source>
@@ -2330,6 +2740,10 @@
     <message>
         <source>Label</source>
         <translation>Мітка</translation>
+    </message>
+    <message numerus="yes">
+        <source>Open for %n more block(s)</source>
+        <translation><numerusform>Відкрито на %n блок</numerusform><numerusform>Відкрито на %n блоків</numerusform><numerusform>Відкрито на %n блоків</numerusform><numerusform>Відкрито на %n блоків</numerusform></translation>
     </message>
     <message>
         <source>Open until %1</source>
@@ -2389,7 +2803,15 @@
     </message>
     <message>
         <source>Mined</source>
-        <translation>Добуті</translation>
+        <translation>Добуто</translation>
+    </message>
+    <message>
+        <source>watch-only</source>
+        <translation>тільки спостереження</translation>
+    </message>
+    <message>
+        <source>(n/a)</source>
+        <translation>(н/д)</translation>
     </message>
     <message>
         <source>(no label)</source>
@@ -2406,6 +2828,10 @@
     <message>
         <source>Type of transaction.</source>
         <translation>Тип транзакції.</translation>
+    </message>
+    <message>
+        <source>Whether or not a watch-only address is involved in this transaction.</source>
+        <translation>Чи було залучено адресу для спостереження в цій транзакції.</translation>
     </message>
     <message>
         <source>User-defined intent/purpose of the transaction.</source>
@@ -2467,8 +2893,8 @@
         <translation>Інше</translation>
     </message>
     <message>
-        <source>Enter address or label to search</source>
-        <translation>Введіть адресу чи мітку для пошуку</translation>
+        <source>Enter address, transaction id, or label to search</source>
+        <translation>Введіть адресу, ідентифікатор транзакції або мітку для пошуку</translation>
     </message>
     <message>
         <source>Min amount</source>
@@ -2477,6 +2903,10 @@
     <message>
         <source>Abandon transaction</source>
         <translation>Відмовитися від транзакції</translation>
+    </message>
+    <message>
+        <source>Increase transaction fee</source>
+        <translation>Збільшить плату за транзакцію</translation>
     </message>
     <message>
         <source>Copy address</source>
@@ -2550,7 +2980,27 @@
         <source>Exporting Failed</source>
         <translation>Експортування пройшло не успішно</translation>
     </message>
-    </context>
+    <message>
+        <source>There was an error trying to save the transaction history to %1.</source>
+        <translation>Виникла помилка при спробі зберегти історію транзакцій до %1.</translation>
+    </message>
+    <message>
+        <source>Exporting Successful</source>
+        <translation>Експортовано успішно</translation>
+    </message>
+    <message>
+        <source>The transaction history was successfully saved to %1.</source>
+        <translation>Історію транзакцій було успішно збережено до %1.</translation>
+    </message>
+    <message>
+        <source>Range:</source>
+        <translation>Діапазон:</translation>
+    </message>
+    <message>
+        <source>to</source>
+        <translation>до</translation>
+    </message>
+</context>
 <context>
     <name>UnitDisplayStatusBarControl</name>
     <message>
@@ -2560,10 +3010,54 @@
 </context>
 <context>
     <name>WalletFrame</name>
-    </context>
+    <message>
+        <source>No wallet has been loaded.</source>
+        <translation>Жоден гаманець не завантажено.</translation>
+    </message>
+</context>
 <context>
     <name>WalletModel</name>
-    </context>
+    <message>
+        <source>Send Coins</source>
+        <translation>Відправити Монети</translation>
+    </message>
+    <message>
+        <source>Fee bump error</source>
+        <translation>Помилка штурхання комісії</translation>
+    </message>
+    <message>
+        <source>Increasing transaction fee failed</source>
+        <translation>Підвищення комісії за транзакцію не виконано</translation>
+    </message>
+    <message>
+        <source>Do you want to increase the fee?</source>
+        <translation>Ви бажаєте збільшити комісію?</translation>
+    </message>
+    <message>
+        <source>Current fee:</source>
+        <translation>Поточна комісія:</translation>
+    </message>
+    <message>
+        <source>Increase:</source>
+        <translation>Збільшити:</translation>
+    </message>
+    <message>
+        <source>New fee:</source>
+        <translation>Нова комісія:</translation>
+    </message>
+    <message>
+        <source>Confirm fee bump</source>
+        <translation>Підтвердити штурхання комісії</translation>
+    </message>
+    <message>
+        <source>Can't sign transaction.</source>
+        <translation>Не можливо підписати транзакцію.</translation>
+    </message>
+    <message>
+        <source>Could not commit transaction</source>
+        <translation>Не вдалось виконати транзакцію</translation>
+    </message>
+</context>
 <context>
     <name>WalletView</name>
     <message>
@@ -2585,6 +3079,10 @@
     <message>
         <source>Backup Failed</source>
         <translation>Помилка резервного копіювання</translation>
+    </message>
+    <message>
+        <source>There was an error trying to save the wallet data to %1.</source>
+        <translation>Виникла помилка при спробі зберегти дані гаманця до %1.</translation>
     </message>
     <message>
         <source>Backup Successful</source>
@@ -2616,6 +3114,10 @@
     <message>
         <source>Accept command line and JSON-RPC commands</source>
         <translation>Приймати команди із командного рядка та команди JSON-RPC</translation>
+    </message>
+    <message>
+        <source>Distributed under the MIT software license, see the accompanying file %s or %s</source>
+        <translation>Розповсюджується за ліцензією на програмне забезпечення MIT, дивіться супровідний файл %s або %s</translation>
     </message>
     <message>
         <source>If &lt;category&gt; is not supplied or if &lt;category&gt; = 1, output all debugging information.</source>
@@ -2658,16 +3160,88 @@
         <translation>Bitcoin Core</translation>
     </message>
     <message>
+        <source>The %s developers</source>
+        <translation>Розробники %s</translation>
+    </message>
+    <message>
+        <source>A fee rate (in %s/kB) that will be used when fee estimation has insufficient data (default: %s)</source>
+        <translation>Розмір комісії (у %s/kB), який буде використано при нестачі даних для оцінювання комісії (типово: %s)</translation>
+    </message>
+    <message>
+        <source>Accept relayed transactions received from whitelisted peers even when not relaying transactions (default: %d)</source>
+        <translation>Прийняти ретрансльовані транзакції, отримані від вузлів у білому списку, навіть коли подальша ретрансляція транзакцій не виконується (типово: %d)</translation>
+    </message>
+    <message>
+        <source>Add a node to connect to and attempt to keep the connection open (see the `addnode` RPC command help for more info)</source>
+        <translation>Додайте вузол для підключення та утримання відкритого з'єднання (дивіться команду `addnode` RPC для отримання додаткової інформації).</translation>
+    </message>
+    <message>
         <source>Bind to given address and always listen on it. Use [host]:port notation for IPv6</source>
         <translation>Прив'язатися до даної адреси та прослуховувати її. Використовуйте запис виду [хост]:порт для IPv6</translation>
+    </message>
+    <message>
+        <source>Cannot obtain a lock on data directory %s. %s is probably already running.</source>
+        <translation>Неможливо блокувати каталог даних %s. %s, ймовірно, вже працює.</translation>
+    </message>
+    <message>
+        <source>Cannot provide specific connections and have addrman find outgoing connections at the same.</source>
+        <translation>Неможливо встановити визначені з'єднання і одночасно використовувати addrman для встановлення вихідних з'єднань.</translation>
+    </message>
+    <message>
+        <source>Connect only to the specified node(s); -connect=0 disables automatic connections (the rules for this peer are the same as for -addnode)</source>
+        <translation>Підключення тільки до вказаного(-их) вузла(-ів); -connect = 0 вимикає автоматичні з'єднання (правила для цього вузла такі ж, як для -addnode)</translation>
     </message>
     <message>
         <source>Delete all wallet transactions and only recover those parts of the blockchain through -rescan on startup</source>
         <translation>Видалити всі транзакції гаманця та відновити ті, що будуть знайдені під час запуску за допомогою -rescan</translation>
     </message>
     <message>
+        <source>Error reading %s! All keys read correctly, but transaction data or address book entries might be missing or incorrect.</source>
+        <translation>Помилка читання %s! Всі ключі зчитано правильно, але записи в адресній книзі, або дані транзакцій можуть бути відсутніми чи невірними.</translation>
+    </message>
+    <message>
+        <source>Exclude debugging information for a category. Can be used in conjunction with -debug=1 to output debug logs for all categories except one or more specified categories.</source>
+        <translation>Виключити налагоджувальну інформацію для категорії. Може використовуватися разом з -debug = 1 для виведення журналів налагодження для всіх категорій за винятком однієї або декількох зазначених категорій.</translation>
+    </message>
+    <message>
         <source>Execute command when a wallet transaction changes (%s in cmd is replaced by TxID)</source>
         <translation>Виконати команду, коли транзакція гаманця зміниться (замість %s в команді буде підставлено ідентифікатор транзакції)</translation>
+    </message>
+    <message>
+        <source>Extra transactions to keep in memory for compact block reconstructions (default: %u)</source>
+        <translation>Додаткові транзакції для збереження в пам'яті компактних реконструкцій блоку (типово: %u)</translation>
+    </message>
+    <message>
+        <source>If this block is in the chain assume that it and its ancestors are valid and potentially skip their script verification (0 to verify all, default: %s, testnet: %s)</source>
+        <translation>Якщо цей блок знаходиться в ланцюжку, можна припустити, що він та його предки є дійсними і потенційно можна пропустити перевірку їх скриптів (0 для перевірки всіх, типово: %s, testnet: %s)</translation>
+    </message>
+    <message>
+        <source>Maximum allowed median peer time offset adjustment. Local perspective of time may be influenced by peers forward or backward by this amount. (default: %u seconds)</source>
+        <translation>Максимально допустиме середне відхилення часу вузла. Локальне значення часу може коригуватись вузлами на цей показник вперед або назад. (типово : %u секунд)</translation>
+    </message>
+    <message>
+        <source>Maximum total fees (in %s) to use in a single wallet transaction or raw transaction; setting this too low may abort large transactions (default: %s)</source>
+        <translation>Максимальна загальна сума комісії (у %s) для використання в одній транзакції гаманця або необоротній транзакції; встановлення занадто низького значення призведе до скасування великих транзакцій (типово: %s)</translation>
+    </message>
+    <message>
+        <source>Please check that your computer's date and time are correct! If your clock is wrong, %s will not work properly.</source>
+        <translation>Перевірте правильність дати та часу комп'ютера. Якщо ваш годинник  налаштовано невірно, %s не буде працювати належним чином.</translation>
+    </message>
+    <message>
+        <source>Please contribute if you find %s useful. Visit %s for further information about the software.</source>
+        <translation>Будь ласка, зробіть внесок, якщо ви знаходите %s корисним. Відвідайте %s для отримання додаткової інформації про програмне забезпечення.</translation>
+    </message>
+    <message>
+        <source>Query for peer addresses via DNS lookup, if low on addresses (default: 1 unless -connect used)</source>
+        <translation>Запит адреси вузла за допомогою DNS-пошуку, якщо замала кількість адрес (за замовчанням: 1, якщо -connect не використовується)</translation>
+    </message>
+    <message>
+        <source>Reduce storage requirements by enabling pruning (deleting) of old blocks. This allows the pruneblockchain RPC to be called to delete specific blocks, and enables automatic pruning of old blocks if a target size in MiB is provided. This mode is incompatible with -txindex and -rescan. Warning: Reverting this setting requires re-downloading the entire blockchain. (default: 0 = disable pruning blocks, 1 = allow manual pruning via RPC, &gt;%u = automatically prune block files to stay under the specified target size in MiB)</source>
+        <translation>Знизити вимоги до зберігання, дозволяючи скоротити (видалити) старі блоки. Це дозволяє викликати RPC pruneblockchain, щоб видалити певні блоки, а також дозволяє автоматично обрізати старі блоки, якщо вказано цільовий розмір в MiB. Цей режим несумісний з -txindex і -rescan. Попередження: для відновлення цього параметра потрібно повторно завантажити весь ланцюжок блоків. (типово: 0 = вимкнути видалення блоків, 1 = дозволити ручне обрізання за допомогою RPC, &gt;%u = автоматично обрізати файли блоків, щоб вони не перевищували вказаного розміру у МіБ).</translation>
+    </message>
+    <message>
+        <source>Set lowest fee rate (in %s/kB) for transactions to be included in block creation. (default: %s)</source>
+        <translation>Встановіть найнижчу ставку (у %s/kB) для транзакцій, щоб долукчити їх до блоку. (типово: %s)</translation>
     </message>
     <message>
         <source>Set the number of script verification threads (%u to %d, 0 = auto, &lt;0 = leave that many cores free, default: %d)</source>
@@ -2678,8 +3252,52 @@
         <translation>Схоже, що база даних блоків містить блок з майбутнього. Це може статися із-за некоректно встановленої дати та/або часу. Перебудовуйте базу даних блоків лише тоді, коли ви переконані, що встановлено правильну дату і час</translation>
     </message>
     <message>
+        <source>This is a pre-release test build - use at your own risk - do not use for mining or merchant applications</source>
+        <translation>Це перед-релізна тестова збірка - використовуйте на свій власний ризик - не використовуйте для майнінгу або в торговельних додатках</translation>
+    </message>
+    <message>
+        <source>This is the transaction fee you may discard if change is smaller than dust at this level</source>
+        <translation>Це комісія за транзакцію, яку ви можете відкинути, якщо решта менша, ніж пил на цьому рівні</translation>
+    </message>
+    <message>
+        <source>Unable to replay blocks. You will need to rebuild the database using -reindex-chainstate.</source>
+        <translation>Неможливо відтворити блоки. Вам потрібно буде перебудувати базу даних, використовуючи -reindex-chainstate.</translation>
+    </message>
+    <message>
+        <source>Unable to rewind the database to a pre-fork state. You will need to redownload the blockchain</source>
+        <translation>Неможливо повернути базу даних в стан до розвилки. Вам потрібно буде перезавантажити ланцюжок блоків</translation>
+    </message>
+    <message>
         <source>Use UPnP to map the listening port (default: 1 when listening and no -proxy)</source>
         <translation>Використовувати UPnP для відображення порту, що прослуховується (типово: 1 при прослуховуванні та за відсутності -proxy)</translation>
+    </message>
+    <message>
+        <source>Username and hashed password for JSON-RPC connections. The field &lt;userpw&gt; comes in the format: &lt;USERNAME&gt;:&lt;SALT&gt;$&lt;HASH&gt;. A canonical python script is included in share/rpcuser. The client then connects normally using the rpcuser=&lt;USERNAME&gt;/rpcpassword=&lt;PASSWORD&gt; pair of arguments. This option can be specified multiple times</source>
+        <translation>Ім'я користувача та хешований пароль для підключень JSON-RPC. Поле &lt;userpw&gt; у форматі: &lt;USERNAME&gt;:&lt;SALT&gt;$&lt;HASH&gt;. Канонічний сценарій python входить до складу share/rpcuser. Після цього кліент з'єднується в нормальному режимі з використанням пари аргументів rpcuser=&lt;USERNAME&gt;/rpcpassword=&lt;PASSWORD&gt;. Цей параметр можна вказати кілька разів</translation>
+    </message>
+    <message>
+        <source>Wallet will not create transactions that violate mempool chain limits (default: %u)</source>
+        <translation>Гаманець не створить транзакції, які порушують обмеження для ланцюжка в пам'яті (типово: %u)</translation>
+    </message>
+    <message>
+        <source>Warning: The network does not appear to fully agree! Some miners appear to be experiencing issues.</source>
+        <translation>Увага: Мережа, здається, не повністю погоджується! Деякі добувачі напевно зазнають проблем.</translation>
+    </message>
+    <message>
+        <source>Warning: We do not appear to fully agree with our peers! You may need to upgrade, or other nodes may need to upgrade.</source>
+        <translation>Попередження: неможливо досягти консенсусу з підключеними вузлами! Вам, або іншим вузлам необхідно оновити програмне забезпечення.</translation>
+    </message>
+    <message>
+        <source>Whether to save the mempool on shutdown and load on restart (default: %u)</source>
+        <translation>Чи зберігати пул пам'яті при вимкненні та завантажувати при перезавантаженні (типово: %u)</translation>
+    </message>
+    <message>
+        <source>%d of last 100 blocks have unexpected version</source>
+        <translation>%d з останніх 100 блоків мають неочікувану версію</translation>
+    </message>
+    <message>
+        <source>%s corrupt, salvage failed</source>
+        <translation>%s пошкоджено, відновлення невдале</translation>
     </message>
     <message>
         <source>-maxmempool must be at least %d MB</source>
@@ -2690,8 +3308,32 @@
         <translation>&lt;category&gt; може бути:</translation>
     </message>
     <message>
+        <source>Accept connections from outside (default: 1 if no -proxy or -connect)</source>
+        <translation>Приймати підключення ззовні (типово: 1 за відсутності -proxy чи -connect)</translation>
+    </message>
+    <message>
+        <source>Append comment to the user agent string</source>
+        <translation>Додайте коментар до рядка агента користувача</translation>
+    </message>
+    <message>
+        <source>Attempt to recover private keys from a corrupt wallet on startup</source>
+        <translation>Спроба відновити приватні ключі з пошкодженого гаманця під час запуску</translation>
+    </message>
+    <message>
         <source>Block creation options:</source>
         <translation>Опції створення блоку:</translation>
+    </message>
+    <message>
+        <source>Cannot resolve -%s address: '%s'</source>
+        <translation>Не можу вирішити -%s адресу: '%s'</translation>
+    </message>
+    <message>
+        <source>Chain selection options:</source>
+        <translation>Параметри вибору ланцюжка:</translation>
+    </message>
+    <message>
+        <source>Change index out of range</source>
+        <translation>Індекс решти за межами діапазону</translation>
     </message>
     <message>
         <source>Connection options:</source>
@@ -2734,12 +3376,32 @@
         <translation>Дозволено введення RAW транзакції в рядок &lt;address&gt;</translation>
     </message>
     <message>
+        <source>Enable transaction replacement in the memory pool (default: %u)</source>
+        <translation>Увімкнути заміну транзакції у пулі пам'яті (типово: %u)</translation>
+    </message>
+    <message>
+        <source>Error creating %s: You can't create non-HD wallets with this version.</source>
+        <translation>Помилка створення %s: Ви не можете створювати не-HD гаманці з цією версією.</translation>
+    </message>
+    <message>
         <source>Error initializing block database</source>
         <translation>Помилка ініціалізації бази даних блоків</translation>
     </message>
     <message>
         <source>Error initializing wallet database environment %s!</source>
         <translation>Помилка ініціалізації середовища бази даних гаманця %s!</translation>
+    </message>
+    <message>
+        <source>Error loading %s</source>
+        <translation>Помилка завантаження %s</translation>
+    </message>
+    <message>
+        <source>Error loading %s: Wallet corrupted</source>
+        <translation>Помилка завантаження %s: Гаманець пошкоджено</translation>
+    </message>
+    <message>
+        <source>Error loading %s: Wallet requires newer version of %s</source>
+        <translation>Помилка завантаження %s: Гаманець потребує новішої версії %s</translation>
     </message>
     <message>
         <source>Error loading block database</source>
@@ -2758,6 +3420,10 @@
         <translation>Не вдалося слухати на жодному порту. Використовуйте -listen=0, якщо ви хочете цього.</translation>
     </message>
     <message>
+        <source>Failed to rescan the wallet during initialization</source>
+        <translation>Помилка пересканування гаманця під час ініціалізації</translation>
+    </message>
+    <message>
         <source>Importing...</source>
         <translation>Імпорт...</translation>
     </message>
@@ -2766,12 +3432,36 @@
         <translation>Початковий блок некоректний/відсутній. Чи правильно вказано каталог даних для обраної мережі?</translation>
     </message>
     <message>
-        <source>Invalid -onion address: '%s'</source>
-        <translation>Помилка в адресі -onion: «%s»</translation>
+        <source>Initialization sanity check failed. %s is shutting down.</source>
+        <translation>Невдала перевірка правильності ініціалізації. %s закривається.</translation>
+    </message>
+    <message>
+        <source>Invalid amount for -%s=&lt;amount&gt;: '%s'</source>
+        <translation>Невірна сума -%s=&lt;amount&gt;: '%s'</translation>
+    </message>
+    <message>
+        <source>Invalid amount for -discardfee=&lt;amount&gt;: '%s'</source>
+        <translation>Невірна сума для -discardfee=&lt;amount&gt;: '%s'</translation>
+    </message>
+    <message>
+        <source>Invalid amount for -fallbackfee=&lt;amount&gt;: '%s'</source>
+        <translation>Невірна сума для зарезервованої комісії -fallbackfee=&lt;amount&gt;: '%s'</translation>
     </message>
     <message>
         <source>Keep the transaction memory pool below &lt;n&gt; megabytes (default: %u)</source>
         <translation>Утримувати розмір пам'яті для пулу транзакцій меншим за &lt;n&gt; мегабайтів (типово: %u)</translation>
+    </message>
+    <message>
+        <source>Loading P2P addresses...</source>
+        <translation>Завантаження P2P адрес...</translation>
+    </message>
+    <message>
+        <source>Loading banlist...</source>
+        <translation>Завантаження бан-списку...</translation>
+    </message>
+    <message>
+        <source>Location of the auth cookie (default: data dir)</source>
+        <translation>Місце знаходження куки авторизації (типово: каталог даних)</translation>
     </message>
     <message>
         <source>Not enough file descriptors available.</source>
@@ -2798,20 +3488,44 @@
         <translation>Використання скороченого ланцюжка блоків несумісне з параметром -txindex.</translation>
     </message>
     <message>
-        <source>Rewinding blocks...</source>
+        <source>Rebuild chain state and block index from the blk*.dat files on disk</source>
+        <translation>Відновити стан ланцюжка та індексу блоків з файлів blk*.dat на диску</translation>
+    </message>
+    <message>
+        <source>Rebuild chain state from the currently indexed blocks</source>
+        <translation>Відновити стан ланцюжка з щойно проіндексованих блоків</translation>
+    </message>
+    <message>
+        <source>Replaying blocks...</source>
         <translation>Відтворення блоків...</translation>
+    </message>
+    <message>
+        <source>Rewinding blocks...</source>
+        <translation>Перетворювання блоків...</translation>
+    </message>
+    <message>
+        <source>Send transactions with full-RBF opt-in enabled (RPC only, default: %u)</source>
+        <translation>Надсилання транзакцій з увімкненням опції повноцінного RBF (лише для RPC, типово: %u)</translation>
     </message>
     <message>
         <source>Set database cache size in megabytes (%d to %d, default: %d)</source>
         <translation>Встановити розмір кешу бази даних в мегабайтах (від %d до %d, типово: %d)</translation>
     </message>
     <message>
-        <source>Set maximum block size in bytes (default: %d)</source>
-        <translation>Встановити максимальний розмір блоку у байтах (типово: %d)</translation>
-    </message>
-    <message>
         <source>Specify wallet file (within data directory)</source>
         <translation>Вкажіть файл гаманця (в межах каталогу даних)</translation>
+    </message>
+    <message>
+        <source>The source code is available from %s.</source>
+        <translation>Вихідний код доступний з %s.</translation>
+    </message>
+    <message>
+        <source>Transaction fee and change calculation failed</source>
+        <translation>Не вдалось розрахувати обсяг комісії за транзакцію та решти</translation>
+    </message>
+    <message>
+        <source>Unable to bind to %s on this computer. %s is probably already running.</source>
+        <translation>Неможливо прив'язати %s на цьому комп'ютері. %s, ймовірно, вже працює.</translation>
     </message>
     <message>
         <source>Unsupported argument -benchmark ignored, use -debug=bench.</source>
@@ -2826,8 +3540,20 @@
         <translation>Параметр -tor не підтримується; використовуйте -onion.</translation>
     </message>
     <message>
+        <source>Unsupported logging category %s=%s.</source>
+        <translation>Непідтримувана категорія ведення журналу %s=%s.</translation>
+    </message>
+    <message>
+        <source>Upgrading UTXO database</source>
+        <translation>Оновлення бази даних UTXO</translation>
+    </message>
+    <message>
         <source>Use UPnP to map the listening port (default: %u)</source>
         <translation>Використовувати UPnP для відображення порту, що прослуховується (типово: %u)</translation>
+    </message>
+    <message>
+        <source>Use the test chain</source>
+        <translation>Використовувати тестовий ланцюжок</translation>
     </message>
     <message>
         <source>User Agent comment (%s) contains unsafe characters.</source>
@@ -2838,12 +3564,12 @@
         <translation>Перевірка блоків...</translation>
     </message>
     <message>
-        <source>Verifying wallet...</source>
-        <translation>Перевірка гаманця... </translation>
+        <source>Wallet debugging/testing options:</source>
+        <translation>Параметри налагодження та тестування гаманця:</translation>
     </message>
     <message>
-        <source>Wallet %s resides outside data directory %s</source>
-        <translation>Гаманець %s знаходиться поза каталогом даних %s</translation>
+        <source>Wallet needed to be rewritten: restart %s to complete</source>
+        <translation>Гаманець вимагав перезапису: перезавантажте %s для завершення</translation>
     </message>
     <message>
         <source>Wallet options:</source>
@@ -2856,10 +3582,6 @@
     <message>
         <source>Bind to given address and whitelist peers connecting to it. Use [host]:port notation for IPv6</source>
         <translation>Прив'язатися до даної адреси та вносити до білого списку учасників, що під'єднуються до неї. Використовуйте запис виду [хост]:порт для IPv6</translation>
-    </message>
-    <message>
-        <source>Bind to given address to listen for JSON-RPC connections. Use [host]:port notation for IPv6. This option can be specified multiple times (default: bind to all interfaces)</source>
-        <translation>Прив'язатися до даної адреси для прослуховування JSON-RPC підключень. Використовуйте запис виду [хост]:порт для IPv6. Цей параметр можна вказувати декілька разів (типово: прив'язуватися до всіх інтерфейсів)</translation>
     </message>
     <message>
         <source>Create new files with system default permissions, instead of umask 077 (only effective with disabled wallet functionality)</source>
@@ -2898,10 +3620,6 @@
         <translation>Надавати випадкові дані доступу для кожного проксі-з'єднання. Це дозволяє ввімкнути ізоляцію потоків Tor'у (типово: %u)</translation>
     </message>
     <message>
-        <source>Set maximum size of high-priority/low-fee transactions in bytes (default: %d)</source>
-        <translation>Встановити максимальний розмір транзакцій з високим пріоритетом та низькою комісією (в байтах) (типово: %d)</translation>
-    </message>
-    <message>
         <source>The transaction amount is too small to send after the fee has been deducted</source>
         <translation>Залишок від суми транзакції зі сплатою комісії занадто малий </translation>
     </message>
@@ -2930,8 +3648,16 @@
         <translation>Підключитись через SOCKS5-проксі</translation>
     </message>
     <message>
+        <source>Error loading %s: You can't disable HD on an already existing HD wallet</source>
+        <translation>Помилка завантаження %s: Ви не можете відключити режим HD в існуючому HD-гаманці</translation>
+    </message>
+    <message>
         <source>Error reading from database, shutting down.</source>
         <translation>Помилка читання бази даних, припиняю роботу.</translation>
+    </message>
+    <message>
+        <source>Error upgrading chainstate database</source>
+        <translation>Помилка оновлення бази даних стану ланцюжка</translation>
     </message>
     <message>
         <source>Imports blocks from external blk000??.dat file on startup</source>
@@ -2940,6 +3666,14 @@
     <message>
         <source>Information</source>
         <translation>Інформація</translation>
+    </message>
+    <message>
+        <source>Invalid -onion address or hostname: '%s'</source>
+        <translation>Невірна -onion адреса або ім'я хоста: '%s'</translation>
+    </message>
+    <message>
+        <source>Invalid -proxy address or hostname: '%s'</source>
+        <translation>Невірна -proxy адреса або ім'я хоста: '%s'</translation>
     </message>
     <message>
         <source>Invalid amount for -paytxfee=&lt;amount&gt;: '%s' (must be at least %s)</source>
@@ -2978,10 +3712,6 @@
         <translation>Відсилати налагоджувальну інформацію на консоль, а не у файл debug.log</translation>
     </message>
     <message>
-        <source>Send transactions as zero-fee transactions if possible (default: %u)</source>
-        <translation>Не сплачувати комісію за надсилання транзакцій, якщо це можливо (типово: %u)</translation>
-    </message>
-    <message>
         <source>Show all debugging options (usage: --help -help-debug)</source>
         <translation>Показати всі налагоджувальні параметри (використання: --help -help-debug)</translation>
     </message>
@@ -2992,6 +3722,18 @@
     <message>
         <source>Signing transaction failed</source>
         <translation>Підписання транзакції не вдалося</translation>
+    </message>
+    <message>
+        <source>Specified -walletdir "%s" does not exist</source>
+        <translation>Вказаний каталог гаманця -walletdir "%s" не існує</translation>
+    </message>
+    <message>
+        <source>Specified -walletdir "%s" is a relative path</source>
+        <translation>Вказаний каталог гаманця -walletdir "%s" є відносним шляхом</translation>
+    </message>
+    <message>
+        <source>Specified -walletdir "%s" is not a directory</source>
+        <translation>Вказаний шлях -walletdir "%s" не є каталогом</translation>
     </message>
     <message>
         <source>The transaction amount is too small to pay the fee</source>
@@ -3026,6 +3768,10 @@
         <translation>Неможливо прив'язатися до %s на цьому комп'ютері (bind повернув помилку: %s)</translation>
     </message>
     <message>
+        <source>Unable to generate initial keys</source>
+        <translation>Не вдається створити початкові ключі</translation>
+    </message>
+    <message>
         <source>Upgrade wallet to latest format on startup</source>
         <translation>Спочатку оновіть гаманець до останньої версії</translation>
     </message>
@@ -3034,12 +3780,28 @@
         <translation>Ім'я користувача для JSON-RPC-з'єднань</translation>
     </message>
     <message>
+        <source>Verifying wallet(s)...</source>
+        <translation>Перевірка гаманця(ців)... </translation>
+    </message>
+    <message>
+        <source>Wallet %s resides outside wallet directory %s</source>
+        <translation>Гаманець %s знаходиться поза каталогом гаманця %s</translation>
+    </message>
+    <message>
         <source>Warning</source>
         <translation>Попередження</translation>
     </message>
     <message>
+        <source>Warning: unknown new rules activated (versionbit %i)</source>
+        <translation>Попередження: активовано невідомі нові правила (versionbit %i)</translation>
+    </message>
+    <message>
         <source>Whether to operate in a blocks only mode (default: %u)</source>
         <translation>Чи слід працювати в режимі тільки блоки (типово: %u)</translation>
+    </message>
+    <message>
+        <source>You need to rebuild the database using -reindex to change -txindex</source>
+        <translation>Для зміни -txindex потрібно перебудувати базу даних за допомогою -reindex</translation>
     </message>
     <message>
         <source>Zapping all transactions from wallet...</source>
@@ -3062,10 +3824,6 @@
         <translation>Дозволити пошук в DNS для команд -addnode, -seednode та -connect</translation>
     </message>
     <message>
-        <source>Loading addresses...</source>
-        <translation>Завантаження адрес...</translation>
-    </message>
-    <message>
         <source>(1 = keep tx meta data e.g. account owner and payment request information, 2 = drop tx meta data)</source>
         <translation>(1 = утримувати метадані транзакцій (до яких відноситься інформація про власника рахунку та запити платежів), 2 - відкинути)</translation>
     </message>
@@ -3074,12 +3832,32 @@
         <translation>Встановлено дуже велике значення -maxtxfee! Такі великі комісії можуть бути сплачені окремою транзакцією.</translation>
     </message>
     <message>
+        <source>Bind to given address to listen for JSON-RPC connections. This option is ignored unless -rpcallowip is also passed. Port is optional and overrides -rpcport. Use [host]:port notation for IPv6. This option can be specified multiple times (default: 127.0.0.1 and ::1 i.e., localhost, or if -rpcallowip has been specified, 0.0.0.0 and :: i.e., all addresses)</source>
+        <translation>Прив'язати до вказаної адреси, щоб слухати з'єднання JSON-RPC. Цей параметр ігнорується, крім випадків, коли -rpcallowip також встановлено. Порт необов'язковий, для перевизначення необхідно вказати -rpcport. Використовуйте [хост]:порт визначення для IPv6. Цей параметр може бути вказано кілька разів (типово: 127.0.0.1 та ::1, тобто localhost, або якщо вказано -rpcallowip, 0.0.0.0 та ::, тобто всі адреси)</translation>
+    </message>
+    <message>
         <source>Do not keep transactions in the mempool longer than &lt;n&gt; hours (default: %u)</source>
         <translation>Не тримати транзакції в пам'яті довше &lt;n&gt; годин (типово: %u)</translation>
     </message>
     <message>
+        <source>Equivalent bytes per sigop in transactions for relay and mining (default: %u)</source>
+        <translation>Еквівалент байт-за-sigop у транзакціях для ретрансляції та видобутку (типово: %u)</translation>
+    </message>
+    <message>
+        <source>Error loading %s: You can't enable HD on an already existing non-HD wallet</source>
+        <translation>Помилка завантаження %s: Ви не можете ввімкнути режим HD в існуючому не-HD гаманці</translation>
+    </message>
+    <message>
+        <source>Error loading wallet %s. -wallet parameter must only specify a filename (not a path).</source>
+        <translation>Помилка завантаження гаманця %s. Параметр -wallet повинен вказувати лише назву файлу (не шлях).</translation>
+    </message>
+    <message>
         <source>Fees (in %s/kB) smaller than this are considered zero fee for transaction creation (default: %s)</source>
         <translation>Комісії (в %s/kB), що менші за вказану, вважатимуться нульовими для створення транзакцій (типово: %s)</translation>
+    </message>
+    <message>
+        <source>Force relay of transactions from whitelisted peers even if they violate local relay policy (default: %d)</source>
+        <translation>Примусово ретранслювати транзакції вузлів з білого списку, навіть якщо вони порушують політику локального ретранслятора (типово: %d)</translation>
     </message>
     <message>
         <source>How thorough the block verification of -checkblocks is (0-4, default: %u)</source>
@@ -3098,8 +3876,32 @@
         <translation>Виводити налагоджувальну інформацію (типово: %u, вказання &lt;category&gt; необов'язкове)</translation>
     </message>
     <message>
+        <source>Sets the serialization of raw transaction or block hex returned in non-verbose mode, non-segwit(0) or segwit(1) (default: %d)</source>
+        <translation>Встановлює серіалізацію необробленої транзакції або повертає шістнадцяткове значення блоку у не-докладному режимі, non-segwit(0) або segwit(1) (типово: %d)</translation>
+    </message>
+    <message>
+        <source>Specify directory to hold wallets (default: &lt;datadir&gt;/wallets if it exists, otherwise &lt;datadir&gt;)</source>
+        <translation>Вкажіть каталог для збереження гаманців (типово: &lt;datadir&gt;/wallets якщо шлях існує, інакше &lt;datadir&gt;)</translation>
+    </message>
+    <message>
+        <source>Specify location of debug log file: this can be an absolute path or a path relative to the data directory (default: %s)</source>
+        <translation>Вкажіть місце розташування файлу журналу налагодження: це може бути абсолютний шлях або шлях до каталогу даних (типово: %s)</translation>
+    </message>
+    <message>
         <source>Support filtering of blocks and transaction with bloom filters (default: %u)</source>
         <translation>Фільтрація блоків та транзакцій з допомогою фільтрів Блума (типово: %u)</translation>
+    </message>
+    <message>
+        <source>The fee rate (in %s/kB) that indicates your tolerance for discarding change by adding it to the fee (default: %s). Note: An output is discarded if it is dust at this rate, but we will always discard up to the dust relay fee and a discard fee above that is limited by the fee estimate for the longest target</source>
+        <translation>Ставка комісії (у %s/kB), яка вказує вашу толерантність до відмови від решти, додаючи її до суми комісії (типово: %s). Примітка: Вихідна транзакція відхиляється, якщо вона є пилом за такої ставки, але ми завжди будемо відхиляти вихід аж до комісії за ретрансляцію пилу, а плата за відмову над цією ставкою обмежуватиметься оцінюваною платою за найдовшу ціль</translation>
+    </message>
+    <message>
+        <source>This is the transaction fee you may pay when fee estimates are not available.</source>
+        <translation>Це комісія за транзакцію, яку ви можете сплатити, коли кошторисна вартість недоступна.</translation>
+    </message>
+    <message>
+        <source>This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit %s and cryptographic software written by Eric Young and UPnP software written by Thomas Bernard.</source>
+        <translation>Цей продукт включає в себе програмне забезпечення, розроблене проектом OpenSSL для використання в OpenSSL Toolkit %s та криптографічне програмне забезпечення, написане Еріком Янгом та програмне забезпечення UPnP, написане Томасом Бернардом.</translation>
     </message>
     <message>
         <source>Total length of network version string (%i) exceeds maximum length (%i). Reduce the number or size of uacomments.</source>
@@ -3114,8 +3916,28 @@
         <translation>Параметр -socks не підтримується. Можливість вказувати версію SOCKS було видалено, так як підтримується лише SOCKS5.</translation>
     </message>
     <message>
+        <source>Unsupported argument -whitelistalwaysrelay ignored, use -whitelistrelay and/or -whitelistforcerelay.</source>
+        <translation>Непідтримуваний аргумент -whitelistalwaysrelay ігнорується, використовуйте -whitelistrelay та/або -whitelistforcerelay.</translation>
+    </message>
+    <message>
         <source>Use separate SOCKS5 proxy to reach peers via Tor hidden services (default: %s)</source>
         <translation>Використовувати окремий SOCKS5-проксі для з'єднання з учасниками через приховані сервіси Tor (типово: %s)</translation>
+    </message>
+    <message>
+        <source>Warning: Unknown block versions being mined! It's possible unknown rules are in effect</source>
+        <translation>Попередження: видобуваються невідомі версії блоків! Можливо активовано невідомі правила</translation>
+    </message>
+    <message>
+        <source>Warning: Wallet file corrupt, data salvaged! Original %s saved as %s in %s; if your balance or transactions are incorrect you should restore from a backup.</source>
+        <translation>Попередження: файл гаманця пошкоджено, дані врятовано! Оригінальний %s збережено як %s в %s; якщо ваш баланс або транзакції некорректно відображаються, ви повинні відновити його з резервної копії.</translation>
+    </message>
+    <message>
+        <source>Whitelist peers connecting from the given IP address (e.g. 1.2.3.4) or CIDR notated network (e.g. 1.2.3.0/24). Can be specified multiple times.</source>
+        <translation>Занести в білий список вузли з заданою IP-адресою (наприклад, 1.2.3.4), або мережею з позначкою CIDR (наприклад, 1.2.3.0/24). Можна вказати кілька разів.</translation>
+    </message>
+    <message>
+        <source>%s is set very high!</source>
+        <translation>%s встановлено дуже високо!</translation>
     </message>
     <message>
         <source>(default: %s)</source>
@@ -3126,6 +3948,18 @@
         <translation>Завжди дізнаватися адреси учасників через DNS (типово: %u)</translation>
     </message>
     <message>
+        <source>Error loading wallet %s. -wallet filename must be a regular file.</source>
+        <translation>Помилка завантаження гаманця %s. Значення -wallet має бути звичайним файлом.</translation>
+    </message>
+    <message>
+        <source>Error loading wallet %s. Duplicate -wallet filename specified.</source>
+        <translation>Помилка завантаження гаманця %s. Значення параметра -wallet дублюється.</translation>
+    </message>
+    <message>
+        <source>Error loading wallet %s. Invalid characters in -wallet filename.</source>
+        <translation>Помилка завантаження гаманця %s. Недійсні символи в імені файлу -wallet.</translation>
+    </message>
+    <message>
         <source>How many blocks to check at startup (default: %u, 0 = all)</source>
         <translation>Скільки блоків перевіряти під час запуску (типово: %u, 0 = всі)</translation>
     </message>
@@ -3134,8 +3968,8 @@
         <translation>Включити IP-адреси до налагоджувального виводу (типово: %u)</translation>
     </message>
     <message>
-        <source>Invalid -proxy address: '%s'</source>
-        <translation>Помилка в адресі проксі-сервера: «%s»</translation>
+        <source>Keypool ran out, please call keypoolrefill first</source>
+        <translation>Пул ключів скінчився, потрібно викликати keypoolrefill</translation>
     </message>
     <message>
         <source>Listen for JSON-RPC connections on &lt;port&gt; (default: %u or testnet: %u)</source>
@@ -3172,10 +4006,6 @@
     <message>
         <source>Relay non-P2SH multisig (default: %u)</source>
         <translation>Ретранслювати не-P2SH транзакції з мультипідписом (типово: %u)</translation>
-    </message>
-    <message>
-        <source>Send transactions with full-RBF opt-in enabled (default: %u)</source>
-        <translation>Надіслати транзакції з увімкненням full-RBF opt-in (типово: %u)</translation>
     </message>
     <message>
         <source>Set key pool size to &lt;n&gt; (default: %u)</source>
@@ -3250,20 +4080,12 @@
         <translation>Завантаження індексу блоків...</translation>
     </message>
     <message>
-        <source>Add a node to connect to and attempt to keep the connection open</source>
-        <translation>Додати вузол до підключення і лишити його відкритим</translation>
-    </message>
-    <message>
         <source>Loading wallet...</source>
         <translation>Завантаження гаманця...</translation>
     </message>
     <message>
         <source>Cannot downgrade wallet</source>
         <translation>Не вдається понизити версію гаманця</translation>
-    </message>
-    <message>
-        <source>Cannot write default address</source>
-        <translation>Неможливо записати типову адресу</translation>
     </message>
     <message>
         <source>Rescanning...</source>
