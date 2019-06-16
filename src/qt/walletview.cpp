@@ -6,6 +6,7 @@
 
 #include <qt/addressbookpage.h>
 #include <qt/askpassphrasedialog.h>
+#include <qt/blockexplorer.h>
 #include <qt/bitcoingui.h>
 #include <qt/clientmodel.h>
 #include <qt/guiutil.h>
@@ -19,19 +20,8 @@
 #include <qt/transactionview.h>
 #include <qt/walletmodel.h>
 
-// Additions
-#include <qt/bip32hdpage.h>
-#include <qt/blockexplorer.h>
-#include <qt/chatwindow.h>
-#include <qt/essentialspage.h>
 #include <qt/inscriptionpage.h>
-#include <qt/personalprofilepage.h>
 #include <qt/publisherpage.h>
-#include <qt/reportview.h>
-#include <qt/survey.h>
-#include <qt/torrentpage.h>
-#include <qt/torrenttablemodel.h>
-#include <qt/torrentview.h>
 #include <qt/utilitydialog.h>
 
 #include <ui_interface.h>
@@ -53,17 +43,9 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     // Create tabs
     overviewPage = new OverviewPage(platformStyle);
 
-    // Additions
-    bip32Page = new BIP32HDPage(this);
-    chatWindow = new ChatWindow(this);
-    explorerWindow = new BlockExplorer(this);
-    essentialsPage = new EssentialsPage(platformStyle, this);
     inscriptionPage = new InscriptionPage(this);
-    personalprofilePage = new PersonalProfilePage(this);
     publisherPage = new PublisherPage(this);
-    surveyPage = new Survey(platformStyle, this);
-    torrentPage = new TorrentPage(platformStyle, this);
-    torrentWindow = new TorrentWindow(this);
+    explorerWindow = new BlockExplorer(this);
 
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -80,22 +62,6 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     vbox->addLayout(hbox_buttons);
     transactionsPage->setLayout(vbox);
 
-    // Additions
-    accountreportPage = new QWidget(this);
-    QVBoxLayout *vboxR = new QVBoxLayout();
-    QHBoxLayout *hboxR_buttons = new QHBoxLayout();
-    reportView = new ReportView(this);
-    vboxR->addWidget(reportView);
-    QPushButton *exportRButton = new QPushButton(tr("&Export"), this);
-    exportRButton->setToolTip(tr("Export the data in the current tab to a file"));
-#ifndef Q_OS_MAC // Icons on push buttons are very uncommon on Mac
-    exportRButton->setIcon(QIcon(":/icons/export"));
-#endif    
-    hboxR_buttons->addStretch();
-    hboxR_buttons->addWidget(exportRButton);
-    vboxR->addLayout(hboxR_buttons);
-    accountreportPage->setLayout(vboxR);
-
     receiveCoinsPage = new ReceiveCoinsDialog(platformStyle);
     sendCoinsPage = new SendCoinsDialog(platformStyle);
 
@@ -106,20 +72,11 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(transactionsPage);
     addWidget(receiveCoinsPage);
     addWidget(sendCoinsPage);
-    // Additions
-    addWidget(accountreportPage);
-    addWidget(bip32Page);
-    addWidget(chatWindow);
-    addWidget(essentialsPage);
-    addWidget(explorerWindow);
     addWidget(inscriptionPage);
-    addWidget(personalprofilePage);
     addWidget(publisherPage);
-	addWidget(surveyPage);
-	addWidget(torrentPage);
-    addWidget(torrentWindow);
+    addWidget(explorerWindow);
 
-        // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
+    // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
     connect(overviewPage, SIGNAL(outOfSyncWarningClicked()), this, SLOT(requestedSyncWarningInfo()));
 
@@ -179,9 +136,7 @@ void WalletView::setWalletModel(WalletModel *_walletModel)
     sendCoinsPage->setModel(_walletModel);
     usedReceivingAddressesPage->setModel(_walletModel ? _walletModel->getAddressTableModel() : nullptr);
     usedSendingAddressesPage->setModel(_walletModel ? _walletModel->getAddressTableModel() : nullptr);
-    // Additions
-    reportView->setModel(_walletModel);
-    torrentPage->setModel(_walletmodel ? _walletModel->getTorrentTableModel() : nullptr);
+    // inscriptionsPage->setModel(_walletmodel ? _walletModel->getInscriptionTableModel() : nullptr);
 
     if (_walletModel)
     {
@@ -235,6 +190,11 @@ void WalletView::gotoOverviewPage()
 void WalletView::gotoHistoryPage()
 {
     setCurrentWidget(transactionsPage);
+}
+
+void WalletView::gotoBlockExplorerPage()
+{
+    setCurrentWidget(explorerWindow);
 }
 
 void WalletView::gotoReceiveCoinsPage()
@@ -387,41 +347,9 @@ void WalletView::requestedSyncWarningInfo()
     Q_EMIT outOfSyncWarningClicked();
 }
 
-// Additions
-void WalletView::gotoAccountReportPage()
-{
-    setCurrentWidget(accountreportPage); 
-}
-
-void WalletView::gotoBIP32Page()
-{
-    setCurrentWidget(bip32Page);
-}
-
-void WalletView::gotoBlockExplorerPage()
-{
-    setCurrentWidget(explorerWindow);
-}
-
-void WalletView::gotoChatPage()
-{
-    setCurrentWidget(chatWindow);
-}
-
-void WalletView::gotoEssentialsPage()
-{
-    setCurrentWidget(essentialsPage);
-
-}
-
 void WalletView::gotoInscriptionPage()
 {
     setCurrentWidget(inscriptionPage); 
-}
-
-void WalletView::gotoPersonalProfilePage()
-{
-    setCurrentWidget(personalprofilePage);
 }
 
 void WalletView::gotoPublisherPage()
@@ -429,17 +357,3 @@ void WalletView::gotoPublisherPage()
     setCurrentWidget(publisherPage);
 }
 
-void WalletView::gotoSurveyPage()
-{
-    setCurrentWidget(surveyPage);
-}
-
-void WalletView::gotoTorrentPage()
-{
-    setCurrentWidget(torrentPage);
-}
-
-void WalletView::gotoTorrentWindow()
-{
-    setCurrentWidget(torrentWindow);
-}

@@ -30,17 +30,9 @@ class WalletFrame;
 class WalletModel;
 class HelpMessageDialog;
 class ModalOverlay;
-// Additions
-class BIP32HDPage;
 class BlockExplorer;
-class ChatWindow;
-class EssentialsPage;
 class InscriptionPage;
-class PersonalProfilePage;
 class PublisherPage;
-class Survey;
-class TorrentPage;
-class TorrentWindow;
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -123,34 +115,18 @@ private:
     QAction *openAction;
     QAction *showHelpMessageAction;
     // Additions
-    QAction *accountReportAction;
-    QAction *openBIP32PageAction;
-    QAction *openBlockExplorerAction;
-    QAction *openChatWindowAction;
-    QAction *openEssentialsPageAction;
     QAction *openInscriptionPageAction;
-    QAction *openPersonalProfilePageAction;
     QAction *openPublisherPageAction;
-    QAction *openSurveyPageAction;
-    QAction *openTorrentPageAction;
-    QAction *openTorrentWindowAction;
+    QAction *openBlockExplorerAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
     Notificator *notificator;
     RPCConsole *rpcConsole;
     HelpMessageDialog *helpMessageDialog;
-    // Additions
-    BIP32HDPage  *bip32Page;
-    ChatWindow *chatWindow;
-    EssentialsPage  *essentialsPage;
-    BlockExplorer  *explorerWindow;
     InscriptionPage  *inscriptionPage;
-    PersonalProfilePage  *personalprofilePage;
     PublisherPage  *publisherPage;
-    Survey *surveyPage;
-    TorrentPage *torrentPage;
-    TorrentWindow *torrentWindow;
+    BlockExplorer  *explorerWindow;
     ModalOverlay *modalOverlay;
 
     /** Keep track of previous number of blocks, to detect progress */
@@ -239,29 +215,12 @@ private Q_SLOTS:
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
 
-    //Additions
-    /** Switch to account report page */
-    void gotoAccountReportPage();
-    /** Switch to BIP32 page */
-    void gotoBIP32Page();
     /** Switch to Explorer Page */
     void gotoBlockExplorerPage(); 
-    /** Switch to chat page */
-    void gotoChatPage();
     /** Switch to inscription page */
-    /** Switch to Essentials Page */
-    void gotoEssentialsPage(); 
     void gotoInscriptionPage();
-    /** Switch to profile page */
-    void gotoPersonalProfilePage();
     /** Switch to Publisher page */
     void gotoPublisherPage(); 
-    /** Switch to Questionnaire page */
-	void gotoSurveyPage();
-    /** Switch to torrent page */
-	void gotoTorrentPage();
-    /** Switch to Torrent View */
-    void gotoTorrentWindow();
 
     /** Show open dialog */
     void openClicked();

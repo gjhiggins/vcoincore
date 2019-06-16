@@ -204,54 +204,11 @@ void WalletFrame::outOfSyncWarningClicked()
     Q_EMIT requestedSyncWarningInfo();
 }
 
-// Additions
-void WalletFrame::gotoAccountReportPage()
-{
-    WalletView *walletView = currentWalletView();
-    if (walletView)
-        walletView->gotoAccountReportPage();
-}
-
-void WalletFrame::gotoBIP32Page()
-{
-    WalletView *walletView = currentWalletView();
-    if (walletView)
-        walletView->gotoBIP32Page();
-}
-
-void WalletFrame::gotoBlockExplorerPage()
-{
-    WalletView *walletView = currentWalletView();
-    if (walletView)
-        walletView->gotoBlockExplorerPage();
-}
-
-void WalletFrame::gotoChatPage()
-{
-    WalletView *walletView = currentWalletView();
-    if (walletView)
-        walletView->gotoChatPage();
-}
-
-void WalletFrame::gotoEssentialsPage()
-{
-    QMap<QString, WalletView*>::const_iterator i;
-    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
-        i.value()->gotoEssentialsPage();
-}
-
 void WalletFrame::gotoInscriptionPage()
 {
     WalletView *walletView = currentWalletView();
     if (walletView)
         walletView->gotoInscriptionPage();
-}
-
-void WalletFrame::gotoPersonalProfilePage()
-{
-    WalletView *walletView = currentWalletView();
-    if (walletView)
-        walletView->gotoPersonalProfilePage();
 }
 
 void WalletFrame::gotoPublisherPage()
@@ -260,25 +217,9 @@ void WalletFrame::gotoPublisherPage()
     if (walletView)
         walletView->gotoPublisherPage();
 }
-
-
-void WalletFrame::gotoSurveyPage()
+void WalletFrame::gotoBlockExplorerPage()
 {
     WalletView *walletView = currentWalletView();
     if (walletView)
-        walletView->gotoSurveyPage();
-}
-
-void WalletFrame::gotoTorrentPage()
-{
-    WalletView *walletView = currentWalletView();
-    if (walletView)
-        walletView->gotoTorrentPage();
-}
-
-void WalletFrame::gotoTorrentWindow()
-{
-    WalletView *walletView = currentWalletView();
-    if (walletView)
-        walletView->gotoTorrentWindow();
+        walletView->gotoBlockExplorerPage();
 }

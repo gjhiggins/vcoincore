@@ -7,7 +7,7 @@
 
 #include <qt/paymentrequestplus.h>
 #include <qt/walletmodeltransaction.h>
-#include <qt/torrenttablemodel.h>
+// #include <qt/inscriptiontablemodel.h>
 
 #include <support/allocators/secure.h>
 
@@ -22,7 +22,7 @@ class AddressTableModel;
 class OptionsModel;
 class PlatformStyle;
 class RecentRequestsTableModel;
-class TorrentTableModel;
+// class InscriptionTableModel;
 class TransactionTableModel;
 class WalletModelTransaction;
 
@@ -42,8 +42,8 @@ class SendCoinsRecipient
 {
 public:
     explicit SendCoinsRecipient() : amount(0), fSubtractFeeFromAmount(false), nVersion(SendCoinsRecipient::CURRENT_VERSION) { }
-    explicit SendCoinsRecipient(const QString &addr, const QString &_label, const CAmount& _amount, const QString &_message):
-        address(addr), label(_label), amount(_amount), message(_message), fSubtractFeeFromAmount(false), nVersion(SendCoinsRecipient::CURRENT_VERSION) {}
+    explicit SendCoinsRecipient(const QString &addr, const QString &_label, const CAmount& _amount, const QString &_message, const QString &_inscription):
+        address(addr), label(_label), amount(_amount), message(_message), inscription(_inscription), fSubtractFeeFromAmount(false), nVersion(SendCoinsRecipient::CURRENT_VERSION) {}
 
     // If from an unauthenticated payment request, this is used for storing
     // the addresses, e.g. address-A<br />address-B<br />address-C.
@@ -55,6 +55,8 @@ public:
     CAmount amount;
     // If from a payment request, this is used for storing the memo
     QString message;
+    // If from a payment, this is used for storing the inscription
+    QString inscription;
 
     // If from a payment request, paymentRequest.IsInitialized() will be true
     PaymentRequestPlus paymentRequest;
@@ -73,6 +75,7 @@ public:
         std::string sAddress = address.toStdString();
         std::string sLabel = label.toStdString();
         std::string sMessage = message.toStdString();
+        std::string sInscription = inscription.toStdString();
         std::string sPaymentRequest;
         if (!ser_action.ForRead() && paymentRequest.IsInitialized())
             paymentRequest.SerializeToString(&sPaymentRequest);
@@ -83,6 +86,7 @@ public:
         READWRITE(sLabel);
         READWRITE(amount);
         READWRITE(sMessage);
+        READWRITE(sInscription);
         READWRITE(sPaymentRequest);
         READWRITE(sAuthenticatedMerchant);
 
@@ -91,6 +95,7 @@ public:
             address = QString::fromStdString(sAddress);
             label = QString::fromStdString(sLabel);
             message = QString::fromStdString(sMessage);
+            inscription = QString::fromStdString(sInscription);
             if (!sPaymentRequest.empty())
                 paymentRequest.parse(QByteArray::fromRawData(sPaymentRequest.data(), sPaymentRequest.size()));
             authenticatedMerchant = QString::fromStdString(sAuthenticatedMerchant);
@@ -131,7 +136,7 @@ public:
     OptionsModel *getOptionsModel();
     AddressTableModel *getAddressTableModel();
     TransactionTableModel *getTransactionTableModel();
-    TorrentTableModel *getTorrentTableModel();
+    // InscriptionTableModel *getInscriptionTableModel();
     RecentRequestsTableModel *getRecentRequestsTableModel();
 
     CAmount getBalance(const CCoinControl *coinControl = nullptr) const;
@@ -233,7 +238,7 @@ private:
     OptionsModel *optionsModel;
 
     AddressTableModel *addressTableModel;
-    TorrentTableModel *torrentTableModel;
+    // InscriptionTableModel *inscriptionTableModel;
     TransactionTableModel *transactionTableModel;
     RecentRequestsTableModel *recentRequestsTableModel;
 

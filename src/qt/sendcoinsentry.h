@@ -38,6 +38,7 @@ public:
 
     void setValue(const SendCoinsRecipient &value);
     void setAddress(const QString &address);
+    void setInscription(const QString &inscription);
     void setAmount(const CAmount &amount);
 
     /** Set up the tab chain manually, as Qt messes up the tab chain by default in some cases
@@ -55,12 +56,14 @@ Q_SIGNALS:
     void removeEntry(SendCoinsEntry *entry);
     void useAvailableBalance(SendCoinsEntry* entry);
     void payAmountChanged();
+    void inscriptionChanged();
     void subtractFeeFromAmountChanged();
 
 private Q_SLOTS:
     void deleteClicked();
     void useAvailableBalanceClicked();
     void on_payTo_textChanged(const QString &address);
+    void on_inscription_textChanged(const QString &inscription);
     void on_addressBookButton_clicked();
     void on_pasteButton_clicked();
     void updateDisplayUnit();
@@ -72,6 +75,7 @@ private:
     const PlatformStyle *platformStyle;
 
     bool updateLabel(const QString &address);
+    bool updateInscription(const QString &inscription);
 };
 
 #endif // BITCOIN_QT_SENDCOINSENTRY_H

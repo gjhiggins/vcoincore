@@ -22,19 +22,9 @@
 #include <qt/walletframe.h>
 #include <qt/walletmodel.h>
 
-// Additions
-#include <qt/bip32hdpage.h>
-#include <qt/blockexplorer.h>
-#include <qt/chatwindow.h>
-#include <qt/essentialspage.h>
 #include <qt/inscriptionpage.h>
-#include <qt/personalprofilepage.h>
 #include <qt/publisherpage.h>
-#include <qt/reportview.h>
-// #include "statsexplorer.h>
-#include <qt/survey.h>
-#include <qt/torrentpage.h>
-#include <qt/torrentview.h>
+#include <qt/blockexplorer.h>
 #endif // ENABLE_WALLET
 
 #ifdef Q_OS_MAC
@@ -68,7 +58,6 @@
 #include <QVBoxLayout>
 #include <QtWebEngineWidgets/QtWebEngineWidgets>
 // #include <QWebEngineSettings>
-#include <QSqlQuery>
 
 #if QT_VERSION < 0x050000
 #include <QTextDocument>
@@ -86,20 +75,6 @@ const std::string BitcoinGUI::DEFAULT_UIPLATFORM =
         "other"
 #endif
         ;
-
-void createTable()
-{
-    QSqlQuery query;
-    query.exec("CREATE TABLE IF NOT EXISTS blockindex(blockindex INTEGER)");
-    query.exec("CREATE TABLE IF NOT EXISTS torrent(title TEXT, txid TEXT UNIQUE,blockindex INTEGER)");
-
-    query.exec(QString("select blockindex from blockindex"));
-    if (!query.next())
-    {
-        query.exec(QString("insert into  blockindex values (%1)").arg(1000));
-    }
-}
-
 
 /** Display name for default wallet name. Uses tilde to avoid name
  * collisions in the future with additional wallets */
@@ -145,19 +120,9 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     notificator(0),
     rpcConsole(0),
     helpMessageDialog(0),
-    // Additions
-    bip32Page(0),
-    chatWindow(0),
-    essentialsPage(0),
-    explorerWindow(0),
     inscriptionPage(0),
-    personalprofilePage(0),
     publisherPage(0),
-    // statsWindow(0),
-    surveyPage(0),
-    torrentPage(0),
-    torrentWindow(0),
-    // endAdditions
+    explorerWindow(0),
     modalOverlay(0),
     prevBlocks(0),
     spinnerFrame(0),
@@ -206,18 +171,9 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
         /** Create wallet frame and make it the central widget */
         walletFrame = new WalletFrame(_platformStyle, this);
         setCentralWidget(walletFrame);
-        // Additions
-        bip32Page = new BIP32HDPage(this);
-        chatWindow = new ChatWindow(this);
-        essentialsPage = new EssentialsPage(_platformStyle, this);
-        explorerWindow = new BlockExplorer(this);
         inscriptionPage = new InscriptionPage(this);
-        personalprofilePage = new PersonalProfilePage(this);
         publisherPage = new PublisherPage(this);
-        // statsWindow = new StatsExplorer(this);
-        surveyPage = new Survey(_platformStyle, this);
-        torrentPage = new TorrentPage(_platformStyle, this);
-        torrentWindow= new TorrentWindow(this);
+        explorerWindow = new BlockExplorer(this);
     } else
 #endif // ENABLE_WALLET
     {
@@ -301,11 +257,6 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     // Initially wallet actions should be disabled
     setWalletActionsEnabled(false);
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(QString::fromStdString(GetDefaultDataDir().string()+"/torrent.dat")); 
-    db.open();
-    createTable();
-
     // Subscribe to notifications from core
     subscribeToCoreSignals();
 
@@ -378,14 +329,6 @@ void BitcoinGUI::createActions()
     historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
     tabGroup->addAction(historyAction);
 
-    // Additions
-    accountReportAction = new QAction(platformStyle->SingleColorIcon(":/icons/account-report"), tr("&Report"), this);
-    accountReportAction->setStatusTip(tr("Account report"));
-    accountReportAction->setToolTip(accountReportAction->statusTip());
-    accountReportAction->setCheckable(true);
-    accountReportAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
-    tabGroup->addAction(accountReportAction);
-
 #ifdef ENABLE_WALLET
     // These showNormalIfMinimized are needed because Send Coins and Receive Coins
     // can be triggered from the tray menu, and need to show the GUI to be useful.
@@ -401,9 +344,6 @@ void BitcoinGUI::createActions()
     connect(receiveCoinsMenuAction, SIGNAL(triggered()), this, SLOT(gotoReceiveCoinsPage()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(gotoHistoryPage()));
-    // Additions
-    connect(accountReportAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    connect(accountReportAction, SIGNAL(triggered()), this, SLOT(gotoAccountReportPage()));
 #endif // ENABLE_WALLET
 
     quitAction = new QAction(platformStyle->TextColorIcon(":/icons/quit"), tr("E&xit"), this);
@@ -448,34 +388,16 @@ void BitcoinGUI::createActions()
 
     openAction = new QAction(platformStyle->TextColorIcon(":/icons/open"), tr("Open &URI..."), this);
     openAction->setStatusTip(tr("Open a vcore: URI or payment request"));
-
-    // Additions
-    openBIP32PageAction = new QAction(platformStyle->TextColorIcon(":/icons/bip32"), tr("&HD/BIP32"), this);
-    openBIP32PageAction->setStatusTip(tr("BIP32"));
-    openBlockExplorerAction = new QAction(platformStyle->TextColorIcon(":/icons/explorer"), tr("&Blockchain"), this);
-    openBlockExplorerAction->setStatusTip(tr("Block explorer window"));
-    openChatWindowAction = new QAction(platformStyle->TextColorIcon(":/icons/chat"), tr("&Chat"), this);
-    openChatWindowAction->setStatusTip(tr("Chat window"));
-    openEssentialsPageAction = new QAction(platformStyle->TextColorIcon(":/icons/info"), tr("&Essentials"), this);
-    openEssentialsPageAction->setStatusTip(tr("Essentials"));
     openInscriptionPageAction = new QAction(platformStyle->TextColorIcon(":/icons/inscribe"), tr("&Inscribe"), this);
     openInscriptionPageAction->setStatusTip(tr("Inscribe"));
-    openPersonalProfilePageAction = new QAction(platformStyle->TextColorIcon(":/icons/profile"), tr("&Publisher"), this);
-    openPersonalProfilePageAction->setStatusTip(tr("Profile"));
     openPublisherPageAction = new QAction(platformStyle->TextColorIcon(":/icons/publish"), tr("&Publish"), this);
     openPublisherPageAction->setStatusTip(tr("Publisher"));
-    // openStatsExplorerAction = new QAction(platformStyle->TextColorIcon(":/icons/stats"), tr("&Statistics"), this);
-    // openStatsExplorerAction->setStatusTip(tr("Statistics"));
-    openSurveyPageAction = new QAction(platformStyle->TextColorIcon(":/icons/survey"), tr("&Survey window"), this);
-    openSurveyPageAction->setStatusTip(tr("Survey window"));
-    openTorrentPageAction = new QAction(platformStyle->TextColorIcon(":/icons/torrent"), tr("&Torrents window"), this);
-    openTorrentPageAction->setStatusTip(tr("Torrents window"));
-    openTorrentWindowAction = new QAction(platformStyle->TextColorIcon(":/icons/magnet"), tr("&Torrents"), this);
-    openTorrentWindowAction->setStatusTip(tr("Manage torrents."));
+    openBlockExplorerAction = new QAction(platformStyle->TextColorIcon(":/icons/explorer"), tr("&Blockchain explorer"), this);
+    openBlockExplorerAction->setStatusTip(tr("Block explorer window"));
 
     showHelpMessageAction = new QAction(platformStyle->TextColorIcon(":/icons/info"), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
-    showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible Bitcoin command-line options").arg(tr(PACKAGE_NAME)));
+    showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible V Core command-line options").arg(tr(PACKAGE_NAME)));
 
     connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(aboutClicked()));
@@ -484,33 +406,15 @@ void BitcoinGUI::createActions()
     connect(toggleHideAction, SIGNAL(triggered()), this, SLOT(toggleHidden()));
     connect(showHelpMessageAction, SIGNAL(triggered()), this, SLOT(showHelpMessageClicked()));
     connect(openRPCConsoleAction, SIGNAL(triggered()), this, SLOT(showDebugWindow()));
-
-    // Additions
-    connect(openBIP32PageAction, SIGNAL(triggered()), bip32Page, SLOT(show()));
-    connect(openBlockExplorerAction, SIGNAL(triggered()), explorerWindow, SLOT(show()));
-    connect(openChatWindowAction, SIGNAL(triggered()), chatWindow, SLOT(show()));
-    connect(openEssentialsPageAction, SIGNAL(triggered()), essentialsPage, SLOT(show()));
     connect(openInscriptionPageAction, SIGNAL(triggered()), inscriptionPage, SLOT(show()));
-    connect(openPersonalProfilePageAction, SIGNAL(triggered()), personalprofilePage, SLOT(show()));
     connect(openPublisherPageAction, SIGNAL(triggered()), publisherPage, SLOT(show()));
-    // connect(openStatsExplorerAction, SIGNAL(triggered()), statsWindow, SLOT(show()));
-    connect(openSurveyPageAction, SIGNAL(triggered()), surveyPage, SLOT(show()));
-    connect(openTorrentPageAction, SIGNAL(triggered()), torrentPage, SLOT(show()));
-    connect(openTorrentWindowAction, SIGNAL(triggered()), torrentWindow, SLOT(show()));
     // prevents an open window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), rpcConsole, SLOT(hide()));
     // Additions
-    connect(quitAction, SIGNAL(triggered()), bip32Page, SLOT(hide()));
-    connect(quitAction, SIGNAL(triggered()), chatWindow, SLOT(hide()));
-    connect(quitAction, SIGNAL(triggered()), essentialsPage, SLOT(hide()));
-    connect(quitAction, SIGNAL(triggered()), explorerWindow, SLOT(hide()));
     connect(quitAction, SIGNAL(triggered()), inscriptionPage, SLOT(hide()));
-    connect(quitAction, SIGNAL(triggered()), personalprofilePage, SLOT(hide()));
     connect(quitAction, SIGNAL(triggered()), publisherPage, SLOT(hide()));
-    // connect(quitAction, SIGNAL(triggered()), statsWindow, SLOT(hide()));
-    connect(quitAction, SIGNAL(triggered()), surveyPage, SLOT(hide()));
-    connect(quitAction, SIGNAL(triggered()), torrentPage, SLOT(hide()));
-    connect(quitAction, SIGNAL(triggered()), torrentWindow, SLOT(hide()));
+    connect(openBlockExplorerAction, SIGNAL(triggered()), explorerWindow, SLOT(show()));
+    connect(quitAction, SIGNAL(triggered()), explorerWindow, SLOT(hide()));
 
 #ifdef ENABLE_WALLET
     if(walletFrame)
@@ -568,23 +472,15 @@ void BitcoinGUI::createMenuBar()
     QMenu *actions = appMenuBar->addMenu(tr("&Data"));
     if(walletFrame)
     {
-        actions->addAction(openBIP32PageAction);
-        actions->addAction(openBlockExplorerAction);
-        actions->addAction(openChatWindowAction);
-        actions->addAction(openEssentialsPageAction);
         actions->addAction(openInscriptionPageAction);
-        actions->addAction(openPersonalProfilePageAction);
         actions->addAction(openPublisherPageAction);
-        // data->addAction(openStatsExplorerAction);
-        actions->addAction(openSurveyPageAction);
-        actions->addAction(openTorrentPageAction);
-        actions->addAction(openTorrentWindowAction);
     }
 
     QMenu *help = appMenuBar->addMenu(tr("&Help"));
     if(walletFrame)
     {
         help->addAction(openRPCConsoleAction);
+        help->addAction(openBlockExplorerAction);
     }
     help->addAction(showHelpMessageAction);
     help->addSeparator();
@@ -604,8 +500,6 @@ void BitcoinGUI::createToolBars()
         toolbar->addAction(sendCoinsAction);
         toolbar->addAction(receiveCoinsAction);
         toolbar->addAction(historyAction);
-        // Additions
-        toolbar->addAction(accountReportAction);
         overviewAction->setChecked(true);
     }
 }
@@ -713,19 +607,9 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     usedSendingAddressesAction->setEnabled(enabled);
     usedReceivingAddressesAction->setEnabled(enabled);
     openAction->setEnabled(enabled);
-    // Additions
-    accountReportAction->setEnabled(enabled);
-    openBIP32PageAction->setEnabled(enabled);
-    openBlockExplorerAction->setEnabled(enabled);
-    openChatWindowAction->setEnabled(enabled);
-    openChatWindowAction->setEnabled(enabled);
     openInscriptionPageAction->setEnabled(enabled);
-    openPersonalProfilePageAction->setEnabled(enabled);
     openPublisherPageAction->setEnabled(enabled);
-    // openStatsExplorerAction->setEnabled(enabled);
-    openSurveyPageAction->setEnabled(enabled);
-    openTorrentPageAction->setEnabled(enabled);
-    openTorrentWindowAction->setEnabled(enabled);
+    openBlockExplorerAction->setEnabled(enabled);
 }
 
 void BitcoinGUI::createTrayIcon(const NetworkStyle *networkStyle)
@@ -771,18 +655,9 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(optionsAction);
     trayIconMenu->addAction(openRPCConsoleAction);
-    // Additions
-    trayIconMenu->addAction(openBIP32PageAction);
-    trayIconMenu->addAction(openBlockExplorerAction);
-    trayIconMenu->addAction(openChatWindowAction);
-    trayIconMenu->addAction(openEssentialsPageAction);
     trayIconMenu->addAction(openInscriptionPageAction);
-    trayIconMenu->addAction(openPersonalProfilePageAction);
     trayIconMenu->addAction(openPublisherPageAction);
-    // trayIconMenu->addAction(openStatsExplorerAction);
-    trayIconMenu->addAction(openSurveyPageAction);
-    trayIconMenu->addAction(openTorrentPageAction);
-    trayIconMenu->addAction(openTorrentWindowAction);
+    trayIconMenu->addAction(openBlockExplorerAction);
 #ifndef Q_OS_MAC // This is built-in on Mac
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(quitAction);
@@ -882,41 +757,9 @@ void BitcoinGUI::gotoVerifyMessageTab(QString addr)
     if (walletFrame) walletFrame->gotoVerifyMessageTab(addr);
 }
 
-// Additions
-void BitcoinGUI::gotoAccountReportPage()
-{
-    accountReportAction->setChecked(true);
-    if (walletFrame) walletFrame->gotoAccountReportPage();
-}
-
-void BitcoinGUI::gotoBIP32Page()
-{
-    if (walletFrame) walletFrame->gotoBIP32Page();
-}
-
-void BitcoinGUI::gotoBlockExplorerPage()
-{
-    if (walletFrame) walletFrame->gotoBlockExplorerPage();
-}
-
-void BitcoinGUI::gotoChatPage()
-{
-    if (walletFrame) walletFrame->gotoChatPage();
-}
-
-void BitcoinGUI::gotoEssentialsPage()
-{
-    if (walletFrame) walletFrame->gotoEssentialsPage();
-}
-
 void BitcoinGUI::gotoInscriptionPage()
 {
     if (walletFrame) walletFrame->gotoInscriptionPage();
-}
-
-void BitcoinGUI::gotoPersonalProfilePage()
-{
-    if (walletFrame) walletFrame->gotoPersonalProfilePage();
 }
 
 void BitcoinGUI::gotoPublisherPage()
@@ -924,24 +767,9 @@ void BitcoinGUI::gotoPublisherPage()
     if (walletFrame) walletFrame->gotoPublisherPage();
 }
 
-// void BitcoinGUI::gotoStatsExplorerPage()
-// {
-//     if (walletFrame) walletFrame->gotoStatsExplorerPage();
-// }
-
-void BitcoinGUI::gotoSurveyPage()
+void BitcoinGUI::gotoBlockExplorerPage()
 {
-    if (walletFrame) walletFrame->gotoSurveyPage();
-}
-
-void BitcoinGUI::gotoTorrentPage()
-{
-    if (walletFrame) walletFrame->gotoTorrentPage();
-}
-
-void BitcoinGUI::gotoTorrentWindow()
-{
-    if (walletFrame) walletFrame->gotoTorrentWindow();
+    if (walletFrame) walletFrame->gotoBlockExplorerPage();
 }
 
 #endif // ENABLE_WALLET

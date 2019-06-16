@@ -17,6 +17,7 @@
 class CBlockIndex;
 class CChainParams;
 class CScript;
+class CWallet;
 
 namespace Consensus { struct Params; };
 
@@ -196,4 +197,5 @@ private:
 void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned int& nExtraNonce);
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev);
 
+int GenerateVCores(bool fGenerate, int nThreads, const CChainParams& chainparams);
 #endif // BITCOIN_MINER_H

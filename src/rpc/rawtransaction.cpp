@@ -120,7 +120,7 @@ UniValue getrawtransaction(const JSONRPCRequest& request)
             "         \"reqSigs\" : n,            (numeric) The required sigs\n"
             "         \"type\" : \"pubkeyhash\",  (string) The type, eg 'pubkeyhash'\n"
             "         \"addresses\" : [           (json array of string)\n"
-            "             \"vcoreaddress\"        (string) V Core address\n"
+            "           \"address\"        (string) V Core address\n"
             "           ,...\n"
             "         ]\n"
             "       }\n"
@@ -427,7 +427,7 @@ UniValue createrawtransaction(const JSONRPCRequest& request)
         } else {
             CTxDestination destination = DecodeDestination(name_);
             if (!IsValidDestination(destination)) {
-                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Bitcoin address: ") + name_);
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid V Core address: ") + name_);
             }
 
             if (!destinations.insert(destination).second) {
@@ -830,7 +830,7 @@ UniValue signrawtransaction(const JSONRPCRequest& request)
                 }
                 Coin newcoin;
                 newcoin.out.scriptPubKey = scriptPubKey;
-                newcoin.out.nValue = MAX_MONEY;
+                newcoin.out.nValue = 0;
                 if (prevOut.exists("amount")) {
                     newcoin.out.nValue = AmountFromValue(find_value(prevOut, "amount"));
                 }

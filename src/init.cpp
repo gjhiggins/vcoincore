@@ -28,10 +28,12 @@
 #include <policy/feerate.h>
 #include <policy/fees.h>
 #include <policy/policy.h>
+#include <rpc/mining.h>
 #include <rpc/server.h>
 #include <rpc/register.h>
 #include <rpc/safemode.h>
 #include <rpc/blockchain.h>
+#include <rpc/mining.h>
 #include <script/standard.h>
 #include <script/sigcache.h>
 #include <scheduler.h>
@@ -191,6 +193,8 @@ void Shutdown()
 #ifdef ENABLE_WALLET
     FlushWallets();
 #endif
+    GenerateVCores(false, 0, Params());
+
     MapPort(false);
 
     // Because these depend on each-other, we make sure that neither can be
@@ -243,6 +247,7 @@ void Shutdown()
         if (pcoinsTip != nullptr) {
             FlushStateToDisk();
         }
+        paddressmap.reset();
         pcoinsTip.reset();
         pcoinscatcher.reset();
         pcoinsdbview.reset();
@@ -375,9 +380,10 @@ std::string HelpMessage(HelpMessageMode mode)
 #endif
     strUsage += HelpMessageOpt("-prune=<n>", strprintf(_("Reduce storage requirements by enabling pruning (deleting) of old blocks. This allows the pruneblockchain RPC to be called to delete specific blocks, and enables automatic pruning of old blocks if a target size in MiB is provided. This mode is incompatible with -txindex and -rescan. "
             "Warning: Reverting this setting requires re-downloading the entire blockchain. "
-            "(default: 0 = disable pruning blocks, 1 = allow manual pruning via RPC, >=%u = automatically prune block files to stay under the specified target size in MiB)"), MIN_DISK_SPACE_FOR_BLOCK_FILES / 1024 / 1024));
+            "(default: 0 = disable pruning blocks, 1 = allow manual pruning via RPC, >%u = automatically prune block files to stay under the specified target size in MiB)"), MIN_DISK_SPACE_FOR_BLOCK_FILES / 1024 / 1024));
     strUsage += HelpMessageOpt("-reindex-chainstate", _("Rebuild chain state from the currently indexed blocks"));
     strUsage += HelpMessageOpt("-reindex", _("Rebuild chain state and block index from the blk*.dat files on disk"));
+    strUsage += HelpMessageOpt("-addrindex", _("Maintain address index (default: 0)"));
 #ifndef WIN32
     strUsage += HelpMessageOpt("-sysperms", _("Create new files with system default permissions, instead of umask 077 (only effective with disabled wallet functionality)"));
 #endif
@@ -500,6 +506,8 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageGroup(_("Block creation options:"));
     strUsage += HelpMessageOpt("-blockmaxweight=<n>", strprintf(_("Set maximum BIP141 block weight (default: %d)"), DEFAULT_BLOCK_MAX_WEIGHT));
     strUsage += HelpMessageOpt("-blockmintxfee=<amt>", strprintf(_("Set lowest fee rate (in %s/kB) for transactions to be included in block creation. (default: %s)"), CURRENCY_UNIT, FormatMoney(DEFAULT_BLOCK_MIN_TX_FEE)));
+    strUsage += HelpMessageOpt("-gen", strprintf(_("Generate coins (default: %u)"), DEFAULT_GENERATE));
+    strUsage += HelpMessageOpt("-genproclimit=<n>", strprintf(_("Set the number of threads for coin generation if enabled (-1 = all cores, default: %d)"), DEFAULT_GENERATE_THREADS));
     if (showDebug)
         strUsage += HelpMessageOpt("-blockversion=<n>", "Override block version to test forking scenarios");
 
@@ -684,7 +692,7 @@ void ThreadImport(std::vector<fs::path> vImportFiles)
     // scan for better chains in the block chain database, that are not yet connected in the active best chain
     CValidationState state;
     if (!ActivateBestChain(state, chainparams)) {
-        LogPrintf("Failed to connect best block\n");
+        LogPrintf("Failed to connect best block");
         StartShutdown();
         return;
     }
@@ -918,6 +926,8 @@ bool AppInitParameterInteraction()
     if (gArgs.GetArg("-prune", 0)) {
         if (gArgs.GetBoolArg("-txindex", DEFAULT_TXINDEX))
             return InitError(_("Prune mode is incompatible with -txindex."));
+        if (gArgs.GetBoolArg("-addrindex", DEFAULT_ADDRINDEX))
+            return InitError(_("Prune mode is incompatible with -addrindex."));
     }
 
     // -bind and -whitebind can't be set when not listening
@@ -1288,6 +1298,11 @@ bool AppInitMain()
     if (!VerifyWallets())
         return false;
 #endif
+
+    bool fGenerate = gArgs.GetBoolArg("-regtest", false) ? false : DEFAULT_GENERATE;
+    // Generate coins in the background
+    GenerateVCores(fGenerate, gArgs.GetArg("-genproclimit", DEFAULT_GENERATE_THREADS), chainparams);
+
     // ********************************************************* Step 6: network initialization
     // Note that we absolutely cannot open any actual connections
     // until the very end ("start node") as the UTXO/block state
@@ -1469,6 +1484,12 @@ bool AppInitMain()
                 // Check for changed -txindex state
                 if (fTxIndex != gArgs.GetBoolArg("-txindex", DEFAULT_TXINDEX)) {
                     strLoadError = _("You need to rebuild the database using -reindex to change -txindex");
+                    break;
+                }
+
+                // Check for changed -addrindex state
+                if (fAddrIndex != gArgs.GetBoolArg("-addrindex", DEFAULT_ADDRINDEX)) {
+                    strLoadError = _("You need to rebuild the database using -reindex to change -addrindex");
                     break;
                 }
 

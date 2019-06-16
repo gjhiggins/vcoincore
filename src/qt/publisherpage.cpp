@@ -1,5 +1,5 @@
 #include "publisherpage.h"
-#include "ui_publisherpage.h"
+#include <qt/forms/ui_publisherpage.h>
 
 #include "guiutil.h"
 
@@ -27,11 +27,10 @@ void PublisherPage::show()
     QWebEngineView *view = new QWebEngineView;
     QDir dir;
     QString cwd = dir.currentPath();
-    QString html = "qrc:///pbt/index.html";
-    QString fpath = "/src/qt/res/pbt/index.html";
+    QString html = "qrc:///plume/index.html";
+    QString fpath = "/src/qt/res/plume/index.html";
     QString res = cwd + fpath;
     QFile file(res);
-    // QFile file("file:////res/pbt/index.html");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         html = QString("<html><body><p>Cannot read file in ") + res + QString("</p></body></html>");
     } else {

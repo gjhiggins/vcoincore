@@ -9,7 +9,7 @@ namespace Ui {
 }
 class QDialog;
 
-/** Publish to Torrent widget */
+/** Manage a personal profile */
 class PublisherPage : public QDialog
 {
     Q_OBJECT

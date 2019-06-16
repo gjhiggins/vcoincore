@@ -405,6 +405,7 @@ SendCoinsEntry *SendCoinsDialog::addEntry()
 {
     SendCoinsEntry *entry = new SendCoinsEntry(platformStyle, this);
     entry->setModel(model);
+    entry->setInscription(QString(""));
     ui->entries->addWidget(entry);
     connect(entry, SIGNAL(removeEntry(SendCoinsEntry*)), this, SLOT(removeEntry(SendCoinsEntry*)));
     connect(entry, SIGNAL(useAvailableBalance(SendCoinsEntry*)), this, SLOT(useAvailableBalance(SendCoinsEntry*)));
@@ -414,6 +415,7 @@ SendCoinsEntry *SendCoinsDialog::addEntry()
     // Focus the field, so that entry can start immediately
     entry->clear();
     entry->setFocus();
+    entry->setInscription(QString(""));
     ui->scrollAreaWidgetContents->resize(ui->scrollAreaWidgetContents->sizeHint());
     qApp->processEvents();
     QScrollBar* bar = ui->scrollArea->verticalScrollBar();

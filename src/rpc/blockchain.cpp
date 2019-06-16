@@ -993,7 +993,7 @@ UniValue gettxout(const JSONRPCRequest& request)
             "     \"reqSigs\" : n,          (numeric) Number of required signatures\n"
             "     \"type\" : \"pubkeyhash\", (string) The type, eg pubkeyhash\n"
             "     \"addresses\" : [          (array of string) array of V Core addresses\n"
-            "        \"vcoreaddress\"     (string) V Core address\n"
+            "        \"address\"     (string) V Core address\n"
             "        ,...\n"
             "     ]\n"
             "  },\n"

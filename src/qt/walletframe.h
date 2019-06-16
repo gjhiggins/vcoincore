@@ -14,17 +14,9 @@ class PlatformStyle;
 class SendCoinsRecipient;
 class WalletModel;
 class WalletView;
-// Additions
-class BIP32HDPage;
-class BlockExplorer;
-class ChatWindow;
-class EssentialsPage;
 class InscriptionPage;
-class PersonalProfilePage;
 class PublisherPage;
-class Survey;
-class TorrentPage;
-class TorrentWindow;
+class BlockExplorer;
 
 QT_BEGIN_NAMESPACE
 class QStackedWidget;
@@ -81,29 +73,13 @@ public Q_SLOTS:
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");
-    // Additions
-    /** Switch to account report page */
-    void gotoAccountReportPage();
-    /** Switch to BIP32 page */
-    void gotoBIP32Page();
+
     /** Switch to explorer page */
     void gotoBlockExplorerPage();
-    /** Switch to chat page */
-    void gotoChatPage();
-    /** Switch to Essentials page */
-    void gotoEssentialsPage();   
     /** Switch to inscription page */
     void gotoInscriptionPage();
-    /** Switch to profile page */
-    void gotoPersonalProfilePage();
     /** Switch to Publishing page */
     void gotoPublisherPage();	
-    /** Switch to Questionnaire page */
-	void gotoSurveyPage();
-    /** Switch to torrent page */
-	void gotoTorrentPage();
-    /** Switch to Torrent View */
-    void gotoTorrentWindow();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");

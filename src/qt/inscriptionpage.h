@@ -1,41 +1,56 @@
-#ifndef INSCRIPTIONPAGE_H
-#define INSCRIPTIONPAGE_H
+// Copyright (c) 2011-2017 The Bitcoin Core developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <QWidget>
+#ifndef BITCOIN_QT_INSCRIPTIONPAGE_H
+#define BITCOIN_QT_INSCRIPTIONPAGE_H
+
 #include <QDialog>
+
+class InscriptionTableModel;
+class PlatformStyle;
 
 namespace Ui {
     class InscriptionPage;
 }
-class QDialog;
 
-/** Create an inscription */
+QT_BEGIN_NAMESPACE
+class QItemSelection;
+class QMenu;
+class QModelIndex;
+class QSortFilterProxyModel;
+QT_END_NAMESPACE
+
+/** Widget that shows a list of sending or receiving addresses.
+  */
 class InscriptionPage : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit InscriptionPage(QWidget *parent = 0);
+
+    explicit InscriptionPage(QWidget *parent);
     ~InscriptionPage();
 
-public Q_SLOTS:
+    void setModel(InscriptionTableModel *model);
 
-Q_SIGNALS:
+public Q_SLOTS:
+    // void done(int retval);
 
 private:
     Ui::InscriptionPage *ui;
-
-public Q_SLOTS:
+    InscriptionTableModel *model;
+    QSortFilterProxyModel *proxyModel;
+    QMenu *contextMenu;
 
 private Q_SLOTS:
-    void show();
+     /** Export button clicked */
+//    void on_exportButton_clicked();
+    void onCopyInscriptionAction();
+
 
 Q_SIGNALS:
-    /**  Fired when a message should be reported to the user */
-    void message(const QString &title, const QString &message, unsigned int style);
-
+    void sendCoins(QString addr);
 };
 
-
-
-#endif // INSCRIPTIONPAGE_H
+#endif // BITCOIN_QT_INSCRIPTIONPAGE_H

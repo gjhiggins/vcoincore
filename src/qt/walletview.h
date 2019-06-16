@@ -19,18 +19,9 @@ class SendCoinsRecipient;
 class TransactionView;
 class WalletModel;
 class AddressBookPage;
-// Additions
-class BIP32HDPage;
-class BlockExplorer;
-class ChatWindow;
-class EssentialsPage;
 class InscriptionPage;
-class PersonalProfilePage;
 class PublisherPage;
-class ReportView;
-class Survey;
-class TorrentPage;
-class TorrentWindow;
+class BlockExplorer;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -72,28 +63,16 @@ private:
 
     OverviewPage *overviewPage;
     QWidget *transactionsPage;
-    // Additions
-    QWidget *accountreportPage;
-
     ReceiveCoinsDialog *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
     AddressBookPage *usedSendingAddressesPage;
     AddressBookPage *usedReceivingAddressesPage;
-	// Additions
-    BIP32HDPage *bip32Page;
-    BlockExplorer *explorerWindow;
-	ChatWindow *chatWindow;
-    EssentialsPage *essentialsPage;
     InscriptionPage *inscriptionPage;
-    PersonalProfilePage *personalprofilePage;
     PublisherPage *publisherPage;
-    ReportView *reportView;		
-    Survey *surveyPage;
-    TorrentPage *torrentPage;
-    TorrentWindow *torrentWindow;
+    BlockExplorer *explorerWindow;
 
     TransactionView *transactionView;
-    
+
     QProgressDialog *progressDialog;
     const PlatformStyle *platformStyle;
 
@@ -112,29 +91,12 @@ public Q_SLOTS:
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
 
-    // Additions
-    /** Switch to account report page */
-    void gotoAccountReportPage(); 
-    /** Switch to BIP32 page */
-    void gotoBIP32Page();
-    /** Switch to explorer page */
-    void gotoBlockExplorerPage();
-    /** Switch to chat page */
-    void gotoChatPage();
-    /** Switch to account report page */
-    /** Switch to Essentials page */
-    void gotoEssentialsPage();   
+    /** Switch to Inscription page */
     void gotoInscriptionPage(); 
-    /** Switch to profile page */
-    void gotoPersonalProfilePage();	
     /** Switch to Publisher page */
     void gotoPublisherPage();
-    /** Switch to Questionnaire page */
-	void gotoSurveyPage();
-    /** Switch to torrents page */
-	void gotoTorrentPage();
-    /** Switch to Torrent View */
-    void gotoTorrentWindow();
+    /** Switch to explorer page */
+    void gotoBlockExplorerPage();
 
     /** Show incoming transaction notification for new transactions.
 

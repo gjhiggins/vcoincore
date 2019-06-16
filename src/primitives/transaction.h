@@ -376,7 +376,6 @@ struct CMutableTransaction
         SerializeTransaction(*this, s);
     }
 
-
     template <typename Stream>
     inline void Unserialize(Stream& s) {
         UnserializeTransaction(*this, s);

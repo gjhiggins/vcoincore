@@ -27,7 +27,7 @@
         </property>
         <property name="icon">
          <iconset resource="../bitcoin.qrc">
-          <normaloff>:/icons/back</normaloff>:/icons/back</iconset>
+          <normaloff>:/icons/norvehc</normaloff>:/icons/norvehc</iconset>
         </property>
         <property name="flat">
          <bool>false</bool>
@@ -41,7 +41,7 @@
         </property>
         <property name="icon">
          <iconset resource="../bitcoin.qrc">
-          <normaloff>:/icons/forward</normaloff>:/icons/forward</iconset>
+          <normaloff>:/icons/prompticon</normaloff>:/icons/prompticon</iconset>
         </property>
        </widget>
       </item>

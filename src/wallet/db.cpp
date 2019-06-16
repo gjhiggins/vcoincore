@@ -104,7 +104,7 @@ bool CDBEnv::Open(const fs::path& pathIn, bool retry)
 
     strPath = pathIn.string();
     if (!LockDirectory(pathIn, ".walletlock")) {
-        LogPrintf("Cannot obtain a lock on wallet directory %s. Another instance of bitcoin may be using it.\n", strPath);
+        LogPrintf("Cannot obtain a lock on wallet directory %s. Another instance of V Core may be using it.\n", strPath);
         return false;
     }
 
@@ -579,7 +579,6 @@ bool CDB::Rewrite(CWalletDBWrapper& dbw, const char* pszSkip)
                     } else {
                         pdbCopy->close(0);
                     }
-                    delete pdbCopy;
                 }
                 if (fSuccess) {
                     Db dbA(env->dbenv.get(), 0);

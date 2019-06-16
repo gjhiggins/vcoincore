@@ -295,6 +295,84 @@ static bool rest_chaininfo(HTTPRequest* req, const std::string& strURIPart)
     }
 }
 
+static bool rest_solid(HTTPRequest* req, const std::string& strURIPart)
+{
+    if (!CheckWarmup(req))
+        return false;
+    std::string param;
+    const RetFormat rf = ParseDataFormat(param, strURIPart);
+
+    switch (rf) {
+    case RF_JSON: {
+        JSONRPCRequest jsonRequest;
+        jsonRequest.params = UniValue(UniValue::VARR);
+
+        // UniValue chainInfoObject = getblockchaininfo(jsonRequest);
+        // std::string strJSON = chainInfoObject.write() + "\n";
+
+        std::string strJSON = "[  \
+  {  \
+    \"@id\": \"file:///home/gjh/\",  \
+    \"@type\": [  \
+      \"http://www.w3.org/ns/ldp#BasicContainer\",  \
+      \"http://www.w3.org/ns/posix/stat#Directory\",  \
+      \"http://www.w3.org/ns/ldp#Container\"  \
+    ],  \
+    \"http://www.w3.org/ns/ldp#contains\": [  \
+      {  \
+        \"@id\": \"file:///home/gjh/workspace/\"  \
+      },  \
+      {  \
+        \"@id\": \"file:///home/gjh/profile\"  \
+      },  \
+      {  \
+        \"@id\": \"file:///home/gjh/data/\"  \
+      }  \
+    ],  \
+    \"http://www.w3.org/ns/posix/stat#mtime\": [  \
+      {  \
+        \"@value\": \"1436281776\"  \
+      }  \
+    ],  \
+    \"http://www.w3.org/ns/posix/stat#size\": [  \
+      {  \
+        \"@value\": \"4096\"  \
+      }  \
+    ]  \
+  },  \
+  {  \
+    \"@id\": \"file:///home/gjh/profile\",  \
+    \"@type\": [  \
+      \"http://www.w3.org/ns/posix/stat#File\",  \
+      \"http://xmlns.com/foaf/0.1/PersonalProfileDocument\"  \
+    ],  \
+    \"http://www.w3.org/ns/posix/stat#mtime\": [  \
+      {  \
+        \"@value\": \"1434583075\"  \
+      }  \
+    ],  \
+    \"http://www.w3.org/ns/posix/stat#size\": [  \
+      {  \
+        \"@value\": \"780\"  \
+      }  \
+    ]  \
+  }  \
+]  \
+.";
+
+        req->WriteHeader("Content-Type", "application/json");
+        req->WriteReply(HTTP_OK, strJSON);
+        return true;
+    }
+    default: {
+        return RESTERR(req, HTTP_NOT_FOUND, "output format not found (available: json)");
+    }
+    }
+
+    // not reached
+    return true; // continue to process further HTTP reqs on this cxn
+}
+
 static bool rest_mempool_info(HTTPRequest* req, const std::string& strURIPart)
 {
     if (!CheckWarmup(req))

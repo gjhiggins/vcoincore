@@ -12,6 +12,7 @@ class BitcoinGUI;
 
 namespace Ui {
     class HelpMessageDialog;
+    class InscriptionDialog;
 }
 
 /** "Help message" dialog box */
@@ -47,5 +48,6 @@ public:
 protected:
     void closeEvent(QCloseEvent *event);
 };
+
 
 #endif // BITCOIN_QT_UTILITYDIALOG_H

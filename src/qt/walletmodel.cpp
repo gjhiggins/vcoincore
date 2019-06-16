@@ -40,7 +40,7 @@
 WalletModel::WalletModel(const PlatformStyle *platformStyle, CWallet *_wallet, OptionsModel *_optionsModel, QObject *parent) :
     QObject(parent), wallet(_wallet), optionsModel(_optionsModel), addressTableModel(0),
     transactionTableModel(0),
-    torrentTableModel(0),
+    // inscriptionTableModel(0),
     recentRequestsTableModel(0),
     cachedBalance(0), cachedUnconfirmedBalance(0), cachedImmatureBalance(0),
     cachedEncryptionStatus(Unencrypted),
@@ -52,7 +52,7 @@ WalletModel::WalletModel(const PlatformStyle *platformStyle, CWallet *_wallet, O
     addressTableModel = new AddressTableModel(wallet, this);
     transactionTableModel = new TransactionTableModel(platformStyle, wallet, this);
     recentRequestsTableModel = new RecentRequestsTableModel(wallet, this);
-    torrentTableModel = new TorrentTableModel(this);
+    // inscriptionTableModel = new InscriptionTableModel(this);
 
     // This timer will be fired repeatedly to update the balance
     pollTimer = new QTimer(this);
@@ -327,8 +327,12 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(WalletModelTransaction &tran
                 rcp.paymentRequest.SerializeToString(&value);
                 newTx->vOrderForm.push_back(make_pair(key, value));
             }
-            else if (!rcp.message.isEmpty()) // Message from normal bitcoin:URI (bitcoin:123...?message=example)
-                newTx->vOrderForm.push_back(make_pair("Message", rcp.message.toStdString()));
+            else {
+                if (!rcp.message.isEmpty()) // Message from normal bitcoin:URI (bitcoin:123...?message=example)
+                    newTx->vOrderForm.push_back(make_pair("Message", rcp.message.toStdString()));
+                if (!rcp.inscription.isEmpty()) // Blockchain inscription)
+                    newTx->vOrderForm.push_back(make_pair("Inscription", rcp.inscription.toStdString()));
+            }
         }
 
         CReserveKey *keyChange = transaction.getPossibleKeyChange();
@@ -394,10 +398,10 @@ RecentRequestsTableModel *WalletModel::getRecentRequestsTableModel()
     return recentRequestsTableModel;
 }
 
-TorrentTableModel *WalletModel::getTorrentTableModel()
-{
-    return torrentTableModel;
-}
+// InscriptionTableModel *WalletModel::getInscriptionTableModel()
+// {
+//     return inscriptionTableModel;
+// }
 
 WalletModel::EncryptionStatus WalletModel::getEncryptionStatus() const
 {

@@ -215,6 +215,7 @@ int nScriptCheckThreads = 0;
 std::atomic_bool fImporting(false);
 std::atomic_bool fReindex(false);
 bool fTxIndex = false;
+bool fAddrIndex = false;
 bool fHavePruned = false;
 bool fPruneMode = false;
 bool fIsBareMultisigStd = DEFAULT_PERMIT_BAREMULTISIG;
@@ -286,6 +287,7 @@ CBlockIndex* FindForkInGlobalIndex(const CChain& chain, const CBlockLocator& loc
 std::unique_ptr<CCoinsViewDB> pcoinsdbview;
 std::unique_ptr<CCoinsViewCache> pcoinsTip;
 std::unique_ptr<CBlockTreeDB> pblocktree;
+std::unique_ptr<CAddressDB> paddressmap;
 
 enum FlushStateMode {
     FLUSH_STATE_NONE,
@@ -950,7 +952,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
         // Remove conflicting transactions from the mempool
         for (const CTxMemPool::txiter it : allConflicting)
         {
-            LogPrint(BCLog::MEMPOOL, "replacing tx %s with %s for %s BTC additional fees, %d delta bytes\n",
+            LogPrint(BCLog::MEMPOOL, "replacing tx %s with %s for %s VCN additional fees, %d delta bytes\n",
                     it->GetTx().GetHash().ToString(),
                     hash.ToString(),
                     FormatMoney(nModifiedFees - nConflictingFees),
@@ -2595,7 +2597,7 @@ bool CChainState::ActivateBestChain(CValidationState &state, const CChainParams&
         if (GetMainSignals().CallbacksPending() > 10) {
             // Block until the validation queue drains. This should largely
             // never happen in normal operation, however may happen during
-            // reindex, causing memory blowup  if we run too far ahead.
+            // reindex, causing memory blowup if we run too far ahead.
             SyncWithValidationInterfaceQueue();
         }
 
@@ -4159,7 +4161,6 @@ void UnloadBlockIndex()
     vinfoBlockFile.clear();
     nLastBlockFile = 0;
     setDirtyBlockIndex.clear();
-    g_failed_blocks.clear();
     setDirtyFileInfo.clear();
     versionbitscache.Clear();
     for (int b = 0; b < VERSIONBITS_NUM_BITS; b++) {
@@ -4196,6 +4197,9 @@ bool LoadBlockIndex(const CChainParams& chainparams)
         // Use the provided setting for -txindex in the new database
         fTxIndex = gArgs.GetBoolArg("-txindex", DEFAULT_TXINDEX);
         pblocktree->WriteFlag("txindex", fTxIndex);
+        // Use the provided setting for -addrindex in the new database
+        fAddrIndex = gArgs.GetBoolArg("-addrindex", DEFAULT_ADDRINDEX);
+        paddressmap->WriteFlag("addrindex", fAddrIndex);
     }
     return true;
 }
