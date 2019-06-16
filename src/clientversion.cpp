@@ -17,7 +17,7 @@ const std::string CLIENT_NAME("Veni");
 /**
  * Client version number
  */
-#define CLIENT_VERSION_SUFFIX "-beta"
+#define CLIENT_VERSION_SUFFIX "-minki"
 
 
 /**

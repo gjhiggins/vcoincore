@@ -7,7 +7,7 @@ dnl Output: If qt version is auto, set bitcoin_enable_qt to false. Else, exit.
 AC_DEFUN([BITCOIN_QT_FAIL],[
   if test "x$bitcoin_qt_want_version" = xauto && test "x$bitcoin_qt_force" != xyes; then
     if test "x$bitcoin_enable_qt" != xno; then
-      AC_MSG_WARN([$1; bitcoin-qt frontend will not be built])
+      AC_MSG_WARN([$1; V Core frontend will not be built])
     fi
     bitcoin_enable_qt=no
     bitcoin_enable_qt_test=no
@@ -421,6 +421,7 @@ AC_DEFUN([_BITCOIN_QT_FIND_LIBS_WITH_PKGCONFIG],[
       QT_LIB_PREFIX=Qt
       bitcoin_qt_got_major_vers=4
     fi
+dnl    qt5_modules="Qt5Core Qt5Gui Qt5Network Qt5Widgets"
     qt5_modules="Qt5Core Qt5Gui Qt5Network Qt5Widgets Qt5Sql Qt5WebEngine Qt5WebEngineCore Qt5WebEngineWidgets"
     qt4_modules="QtCore QtGui QtNetwork"
     BITCOIN_QT_CHECK([
