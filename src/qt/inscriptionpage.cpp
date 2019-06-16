@@ -70,7 +70,7 @@ void InscriptionPage::setModel(InscriptionTableModel *_model)
     ui->tableView->setModel(proxyModel);
     ui->tableView->sortByColumn(0, Qt::AscendingOrder);
     ui->tableView->horizontalHeader()->setSectionResizeMode(InscriptionTableModel::Date, QHeaderView::Stretch);
-    ui->tableView->horizontalHeader()->setSectionResizeMode(InscriptionTableModel::TransactionID, QHeaderView::Stretch);
+    // ui->tableView->horizontalHeader()->setSectionResizeMode(InscriptionTableModel::TransactionID, QHeaderView::Stretch);
     ui->tableView->horizontalHeader()->setSectionResizeMode(InscriptionTableModel::Inscription, QHeaderView::ResizeToContents);
 }
 
