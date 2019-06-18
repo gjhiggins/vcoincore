@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2016 The Bitcoin Core developers
+// Copyright (c) 2011-2017 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -16,7 +16,7 @@ class WalletModel;
 class WalletView;
 class InscriptionPage;
 class PublisherPage;
-class BlockExplorer;
+// class BlockExplorer;
 
 QT_BEGIN_NAMESPACE
 class QStackedWidget;
@@ -39,7 +39,7 @@ public:
 
     void setClientModel(ClientModel *clientModel);
 
-    bool addWallet(const QString& name, WalletModel *walletModel);
+    bool addWallet(WalletModel *walletModel);
     bool setCurrentWallet(const QString& name);
     bool removeWallet(const QString &name);
     void removeAllWallets();
@@ -62,6 +62,7 @@ private:
 
     const PlatformStyle *platformStyle;
 
+public:
     WalletView *currentWalletView();
 
 public Q_SLOTS:
@@ -75,7 +76,7 @@ public Q_SLOTS:
     void gotoSendCoinsPage(QString addr = "");
 
     /** Switch to explorer page */
-    void gotoBlockExplorerPage();
+    // void gotoBlockExplorerPage();
     /** Switch to inscription page */
     void gotoInscriptionPage();
     /** Switch to Publishing page */

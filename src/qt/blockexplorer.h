@@ -15,6 +15,8 @@ class BlockExplorer;
 class CBlockIndex;
 class CTransaction;
 class CBlockTreeDB;
+class CTxOut;
+class COutPoint;
 
 std::string getexplorerBlockHash(int64_t);
 const CBlockIndex* getexplorerBlockIndex(int64_t);

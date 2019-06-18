@@ -19,6 +19,8 @@
 #include <script/standard.h>
 #include <base58.h>
 
+class CKeyID;
+
 extern double GetDifficulty(const CBlockIndex* blockindex = NULL);
 
 inline std::string utostr(unsigned int n)
@@ -415,13 +417,13 @@ std::string AddressToString(const CTxDestination& address)
     //         }
     //     }
     }
-    TxContent += "</table>";
+//    TxContent += "</table>";
 
-    const CKeyID *keyid = boost::get<CKeyID>(&address);
-    std::string Content;
-    Content += "<h1>" + _("Transactions to/from") + "&nbsp;<span class=\"mono\">" + keyid->ToString() + "</span></h1>";
-    Content += TxContent;
-    return Content;
+//    const CKeyID *keyid = boost::get<CKeyID>(&address);
+//    std::string Content;
+//    Content += "<h1>" + _("Transactions to/from") + "&nbsp;<span class=\"mono\">" + keyid->ToString() + "</span></h1>";
+//    Content += TxContent;
+//    return Content;
 }
 
 BlockExplorer::BlockExplorer(QWidget *parent) :

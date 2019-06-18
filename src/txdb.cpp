@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2017 The Bitcoin Core developers
+// Copyright (c) 2009-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,12 +9,14 @@
 #include <hash.h>
 #include <random.h>
 #include <pow.h>
+#include <shutdown.h>
 #include <uint256.h>
 #include <util.h>
 #include <validation.h>
 #include <ui_interface.h>
 #include <init.h>
 #include <script/standard.h>
+#include <index/txindex.h>
 
 #include <stdint.h>
 
@@ -60,7 +62,7 @@ struct CoinEntry {
 
 }
 
-CCoinsViewDB::CCoinsViewDB(size_t nCacheSize, bool fMemory, bool fWipe) : db(GetDataDir() / "chainstate", nCacheSize, fMemory, fWipe, true) 
+CCoinsViewDB::CCoinsViewDB(size_t nCacheSize, bool fMemory, bool fWipe) : db(GetDataDir() / "chainstate", nCacheSize, fMemory, fWipe, true)
 {
 }
 
@@ -153,7 +155,7 @@ size_t CCoinsViewDB::EstimateSize() const
     return db.EstimateSize(DB_COIN, (char)(DB_COIN+1));
 }
 
-CBlockTreeDB::CBlockTreeDB(size_t nCacheSize, bool fMemory, bool fWipe) : CDBWrapper(GetDataDir() / "blocks" / "index", nCacheSize, fMemory, fWipe) {
+CBlockTreeDB::CBlockTreeDB(size_t nCacheSize, bool fMemory, bool fWipe) : CDBWrapper(gArgs.IsArgSet("-blocksdir") ? GetDataDir() / "blocks" / "index" : GetBlocksDir() / "index", nCacheSize, fMemory, fWipe) {
 }
 
 bool CBlockTreeDB::ReadBlockFileInfo(int nFile, CBlockFileInfo &info) {
@@ -167,9 +169,8 @@ bool CBlockTreeDB::WriteReindexing(bool fReindexing) {
         return Erase(DB_REINDEX_FLAG);
 }
 
-bool CBlockTreeDB::ReadReindexing(bool &fReindexing) {
+void CBlockTreeDB::ReadReindexing(bool &fReindexing) {
     fReindexing = Exists(DB_REINDEX_FLAG);
-    return true;
 }
 
 bool CBlockTreeDB::ReadLastBlockFile(int &nFile) {
@@ -242,6 +243,7 @@ bool CBlockTreeDB::WriteBatchSync(const std::vector<std::pair<int, const CBlockF
     return WriteBatch(batch, true);
 }
 
+/*
 bool CBlockTreeDB::ReadTxIndex(const uint256 &txid, CDiskTxPos &pos) {
     return Read(std::make_pair(DB_TXINDEX, txid), pos);
 }
@@ -253,7 +255,7 @@ bool CBlockTreeDB::WriteTxIndex(const std::vector<std::pair<uint256, CDiskTxPos>
     return WriteBatch(batch);
 }
 
-/*
+
 bool CBlockTreeDB::ReadSpentIndex(CSpentIndexKey &key, CSpentIndexValue &value) {
     return Read(std::make_pair(DB_SPENTINDEX, key), value);
 }
@@ -466,7 +468,7 @@ public:
     void Unserialize(Stream &s) {
         unsigned int nCode = 0;
         // version
-        int nVersionDummy;
+        unsigned int nVersionDummy;
         ::Unserialize(s, VARINT(nVersionDummy));
         // header code
         ::Unserialize(s, VARINT(nCode));
@@ -490,10 +492,10 @@ public:
         vout.assign(vAvail.size(), CTxOut());
         for (unsigned int i = 0; i < vAvail.size(); i++) {
             if (vAvail[i])
-                ::Unserialize(s, REF(CTxOutCompressor(vout[i])));
+                ::Unserialize(s, CTxOutCompressor(vout[i]));
         }
         // coinbase height
-        ::Unserialize(s, VARINT(nHeight));
+        ::Unserialize(s, VARINT(nHeight, VarIntMode::NONNEGATIVE_SIGNED));
     }
 };
 
@@ -512,7 +514,7 @@ bool CCoinsViewDB::Upgrade() {
 
     int64_t count = 0;
     LogPrintf("Upgrading utxo-set database...\n");
-    LogPrintf("[0%%]...");
+    LogPrintf("[0%%]..."); /* Continued */
     uiInterface.ShowProgress(_("Upgrading UTXO database"), 0, true);
     size_t batch_size = 1 << 24;
     CDBBatch batch(db);
@@ -531,7 +533,7 @@ bool CCoinsViewDB::Upgrade() {
                 uiInterface.ShowProgress(_("Upgrading UTXO database"), percentageDone, true);
                 if (reportDone < percentageDone/10) {
                     // report max. every 10% step
-                    LogPrintf("[%d%%]...", percentageDone);
+                    LogPrintf("[%d%%]...", percentageDone); /* Continued */
                     reportDone = percentageDone/10;
                 }
             }
@@ -588,20 +590,20 @@ void getNextIn(const COutPoint &Out, uint256& Hash, unsigned int& n)
 // Return transaction in &txOut, and if it was found inside a block, its header is placed in &block
 bool ReadTransaction(const CDiskTxPos &postx, CTransactionRef &txOut, CBlockHeader &block)
 {
-     CAutoFile file(OpenBlockFile(postx, true), SER_DISK, CLIENT_VERSION);
-     if (file.IsNull())
-         return error("%s: OpenBlockFile failed", __func__);
+//     CAutoFile file(OpenBlockFile(postx, true), SER_DISK, CLIENT_VERSION);
+//     if (file.IsNull())
+//         return error("%s: OpenBlockFile failed", __func__);
 
-     try
-     {
-         file >> block;
-         fseek(file.Get(), postx.nTxOffset, SEEK_CUR);
-         file >> txOut;
-     }
-     catch (const std::exception& e) {
-         return error("%s: Deserialize or I/O error - %s", __func__, e.what());
-     }
-     return true;
+//     try
+//     {
+//         file >> block;
+//         fseek(file.Get(), postx.nTxOffset, SEEK_CUR);
+//         file >> txOut;
+//     }
+//     catch (const std::exception& e) {
+//         return error("%s: Deserialize or I/O error - %s", __func__, e.what());
+//     }
+//     return true;
 }
 
 CAddressDB::CAddressDB(size_t nCacheSize, bool fMemory, bool fWipe) : CDBWrapper(GetDataDir() / "blocks" / "addresses", nCacheSize, fMemory, fWipe)
@@ -611,55 +613,55 @@ CAddressDB::CAddressDB(size_t nCacheSize, bool fMemory, bool fWipe) : CDBWrapper
 // Add transactions to address db
 bool CAddressDB::AddTx(const std::vector<CTransaction>& vtx, const std::vector<std::pair<uint256, CDiskTxPos> >& vpos)
 {
-    for (unsigned int i = 0; i < vtx.size(); i++)
-    {
-        const CDiskTxPos& pos = vpos[i].second;
-        uint256 TxHash = vtx[i].GetHash();
+//    for (unsigned int i = 0; i < vtx.size(); i++)
+//    {
+//        const CDiskTxPos& pos = vpos[i].second;
+//        uint256 TxHash = vtx[i].GetHash();
 
-        std::vector<CScriptID> Inputs;
-        for (unsigned int j = 0; j < vtx[i].vin.size(); j++)
-        {
-            const CTxIn& in = vtx[i].vin[j];
-            CScript script = getPrevOut(in).scriptPubKey;
-            if (script.empty())
-                continue;
-            CScriptID scid(script);
+//        std::vector<CScriptID> Inputs;
+//        for (unsigned int j = 0; j < vtx[i].vin.size(); j++)
+//        {
+//            const CTxIn& in = vtx[i].vin[j];
+//            CScript script = getPrevOut(in).scriptPubKey;
+//            if (script.empty())
+//                continue;
+//            CScriptID scid(script);
 
-            // ignore inputs from the same address
-            if (std::find(Inputs.begin(), Inputs.end(), scid) != Inputs.end())
-                continue;
-            Inputs.push_back(scid);
+//            // ignore inputs from the same address
+//            if (std::find(Inputs.begin(), Inputs.end(), scid) != Inputs.end())
+//                continue;
+//            Inputs.push_back(scid);
 
-            std::vector<CDiskTxPos> Txs;
-            Read(scid, Txs);
-            Txs.push_back(pos);
-            if (!Write(scid, Txs))
-                return false;
+//            std::vector<CDiskTxPos> Txs;
+//            Read(scid, Txs);
+//            Txs.push_back(pos);
+//            if (!Write(scid, Txs))
+//                return false;
 
-            // store 'redeemed in' information for each tx output
-            std::vector<std::pair<uint256, unsigned int>> Ins;
-            Read(in.prevout.hash, Ins);
-            if (in.prevout.n >= Ins.size())
-                Ins.resize(in.prevout.n + 1);
-            Ins[in.prevout.n] = std::pair<uint256, unsigned int>(TxHash, j);
-            Write(in.prevout.hash, Ins);
-        }
-        for (const CTxOut& out : vtx[i].vout)
-        {
-            CScriptID scid(out.scriptPubKey);
-            std::vector<CDiskTxPos> Txs;
-            Read(scid, Txs);
-            Txs.push_back(pos);
-            if (!Write(scid, Txs))
-                return false;
-        }
-    }
-    return true;
+//            // store 'redeemed in' information for each tx output
+//            std::vector<std::pair<uint256, unsigned int>> Ins;
+//            Read(in.prevout.hash, Ins);
+//            if (in.prevout.n >= Ins.size())
+//                Ins.resize(in.prevout.n + 1);
+//            Ins[in.prevout.n] = std::pair<uint256, unsigned int>(TxHash, j);
+//            Write(in.prevout.hash, Ins);
+//        }
+//        for (const CTxOut& out : vtx[i].vout)
+//        {
+//            CScriptID scid(out.scriptPubKey);
+//            std::vector<CDiskTxPos> Txs;
+//            Read(scid, Txs);
+//            Txs.push_back(pos);
+//            if (!Write(scid, Txs))
+//                return false;
+//        }
+//    }
+//    return true;
 }
 
 bool CAddressDB::GetTxs(std::vector<CDiskTxPos>& Txs, const CScriptID &Address)
 {
-    return Read(Address, Txs);
+    // return Read(Address, Txs);
 }
 bool CAddressDB::ReadNextIn(const COutPoint &Out, uint256& Hash, unsigned int& n)
 {
