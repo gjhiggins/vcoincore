@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2018 The Bitcoin Core developers
+// Copyright (c) 2009-2019 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,6 +12,7 @@
 #include <coins.h>
 #include <compat.h>
 #include <consensus/consensus.h>
+#include <consensus/merkle.h>
 #include <consensus/tx_verify.h>
 #include <consensus/merkle.h>
 #include <consensus/validation.h>
@@ -24,15 +25,11 @@
 #include <rpc/protocol.h>
 #include <script/standard.h>
 #include <timedata.h>
-#include <util.h>
-#include <utilmoneystr.h>
+#include <util/moneystr.h>
+#include <util/system.h>
 #include <validationinterface.h>
 #include <wallet/wallet.h>
-
-#include "wallet/wallet.h"
 //#include "wallet/rpcwallet.h"
-
-
 #include <boost/thread.hpp>
 #include <algorithm>
 #include <memory>
@@ -99,9 +96,8 @@ static BlockAssembler::Options DefaultOptions()
     // If -blockmaxweight is not given, limit to DEFAULT_BLOCK_MAX_WEIGHT
     BlockAssembler::Options options;
     options.nBlockMaxWeight = gArgs.GetArg("-blockmaxweight", DEFAULT_BLOCK_MAX_WEIGHT);
-    if (gArgs.IsArgSet("-blockmintxfee")) {
-        CAmount n = 0;
-        ParseMoney(gArgs.GetArg("-blockmintxfee", ""), n);
+    CAmount n = 0;
+    if (gArgs.IsArgSet("-blockmintxfee") && ParseMoney(gArgs.GetArg("-blockmintxfee", ""), n)) {
         options.blockMinFeeRate = CFeeRate(n);
     } else {
         options.blockMinFeeRate = CFeeRate(DEFAULT_BLOCK_MIN_TX_FEE);
@@ -125,7 +121,10 @@ void BlockAssembler::resetBlock()
     nFees = 0;
 }
 
-std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx)
+Optional<int64_t> BlockAssembler::m_last_block_num_txs{nullopt};
+Optional<int64_t> BlockAssembler::m_last_block_weight{nullopt};
+
+std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
 {
     int64_t nTimeStart = GetTimeMicros();
 
@@ -169,7 +168,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     // not activated.
     // TODO: replace this with a call to main to assess validity of a mempool
     // transaction (which in most cases can be a no-op).
-    fIncludeWitness = IsWitnessEnabled(pindexPrev, chainparams.GetConsensus()) && fMineWitnessTx;
+    fIncludeWitness = IsWitnessEnabled(pindexPrev, chainparams.GetConsensus());
 
     int nPackagesSelected = 0;
     int nDescendantsUpdated = 0;
@@ -177,8 +176,8 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
 
     int64_t nTime1 = GetTimeMicros();
 
-    nLastBlockTx = nBlockTx;
-    nLastBlockWeight = nBlockWeight;
+    m_last_block_num_txs = nBlockTx;
+    m_last_block_weight = nBlockWeight;
 
     // Create coinbase transaction.
     CMutableTransaction coinbaseTx;
@@ -531,9 +530,11 @@ void static VCoreMiner(const CChainParams& chainparams)
 
     CWallet *  pWallet = GetFirstWallet();
 
+    /* FIXME: GJH find contemporary correlate
     if (!EnsureWalletIsAvailable(pWallet, false)) {
         LogPrintf("VCoreMiner -- Wallet not available\n");
     }
+    */
 
     if (pWallet == NULL)
         LogPrintf("pWallet is NULL\n");
@@ -598,7 +599,7 @@ void static VCoreMiner(const CChainParams& chainparams)
             IncrementExtraNonce(pblock, pindexPrev, nExtraNonce);
 
             LogPrintf("VCoreMiner -- Running miner with %u transactions in block (%u bytes)\n", pblock->vtx.size(),
-                ::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION));
+                ::GetSerializeSize(*pblock, /*SER_NETWORK,*/ PROTOCOL_VERSION));
 
             //
             // Search
@@ -695,7 +696,7 @@ int GenerateVCores(bool fGenerate, int nThreads, const CChainParams& chainparams
         return numCores;
 
     minerThreads = new boost::thread_group();
-    
+
     //Reset metrics
     nMiningTimeStart = GetTimeMicros();
     nHashesDone = 0;

@@ -17,7 +17,4 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 
 UniValue getgenerate(const UniValue& params, bool fHelp);
 
-/** Check bounds on a command line confirm target */
-unsigned int ParseConfirmTarget(const UniValue& value);
-
 #endif

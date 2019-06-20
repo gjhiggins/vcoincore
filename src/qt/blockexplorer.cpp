@@ -4,7 +4,7 @@
 #include <set>
 #include <qt/blockexplorer.h>
 #include <qt/forms/ui_blockexplorer.h>
-#include <utilstrencodings.h>
+#include <util/strencodings.h>
 #include <validation.h>
 #include <net.h>
 #include <txdb.h>

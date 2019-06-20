@@ -31,7 +31,8 @@ The `master` branch is regularly built and tested, but is not guaranteed to be
 completely stable. [Tags](https://github.com/vcore/vcore/tags) are created
 regularly to indicate new official, stable release versions of V Core.
 
-The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
+The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md)
+and useful hints for developers can be found in [doc/developer-notes.md](doc/developer-notes.md).
 
 The developer [mailing list](https://lists.linuxfoundation.org/mailman/listinfo/vcore-dev)
 should be used to discuss complicated or controversial changes before working

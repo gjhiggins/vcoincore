@@ -120,3 +120,6 @@ libbitcoinconsensus.pc
 contrib/devtools/split-debug.sh
 *.am.user
 /.astylerc
+
+# Output from running db4 installation
+db4/
