@@ -712,6 +712,7 @@ static const struct {
       {"/rest/headers/", rest_headers},
       {"/rest/getutxos", rest_getutxos},
       {"/rest/blockhashbyheight/", rest_blockhash_by_height},
+      {"/rest/solid", rest_solid},
 };
 
 void StartREST()

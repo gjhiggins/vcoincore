@@ -19,7 +19,7 @@
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation>&amp;Menyalin</translation>
+        <translation>&amp;Salin</translation>
     </message>
     <message>
         <source>C&amp;lose</source>
@@ -192,8 +192,8 @@
         <translation>Dompet terenkripsi</translation>
     </message>
     <message>
-        <source>%1 will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your bitcoins from being stolen by malware infecting your computer.</source>
-        <translation>%1 sekarang akan ditutup untuk menyelesaikan proses enkripsi. Ingatlah bahwa mengenkripsi dompet Anda tidak dapat sepenuhnya melindungi komputer Anda dari pencurian malware yang menginfeksi komputer Anda.</translation>
+        <source>Your wallet is now encrypted. Remember that encrypting your wallet cannot fully protect your bitcoins from being stolen by malware infecting your computer.</source>
+        <translation>Wallet anda sekarang telah terenkripsi. Ingat bahwa enkripsi wallet anda tersebut tidak dapat sepenuhnya melindungi dari pencurian atau malware yang menyerang komputer anda. </translation>
     </message>
     <message>
         <source>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. For security reasons, previous backups of the unencrypted wallet file will become useless as soon as you start using the new, encrypted wallet.</source>
@@ -258,10 +258,6 @@
         <translation>&amp;Kilasan</translation>
     </message>
     <message>
-        <source>Node</source>
-        <translation>Node</translation>
-    </message>
-    <message>
         <source>Show general overview of wallet</source>
         <translation>Tampilkan gambaran umum dompet Anda</translation>
     </message>
@@ -318,24 +314,12 @@
         <translation>&amp;Ubah Kata Kunci...</translation>
     </message>
     <message>
-        <source>&amp;Sending addresses...</source>
-        <translation>&amp;Alamat-alamat untuk mengirim...</translation>
-    </message>
-    <message>
-        <source>&amp;Receiving addresses...</source>
-        <translation>&amp;Alamat-alamat untuk menerima...</translation>
-    </message>
-    <message>
         <source>Open &amp;URI...</source>
         <translation>Buka &amp;URI</translation>
     </message>
     <message>
         <source>Wallet:</source>
         <translation>Wallet:</translation>
-    </message>
-    <message>
-        <source>default wallet</source>
-        <translation>wallet default</translation>
     </message>
     <message>
         <source>Click to disable network activity.</source>
@@ -388,10 +372,6 @@
     <message>
         <source>Bitcoin</source>
         <translation>Bitcoin</translation>
-    </message>
-    <message>
-        <source>Wallet</source>
-        <translation>Dompet</translation>
     </message>
     <message>
         <source>&amp;Send</source>
@@ -502,8 +482,40 @@
         <translation>Terbaru</translation>
     </message>
     <message>
+        <source>&amp;Sending addresses</source>
+        <translation>&amp;Address pengiriman</translation>
+    </message>
+    <message>
+        <source>&amp;Receiving addresses</source>
+        <translation>&amp;Address penerima</translation>
+    </message>
+    <message>
         <source>Show the %1 help message to get a list with possible Bitcoin command-line options</source>
         <translation>Tampilkan %1 pesan bantuan untuk mendapatkan daftar opsi baris perintah Bitcoin yang memungkinkan</translation>
+    </message>
+    <message>
+        <source>default wallet</source>
+        <translation>wallet default</translation>
+    </message>
+    <message>
+        <source>&amp;Window</source>
+        <translation>&amp;Jendela</translation>
+    </message>
+    <message>
+        <source>Minimize</source>
+        <translation>Minimalkan</translation>
+    </message>
+    <message>
+        <source>Zoom</source>
+        <translation>Zoom</translation>
+    </message>
+    <message>
+        <source>Restore</source>
+        <translation>Pulihkan</translation>
+    </message>
+    <message>
+        <source>Main Window</source>
+        <translation>Jendela Utama</translation>
     </message>
     <message>
         <source>%1 client</source>
@@ -568,6 +580,10 @@
     <message>
         <source>HD key generation is &lt;b&gt;disabled&lt;/b&gt;</source>
         <translation>Pembuatan kunci HD &lt;b&gt;dinonaktifkan&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>Private key &lt;b&gt;disabled&lt;/b&gt;</source>
+        <translation>Private key &lt;b&gt;non aktif&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;unlocked&lt;/b&gt;</source>
@@ -943,11 +959,7 @@
         <source>Hide</source>
         <translation>Sembunyikan</translation>
     </message>
-    <message>
-        <source>Unknown. Syncing Headers (%1)...</source>
-        <translation>Tidak diketahui. Menyinkronisasikan Headers (%1)...</translation>
-    </message>
-</context>
+    </context>
 <context>
     <name>OpenURIDialog</name>
     <message>
@@ -994,10 +1006,6 @@
         <translation>Ukuran cache &amp;database</translation>
     </message>
     <message>
-        <source>MB</source>
-        <translation>MB</translation>
-    </message>
-    <message>
         <source>Number of script &amp;verification threads</source>
         <translation>Jumlah script &amp;verification threads</translation>
     </message>
@@ -1030,10 +1038,6 @@
         <translation>URL pihak ketika (misalnya sebuah block explorer) yang mumcul dalam tab transaksi sebagai konteks menu. %s dalam URL diganti dengan kode transaksi. URL dipisahkan dengan tanda vertikal |.</translation>
     </message>
     <message>
-        <source>Active command-line options that override above options:</source>
-        <translation>Pilihan command-line yang aktif menimpa diatas opsi: </translation>
-    </message>
-    <message>
         <source>Open the %1 configuration file from the working directory.</source>
         <translation>Buka file konfigurasi %1 dari direktori kerja.</translation>
     </message>
@@ -1058,12 +1062,20 @@
         <translation>Menonaktifkan beberapa fitur canggih akan tetapi semua block akan tetap divalidasi seutuhnya. Mengembalikan pengaturan ini memerlukan untuk mengunduh seluruh blockchain. Penggunaan disk mungkin akan lebih tinggi.</translation>
     </message>
     <message>
+        <source>Prune &amp;block storage to</source>
+        <translation>Prune &amp;ruang penyimpan block ke</translation>
+    </message>
+    <message>
         <source>GB</source>
         <translation>GB</translation>
     </message>
     <message>
         <source>Reverting this setting requires re-downloading the entire blockchain.</source>
         <translation>Mengembalikan pengaturan ini membutuhkan pengunduhan seluruh blockchain lagi. </translation>
+    </message>
+    <message>
+        <source>MiB</source>
+        <translation>MiB</translation>
     </message>
     <message>
         <source>(0 = auto, &lt;0 = leave that many cores free)</source>
@@ -1363,6 +1375,14 @@
         <source>Payment request expired.</source>
         <translation>Permintaan pembayaran telah kadaluarsa.</translation>
     </message>
+    <message>
+        <source>Payment request is not initialized.</source>
+        <translation>Permintaan pembayaran tidak terinisialisasi</translation>
+    </message>
+    <message>
+        <source>Payment request %1 is too large (%2 bytes, allowed %3 bytes).</source>
+        <translation>Permintaan pembayaran %1 terlalu besar (%2 bita, diperbolehkan %3 bita)</translation>
+    </message>
     </context>
 <context>
     <name>PeerTableModel</name>
@@ -1374,7 +1394,11 @@
         <source>Sent</source>
         <translation>Terkirim</translation>
     </message>
-    </context>
+    <message>
+        <source>Received</source>
+        <translation>Diterima</translation>
+    </message>
+</context>
 <context>
     <name>QObject</name>
     <message>
@@ -1475,6 +1499,10 @@
         <translation>Jumlah blok terkini</translation>
     </message>
     <message>
+        <source>Received</source>
+        <translation>Diterima</translation>
+    </message>
+    <message>
         <source>Sent</source>
         <translation>Terkirim</translation>
     </message>
@@ -1543,10 +1571,6 @@
     <message>
         <source>1 &amp;year</source>
         <translation>1 &amp;tahun</translation>
-    </message>
-    <message>
-        <source>default wallet</source>
-        <translation>wallet default</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -2023,11 +2047,18 @@
     <name>UnitDisplayStatusBarControl</name>
     </context>
 <context>
+    <name>WalletController</name>
+    </context>
+<context>
     <name>WalletFrame</name>
     </context>
 <context>
     <name>WalletModel</name>
-    </context>
+    <message>
+        <source>default wallet</source>
+        <translation>wallet default</translation>
+    </message>
+</context>
 <context>
     <name>WalletView</name>
     </context>

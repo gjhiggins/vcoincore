@@ -20,8 +20,8 @@
 #include <qt/transactionview.h>
 #include <qt/walletmodel.h>
 
-#include <qt/inscriptionpage.h>
-#include <qt/publisherpage.h>
+// #include <qt/inscriptionpage.h>
+// #include <qt/publisherpage.h>
 #include <qt/utilitydialog.h>
 
 #include <interfaces/node.h>
@@ -44,8 +44,8 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     // Create tabs
     overviewPage = new OverviewPage(platformStyle);
 
-    inscriptionPage = new InscriptionPage(this);
-    publisherPage = new PublisherPage(this);
+    // inscriptionPage = new InscriptionPage(this);
+    // publisherPage = new PublisherPage(this);
     // explorerWindow = new BlockExplorer(this);
 
     transactionsPage = new QWidget(this);
@@ -73,8 +73,8 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(transactionsPage);
     addWidget(receiveCoinsPage);
     addWidget(sendCoinsPage);
-    addWidget(inscriptionPage);
-    addWidget(publisherPage);
+    // addWidget(inscriptionPage);
+    // addWidget(publisherPage);
     // addWidget(explorerWindow);
 
     // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
@@ -334,6 +334,7 @@ void WalletView::showProgress(const QString &title, int nProgress)
         if (progressDialog) {
             progressDialog->close();
             progressDialog->deleteLater();
+            progressDialog = nullptr;
         }
     } else if (progressDialog) {
         if (progressDialog->wasCanceled()) {
@@ -349,13 +350,18 @@ void WalletView::requestedSyncWarningInfo()
     Q_EMIT outOfSyncWarningClicked();
 }
 
-void WalletView::gotoInscriptionPage()
-{
-    setCurrentWidget(inscriptionPage); 
-}
+// void WalletView::gotoInscriptionPage()
+// {
+//     setCurrentWidget(inscriptionPage); 
+// }
 
-void WalletView::gotoPublisherPage()
-{
-    setCurrentWidget(publisherPage);
-}
+// void WalletView::gotoPublisherPage()
+// {
+//     setCurrentWidget(publisherPage);
+// }
+
+// void WalletView::gotoBlockExplorerPage()
+// {
+//     setCurrentWidget(blockexplorerPage);
+// }
 
