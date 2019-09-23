@@ -39,8 +39,8 @@ class WalletModel;
 class HelpMessageDialog;
 class ModalOverlay;
 // class BlockExplorer;
-class InscriptionPage;
-class PublisherPage;
+// class InscriptionPage;
+// class PublisherPage;
 
 namespace interfaces {
 class Handler;
@@ -155,8 +155,8 @@ private:
     QAction* m_wallet_selector_label_action = nullptr;
     QAction* m_wallet_selector_action = nullptr;
     // Additions
-    QAction *openInscriptionPageAction = nullptr;
-    QAction *openPublisherPageAction = nullptr;
+    // QAction *openInscriptionPageAction = nullptr;
+    // QAction *openPublisherPageAction = nullptr;
     // QAction *openBlockExplorerAction = nullptr;
 
     QLabel *m_wallet_selector_label = nullptr;
@@ -167,8 +167,8 @@ private:
     Notificator* notificator = nullptr;
     RPCConsole* rpcConsole = nullptr;
     HelpMessageDialog* helpMessageDialog = nullptr;
-    InscriptionPage  *inscriptionPage = nullptr;
-    PublisherPage  *publisherPage = nullptr;
+    // InscriptionPage  *inscriptionPage = nullptr;
+    // PublisherPage  *publisherPage = nullptr;
     // BlockExplorer  *explorerWindow = nullptr;
     ModalOverlay* modalOverlay = nullptr;
 
@@ -282,9 +282,9 @@ public Q_SLOTS:
     /** Switch to Explorer Page */
     // void gotoBlockExplorerPage(); 
     /** Switch to inscription page */
-    void gotoInscriptionPage();
+    // void gotoInscriptionPage();
     /** Switch to Publisher page */
-    void gotoPublisherPage(); 
+    // void gotoPublisherPage(); 
 
     /** Show open dialog */
     void openClicked();

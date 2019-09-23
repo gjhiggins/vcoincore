@@ -14,8 +14,8 @@ class PlatformStyle;
 class SendCoinsRecipient;
 class WalletModel;
 class WalletView;
-class InscriptionPage;
-class PublisherPage;
+// class InscriptionPage;
+// class PublisherPage;
 // class BlockExplorer;
 
 QT_BEGIN_NAMESPACE
@@ -79,9 +79,9 @@ public Q_SLOTS:
     /** Switch to explorer page */
     // void gotoBlockExplorerPage();
     /** Switch to inscription page */
-    void gotoInscriptionPage();
+    // void gotoInscriptionPage();
     /** Switch to Publishing page */
-    void gotoPublisherPage();	
+    // void gotoPublisherPage();	
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");

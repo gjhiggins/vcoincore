@@ -1545,5 +1545,6 @@ UniValue makekeypair(const JSONRPCRequest& request)
 //    // result.push_back(Pair("C wallet_address", address));
 //    // result.push_back(Pair("C wallet_private_key", privkey));
 //    return result;
+    return NullUniValue;
 }
 

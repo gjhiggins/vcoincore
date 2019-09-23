@@ -19,8 +19,8 @@ class SendCoinsRecipient;
 class TransactionView;
 class WalletModel;
 class AddressBookPage;
-class InscriptionPage;
-class PublisherPage;
+// class InscriptionPage;
+// class PublisherPage;
 // class BlockExplorer;
 
 QT_BEGIN_NAMESPACE
@@ -68,8 +68,8 @@ private:
     SendCoinsDialog *sendCoinsPage;
     AddressBookPage *usedSendingAddressesPage;
     AddressBookPage *usedReceivingAddressesPage;
-    InscriptionPage *inscriptionPage;
-    PublisherPage *publisherPage;
+    // InscriptionPage *inscriptionPage;
+    // PublisherPage *publisherPage;
     // BlockExplorer *explorerWindow;
 
     TransactionView *transactionView;
@@ -93,9 +93,9 @@ public Q_SLOTS:
     void gotoVerifyMessageTab(QString addr = "");
 
     /** Switch to Inscription page */
-    void gotoInscriptionPage(); 
+    // void gotoInscriptionPage(); 
     /** Switch to Publisher page */
-    void gotoPublisherPage();
+    // void gotoPublisherPage();
     /** Switch to explorer page */
     // void gotoBlockExplorerPage();
 

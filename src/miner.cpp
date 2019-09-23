@@ -29,7 +29,7 @@
 #include <util/system.h>
 #include <validationinterface.h>
 #include <wallet/wallet.h>
-//#include "wallet/rpcwallet.h"
+#include <wallet/rpcwallet.h>
 #include <boost/thread.hpp>
 #include <algorithm>
 #include <memory>
@@ -509,14 +509,16 @@ static bool ProcessBlockFound(const CBlock* pblock, const CChainParams& chainpar
     return true;
 }
 
-CWallet *GetFirstWallet() {
-//    while(vpwallets.size() == 0){
-//        MilliSleep(100);
+std::shared_ptr<CWallet> GetFirstWallet() {
+    std::vector<std::shared_ptr<CWallet>> vpwallets = GetWallets();
+    /* TODO: Confirm this is still the appropriate idiom */
+    while(vpwallets.size() == 0){
+        MilliSleep(100);
 
-//    }
-//    if (vpwallets.size() == 0)
-//        return(NULL);
-//    return(vpwallets[0]);
+    }
+    if (vpwallets.size() == 0)
+        return(NULL);
+    return(vpwallets[0]);
 }
 
 void static VCoreMiner(const CChainParams& chainparams)
@@ -527,14 +529,13 @@ void static VCoreMiner(const CChainParams& chainparams)
 
     unsigned int nExtraNonce = 0;
 
+    std::shared_ptr<CWallet> pWallet = GetFirstWallet();
 
-    CWallet *  pWallet = GetFirstWallet();
+    CWallet* const pwallet = pWallet.get();
 
-    /* FIXME: GJH find contemporary correlate
-    if (!EnsureWalletIsAvailable(pWallet, false)) {
+    if (!EnsureWalletIsAvailable(pwallet, false)) {
         LogPrintf("VCoreMiner -- Wallet not available\n");
     }
-    */
 
     if (pWallet == NULL)
         LogPrintf("pWallet is NULL\n");
