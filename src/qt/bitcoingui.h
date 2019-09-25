@@ -38,9 +38,6 @@ class WalletFrame;
 class WalletModel;
 class HelpMessageDialog;
 class ModalOverlay;
-// class BlockExplorer;
-// class InscriptionPage;
-// class PublisherPage;
 
 namespace interfaces {
 class Handler;
@@ -150,15 +147,12 @@ private:
     QAction* openRPCConsoleAction = nullptr;
     QAction* openAction = nullptr;
     QAction* showHelpMessageAction = nullptr;
+    QAction* m_create_wallet_action{nullptr};
     QAction* m_open_wallet_action{nullptr};
     QMenu* m_open_wallet_menu{nullptr};
     QAction* m_close_wallet_action{nullptr};
     QAction* m_wallet_selector_label_action = nullptr;
     QAction* m_wallet_selector_action = nullptr;
-    // Additions
-    // QAction *openInscriptionPageAction = nullptr;
-    // QAction *openPublisherPageAction = nullptr;
-    // QAction *openBlockExplorerAction = nullptr;
 
     QLabel *m_wallet_selector_label = nullptr;
     QComboBox* m_wallet_selector = nullptr;
@@ -168,9 +162,6 @@ private:
     Notificator* notificator = nullptr;
     RPCConsole* rpcConsole = nullptr;
     HelpMessageDialog* helpMessageDialog = nullptr;
-    // InscriptionPage  *inscriptionPage = nullptr;
-    // PublisherPage  *publisherPage = nullptr;
-    // BlockExplorer  *explorerWindow = nullptr;
     ModalOverlay* modalOverlay = nullptr;
 
 #ifdef Q_OS_MAC
@@ -230,7 +221,7 @@ public Q_SLOTS:
                             @see CClientUIInterface::MessageBoxFlags
        @param[in] ret       pointer to a bool that will be modified to whether Ok was clicked (modal only)
     */
-    void message(const QString &title, const QString &message, unsigned int style, bool *ret = nullptr);
+    void message(const QString& title, QString message, unsigned int style, bool* ret = nullptr);
 
 #ifdef ENABLE_WALLET
     void setCurrentWallet(WalletModel* wallet_model);
@@ -279,13 +270,6 @@ public Q_SLOTS:
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
-
-    /** Switch to Explorer Page */
-    // void gotoBlockExplorerPage(); 
-    /** Switch to inscription page */
-    // void gotoInscriptionPage();
-    /** Switch to Publisher page */
-    // void gotoPublisherPage(); 
 
     /** Show open dialog */
     void openClicked();

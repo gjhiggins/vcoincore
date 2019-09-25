@@ -13,7 +13,11 @@ if ! command -v vulture > /dev/null; then
     exit 0
 fi
 
-vulture \
+VULTURE_SUPPRESSIONS=$(dirname "${BASH_SOURCE[0]}")/lint-python-dead-code-whitelist
+if ! vulture \
     --min-confidence 60 \
-    --ignore-names "argtypes,connection_lost,connection_made,converter,data_received,daemon,errcheck,is_compressed,is_valid,verify_ecdsa,msg_generic,on_*,optionxform,restype,profile_with_perf" \
-    $(git ls-files -- "*.py" ":(exclude)contrib/" ":(exclude)test/functional/data/invalid_txs.py")
+    $(git rev-parse --show-toplevel) \
+    "${VULTURE_SUPPRESSIONS}"; then
+    echo "False positives? Suppressions can be added to ${VULTURE_SUPPRESSIONS}"
+    exit 1
+fi

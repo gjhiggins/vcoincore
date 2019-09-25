@@ -16,8 +16,6 @@
 #include <consensus/tx_verify.h>
 #include <consensus/merkle.h>
 #include <consensus/validation.h>
-#include <hash.h>
-#include <net.h>
 #include <policy/feerate.h>
 #include <policy/policy.h>
 #include <pow.h>
@@ -27,10 +25,12 @@
 #include <timedata.h>
 #include <util/moneystr.h>
 #include <util/system.h>
+#include <util/validation.h>
 #include <validationinterface.h>
 #include <wallet/wallet.h>
 #include <wallet/rpcwallet.h>
 #include <boost/thread.hpp>
+
 #include <algorithm>
 #include <memory>
 #include <queue>
@@ -142,7 +142,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     pblocktemplate->vTxSigOpsCost.push_back(-1); // updated at end
 
     LOCK2(cs_main, mempool.cs);
-    CBlockIndex* pindexPrev = chainActive.Tip();
+    CBlockIndex* pindexPrev = ::ChainActive().Tip();
     assert(pindexPrev != nullptr);
     nHeight = pindexPrev->nHeight + 1;
 
@@ -480,6 +480,7 @@ void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned
     pblock->hashMerkleRoot = BlockMerkleRoot(*pblock);
 }
 
+/*
 //////////////////////////////////////////////////////////////////////////////
 //
 // Internal miner
@@ -511,7 +512,7 @@ static bool ProcessBlockFound(const CBlock* pblock, const CChainParams& chainpar
 
 std::shared_ptr<CWallet> GetFirstWallet() {
     std::vector<std::shared_ptr<CWallet>> vpwallets = GetWallets();
-    /* TODO: Confirm this is still the appropriate idiom */
+    // TODO: Confirm this is still the appropriate idiom
     while(vpwallets.size() == 0){
         MilliSleep(100);
 
@@ -524,7 +525,6 @@ std::shared_ptr<CWallet> GetFirstWallet() {
 void static VCoreMiner(const CChainParams& chainparams)
 {
     LogPrintf("VCoreMiner -- started\n");
-    // SetThreadPriority(20/*THREAD_PRIORITY_LOWEST*/);
     RenameThread("vcore-miner");
 
     unsigned int nExtraNonce = 0;
@@ -600,7 +600,7 @@ void static VCoreMiner(const CChainParams& chainparams)
             IncrementExtraNonce(pblock, pindexPrev, nExtraNonce);
 
             LogPrintf("VCoreMiner -- Running miner with %u transactions in block (%u bytes)\n", pblock->vtx.size(),
-                ::GetSerializeSize(*pblock, /*SER_NETWORK,*/ PROTOCOL_VERSION));
+                ::GetSerializeSize(*pblock, PROTOCOL_VERSION));
 
             //
             // Search
@@ -618,10 +618,10 @@ void static VCoreMiner(const CChainParams& chainparams)
                     if (UintToArith256(hash) <= hashTarget)
                     {
                         // Found a solution
-                        // SetThreadPriority(0/*THREAD_PRIORITY_NORMAL*/);
+                        // SetThreadPriority(0);
                         LogPrintf("VCoreMiner:\n  proof-of-work found\n  hash: %s\n  target: %s\n", hash.GetHex(), hashTarget.GetHex());
                         ProcessBlockFound(pblock, chainparams);
-                        // SetThreadPriority(20/*THREAD_PRIORITY_LOWEST*/);
+                        // SetThreadPriority(20);
                         coinbaseScript->KeepScript();
 
                         // In regression test mode, stop mining after a block is found. This
@@ -709,3 +709,4 @@ int GenerateVCores(bool fGenerate, int nThreads, const CChainParams& chainparams
 
     return(numCores);
 }
+*/
