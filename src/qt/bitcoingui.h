@@ -18,6 +18,7 @@
 #include <QMap>
 #include <QPoint>
 #include <QSystemTrayIcon>
+#include <QMessageBox>
 
 #ifdef Q_OS_MAC
 #include <qt/macos_appnap.h>
@@ -38,9 +39,6 @@ class WalletFrame;
 class WalletModel;
 class HelpMessageDialog;
 class ModalOverlay;
-// class BlockExplorer;
-// class InscriptionPage;
-// class PublisherPage;
 
 namespace interfaces {
 class Handler;
@@ -118,7 +116,7 @@ private:
     WalletFrame* walletFrame = nullptr;
 
     UnitDisplayStatusBarControl* unitDisplayControl = nullptr;
-    QLabel* labelWalletEncryptionIcon = nullptr;
+    GUIUtil::ClickableLabel* labelWalletEncryptionIcon = nullptr;
     QLabel* labelWalletHDStatusIcon = nullptr;
     GUIUtil::ClickableLabel* labelProxyIcon = nullptr;
     GUIUtil::ClickableLabel* connectionsControl = nullptr;
@@ -155,10 +153,7 @@ private:
     QAction* m_close_wallet_action{nullptr};
     QAction* m_wallet_selector_label_action = nullptr;
     QAction* m_wallet_selector_action = nullptr;
-    // Additions
-    // QAction *openInscriptionPageAction = nullptr;
-    // QAction *openPublisherPageAction = nullptr;
-    // QAction *openBlockExplorerAction = nullptr;
+    QAction *publishingAction = nullptr;
 
     QLabel *m_wallet_selector_label = nullptr;
     QComboBox* m_wallet_selector = nullptr;
@@ -168,9 +163,6 @@ private:
     Notificator* notificator = nullptr;
     RPCConsole* rpcConsole = nullptr;
     HelpMessageDialog* helpMessageDialog = nullptr;
-    // InscriptionPage  *inscriptionPage = nullptr;
-    // PublisherPage  *publisherPage = nullptr;
-    // BlockExplorer  *explorerWindow = nullptr;
     ModalOverlay* modalOverlay = nullptr;
 
 #ifdef Q_OS_MAC
@@ -280,13 +272,6 @@ public Q_SLOTS:
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
 
-    /** Switch to Explorer Page */
-    // void gotoBlockExplorerPage(); 
-    /** Switch to inscription page */
-    // void gotoInscriptionPage();
-    /** Switch to Publisher page */
-    // void gotoPublisherPage(); 
-
     /** Show open dialog */
     void openClicked();
 #endif // ENABLE_WALLET
@@ -300,6 +285,9 @@ public Q_SLOTS:
     void showDebugWindowActivateConsole();
     /** Show help message dialog */
     void showHelpMessageClicked();
+    /** Show Publishing page */
+    void showPublishingClicked(); 
+
 #ifndef Q_OS_MAC
     /** Handle tray icon clicked */
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);

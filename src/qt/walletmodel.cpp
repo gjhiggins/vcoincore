@@ -256,8 +256,6 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(WalletModelTransaction &tran
 #endif
             if (!rcp.message.isEmpty()) // Message from normal bitcoin:URI (bitcoin:123...?message=example)
                 vOrderForm.emplace_back("Message", rcp.message.toStdString());
-                // if (!rcp.inscription.isEmpty()) // Blockchain inscription)
-                //     newTx->vOrderForm.emplace_back(make_pair("Inscription", rcp.inscription.toStdString()));
         }
 
         auto& newTx = transaction.getWtx();
@@ -323,11 +321,6 @@ RecentRequestsTableModel *WalletModel::getRecentRequestsTableModel()
 {
     return recentRequestsTableModel;
 }
-
-// InscriptionTableModel *WalletModel::getInscriptionTableModel()
-// {
-//     return inscriptionTableModel;
-// }
 
 WalletModel::EncryptionStatus WalletModel::getEncryptionStatus() const
 {

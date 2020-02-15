@@ -1,34 +1,34 @@
-#include "publisherpage.h"
-#include <qt/forms/ui_publisherpage.h>
+#include "publishingpage.h"
+#include <qt/forms/ui_publishingpage.h>
 
-#include "guiutil.h"
+#include <qt/guiutil.h>
 
-#include <QDialog>
+#include <QWidget>
 #include <QDir>
 #include <QFile>
 #include <QString>
 #include <QTextStream>
 #include <QWebEngineView>
 
-PublisherPage::PublisherPage(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::PublisherPage)
+PublishingPage::PublishingPage(QWidget *parent, WalletModel *wm) :
+    QWidget(parent), walletModel(wm),
+    ui(new Ui::PublishingPage)
 {
     ui->setupUi(this);
-}
+};
 
-PublisherPage::~PublisherPage()
+PublishingPage::~PublishingPage()
 {
     delete ui;
 }
 
-void PublisherPage::show()
-{
+void PublishingPage::show() {
+
     QWebEngineView *view = new QWebEngineView;
     QDir dir;
     QString cwd = dir.currentPath();
     QString html = "qrc:///plume/index.html";
-    QString fpath = "/src/qt/res/plume/index.html";
+    QString fpath = "/minkiz/VCore/working-vc/src/qt/res/plume/index.html";
     QString res = cwd + fpath;
     QFile file(res);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -38,4 +38,5 @@ void PublisherPage::show()
     };
     view->setHtml(html, QUrl());
     view->show();
-}
+};
+

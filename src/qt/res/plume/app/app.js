@@ -79,7 +79,7 @@ Plume = (function () {
     var init = function(configData) {
         // set config params
         applyConfig(configData);
-
+        console.log("Config applied");
         // try to load authors
         loadLocalAuthors();
 
@@ -100,6 +100,7 @@ Plume = (function () {
             });
         });
 
+        console.log("Got to <here>");
         // basic app routes
         if (queryVals['post'] && queryVals['post'].length > 0) {
             var url = decodeURIComponent(queryVals['post']);
@@ -184,10 +185,12 @@ Plume = (function () {
 
     // Init data container
     var initContainer = function(url) {
+        console.log("Getting " + url);
         Solid.web.head(url).then(
             function(container) {
                 // create data container for posts if it doesn't exist
                 if (!container.exists && container.xhr.status < 500) {
+                    console.log("container doesn't exist");
                     Solid.web.post(appURL, config.defaultPath, null, true).then(
                         function(res) {
                             if (res.url && res.url.length > 0) {
@@ -215,6 +218,7 @@ Plume = (function () {
                         }
                     );
                 } else if (container.exists) {
+                    console.log("container exists");
                     config.postsURL = appURL+config.defaultPath;
                     fetchPosts(url);
                 }
@@ -1451,7 +1455,7 @@ Plume = (function () {
     // start app by loading the config file
     applyConfig();
 
-    var localconfig = '{"owners": ["Me"], "title": "The Spherical Horse", "tagline": "in a vacuum", "picture": "qrc:///plume/logo.svg", "fadeText": true, "showSources": true, "cacheUnit": "days", "defaultPath": "posts", "postsURL": "qrc:///plume/publish"}';
+    var localconfig = '{"owners": ["Me"], "title": "The Spherical Horse", "tagline": "in a vacuum", "picture": "qrc:///plume/logo.svg", "fadeText": true, "showSources": true, "cacheUnit": "days", "defaultPath": "posts", "postsURL": "http://127.0.0.1:5531/rest/solid/publish.json"}';
     init(JSON.parse(localconfig));
 
     /*

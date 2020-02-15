@@ -55,7 +55,6 @@ bool WalletFrame::addWallet(WalletModel *walletModel)
     walletView->setClientModel(clientModel);
     walletView->setWalletModel(walletModel);
     walletView->showOutOfSyncWarning(bOutOfSync);
-
     WalletView* current_wallet_view = currentWalletView();
     if (current_wallet_view) {
         walletView->setCurrentIndex(current_wallet_view->currentIndex());
@@ -223,23 +222,3 @@ void WalletFrame::outOfSyncWarningClicked()
 {
     Q_EMIT requestedSyncWarningInfo();
 }
-
-// void WalletFrame::gotoInscriptionPage()
-// {
-//     WalletView *walletView = currentWalletView();
-//     if (walletView)
-//         walletView->gotoInscriptionPage();
-// }
-
-// void WalletFrame::gotoPublisherPage()
-// {
-//     WalletView *walletView = currentWalletView();
-//     if (walletView)
-//         walletView->gotoPublisherPage();
-// }
-// void WalletFrame::gotoBlockExplorerPage()
-// {
-//     WalletView *walletView = currentWalletView();
-//     if (walletView)
-//         walletView->gotoBlockExplorerPage();
-// }

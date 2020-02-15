@@ -17,16 +17,14 @@
 #include <qt/platformstyle.h>
 #include <qt/rpcconsole.h>
 #include <qt/utilitydialog.h>
+#include <shutdown.h>
 
 #ifdef ENABLE_WALLET
 #include <qt/walletcontroller.h>
 #include <qt/walletframe.h>
 #include <qt/walletmodel.h>
-
-// #include <qt/inscriptionpage.h>
-// #include <qt/publisherpage.h>
-// #include <qt/blockexplorer.h>
 #include <qt/walletview.h>
+#include <qt/publishingpage.h>
 #endif // ENABLE_WALLET
 
 #ifdef Q_OS_MAC
@@ -64,7 +62,7 @@
 #include <QTimer>
 #include <QToolBar>
 #include <QtWebEngineWidgets/QtWebEngineWidgets>
-// #include <QWebEngineSettings>
+#include <QWebEngineSettings>
 
 #include <QUrlQuery>
 #include <QVBoxLayout>
@@ -108,13 +106,12 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
     rpcConsole = new RPCConsole(node, _platformStyle, nullptr);
     helpMessageDialog = new HelpMessageDialog(node, this, false);
 #ifdef ENABLE_WALLET
+
     if(enableWallet)
     {
         /** Create wallet frame and make it the central widget */
         walletFrame = new WalletFrame(_platformStyle, this);
         setCentralWidget(walletFrame);
-        // inscriptionPage = new InscriptionPage(this);
-        // publisherPage = new PublisherPage(this);
     } else
 #endif // ENABLE_WALLET
     {
@@ -158,7 +155,7 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
     frameBlocksLayout->setContentsMargins(3,0,3,0);
     frameBlocksLayout->setSpacing(3);
     unitDisplayControl = new UnitDisplayStatusBarControl(platformStyle);
-    labelWalletEncryptionIcon = new QLabel();
+    labelWalletEncryptionIcon = new GUIUtil::ClickableLabel();
     labelWalletHDStatusIcon = new QLabel();
     labelProxyIcon = new GUIUtil::ClickableLabel();
     connectionsControl = new GUIUtil::ClickableLabel();
@@ -307,15 +304,15 @@ void BitcoinGUI::createActions()
     quitAction->setStatusTip(tr("Quit application"));
     quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
     quitAction->setMenuRole(QAction::QuitRole);
-    aboutAction = new QAction(platformStyle->TextColorIcon(":/icons/about"), tr("&About %1").arg(tr(PACKAGE_NAME)), this);
-    aboutAction->setStatusTip(tr("Show information about %1").arg(tr(PACKAGE_NAME)));
+    aboutAction = new QAction(platformStyle->TextColorIcon(":/icons/about"), tr("&About %1").arg(PACKAGE_NAME), this);
+    aboutAction->setStatusTip(tr("Show information about %1").arg(PACKAGE_NAME));
     aboutAction->setMenuRole(QAction::AboutRole);
     aboutAction->setEnabled(false);
     aboutQtAction = new QAction(platformStyle->TextColorIcon(":/icons/about_qt"), tr("About &Qt"), this);
     aboutQtAction->setStatusTip(tr("Show information about Qt"));
     aboutQtAction->setMenuRole(QAction::AboutQtRole);
     optionsAction = new QAction(platformStyle->TextColorIcon(":/icons/options"), tr("&Options..."), this);
-    optionsAction->setStatusTip(tr("Modify configuration options for %1").arg(tr(PACKAGE_NAME)));
+    optionsAction->setStatusTip(tr("Modify configuration options for %1").arg(PACKAGE_NAME));
     optionsAction->setMenuRole(QAction::PreferencesRole);
     optionsAction->setEnabled(false);
     toggleHideAction = new QAction(platformStyle->TextColorIcon(":/icons/about"), tr("&Show / Hide"), this);
@@ -347,13 +344,6 @@ void BitcoinGUI::createActions()
     openAction = new QAction(platformStyle->TextColorIcon(":/icons/open"), tr("Open &URI..."), this);
     openAction->setStatusTip(tr("Open a vcore: URI or payment request"));
 
-    // openInscriptionPageAction = new QAction(platformStyle->TextColorIcon(":/icons/inscribe"), tr("&Inscribe"), this);
-    // openInscriptionPageAction->setStatusTip(tr("Inscribe"));
-    // openPublisherPageAction = new QAction(platformStyle->TextColorIcon(":/icons/publish"), tr("&Publish"), this);
-    // openPublisherPageAction->setStatusTip(tr("Publisher"));
-    // openBlockExplorerAction = new QAction(platformStyle->TextColorIcon(":/icons/explorer"), tr("&Blockchain explorer"), this);
-    // openBlockExplorerAction->setStatusTip(tr("Block explorer window"));
-
     m_open_wallet_action = new QAction(tr("Open Wallet"), this);
     m_open_wallet_action->setEnabled(false);
     m_open_wallet_action->setStatusTip(tr("Open a wallet"));
@@ -366,6 +356,9 @@ void BitcoinGUI::createActions()
     showHelpMessageAction->setMenuRole(QAction::NoRole);
     showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible V Core command-line options").arg(tr(PACKAGE_NAME)));
 
+    publishingAction = new QAction(platformStyle->TextColorIcon(":/icons/publish"), tr("&Publish"), this);
+    publishingAction->setMenuRole(QAction::NoRole);
+
     connect(quitAction, &QAction::triggered, qApp, QApplication::quit);
     connect(aboutAction, &QAction::triggered, this, &BitcoinGUI::aboutClicked);
     connect(aboutQtAction, &QAction::triggered, qApp, QApplication::aboutQt);
@@ -373,12 +366,9 @@ void BitcoinGUI::createActions()
     connect(toggleHideAction, &QAction::triggered, this, &BitcoinGUI::toggleHidden);
     connect(showHelpMessageAction, &QAction::triggered, this, &BitcoinGUI::showHelpMessageClicked);
     connect(openRPCConsoleAction, &QAction::triggered, this, &BitcoinGUI::showDebugWindow);
-    // connect(openInscriptionPageAction, &QAction::triggered, this, &QWidget::show);
-    // connect(openPublisherPageAction, &QAction::triggered, this, &QWidget::show);
+    connect(publishingAction, &QAction::triggered, this, &BitcoinGUI::showPublishingClicked);
     // prevents an open debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, &QAction::triggered, rpcConsole, &QWidget::hide);
-    // connect(quitAction, &QAction::triggered, inscriptionPage, &QWidget::hide);
-    // connect(quitAction, &QAction::triggered, publisherPage, &QWidget::hide);
 
 #ifdef ENABLE_WALLET
     if(walletFrame)
@@ -529,6 +519,8 @@ void BitcoinGUI::createMenuBar()
         window_menu->addSeparator();
         window_menu->addAction(usedSendingAddressesAction);
         window_menu->addAction(usedReceivingAddressesAction);
+        window_menu->addSeparator();
+        window_menu->addAction(publishingAction);
     }
 
     window_menu->addSeparator();
@@ -701,7 +693,8 @@ void BitcoinGUI::removeWallet(WalletModel* walletModel)
 
 void BitcoinGUI::setCurrentWallet(WalletModel* wallet_model)
 {
-    if (!walletFrame) return;
+    if(!walletFrame)
+        return;
     walletFrame->setCurrentWallet(wallet_model);
     for (int index = 0; index < m_wallet_selector->count(); ++index) {
         if (m_wallet_selector->itemData(index).value<WalletModel*>() == wallet_model) {
@@ -709,6 +702,16 @@ void BitcoinGUI::setCurrentWallet(WalletModel* wallet_model)
             break;
         }
     }
+
+    WalletView *walletView = walletFrame->currentWalletView();
+    if (!walletView) {
+        return;
+    }
+    WalletModel *walletModel = walletView->getWalletModel();
+    if (!walletModel) {
+        return;
+    }
+
     updateWindowTitle();
 }
 
@@ -743,8 +746,6 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     usedSendingAddressesAction->setEnabled(enabled);
     usedReceivingAddressesAction->setEnabled(enabled);
     openAction->setEnabled(enabled);
-    // openInscriptionPageAction->setEnabled(enabled);
-    // openPublisherPageAction->setEnabled(enabled);
     m_close_wallet_action->setEnabled(enabled);
 }
 
@@ -755,7 +756,7 @@ void BitcoinGUI::createTrayIcon()
 #ifndef Q_OS_MAC
     if (QSystemTrayIcon::isSystemTrayAvailable()) {
         trayIcon = new QSystemTrayIcon(m_network_style->getTrayAndWindowIcon(), this);
-        QString toolTip = tr("%1 client").arg(tr(PACKAGE_NAME)) + " " + m_network_style->getTitleAddText();
+        QString toolTip = tr("%1 client").arg(PACKAGE_NAME) + " " + m_network_style->getTitleAddText();
         trayIcon->setToolTip(toolTip);
     }
 #endif
@@ -790,8 +791,6 @@ void BitcoinGUI::createTrayIconMenu()
         trayIconMenu->addAction(signMessageAction);
         trayIconMenu->addAction(verifyMessageAction);
         trayIconMenu->addSeparator();
-        // trayIconMenu->addAction(openInscriptionPageAction);
-        // trayIconMenu->addAction(openPublisherPageAction);
         trayIconMenu->addAction(openRPCConsoleAction);
     }
     trayIconMenu->addAction(optionsAction);
@@ -844,6 +843,25 @@ void BitcoinGUI::showDebugWindowActivateConsole()
     showDebugWindow();
 }
 
+void BitcoinGUI::showPublishingClicked()
+{
+#ifdef ENABLE_WALLET
+    if (!walletFrame) {
+        return;
+    }
+    WalletView *walletView = walletFrame->currentWalletView();
+    if (!walletView) {
+        return;
+    }
+    WalletModel *walletModel = walletView->getWalletModel();
+    if (!walletModel) {
+        return;
+    }
+    PublishingPage pg(this, walletModel);
+    pg.show();
+#endif // ENABLE_WALLET
+}
+
 void BitcoinGUI::showHelpMessageClicked()
 {
     helpMessageDialog->show();
@@ -892,16 +910,6 @@ void BitcoinGUI::gotoVerifyMessageTab(QString addr)
 {
     if (walletFrame) walletFrame->gotoVerifyMessageTab(addr);
 }
-
-// void BitcoinGUI::gotoInscriptionPage()
-// {
-//     if (walletFrame) walletFrame->gotoInscriptionPage();
-// }
-
-// void BitcoinGUI::gotoPublisherPage()
-// {
-//     if (walletFrame) walletFrame->gotoPublisherPage();
-// }
 #endif // ENABLE_WALLET
 
 void BitcoinGUI::updateNetworkState()
@@ -1328,7 +1336,7 @@ void BitcoinGUI::updateProxyIcon()
 
 void BitcoinGUI::updateWindowTitle()
 {
-    QString window_title = tr(PACKAGE_NAME);
+    QString window_title = PACKAGE_NAME;
 #ifdef ENABLE_WALLET
     if (walletFrame) {
         WalletModel* const wallet_model = walletFrame->currentWalletModel();

@@ -353,8 +353,8 @@ static bool rest_solid(HTTPRequest* req, const std::string& strURIPart)
       }  \
     ]  \
   }  \
-]  \
-.";
+] \
+";
 
         req->WriteHeader("Content-Type", "application/json");
         req->WriteReply(HTTP_OK, strJSON);
@@ -712,6 +712,7 @@ static const struct {
       {"/rest/headers/", rest_headers},
       {"/rest/getutxos", rest_getutxos},
       {"/rest/blockhashbyheight/", rest_blockhash_by_height},
+      {"/rest/solid", rest_solid},
 };
 
 void StartREST()

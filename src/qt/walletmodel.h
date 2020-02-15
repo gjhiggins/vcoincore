@@ -23,10 +23,12 @@
 #include <interfaces/wallet.h>
 #include <support/allocators/secure.h>
 
+
 #include <map>
 #include <vector>
 
 #include <QObject>
+#include <QMessageBox>
 
 enum class OutputType;
 
@@ -34,7 +36,6 @@ class AddressTableModel;
 class OptionsModel;
 class PlatformStyle;
 class RecentRequestsTableModel;
-// class InscriptionTableModel;
 class TransactionTableModel;
 class WalletModelTransaction;
 
