@@ -8,6 +8,10 @@ src/vcore-tx
 src/test/test_vcore
 src/test/test_vcore_fuzzy
 src/qt/test/test_vcore-qt
+src/vcore-wallet
+src/test/test_vcore
+src/test/test_vcore_fuzzy
+src/qt/test/test_vcore-qt
 
 # autoreconf
 Makefile.in
@@ -33,6 +37,7 @@ libtool
 src/config/bitcoin-config.h
 src/config/bitcoin-config.h.in
 src/config/stamp-h1
+src/obj
 share/setup.nsi
 share/qt/Info.plist
 
@@ -61,7 +66,6 @@ src/qt/vcore-qt.includes
 *.pyc
 *.o
 *.o-*
-*.patch
 *.a
 *.pb.cc
 *.pb.h
@@ -74,6 +78,10 @@ src/qt/vcore-qt.includes
 *.json.h
 *.raw.h
 
+# Only ignore unexpected patches
+*.patch
+!depends/patches/**/*.patch
+
 #libtool object files
 *.lo
 *.la
@@ -81,9 +89,13 @@ src/qt/vcore-qt.includes
 # Compilation and Qt preprocessor part
 *.qm
 Makefile
+!depends/Makefile
 vcore-qt
 VCore-Qt.app
 background.tiff*
+
+# Qt Creator
+Makefile.am.user
 
 # Unit-tests
 Makefile.test
@@ -111,7 +123,6 @@ win32-build
 test/config.ini
 test/cache/*
 
-!depends*/Makefile
 !src/leveldb*/Makefile
 /attic*
 
@@ -127,3 +138,7 @@ db4/
 
 # clang-check
 *.plist
+
+osx_volname
+dist/
+*.background.tiff
