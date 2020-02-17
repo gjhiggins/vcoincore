@@ -508,11 +508,11 @@ static bool ProcessBlockFound(const std::shared_ptr<const CBlock> &pblock, const
     return true;
 }
 
-void static VCoreMiner(const CChainParams& chainparams, CConnman& connman, std::shared_ptr<CWallet> pwallet)
+void static VCoreMiner(const CChainParams& chainparams, CConnman& connman, std::shared_ptr<CWallet> pwallet, int i)
 {
-    LogPrintf("VCoreMiner -- started\n");
+    LogPrintf("VCoreMiner #%s -- started\n", i);
     SetThreadPriority(20/*THREAD_PRIORITY_LOWEST*/);
-    util::ThreadRename("vcore-miner");
+    util::ThreadRename("vcore-miner" + std::to_string(i));
 
     unsigned int nExtraNonce = 0;
     CScript coinbaseScript;
@@ -558,7 +558,7 @@ void static VCoreMiner(const CChainParams& chainparams, CConnman& connman, std::
             auto pblock = std::make_shared<CBlock>(pblocktemplate->block);
             IncrementExtraNonce(pblock.get(), pindexPrev, nExtraNonce);
 
-            LogPrintf("VCoreMiner -- Running miner with %u transactions in block (%u bytes)\n", pblock->vtx.size(),
+            LogPrintf("VCoreMiner -- Running miner #%u with %u transactions in block (%u bytes)\n", i, pblock->vtx.size(),
                       ::GetSerializeSize(*pblock));
 
             // check if block is valid
@@ -570,7 +570,7 @@ void static VCoreMiner(const CChainParams& chainparams, CConnman& connman, std::
             //
             // Search
             //
-            LogPrintf("Searching for a valid hash ...");
+            LogPrintf("Miner #%s Searching for a valid hash ...", i);
             int64_t nStart = GetTime();
             arith_uint256 hashTarget = arith_uint256().SetCompact(pblock->nBits);
             while (true)
@@ -585,7 +585,7 @@ void static VCoreMiner(const CChainParams& chainparams, CConnman& connman, std::
                     {
                         // Found a solution
                         SetThreadPriority(0/*THREAD_PRIORITY_NORMAL*/);
-                        LogPrintf("VCoreMiner:\n  proof-of-work found\n  hash: %s\n  target: %s\n", hash.GetHex(), hashTarget.GetHex());
+                        LogPrintf("VCoreMiner #%s:\n  proof-of-work found\n  hash: %s\n  target: %s\n", i, hash.GetHex(), hashTarget.GetHex());
                         ProcessBlockFound(pblock, chainparams);
                         SetThreadPriority(20/*THREAD_PRIORITY_LOWEST*/);
                         break;
@@ -644,12 +644,12 @@ void static VCoreMiner(const CChainParams& chainparams, CConnman& connman, std::
         }
         catch (const boost::thread_interrupted&)
         {
-            LogPrintf("VCoreMiner -- terminated\n");
+            LogPrintf("VCoreMiner #%s -- terminated\n", i);
             throw;
         }
         catch (const std::runtime_error &e)
         {
-            LogPrintf("VCoreMiner -- runtime error: %s\n", e.what());
+            LogPrintf("VCoreMiner #%s -- runtime error: %s\n", i, e.what());
         }
     }
 }
@@ -681,7 +681,7 @@ int GenerateVCores(bool fGenerate, int nThreads, const CChainParams& chainparams
     nHashesPerSec = 0;
 
     for (int i = 0; i < nThreads; i++){
-        minerThreads->create_thread(boost::bind(&VCoreMiner, boost::cref(chainparams), boost::ref(connman), pwallet));
+        minerThreads->create_thread(boost::bind(&VCoreMiner, boost::cref(chainparams), boost::ref(connman), pwallet, i));
     }
 
     return(numCores);
