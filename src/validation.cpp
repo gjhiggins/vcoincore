@@ -1292,14 +1292,22 @@ bool CChainState::IsInitialBlockDownload() const
     LOCK(cs_main);
     if (m_cached_finished_ibd.load(std::memory_order_relaxed))
         return false;
-    if (fImporting || fReindex)
+    if (fImporting || fReindex) {
+        LogPrintf("fImporting / fReindex\n");
         return true;
-    if (m_chain.Tip() == nullptr)
+    }
+    if (m_chain.Tip() == nullptr) {
+        LogPrintf("Tip is NULL\n");
         return true;
-    if (m_chain.Tip()->nChainWork < nMinimumChainWork)
+    }
+    if (m_chain.Tip()->nChainWork < nMinimumChainWork) {
+        LogPrintf("FImporting / fReindex\n");
         return true;
-    if (m_chain.Tip()->GetBlockTime() < (GetTime() - nMaxTipAge))
+    }
+    if (m_chain.Tip()->GetBlockTime() < (GetTime() - nMaxTipAge)) {
+        LogPrintf("Tip too old\n");
         return true;
+    }
     LogPrintf("Leaving InitialBlockDownload (latching to false)\n");
     m_cached_finished_ibd.store(true, std::memory_order_relaxed);
     return false;
@@ -3327,6 +3335,8 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
 bool IsWitnessEnabled(const CBlockIndex* pindexPrev, const Consensus::Params& params)
 {
     int height = pindexPrev == nullptr ? 0 : pindexPrev->nHeight + 1;
+    bool iswitnessenabled = height >= params.SegwitHeight;
+    LogPrintf("IsWitnessEnabled = %s (%u %u)\n", iswitnessenabled, height, params.SegwitHeight);
     return (height >= params.SegwitHeight);
 }
 
