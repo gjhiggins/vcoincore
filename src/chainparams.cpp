@@ -239,7 +239,7 @@ public:
         m_assumed_blockchain_size = 1;
         m_assumed_chain_state_size = 0.5;
 
-        genesis = CreateGenesisBlock(1441062000, 1173545, 0x1e0fffff, 1, 1 * COIN);
+        genesis = CreateGenesisBlock(1581969864, 713385, 0x1e0fffff, 1, 1 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         LogPrintf("testnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
         LogPrintf("testnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
@@ -247,7 +247,7 @@ public:
 
         /*
         // Reset consensus to zero
-        consensus.hashGenesisBlock = uint256S("0x");
+        consensus.hashGenesisBlock = uint256S("");
         // calculate Genesis Block
         if (true && (genesis.GetHash() != consensus.hashGenesisBlock)) {
             printf("Calculating Genesis Block:\n");
@@ -280,8 +280,7 @@ public:
             // Testnet --- nonce: {{nnonce}} time: {{ntime}} hash: {{genesisblockhash}}
         }
         */
-
-        assert(consensus.hashGenesisBlock == uint256S("000007e14c52364cee2d4d9483541d473e3e73c896df75882273b91313b44816"));
+        assert(consensus.hashGenesisBlock == uint256S("000007c2d96e3435b752fc25a219ff70c963540d07c73243419b8e9274456f39"));
         assert(genesis.hashMerkleRoot == uint256S("1576ef41775095b26a8f8f2bb65b693ec12230608a425aa84ee462381cae00e6"));
 
         vFixedSeeds.clear();
