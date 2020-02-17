@@ -4996,3 +4996,21 @@ bool CWallet::AddCryptedKeyInner(const CPubKey &vchPubKey, const std::vector<uns
     ImplicitlyLearnRelatedKeyScripts(vchPubKey);
     return true;
 }
+
+void CWallet::GetScriptForMining(CScript& script)
+{
+    ReserveDestination reservedest(this);
+
+    // Reserve a new key pair from key pool
+    if (!CanGetAddresses(true)) {
+        LogPrintf("%s: can't generate a mining-address key. No keys in the internal keypool and can't generate any keys.\n", __func__);
+        return;
+    }
+    CTxDestination dest;
+    bool ret = reservedest.GetReservedDestination(OutputType::LEGACY, dest, true);
+    if (!ret) {
+        LogPrintf("%s: keypool ran out, please call keypoolrefill first", __func__);
+        return;
+    }
+    script = GetScriptForDestination(dest);
+}

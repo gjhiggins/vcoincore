@@ -7,9 +7,6 @@
 
 from decimal import Decimal
 from test_framework.test_framework import BitcoinTestFramework
-<<<<<<< HEAD
-from test_framework.util import assert_equal, assert_greater_than, assert_raises_rpc_error, connect_nodes_bi, disconnect_nodes, find_output, sync_blocks
-=======
 from test_framework.util import (
     assert_equal,
     assert_greater_than,
@@ -18,7 +15,6 @@ from test_framework.util import (
     disconnect_nodes,
     find_output,
 )
->>>>>>> upstream/0.19
 
 import json
 import os
@@ -216,11 +212,7 @@ class PSBTTest(BitcoinTestFramework):
         # replaceable arg
         block_height = self.nodes[0].getblockcount()
         unspent = self.nodes[0].listunspent()[0]
-<<<<<<< HEAD
-        psbtx_info = self.nodes[0].walletcreatefundedpsbt([{"txid":unspent["txid"], "vout":unspent["vout"]}], [{self.nodes[2].getnewaddress():unspent["amount"]+1}], block_height+2, {"replaceable":False}, False)
-=======
         psbtx_info = self.nodes[0].walletcreatefundedpsbt([{"txid":unspent["txid"], "vout":unspent["vout"]}], [{self.nodes[2].getnewaddress():unspent["amount"]+1}], block_height+2, {"replaceable": False}, False)
->>>>>>> upstream/0.19
         decoded_psbt = self.nodes[0].decodepsbt(psbtx_info["psbt"])
         for tx_in, psbt_in in zip(decoded_psbt["tx"]["vin"], decoded_psbt["inputs"]):
             assert_greater_than(tx_in["sequence"], MAX_BIP125_RBF_SEQUENCE)

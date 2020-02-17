@@ -68,10 +68,6 @@ class BIP65Test(BitcoinTestFramework):
     def skip_test_if_missing_module(self):
         self.skip_if_no_wallet()
 
-<<<<<<< HEAD
-    def skip_test_if_missing_module(self):
-        self.skip_if_no_wallet()
-=======
     def test_cltv_info(self, *, is_active):
         assert_equal(self.nodes[0].getblockchaininfo()['softforks']['bip65'],
             {
@@ -80,7 +76,6 @@ class BIP65Test(BitcoinTestFramework):
                 "type": "buried",
             },
         )
->>>>>>> upstream/0.19
 
     def run_test(self):
         self.nodes[0].add_p2p_connection(P2PInterface())

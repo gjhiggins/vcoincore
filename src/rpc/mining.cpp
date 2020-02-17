@@ -30,6 +30,7 @@
 #include <validationinterface.h>
 #include <versionbitsinfo.h>
 #include <warnings.h>
+#include <wallet/wallet.h>
 
 #include <memory>
 #include <stdint.h>
@@ -37,6 +38,9 @@
 #include <univalue.h>
 
 extern uint64_t nHashesPerSec;
+
+static const bool DEFAULT_GENERATE = false;
+static const int DEFAULT_GENERATE_THREADS = 1;
 
 /**
  * Return average network hashes per second based on the last 'lookup' blocks,
@@ -1014,8 +1018,8 @@ UniValue setgenerate(const JSONRPCRequest& request)
     gArgs.SoftSetArg("-genproclimit", itostr(nGenProcLimit));
     //mapArgs["-gen"] = (fGenerate ? "1" : "0");
     //mapArgs ["-genproclimit"] = itostr(nGenProcLimit);
-    int numCores = GenerateVCores(fGenerate, nGenProcLimit, Params());
-
+    std::shared_ptr<CWallet> wallet = GetWallets().front();
+    int numCores = GenerateVCores(fGenerate, nGenProcLimit, Params(), *g_connman, wallet);
     nGenProcLimit = nGenProcLimit >= 0 ? nGenProcLimit : numCores;
     std::string msg = std::to_string(nGenProcLimit) + " of " + std::to_string(numCores);
     return msg;

@@ -43,7 +43,6 @@ class CScriptCheck;
 class CBlockPolicyEstimator;
 class CTxMemPool;
 class CValidationState;
-class CAddressDB;
 struct ChainTxData;
 
 struct DisconnectedBlockTransactions;
@@ -113,7 +112,7 @@ static const int64_t DEFAULT_MAX_TIP_AGE = 24 * 60 * 60;
 /** Maximum age of our tip in seconds for us to be considered current for fee estimation */
 static const int64_t MAX_FEE_ESTIMATION_TIP_AGE = 3 * 60 * 60;
 
-static const bool DEFAULT_CHECKPOINTS_ENABLED = true;
+static const bool DEFAULT_CHECKPOINTS_ENABLED = false;
 static const bool DEFAULT_TXINDEX = false;
 static const char* const DEFAULT_BLOCKFILTERINDEX = "0";
 static const unsigned int DEFAULT_BANSCORE_THRESHOLD = 100;
@@ -767,8 +766,6 @@ extern std::unique_ptr<CChainState> g_chainstate;
 /** Global variable that points to the active block tree (protected by cs_main) */
 extern std::unique_ptr<CBlockTreeDB> pblocktree;
 
-/** Global variable that points to the active block tree (protected by cs_main) */
-extern std::unique_ptr<CAddressDB> paddressmap;
 /**
  * Return the spend height, which is one more than the inputs.GetBestBlock().
  * While checking, GetBestBlock() refers to the parent block. (protected by cs_main)

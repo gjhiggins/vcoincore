@@ -50,7 +50,7 @@ SendCoinsEntry::SendCoinsEntry(const PlatformStyle *_platformStyle, QWidget *par
     connect(ui->deleteButton_is, &QPushButton::clicked, this, &SendCoinsEntry::deleteClicked);
     connect(ui->deleteButton_s, &QPushButton::clicked, this, &SendCoinsEntry::deleteClicked);
     connect(ui->useAvailableBalanceButton, &QPushButton::clicked, this, &SendCoinsEntry::useAvailableBalanceClicked);
-    // connect(ui->inscriptionText, SIGNAL(valueChanged()), this, SIGNAL(inscriptionChanged()));
+    connect(ui->inscriptionText, SIGNAL(valueChanged()), this, SIGNAL(inscriptionChanged()));
 }
 
 SendCoinsEntry::~SendCoinsEntry()
@@ -194,7 +194,6 @@ SendCoinsRecipient SendCoinsEntry::getValue()
     recipient.label = ui->addAsLabel->text();
     recipient.amount = ui->payAmount->value();
     recipient.message = ui->messageTextLabel->text();
-    recipient.inscription = ui->inscriptionText->text();
     recipient.fSubtractFeeFromAmount = (ui->checkboxSubtractFeeFromAmount->checkState() == Qt::Checked);
 
     return recipient;
@@ -269,9 +268,7 @@ void SendCoinsEntry::setAddress(const QString &address)
 
 void SendCoinsEntry::setInscription(const QString &inscription)
 {
-    // ui->inscriptionText->setPlaceholderText("ni://example.org/sha-256;5AbXdpz5DcaYXCh9l3eI9ruBosiL5XDU3rxBbBaUO70"));
     ui->inscriptionText->setText("ni://example.org/sha-256;5AbXdpz5DcaYXCh9l3eI9ruBosiL5XDU3rxBbBaUO70");
-    // ui->inscriptionText->setFocus();
 }
 
 void SendCoinsEntry::setAmount(const CAmount &amount)

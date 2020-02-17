@@ -19,9 +19,6 @@ class SendCoinsRecipient;
 class TransactionView;
 class WalletModel;
 class AddressBookPage;
-// class InscriptionPage;
-// class PublisherPage;
-// class BlockExplorer;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -68,9 +65,6 @@ private:
     SendCoinsDialog *sendCoinsPage;
     AddressBookPage *usedSendingAddressesPage;
     AddressBookPage *usedReceivingAddressesPage;
-    // InscriptionPage *inscriptionPage;
-    // PublisherPage *publisherPage;
-    // BlockExplorer *explorerWindow;
 
     TransactionView *transactionView;
 
@@ -91,13 +85,6 @@ public Q_SLOTS:
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
-
-    /** Switch to Inscription page */
-    // void gotoInscriptionPage(); 
-    /** Switch to Publisher page */
-    // void gotoPublisherPage();
-    /** Switch to explorer page */
-    // void gotoBlockExplorerPage();
 
     /** Show incoming transaction notification for new transactions.
 

@@ -19,8 +19,6 @@
 #include <string>
 #include <vector>
 
-class CPubKey;
-
 // Maximum number of bytes pushable to the stack
 static const unsigned int MAX_SCRIPT_ELEMENT_SIZE = 520;
 
@@ -567,8 +565,6 @@ public:
         CScriptBase::clear();
         shrink_to_fit();
     }
-
-    void SetMultisig(int nRequired, const std::vector<CPubKey>& keys);
 };
 
 struct CScriptWitness

@@ -18,7 +18,6 @@
 #include <qt/paymentrequestplus.h>
 #endif
 #include <qt/walletmodeltransaction.h>
-// #include <qt/inscriptiontablemodel.h>
 
 #include <interfaces/wallet.h>
 #include <support/allocators/secure.h>
@@ -34,7 +33,6 @@ class AddressTableModel;
 class OptionsModel;
 class PlatformStyle;
 class RecentRequestsTableModel;
-// class InscriptionTableModel;
 class TransactionTableModel;
 class WalletModelTransaction;
 

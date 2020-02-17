@@ -246,7 +246,7 @@ static UniValue verifymessage(const JSONRPCRequest& request)
             RPCHelpMan{"verifymessage",
                 "\nVerify a signed message\n",
                 {
-                    {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The bitcoin address to use for the signature."},
+                    {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The V Core address to use for the signature."},
                     {"signature", RPCArg::Type::STR, RPCArg::Optional::NO, "The signature provided by the signer in base 64 encoding (see signmessage)."},
                     {"message", RPCArg::Type::STR, RPCArg::Optional::NO, "The message that was signed."},
                 },
@@ -542,7 +542,7 @@ static UniValue echo(const JSONRPCRequest& request)
             RPCHelpMan{"echo|echojson ...",
                 "\nSimply echo back the input arguments. This command is for testing.\n"
                 "\nThe difference between echo and echojson is that echojson has argument conversion enabled in the client-side table in "
-                "bitcoin-cli and the GUI. There is no server-side difference.",
+                "vcore-cli and the GUI. There is no server-side difference.",
                 {},
                 RPCResults{},
                 RPCExamples{""},

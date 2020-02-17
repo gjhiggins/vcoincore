@@ -231,7 +231,7 @@ static UniValue addnode(const JSONRPCRequest& request)
                 RPCResults{},
                 RPCExamples{
                     HelpExampleCli("addnode", "\"192.168.0.6:5530\" \"onetry\"")
-            + HelpExampleRpc("addnode", "\"192.168.0.6:83553033\", \"onetry\"")
+            + HelpExampleRpc("addnode", "\"192.168.0.6:5530\", \"onetry\"")
                 },
             }.ToString());
 

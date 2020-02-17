@@ -351,7 +351,6 @@ public:
 
     std::string ToString() const;
     int64_t GetOpRetFee() const;
-    void UpdateHash() const;
 
     bool HasWitness() const
     {
@@ -379,6 +378,7 @@ struct CMutableTransaction
     inline void Serialize(Stream& s) const {
         SerializeTransaction(*this, s);
     }
+
 
     template <typename Stream>
     inline void Unserialize(Stream& s) {

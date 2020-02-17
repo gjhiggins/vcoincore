@@ -82,15 +82,11 @@ class BumpFeeTest(BitcoinTestFramework):
         test_unconfirmed_not_spendable(rbf_node, rbf_node_address)
         test_bumpfee_metadata(rbf_node, dest_address)
         test_locked_wallet_fails(rbf_node, dest_address)
-<<<<<<< HEAD
-        test_maxtxfee_fails(self, rbf_node, dest_address)
-=======
         test_change_script_match(rbf_node, dest_address)
         test_maxtxfee_fails(self, rbf_node, dest_address)
         # These tests wipe out a number of utxos that are expected in other tests
         test_small_output_with_feerate_succeeds(rbf_node, dest_address)
         test_no_more_inputs_fails(rbf_node, dest_address)
->>>>>>> upstream/0.19
         self.log.info("Success")
 
 

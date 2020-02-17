@@ -9,9 +9,6 @@
 #include <coins.h>
 #include <dbwrapper.h>
 #include <chain.h>
-#include <timestampindex.h>
-#include <spentindex.h>
-#include <addressindex.h>
 #include <primitives/block.h>
 
 #include <map>
@@ -21,7 +18,6 @@
 #include <vector>
 
 class CBlockIndex;
-class CDiskTxPos;
 class CCoinsViewDBCursor;
 class uint256;
 
@@ -105,51 +101,6 @@ public:
     bool WriteFlag(const std::string &name, bool fValue);
     bool ReadFlag(const std::string &name, bool &fValue);
     bool LoadBlockIndexGuts(const Consensus::Params& consensusParams, std::function<CBlockIndex*(const uint256&)> insertBlockIndex);
-
-/** Transactions by address */
-    bool ReadSpentIndex(CSpentIndexKey &key, CSpentIndexValue &value);
-    bool UpdateSpentIndex(const std::vector<std::pair<CSpentIndexKey, CSpentIndexValue> >&vect);
-    bool UpdateAddressUnspentIndex(const std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue > >&vect);
-    bool ReadAddressUnspentIndex(uint160 addressHash, int type,
-                                 std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > &vect);
-    bool WriteAddressIndex(const std::vector<std::pair<CAddressIndexKey, CAmount> > &vect);
-    bool EraseAddressIndex(const std::vector<std::pair<CAddressIndexKey, CAmount> > &vect);
-    bool ReadAddressIndex(uint160 addressHash, int type,
-                          std::vector<std::pair<CAddressIndexKey, CAmount> > &addressIndex,
-                          int start = 0, int end = 0);
-    bool WriteTimestampIndex(const CTimestampIndexKey &timestampIndex);
-    bool ReadTimestampIndex(const unsigned int &high, const unsigned int &low, std::vector<uint256> &vect);
 };
-
-class CAddressDB : public CDBWrapper
-{
-    // CAddressDB(const CAddressDB&);
-    // void operator=(const CAddressDB&);
-
-public:
-    explicit CAddressDB(size_t nCacheSize, bool fMemory = false, bool fWipe = false);
-
-    CAddressDB(const CAddressDB&) = delete;
-    CAddressDB& operator=(const CAddressDB&) = delete;
-
-    bool AddTx(const std::vector<CTransaction>& vtx, const std::vector<std::pair<uint256, CDiskTxPos> >& vpos);
-    bool GetTxs(std::vector<CDiskTxPos>& Txs, const CScriptID& Address);
-    bool ReadNextIn(const COutPoint& Out, uint256& Hash, unsigned int &n);
-
-    bool WriteReindexing(bool fReindexing);
-    bool ReadReindexing(bool &fReindexing);
-    bool ReadAddrIndex(const uint256 &txid, CDiskTxPos &pos);
-    bool WriteAddrIndex(const std::vector<std::pair<uint256, CDiskTxPos> > &vect);
-    bool WriteFlag(const std::string &name, bool fValue);
-    bool ReadFlag(const std::string &name, bool &fValue);
-    // bool WriteEnable(bool fValue);
-    // bool ReadEnable(bool &fValue);
-};
-
-CTxOut getPrevOut(const CTxIn& In);
-void getNextIn(const COutPoint& Out, uint256& Hash, unsigned int& n);
-// Return transaction in tx, and if it was found inside a block, its header is placed in block
-bool ReadTransaction(const CDiskTxPos &postx, CTransactionRef &txOut, CBlockHeader &block);
-
 
 #endif // BITCOIN_TXDB_H

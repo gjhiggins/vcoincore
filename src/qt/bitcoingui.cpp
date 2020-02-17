@@ -58,7 +58,7 @@
 #include <QTimer>
 #include <QToolBar>
 #include <QtWebEngineWidgets/QtWebEngineWidgets>
-// #include <QWebEngineSettings>
+#include <QWebEngineSettings>
 
 #include <QUrlQuery>
 #include <QVBoxLayout>
@@ -107,8 +107,6 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
         /** Create wallet frame and make it the central widget */
         walletFrame = new WalletFrame(_platformStyle, this);
         setCentralWidget(walletFrame);
-        // inscriptionPage = new InscriptionPage(this);
-        // publisherPage = new PublisherPage(this);
     } else
 #endif // ENABLE_WALLET
     {
@@ -713,8 +711,6 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     usedSendingAddressesAction->setEnabled(enabled);
     usedReceivingAddressesAction->setEnabled(enabled);
     openAction->setEnabled(enabled);
-    // openInscriptionPageAction->setEnabled(enabled);
-    // openPublisherPageAction->setEnabled(enabled);
     m_close_wallet_action->setEnabled(enabled);
 }
 
@@ -760,8 +756,6 @@ void BitcoinGUI::createTrayIconMenu()
         trayIconMenu->addAction(signMessageAction);
         trayIconMenu->addAction(verifyMessageAction);
         trayIconMenu->addSeparator();
-        // trayIconMenu->addAction(openInscriptionPageAction);
-        // trayIconMenu->addAction(openPublisherPageAction);
         trayIconMenu->addAction(openRPCConsoleAction);
     }
     trayIconMenu->addAction(optionsAction);
@@ -862,16 +856,6 @@ void BitcoinGUI::gotoVerifyMessageTab(QString addr)
 {
     if (walletFrame) walletFrame->gotoVerifyMessageTab(addr);
 }
-
-// void BitcoinGUI::gotoInscriptionPage()
-// {
-//     if (walletFrame) walletFrame->gotoInscriptionPage();
-// }
-
-// void BitcoinGUI::gotoPublisherPage()
-// {
-//     if (walletFrame) walletFrame->gotoPublisherPage();
-// }
 #endif // ENABLE_WALLET
 
 void BitcoinGUI::updateNetworkState()
@@ -985,9 +969,7 @@ void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate, double nVer
     QString tooltip;
 
     QDateTime currentDate = QDateTime::currentDateTime();
-    // FIXME: gjh, pro tem 'til nHeight ~= 2000
-    // qint64 secs = blockDate.secsTo(currentDate);
-    qint64 secs = 0;
+    qint64 secs = blockDate.secsTo(currentDate);
 
     tooltip = tr("Processed %n block(s) of transaction history.", "", count);
 

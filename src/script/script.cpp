@@ -7,8 +7,6 @@
 
 #include <util/strencodings.h>
 
-#include <key.h>
-
 const char* GetOpName(opcodetype opcode)
 {
     switch (opcode)
@@ -327,17 +325,4 @@ bool GetScriptOp(CScriptBase::const_iterator& pc, CScriptBase::const_iterator en
 
     opcodeRet = static_cast<opcodetype>(opcode);
     return true;
-}
-
-void CScript::SetMultisig(int nRequired, const std::vector<CPubKey>& keys)
-{
-    this->clear();
-
-    *this << EncodeOP_N(nRequired);
-    for (const auto& pubkey : keys)
-    {
-        std::vector<unsigned char> vchPubKey(pubkey.begin(), pubkey.end());
-        *this << vchPubKey;
-    }
-    *this << EncodeOP_N(keys.size()) << OP_CHECKMULTISIG;
 }

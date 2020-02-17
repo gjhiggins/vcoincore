@@ -171,8 +171,6 @@ class WalletTest(BitcoinTestFramework):
         after = self.nodes[1].getunconfirmedbalance()
         assert_equal(before + Decimal('0.1'), after)
 
-<<<<<<< HEAD
-=======
         # Create 3 more wallet txs, where the last is not accepted to the
         # mempool because it is the third descendant of the tx above
         for _ in range(3):
@@ -220,7 +218,6 @@ class WalletTest(BitcoinTestFramework):
         self.sync_all()
         assert_equal(self.nodes[0].getbalance(minconf=0), total_amount + 1)  # The reorg recovered our fee of 1 coin
 
->>>>>>> upstream/0.19
 
 if __name__ == '__main__':
     WalletTest().main()

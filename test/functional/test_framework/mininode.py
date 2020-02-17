@@ -363,10 +363,7 @@ class P2PInterface(P2PConnection):
 
     def wait_for_tx(self, txid, timeout=60):
         def test_function():
-<<<<<<< HEAD
-=======
             assert self.is_connected
->>>>>>> upstream/0.19
             if not self.last_message.get('tx'):
                 return False
             return self.last_message['tx'].tx.rehash() == txid

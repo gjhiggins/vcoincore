@@ -34,7 +34,6 @@
 #include <policy/policy.h>
 #include <policy/settings.h>
 #include <rpc/blockchain.h>
-#include <rpc/mining.h>
 #include <rpc/register.h>
 #include <rpc/server.h>
 #include <rpc/util.h>
@@ -1255,9 +1254,9 @@ bool AppInitMain(InitInterfaces& interfaces)
     // Warn about relative -datadir path.
     if (gArgs.IsArgSet("-datadir") && !fs::path(gArgs.GetArg("-datadir", "")).is_absolute()) {
         LogPrintf("Warning: relative datadir option '%s' specified, which will be interpreted relative to the " /* Continued */
-                  "current working directory '%s'. This is fragile, because if bitcoin is started in the future "
+                  "current working directory '%s'. This is fragile, because if V Core is started in the future "
                   "from a different location, it will be unable to locate the current data files. There could "
-                  "also be data loss if bitcoin is started while in a temporary directory.\n",
+                  "also be data loss if V Coreis started while in a temporary directory.\n",
             gArgs.GetArg("-datadir", ""), fs::current_path().string());
     }
 
@@ -1510,12 +1509,6 @@ bool AppInitMain(InitInterfaces& interfaces)
                 if (!::BlockIndex().empty() &&
                         !LookupBlockIndex(chainparams.GetConsensus().hashGenesisBlock)) {
                     return InitError(_("Incorrect or no genesis block found. Wrong datadir for network?").translated);
-                }
-
-                // Check for changed -addrindex state
-                if (fAddrIndex != gArgs.GetBoolArg("-addrindex", DEFAULT_ADDRINDEX)) {
-                    strLoadError = _("You need to rebuild the database using -reindex to change -addrindex");
-                    break;
                 }
 
                 // Check for changed -prune state.  What we are concerned about is a user who has pruned blocks

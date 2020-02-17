@@ -8,14 +8,6 @@ WARNING:
 This test uses 4GB of disk space.
 This test takes 30 mins or more (up to 2 hours)
 """
-<<<<<<< HEAD
-
-from test_framework.test_framework import BitcoinTestFramework
-from test_framework.util import assert_equal, assert_raises_rpc_error, connect_nodes, mine_large_block, sync_blocks, wait_until
-
-import os
-
-=======
 import os
 
 from test_framework.blocktools import create_coinbase
@@ -31,7 +23,6 @@ from test_framework.util import (
     wait_until,
 )
 
->>>>>>> upstream/0.19
 # Rescans start at the earliest block up to 2 hours before a key timestamp, so
 # the manual prune RPC avoids pruning blocks in the same window to be
 # compatible with pruning based on key creation time.
@@ -325,12 +316,7 @@ class PruneTest(BitcoinTestFramework):
 
         # height=1000 should not prune anything more, because tip-288 is in blk00002.dat.
         prune(1000)
-<<<<<<< HEAD
-        if not has_block(2):
-            raise AssertionError("blk00002.dat is still there, should be pruned by now")
-=======
         assert has_block(2), "blk00002.dat is still there, should be pruned by now"
->>>>>>> upstream/0.19
 
         # advance the tip so blk00002.dat and blk00003.dat can be pruned (the last 288 blocks should now be in blk00004.dat)
         node.generate(288)

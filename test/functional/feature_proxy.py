@@ -95,13 +95,8 @@ class ProxyTest(BitcoinTestFramework):
         # Test: outgoing IPv4 connection through node
         node.addnode("15.61.23.23:1234", "onetry")
         cmd = proxies[0].queue.get()
-<<<<<<< HEAD
-        assert(isinstance(cmd, Socks5Command))
-        # Note: vcored's SOCKS5 implementation only sends atyp DOMAINNAME, even if connecting directly to IPv4/IPv6
-=======
         assert isinstance(cmd, Socks5Command)
         # Note: bitcoind's SOCKS5 implementation only sends atyp DOMAINNAME, even if connecting directly to IPv4/IPv6
->>>>>>> upstream/0.19
         assert_equal(cmd.atyp, AddressType.DOMAINNAME)
         assert_equal(cmd.addr, b"15.61.23.23")
         assert_equal(cmd.port, 1234)
@@ -114,13 +109,8 @@ class ProxyTest(BitcoinTestFramework):
             # Test: outgoing IPv6 connection through node
             node.addnode("[1233:3432:2434:2343:3234:2345:6546:4534]:5443", "onetry")
             cmd = proxies[1].queue.get()
-<<<<<<< HEAD
-            assert(isinstance(cmd, Socks5Command))
-            # Note: vcored's SOCKS5 implementation only sends atyp DOMAINNAME, even if connecting directly to IPv4/IPv6
-=======
             assert isinstance(cmd, Socks5Command)
             # Note: bitcoind's SOCKS5 implementation only sends atyp DOMAINNAME, even if connecting directly to IPv4/IPv6
->>>>>>> upstream/0.19
             assert_equal(cmd.atyp, AddressType.DOMAINNAME)
             assert_equal(cmd.addr, b"1233:3432:2434:2343:3234:2345:6546:4534")
             assert_equal(cmd.port, 5443)
@@ -131,7 +121,7 @@ class ProxyTest(BitcoinTestFramework):
 
         if test_onion:
             # Test: outgoing onion connection through node
-            node.addnode("vcoreostk4e4re.onion:8333", "onetry")
+            node.addnode("vcoreostk4e4re.onion:5530", "onetry")
             cmd = proxies[2].queue.get()
             assert isinstance(cmd, Socks5Command)
             assert_equal(cmd.atyp, AddressType.DOMAINNAME)
