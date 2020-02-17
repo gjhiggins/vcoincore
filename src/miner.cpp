@@ -172,7 +172,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     // not activated.
     // TODO: replace this with a call to main to assess validity of a mempool
     // transaction (which in most cases can be a no-op).
-    fIncludeWitness = nHeight >= chainparams.GetConsensus().SegwitHeight;
+    fIncludeWitness = true; // nHeight >= chainparams.GetConsensus().SegwitHeight;
 
     int nPackagesSelected = 0;
     int nDescendantsUpdated = 0;
