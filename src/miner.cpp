@@ -551,7 +551,7 @@ void static VCoreMiner(const CChainParams& chainparams, CConnman& connman, std::
             BlockAssembler assembler(chainparams);
             auto pblocktemplate = assembler.CreateNewBlock(coinbaseScript, pwallet);
             if (!pblocktemplate.get()) {
-                LogPrintf("VCoreminer -- Failed to find a coinstake\n");
+                LogPrintf("VCoreminer #%s -- Failed to find a coinstake\n", i);
                 MilliSleep(5000);
                 continue;
             }
@@ -658,7 +658,6 @@ int GenerateVCores(bool fGenerate, int nThreads, const CChainParams& chainparams
 {
     static boost::thread_group* minerThreads = nullptr;
 
-    // int nThreads = gArgs.GetArg("genproclimit", -1);
     int numCores = GetNumCores();
     if (nThreads < 0)
         nThreads = numCores;
@@ -676,13 +675,12 @@ int GenerateVCores(bool fGenerate, int nThreads, const CChainParams& chainparams
     minerThreads = new boost::thread_group();
 
     //Reset metrics
-    nMiningTimeStart = GetTimeMicros();
-    nHashesDone = 0;
-    nHashesPerSec = 0;
+    // nMiningTimeStart = GetTimeMicros();
+    // nHashesDone = 0;
+    // nHashesPerSec = 0;
 
-    for (int i = 0; i < nThreads; i++){
+    for (int i = 0; i < nThreads; i++)
         minerThreads->create_thread(boost::bind(&VCoreMiner, boost::cref(chainparams), boost::ref(connman), pwallet, i));
-    }
 
     return(numCores);
 }
