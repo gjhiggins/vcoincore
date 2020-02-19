@@ -341,11 +341,12 @@ void BitcoinGUI::createActions()
     m_close_wallet_action->setStatusTip(tr("Close wallet"));
 
     m_create_wallet_action = new QAction(tr("Create Wallet..."), this);
+    m_create_wallet_action->setEnabled(false);
     m_create_wallet_action->setStatusTip(tr("Create a new wallet"));
 
     showHelpMessageAction = new QAction(tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
-    showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible V Core command-line options").arg(tr(PACKAGE_NAME)));
+    showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible V Core command-line options").arg(PACKAGE_NAME));
 
     connect(quitAction, &QAction::triggered, qApp, QApplication::quit);
     connect(aboutAction, &QAction::triggered, this, &BitcoinGUI::aboutClicked);
@@ -617,6 +618,7 @@ void BitcoinGUI::setWalletController(WalletController* wallet_controller)
 
     m_wallet_controller = wallet_controller;
 
+    m_create_wallet_action->setEnabled(true);
     m_open_wallet_action->setEnabled(true);
     m_open_wallet_action->setMenu(m_open_wallet_menu);
 
@@ -631,10 +633,10 @@ void BitcoinGUI::setWalletController(WalletController* wallet_controller)
 void BitcoinGUI::addWallet(WalletModel* walletModel)
 {
     if (!walletFrame) return;
+    if (!walletFrame->addWallet(walletModel)) return;
     const QString display_name = walletModel->getDisplayName();
     setWalletActionsEnabled(true);
     rpcConsole->addWallet(walletModel);
-    walletFrame->addWallet(walletModel);
     m_wallet_selector->addItem(display_name, QVariant::fromValue(walletModel));
     if (m_wallet_selector->count() == 2) {
         m_wallet_selector_label_action->setVisible(true);

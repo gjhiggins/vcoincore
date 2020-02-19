@@ -375,7 +375,7 @@ static UniValue createrawtransaction(const JSONRPCRequest& request)
                         {
                             {"", RPCArg::Type::OBJ, RPCArg::Optional::OMITTED, "",
                                 {
-                                    {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "A key-value pair. The key (string) is the V Core address, the value (float or string) is the amount in " + CURRENCY_UNIT},
+                                    {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "A key-value pair. The key (string) is the vcore address, the value (float or string) is the amount in " + CURRENCY_UNIT},
                                 },
                                 },
                             {"", RPCArg::Type::OBJ, RPCArg::Optional::OMITTED, "",
@@ -518,7 +518,7 @@ static UniValue decodescript(const JSONRPCRequest& request)
             "  \"type\":\"type\",        (string) The output type (e.g. "+GetAllOutputTypes()+")\n"
             "  \"reqSigs\": n,         (numeric) The required signatures\n"
             "  \"addresses\": [        (json array of string)\n"
-            "     \"address\"          (string) V Core address\n"
+            "     \"address\"          (string) vcore address\n"
             "     ,...\n"
             "  ],\n"
             "  \"p2sh\":\"str\"          (string) address of P2SH script wrapping this redeem script (not returned if the script is already a P2SH).\n"
@@ -940,7 +940,7 @@ static std::string WriteHDKeypath(std::vector<uint32_t>& keypath)
 UniValue decodepsbt(const JSONRPCRequest& request)
 {
             RPCHelpMan{"decodepsbt",
-                "\nReturn a JSON object representing the serialized, base64-encoded partially signed Bitcoin transaction.\n",
+                "\nReturn a JSON object representing the serialized, base64-encoded partially signed V Core transaction.\n",
                 {
                     {"psbt", RPCArg::Type::STR, RPCArg::Optional::NO, "The PSBT base64 string"},
                 },
@@ -964,7 +964,7 @@ UniValue decodepsbt(const JSONRPCRequest& request)
             "          \"asm\" : \"asm\",            (string) The asm\n"
             "          \"hex\" : \"hex\",            (string) The hex\n"
             "          \"type\" : \"pubkeyhash\",    (string) The type, eg 'pubkeyhash'\n"
-            "          \"address\" : \"address\"     (string) Bitcoin address if there is one\n"
+            "          \"address\" : \"address\"     (string) V Core address if there is one\n"
             "        }\n"
             "      },\n"
             "      \"partial_signatures\" : {             (json object, optional)\n"
@@ -1074,7 +1074,12 @@ UniValue decodepsbt(const JSONRPCRequest& request)
             UniValue out(UniValue::VOBJ);
 
             out.pushKV("amount", ValueFromAmount(txout.nValue));
-            total_in += txout.nValue;
+            if (MoneyRange(txout.nValue) && MoneyRange(total_in + txout.nValue)) {
+                total_in += txout.nValue;
+            } else {
+                // Hack to just not show fee later
+                have_all_utxos = false;
+            }
 
             UniValue o(UniValue::VOBJ);
             ScriptToUniv(txout.scriptPubKey, o, true);
@@ -1084,7 +1089,13 @@ UniValue decodepsbt(const JSONRPCRequest& request)
             UniValue non_wit(UniValue::VOBJ);
             TxToUniv(*input.non_witness_utxo, uint256(), non_wit, false);
             in.pushKV("non_witness_utxo", non_wit);
-            total_in += input.non_witness_utxo->vout[psbtx.tx->vin[i].prevout.n].nValue;
+            CAmount utxo_val = input.non_witness_utxo->vout[psbtx.tx->vin[i].prevout.n].nValue;
+            if (MoneyRange(utxo_val) && MoneyRange(total_in + utxo_val)) {
+                total_in += utxo_val;
+            } else {
+                // Hack to just not show fee later
+                have_all_utxos = false;
+            }
         } else {
             have_all_utxos = false;
         }
@@ -1200,7 +1211,12 @@ UniValue decodepsbt(const JSONRPCRequest& request)
         outputs.push_back(out);
 
         // Fee calculation
-        output_value += psbtx.tx->vout[i].nValue;
+        if (MoneyRange(psbtx.tx->vout[i].nValue) && MoneyRange(output_value + psbtx.tx->vout[i].nValue)) {
+            output_value += psbtx.tx->vout[i].nValue;
+        } else {
+            // Hack to just not show fee later
+            have_all_utxos = false;
+        }
     }
     result.pushKV("outputs", outputs);
     if (have_all_utxos) {
@@ -1213,7 +1229,7 @@ UniValue decodepsbt(const JSONRPCRequest& request)
 UniValue combinepsbt(const JSONRPCRequest& request)
 {
             RPCHelpMan{"combinepsbt",
-                "\nCombine multiple partially signed Bitcoin transactions into one transaction.\n"
+                "\nCombine multiple partially signed V Core transactions into one transaction.\n"
                 "Implements the Combiner role.\n",
                 {
                     {"txs", RPCArg::Type::ARR, RPCArg::Optional::NO, "A json array of base64 strings of partially signed transactions",
@@ -1671,6 +1687,7 @@ UniValue analyzepsbt(const JSONRPCRequest& request)
                 "  \"estimated_feerate\" : feerate   (numeric, optional) Estimated feerate of the final signed transaction in " + CURRENCY_UNIT + "/kB. Shown only if all UTXO slots in the PSBT have been filled.\n"
                 "  \"fee\" : fee                     (numeric, optional) The transaction fee paid. Shown only if all UTXO slots in the PSBT have been filled.\n"
                 "  \"next\" : \"role\"                 (string) Role of the next person that this psbt needs to go to\n"
+                "  \"error\" : \"error\"               (string) Error message if there is one"
                 "}\n"
             },
             RPCExamples {
@@ -1723,7 +1740,7 @@ UniValue analyzepsbt(const JSONRPCRequest& request)
         }
         inputs_result.push_back(input_univ);
     }
-    result.pushKV("inputs", inputs_result);
+    if (!inputs_result.empty()) result.pushKV("inputs", inputs_result);
 
     if (psbta.estimated_vsize != nullopt) {
         result.pushKV("estimated_vsize", (int)*psbta.estimated_vsize);
@@ -1735,6 +1752,9 @@ UniValue analyzepsbt(const JSONRPCRequest& request)
         result.pushKV("fee", ValueFromAmount(*psbta.fee));
     }
     result.pushKV("next", PSBTRoleName(psbta.next));
+    if (!psbta.error.empty()) {
+        result.pushKV("error", psbta.error);
+    }
 
     return result;
 }

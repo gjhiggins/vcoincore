@@ -123,9 +123,9 @@ void BumpFee(TransactionView& view, const uint256& txid, bool expectDisabled, st
 //
 // This also requires overriding the default minimal Qt platform:
 //
-//     src/qt/test/test_bitcoin-qt -platform xcb      # Linux
-//     src/qt/test/test_bitcoin-qt -platform windows  # Windows
-//     src/qt/test/test_bitcoin-qt -platform cocoa    # macOS
+//     QT_QPA_PLATFORM=xcb     src/qt/test/test_bitcoin-qt  # Linux
+//     QT_QPA_PLATFORM=windows src/qt/test/test_bitcoin-qt  # Windows
+//     QT_QPA_PLATFORM=cocoa   src/qt/test/test_bitcoin-qt  # macOS
 void TestGUI()
 {
     // Set up wallet and chain with 105 blocks (5 mature blocks for spending).
@@ -218,7 +218,7 @@ void TestGUI()
             QString paymentText = rlist->toPlainText();
             QStringList paymentTextList = paymentText.split('\n');
             QCOMPARE(paymentTextList.at(0), QString("Payment information"));
-            QVERIFY(paymentTextList.at(1).indexOf(QString("URI: bitcoin:")) != -1);
+            QVERIFY(paymentTextList.at(1).indexOf(QString("URI: vcore:")) != -1);
             QVERIFY(paymentTextList.at(2).indexOf(QString("Address:")) != -1);
             QCOMPARE(paymentTextList.at(3), QString("Amount: 0.00000001 ") + QString::fromStdString(CURRENCY_UNIT));
             QCOMPARE(paymentTextList.at(4), QString("Label: TEST_LABEL_1"));
@@ -256,7 +256,7 @@ void WalletTests::walletTests()
         // and fails to handle returned nulls
         // (https://bugreports.qt.io/browse/QTBUG-49686).
         QWARN("Skipping WalletTests on mac build with 'minimal' platform set due to Qt bugs. To run AppTests, invoke "
-              "with 'test_bitcoin-qt -platform cocoa' on mac, or else use a linux or windows build.");
+              "with 'QT_QPA_PLATFORM=cocoa test_bitcoin-qt' on mac, or else use a linux or windows build.");
         return;
     }
 #endif

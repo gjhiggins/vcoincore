@@ -14,9 +14,6 @@ class PlatformStyle;
 class SendCoinsRecipient;
 class WalletModel;
 class WalletView;
-// class InscriptionPage;
-// class PublisherPage;
-// class BlockExplorer;
 
 QT_BEGIN_NAMESPACE
 class QStackedWidget;
@@ -39,7 +36,7 @@ public:
 
     void setClientModel(ClientModel *clientModel);
 
-    void addWallet(WalletModel *walletModel);
+    bool addWallet(WalletModel *walletModel);
     void setCurrentWallet(WalletModel* wallet_model);
     void removeWallet(WalletModel* wallet_model);
     void removeAllWallets();
@@ -75,13 +72,6 @@ public Q_SLOTS:
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");
-
-    /** Switch to explorer page */
-    // void gotoBlockExplorerPage();
-    /** Switch to inscription page */
-    // void gotoInscriptionPage();
-    /** Switch to Publishing page */
-    // void gotoPublisherPage();	
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");

@@ -30,9 +30,10 @@
 #include <util/validation.h>
 
 #include <memory>
+#include <typeinfo>
 
 #if defined(NDEBUG)
-# error "Bitcoin cannot be compiled without assertions."
+# error "V Core cannot be compiled without assertions."
 #endif
 
 /** Expiration time for orphan transactions in seconds */
@@ -50,7 +51,9 @@ static constexpr int32_t MAX_OUTBOUND_PEERS_TO_PROTECT_FROM_DISCONNECT = 4;
 /** Timeout for (unprotected) outbound peers to sync to our chainwork, in seconds */
 static constexpr int64_t CHAIN_SYNC_TIMEOUT = 20 * 60; // 20 minutes
 /** How frequently to check for stale tips, in seconds */
-static constexpr int64_t STALE_CHECK_INTERVAL = 10 * 60; // 10 minutes
+// FIXME: gjh - pro tem 'till nHeight ~= 2000
+// static constexpr int64_t STALE_CHECK_INTERVAL = 10 * 60; // 10 minutes
+static constexpr int64_t STALE_CHECK_INTERVAL = 10 * 60 * 365; // 30 hours
 /** How frequently to check for extra outbound peers and disconnect, in seconds */
 static constexpr int64_t EXTRA_PEER_CHECK_INTERVAL = 45;
 /** Minimum time an outbound-peer-eviction candidate must be connected for, in order to evict, in seconds */
@@ -59,7 +62,9 @@ static constexpr int64_t MINIMUM_CONNECT_TIME = 30;
 static constexpr uint64_t RANDOMIZER_ID_ADDRESS_RELAY = 0x3cac0035b5866b90ULL;
 /// Age after which a stale block will no longer be served if requested as
 /// protection against fingerprinting. Set to one month, denominated in seconds.
-static constexpr int STALE_RELAY_AGE_LIMIT = 30 * 24 * 60 * 60;
+// FIXME: gjh - pro tem 'till nHeight ~= 2000
+// static constexpr int STALE_RELAY_AGE_LIMIT = 30 * 24 * 60 * 60;
+static constexpr int STALE_RELAY_AGE_LIMIT = 30 * 24 * 60 * 60  * 365; // i year
 /// Age after which a block is considered historical for purposes of rate
 /// limiting block relay. Set to one week, denominated in seconds.
 static constexpr int HISTORICAL_BLOCK_AGE = 7 * 24 * 60 * 60;
@@ -2023,8 +2028,8 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
 
         // Potentially mark this peer as a preferred download peer.
         {
-        LOCK(cs_main);
-        UpdatePreferredDownload(pfrom, State(pfrom->GetId()));
+            LOCK(cs_main);
+            UpdatePreferredDownload(pfrom, State(pfrom->GetId()));
         }
 
         if (!pfrom->fInbound && pfrom->IsAddrRelayPeer())
@@ -3363,35 +3368,10 @@ bool PeerLogicValidation::ProcessMessages(CNode* pfrom, std::atomic<bool>& inter
             return false;
         if (!pfrom->vRecvGetData.empty())
             fMoreWork = true;
-    }
-    catch (const std::ios_base::failure& e)
-    {
-        if (m_enable_bip61) {
-            connman->PushMessage(pfrom, CNetMsgMaker(INIT_PROTO_VERSION).Make(NetMsgType::REJECT, strCommand, REJECT_MALFORMED, std::string("error parsing message")));
-        }
-        if (strstr(e.what(), "end of data")) {
-            // Allow exceptions from under-length message on vRecv
-            LogPrint(BCLog::NET, "%s(%s, %u bytes): Exception '%s' caught, normally caused by a message being shorter than its stated length\n", __func__, SanitizeString(strCommand), nMessageSize, e.what());
-        } else if (strstr(e.what(), "size too large")) {
-            // Allow exceptions from over-long size
-            LogPrint(BCLog::NET, "%s(%s, %u bytes): Exception '%s' caught\n", __func__, SanitizeString(strCommand), nMessageSize, e.what());
-        } else if (strstr(e.what(), "non-canonical ReadCompactSize()")) {
-            // Allow exceptions from non-canonical encoding
-            LogPrint(BCLog::NET, "%s(%s, %u bytes): Exception '%s' caught\n", __func__, SanitizeString(strCommand), nMessageSize, e.what());
-        } else if (strstr(e.what(), "Superfluous witness record")) {
-            // Allow exceptions from illegal witness encoding
-            LogPrint(BCLog::NET, "%s(%s, %u bytes): Exception '%s' caught\n", __func__, SanitizeString(strCommand), nMessageSize, e.what());
-        } else if (strstr(e.what(), "Unknown transaction optional data")) {
-            // Allow exceptions from unknown witness encoding
-            LogPrint(BCLog::NET, "%s(%s, %u bytes): Exception '%s' caught\n", __func__, SanitizeString(strCommand), nMessageSize, e.what());
-        } else {
-            PrintExceptionContinue(&e, "ProcessMessages()");
-        }
-    }
-    catch (const std::exception& e) {
-        PrintExceptionContinue(&e, "ProcessMessages()");
+    } catch (const std::exception& e) {
+        LogPrint(BCLog::NET, "%s(%s, %u bytes): Exception '%s' (%s) caught\n", __func__, SanitizeString(strCommand), nMessageSize, e.what(), typeid(e).name());
     } catch (...) {
-        PrintExceptionContinue(nullptr, "ProcessMessages()");
+        LogPrint(BCLog::NET, "%s(%s, %u bytes): Unknown exception caught\n", __func__, SanitizeString(strCommand), nMessageSize);
     }
 
     if (!fRet) {

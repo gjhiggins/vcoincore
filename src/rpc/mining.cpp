@@ -30,13 +30,15 @@
 #include <validationinterface.h>
 #include <versionbitsinfo.h>
 #include <warnings.h>
+#include <wallet/wallet.h>
 
 #include <memory>
 #include <stdint.h>
 
 #include <univalue.h>
 
-extern uint64_t nHashesPerSec;
+static const bool DEFAULT_GENERATE = false;
+static const int DEFAULT_GENERATE_THREADS = 1;
 
 /**
  * Return average network hashes per second based on the last 'lookup' blocks,
@@ -212,7 +214,7 @@ static UniValue getmininginfo(const JSONRPCRequest& request)
     if (BlockAssembler::m_last_block_num_txs) obj.pushKV("currentblocktx", *BlockAssembler::m_last_block_num_txs);
     obj.pushKV("difficulty",       (double)GetDifficulty(::ChainActive().Tip()));
     obj.pushKV("networkhashps",    getnetworkhashps(request));
-    obj.pushKV("hashespersec",     (uint64_t)nHashesPerSec);
+    obj.pushKV("hashespersec",     (int64_t)dHashesPerSec);
     obj.pushKV("pooledtx",         (uint64_t)mempool.size());
     obj.pushKV("chain",            Params().NetworkIDString());
     obj.pushKV("warnings",         GetWarnings("statusbar"));
@@ -954,7 +956,25 @@ static UniValue estimaterawfee(const JSONRPCRequest& request)
     return result;
 }
 
-/*
+UniValue gethashespersec(const JSONRPCRequest& request)
+{
+    if (request.fHelp || request.params.size() != 0)
+        throw std::runtime_error(
+            "gethashespersec\n"
+            "\nReturns a recent hashes per second performance measurement while generating.\n"
+            "See the getgenerate and setgenerate calls to turn generation on and off.\n"
+            "\nResult:\n"
+            "n            (numeric) The recent hashes per second when generation is on (will return 0 if generation is off)\n"
+            "\nExamples:\n"
+            + HelpExampleCli("gethashespersec", "")
+            + HelpExampleRpc("gethashespersec", "")
+        );
+
+    if (GetTimeMillis() - nHPSTimerStart > 8000)
+        return (int64_t)0;
+    return (int64_t)dHashesPerSec;
+}
+
 UniValue getgenerate(const JSONRPCRequest& request)
 {
     if (request.fHelp || request.params.size() != 0)
@@ -970,7 +990,6 @@ UniValue getgenerate(const JSONRPCRequest& request)
             + HelpExampleRpc("getgenerate", "")
         );
 
-    LOCK(cs_main);
     return gArgs.GetBoolArg("-gen", DEFAULT_GENERATE);
 }
 
@@ -999,6 +1018,8 @@ UniValue setgenerate(const JSONRPCRequest& request)
     if (Params().MineBlocksOnDemand())
         throw JSONRPCError(RPC_METHOD_NOT_FOUND, "Use the generate method instead of setgenerate on this network");
 
+    std::shared_ptr<CWallet> wallet = GetWallets().front();
+
     bool fGenerate = true;
     if (request.params.size() > 0)
         fGenerate = request.params[0].get_bool();
@@ -1013,15 +1034,19 @@ UniValue setgenerate(const JSONRPCRequest& request)
 
     gArgs.SoftSetArg("-gen", (fGenerate ? "1" : "0"));
     gArgs.SoftSetArg("-genproclimit", itostr(nGenProcLimit));
-    //mapArgs["-gen"] = (fGenerate ? "1" : "0");
-    //mapArgs ["-genproclimit"] = itostr(nGenProcLimit);
-    int numCores = GenerateVCores(fGenerate, nGenProcLimit, Params());
+
+    int numCores = GenerateVCores(fGenerate, nGenProcLimit, Params(), *g_connman, wallet);
 
     nGenProcLimit = nGenProcLimit >= 0 ? nGenProcLimit : numCores;
-    std::string msg = std::to_string(nGenProcLimit) + " of " + std::to_string(numCores);
+    std::string msg = "";
+    if (fGenerate == false)
+        msg = "Suspended mining with " + std::to_string(nGenProcLimit) + " of " + std::to_string(numCores) + " cores.";
+    else
+        msg = "Mining with " + std::to_string(nGenProcLimit) + " of " + std::to_string(numCores) + " cores.";
+
+    gArgs.ForceSetArg("-gen", (fGenerate ? "1" : "0")); // SoftSetBoolArg
     return msg;
 }
-*/
 
 // clang-format off
 static const CRPCCommand commands[] =
@@ -1035,8 +1060,9 @@ static const CRPCCommand commands[] =
     { "mining",             "submitheader",           &submitheader,           {"hexdata"} },
 
     /* Coin generation */
-    // { "generating",         "getgenerate",            &getgenerate,            {}  },
-    // { "generating",         "setgenerate",            &setgenerate,            {"generate", "genproclimit"}  },
+    { "generating",         "getgenerate",            &getgenerate,            {}  },
+    { "generating",         "setgenerate",            &setgenerate,            {"generate", "genproclimit"}  },
+    { "generating",         "gethashespersec",        &gethashespersec,        {} },
 
     { "generating",         "generatetoaddress",      &generatetoaddress,      {"nblocks","address","maxtries"} },
 

@@ -18,7 +18,6 @@
 #include <qt/paymentrequestplus.h>
 #endif
 #include <qt/walletmodeltransaction.h>
-// #include <qt/inscriptiontablemodel.h>
 
 #include <interfaces/wallet.h>
 #include <support/allocators/secure.h>
@@ -34,7 +33,6 @@ class AddressTableModel;
 class OptionsModel;
 class PlatformStyle;
 class RecentRequestsTableModel;
-// class InscriptionTableModel;
 class TransactionTableModel;
 class WalletModelTransaction;
 
@@ -262,8 +260,6 @@ private:
     EncryptionStatus cachedEncryptionStatus;
     int cachedNumBlocks;
 
-    QTimer *pollTimer;
-
     void subscribeToCoreSignals();
     void unsubscribeFromCoreSignals();
     void checkBalanceChanged(const interfaces::WalletBalances& new_balances);
@@ -299,6 +295,9 @@ Q_SIGNALS:
     void canGetAddressesChanged();
 
 public Q_SLOTS:
+    /* Starts a timer to periodically update the balance */
+    void startPollBalance();
+
     /* Wallet status might have changed */
     void updateStatus();
     /* New transaction, or transaction changed status */

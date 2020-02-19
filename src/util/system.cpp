@@ -64,6 +64,7 @@
 #endif
 
 #include <thread>
+#include <typeinfo>
 
 // Application startup time (used for uptime calculation)
 const int64_t nStartupTime = GetTime();
@@ -380,6 +381,15 @@ bool ArgsManager::ParseParameters(int argc, const char* const argv[], std::strin
 
     for (int i = 1; i < argc; i++) {
         std::string key(argv[i]);
+
+#ifdef MAC_OSX
+        // At the first time when a user gets the "App downloaded from the
+        // internet" warning, and clicks the Open button, macOS passes
+        // a unique process serial number (PSN) as -psn_... command-line
+        // argument, which we filter out.
+        if (key.substr(0, 5) == "-psn_") continue;
+#endif
+
         if (key == "-") break; //bitcoin-tx using stdin
         std::string val;
         size_t is_index = key.find('=');
@@ -1078,17 +1088,19 @@ void AllocateFileRange(FILE *file, unsigned int offset, unsigned int length) {
     SetEndOfFile(hFile);
 #elif defined(MAC_OSX)
     // OSX specific version
+    // NOTE: Contrary to other OS versions, the OSX version assumes that
+    // NOTE: offset is the size of the file.
     fstore_t fst;
     fst.fst_flags = F_ALLOCATECONTIG;
     fst.fst_posmode = F_PEOFPOSMODE;
     fst.fst_offset = 0;
-    fst.fst_length = (off_t)offset + length;
+    fst.fst_length = length; // mac os fst_length takes the # of free bytes to allocate, not desired file size
     fst.fst_bytesalloc = 0;
     if (fcntl(fileno(file), F_PREALLOCATE, &fst) == -1) {
         fst.fst_flags = F_ALLOCATEALL;
         fcntl(fileno(file), F_PREALLOCATE, &fst);
     }
-    ftruncate(fileno(file), fst.fst_length);
+    ftruncate(fileno(file), static_cast<off_t>(offset) + length);
 #else
     #if defined(__linux__)
     // Version using posix_fallocate
@@ -1153,12 +1165,12 @@ void SetupEnvironment()
     }
 #endif
     // On most POSIX systems (e.g. Linux, but not BSD) the environment's locale
-    // may be invalid, in which case the "C" locale is used as fallback.
+    // may be invalid, in which case the "C.UTF-8" locale is used as fallback.
 #if !defined(WIN32) && !defined(MAC_OSX) && !defined(__FreeBSD__) && !defined(__OpenBSD__)
     try {
         std::locale(""); // Raises a runtime error if current locale is invalid
     } catch (const std::runtime_error&) {
-        setenv("LC_ALL", "C", 1);
+        setenv("LC_ALL", "C.UTF-8", 1);
     }
 #elif defined(WIN32)
     // Set the default input/output charset is utf-8
@@ -1218,6 +1230,19 @@ fs::path AbsPathForConfigVal(const fs::path& path, bool net_specific)
         return path;
     }
     return fs::absolute(path, GetDataDir(net_specific));
+}
+
+void SetThreadPriority(int nPriority)
+{
+#ifdef WIN32
+    SetThreadPriority(GetCurrentThread(), nPriority);
+#else // WIN32
+#ifdef PRIO_THREAD
+    setpriority(PRIO_THREAD, 0, nPriority);
+#else // PRIO_THREAD
+    setpriority(PRIO_PROCESS, 0, nPriority);
+#endif // PRIO_THREAD
+#endif // WIN32
 }
 
 int ScheduleBatchPriority()

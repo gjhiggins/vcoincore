@@ -248,7 +248,9 @@ def runStrip(binaryPath: str, verbose: int):
     subprocess.check_call([stripbin, "-x", binaryPath])
 
 def copyFramework(framework: FrameworkInfo, path: str, verbose: int) -> Optional[str]:
+
     os.system("cp contrib/Frameworks/libboost_system-mt.dylib dist/VCore-Qt.app/Contents/Frameworks/")
+
     if framework.sourceFilePath.startswith("Qt"):
         #standard place for Nokia Qt installer's frameworks
         fromPath = "/Library/Frameworks/" + framework.sourceFilePath

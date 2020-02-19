@@ -1292,14 +1292,22 @@ bool CChainState::IsInitialBlockDownload() const
     LOCK(cs_main);
     if (m_cached_finished_ibd.load(std::memory_order_relaxed))
         return false;
-    if (fImporting || fReindex)
+    if (fImporting || fReindex) {
+        LogPrintf("fImporting / fReindex\n");
         return true;
-    if (m_chain.Tip() == nullptr)
+    }
+    if (m_chain.Tip() == nullptr) {
+        LogPrintf("Tip is NULL\n");
         return true;
-    if (m_chain.Tip()->nChainWork < nMinimumChainWork)
+    }
+    if (m_chain.Tip()->nChainWork < nMinimumChainWork) {
+        LogPrintf("FImporting / fReindex\n");
         return true;
-    if (m_chain.Tip()->GetBlockTime() < (GetTime() - nMaxTipAge))
+    }
+    if (m_chain.Tip()->GetBlockTime() < (GetTime() - nMaxTipAge)) {
+        LogPrintf("Tip too old\n");
         return true;
+    }
     LogPrintf("Leaving InitialBlockDownload (latching to false)\n");
     m_cached_finished_ibd.store(true, std::memory_order_relaxed);
     return false;
@@ -1821,7 +1829,8 @@ public:
 
     bool Condition(const CBlockIndex* pindex, const Consensus::Params& params) const override
     {
-        return ((pindex->nVersion & VERSIONBITS_TOP_MASK) == VERSIONBITS_TOP_BITS) &&
+        return /*pindex->nHeight >= params.MinBIP9WarningHeight && */
+               ((pindex->nVersion & VERSIONBITS_TOP_MASK) == VERSIONBITS_TOP_BITS) &&
                ((pindex->nVersion >> bit) & 1) != 0 &&
                ((ComputeBlockVersion(pindex->pprev, params) >> bit) & 1) == 0;
     }
@@ -1989,8 +1998,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     // Now that the whole chain is irreversibly beyond that time it is applied to all blocks except the
     // two in the chain that violate it. This prevents exploiting the issue against nodes during their
     // initial block download.
-    bool fEnforceBIP30 = !((pindex->nHeight==91842 && pindex->GetBlockHash() == uint256S("0x00000000000a4d0a398161ffc163c503763b1f4360639393e0e4c8e300e0caec")) ||
-                           (pindex->nHeight==91880 && pindex->GetBlockHash() == uint256S("0x00000000000743f190a18c5577a3c2d2a1f610ae9601ac046a38084ccb7cd721")));
+    bool fEnforceBIP30 = (!pindex->phashBlock);
 
     // Once BIP34 activated it was not possible to create new duplicate coinbases and thus other than starting
     // with the 2 existing duplicate coinbase pairs, not possible to create overwriting txs.  But by the
@@ -2925,6 +2933,38 @@ bool CChainState::InvalidateBlock(CValidationState& state, const CChainParams& c
     bool pindex_was_in_chain = false;
     int disconnected = 0;
 
+    // We do not allow ActivateBestChain() to run while InvalidateBlock() is
+    // running, as that could cause the tip to change while we disconnect
+    // blocks.
+    LOCK(m_cs_chainstate);
+
+    // We'll be acquiring and releasing cs_main below, to allow the validation
+    // callbacks to run. However, we should keep the block index in a
+    // consistent state as we disconnect blocks -- in particular we need to
+    // add equal-work blocks to setBlockIndexCandidates as we disconnect.
+    // To avoid walking the block index repeatedly in search of candidates,
+    // build a map once so that we can look up candidate blocks by chain
+    // work as we go.
+    std::multimap<const arith_uint256, CBlockIndex *> candidate_blocks_by_work;
+
+    {
+        LOCK(cs_main);
+        for (const auto& entry : m_blockman.m_block_index) {
+            CBlockIndex *candidate = entry.second;
+            // We don't need to put anything in our active chain into the
+            // multimap, because those candidates will be found and considered
+            // as we disconnect.
+            // Instead, consider only non-active-chain blocks that have at
+            // least as much work as where we expect the new tip to end up.
+            if (!m_chain.Contains(candidate) &&
+                    !CBlockIndexWorkComparator()(candidate, pindex->pprev) &&
+                    candidate->IsValid(BLOCK_VALID_TRANSACTIONS) &&
+                    candidate->HaveTxsDownloaded()) {
+                candidate_blocks_by_work.insert(std::make_pair(candidate->nChainWork, candidate));
+            }
+        }
+    }
+
     // Disconnect (descendants of) pindex, and mark them invalid.
     while (true) {
         if (ShutdownRequested()) break;
@@ -2967,10 +3007,23 @@ bool CChainState::InvalidateBlock(CValidationState& state, const CChainParams& c
             setDirtyBlockIndex.insert(to_mark_failed);
         }
 
+        // Add any equal or more work headers to setBlockIndexCandidates
+        auto candidate_it = candidate_blocks_by_work.lower_bound(invalid_walk_tip->pprev->nChainWork);
+        while (candidate_it != candidate_blocks_by_work.end()) {
+            if (!CBlockIndexWorkComparator()(candidate_it->second, invalid_walk_tip->pprev)) {
+                setBlockIndexCandidates.insert(candidate_it->second);
+                candidate_it = candidate_blocks_by_work.erase(candidate_it);
+            } else {
+                ++candidate_it;
+            }
+        }
+
         // Track the last disconnected block, so we can correct its BLOCK_FAILED_CHILD status in future
         // iterations, or, if it's the last one, call InvalidChainFound on it.
         to_mark_failed = invalid_walk_tip;
     }
+
+    CheckBlockIndex(chainparams.GetConsensus());
 
     {
         LOCK(cs_main);
@@ -2985,8 +3038,13 @@ bool CChainState::InvalidateBlock(CValidationState& state, const CChainParams& c
         setBlockIndexCandidates.erase(to_mark_failed);
         m_blockman.m_failed_blocks.insert(to_mark_failed);
 
-        // The resulting new best tip may not be in setBlockIndexCandidates anymore, so
-        // add it again.
+        // If any new blocks somehow arrived while we were disconnecting
+        // (above), then the pre-calculation of what should go into
+        // setBlockIndexCandidates may have missed entries. This would
+        // technically be an inconsistency in the block index, but if we clean
+        // it up here, this should be an essentially unobservable error.
+        // Loop back over all block index entries and add any missing entries
+        // to setBlockIndexCandidates.
         BlockMap::iterator it = m_blockman.m_block_index.begin();
         while (it != m_blockman.m_block_index.end()) {
             if (it->second->IsValid(BLOCK_VALID_TRANSACTIONS) && it->second->HaveTxsDownloaded() && !setBlockIndexCandidates.value_comp()(it->second, m_chain.Tip())) {
@@ -3277,12 +3335,12 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
 bool IsWitnessEnabled(const CBlockIndex* pindexPrev, const Consensus::Params& params)
 {
     int height = pindexPrev == nullptr ? 0 : pindexPrev->nHeight + 1;
+    bool iswitnessenabled = height >= params.SegwitHeight;
+    LogPrintf("IsWitnessEnabled = %s (%u %u)\n", iswitnessenabled, height, params.SegwitHeight);
     return (height >= params.SegwitHeight);
 }
 
-// Compute at which vout of the block's coinbase transaction the witness
-// commitment occurs, or -1 if not found.
-static int GetWitnessCommitmentIndex(const CBlock& block)
+int GetWitnessCommitmentIndex(const CBlock& block)
 {
     int commitpos = -1;
     if (!block.vtx.empty()) {
@@ -3468,7 +3526,7 @@ static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, c
 
     // No witness data is allowed in blocks that don't commit to witness data, as this would otherwise leave room for spam
     if (!fHaveWitness) {
-      for (const auto& tx : block.vtx) {
+        for (const auto& tx : block.vtx) {
             if (tx->HasWitness()) {
                 return state.Invalid(ValidationInvalidReason::BLOCK_MUTATED, false, REJECT_INVALID, "unexpected-witness", strprintf("%s : unexpected witness data found", __func__));
             }

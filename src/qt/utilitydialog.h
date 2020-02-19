@@ -53,5 +53,4 @@ protected:
     void closeEvent(QCloseEvent *event);
 };
 
-
 #endif // BITCOIN_QT_UTILITYDIALOG_H

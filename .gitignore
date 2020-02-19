@@ -1,11 +1,13 @@
 *.tar.gz
 
 *.exe
-*.pdb
 src/vcore
 src/vcored
 src/vcore-cli
 src/vcore-tx
+src/test/test_vcore
+src/test/test_vcore_fuzzy
+src/qt/test/test_vcore-qt
 src/vcore-wallet
 src/test/test_vcore
 src/test/test_vcore_fuzzy
@@ -121,7 +123,6 @@ win32-build
 test/config.ini
 test/cache/*
 
-!depends*/Makefile
 !src/leveldb*/Makefile
 /attic*
 

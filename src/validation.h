@@ -22,7 +22,6 @@
 #include <txdb.h>
 #include <versionbits.h>
 
-#include <algorithm>
 #include <atomic>
 #include <exception>
 #include <map>
@@ -113,7 +112,7 @@ static const int64_t DEFAULT_MAX_TIP_AGE = 24 * 60 * 60;
 /** Maximum age of our tip in seconds for us to be considered current for fee estimation */
 static const int64_t MAX_FEE_ESTIMATION_TIP_AGE = 3 * 60 * 60;
 
-static const bool DEFAULT_CHECKPOINTS_ENABLED = true;
+static const bool DEFAULT_CHECKPOINTS_ENABLED = false;
 static const bool DEFAULT_TXINDEX = false;
 static const char* const DEFAULT_BLOCKFILTERINDEX = "0";
 static const unsigned int DEFAULT_BANSCORE_THRESHOLD = 100;
@@ -383,6 +382,9 @@ bool IsWitnessEnabled(const CBlockIndex* pindexPrev, const Consensus::Params& pa
 
 /** When there are blocks in the active chain with missing data, rewind the chainstate and remove them from the block index */
 bool RewindBlockIndex(const CChainParams& params) LOCKS_EXCLUDED(cs_main);
+
+/** Compute at which vout of the block's coinbase transaction the witness commitment occurs, or -1 if not found */
+int GetWitnessCommitmentIndex(const CBlock& block);
 
 /** Update uncommitted block structures (currently: only the witness reserved value). This is safe for submitted blocks. */
 void UpdateUncommittedBlockStructures(CBlock& block, const CBlockIndex* pindexPrev, const Consensus::Params& consensusParams);

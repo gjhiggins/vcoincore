@@ -330,12 +330,12 @@
         <translation>Sign &amp;message...</translation>
     </message>
     <message>
-        <location line="+623"/>
+        <location line="+625"/>
         <source>Synchronizing with network...</source>
         <translation>Synchronizing with network...</translation>
     </message>
     <message>
-        <location line="-701"/>
+        <location line="-703"/>
         <source>&amp;Overview</source>
         <translation>&amp;Overview</translation>
     </message>
@@ -420,7 +420,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Create a new wallet</source>
         <translation type="unfinished"></translation>
     </message>
@@ -430,7 +430,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+334"/>
+        <location line="+335"/>
         <source>Click to disable network activity.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -460,7 +460,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1021"/>
+        <location line="-1023"/>
         <source>Send coins to a Bitcoin address</source>
         <translation>Send coins to a Bitcoin address</translation>
     </message>
@@ -525,7 +525,7 @@
         <translation>Verify messages to ensure they were signed with specified Bitcoin addresses</translation>
     </message>
     <message>
-        <location line="+110"/>
+        <location line="+111"/>
         <source>&amp;File</source>
         <translation>&amp;File</translation>
     </message>
@@ -545,7 +545,7 @@
         <translation>Tabs toolbar</translation>
     </message>
     <message>
-        <location line="-256"/>
+        <location line="-257"/>
         <source>Request payments (generates QR codes and bitcoin: URIs)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -565,12 +565,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+14"/>
         <source>&amp;Command-line options</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location line="+522"/>
+        <location line="+523"/>
         <source>%n active connection(s) to Bitcoin network</source>
         <translation>
             <numerusform>%n active connection to Bitcoin network</numerusform>
@@ -631,7 +631,7 @@
         <translation>Up to date</translation>
     </message>
     <message>
-        <location line="-642"/>
+        <location line="-644"/>
         <source>&amp;Sending addresses</source>
         <translation type="unfinished"></translation>
     </message>
@@ -661,7 +661,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+8"/>
         <source>Show the %1 help message to get a list with possible Bitcoin command-line options</source>
         <translation type="unfinished"></translation>
     </message>
@@ -696,7 +696,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+232"/>
+        <location line="+233"/>
         <source>%1 client</source>
         <translation type="unfinished"></translation>
     </message>
@@ -990,7 +990,7 @@
 <context>
     <name>CreateWalletActivity</name>
     <message>
-        <location filename="../walletcontroller.cpp" line="+201"/>
+        <location filename="../walletcontroller.cpp" line="+207"/>
         <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1251,7 +1251,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+78"/>
+        <location line="+79"/>
         <source>Error: Specified data directory &quot;%1&quot; cannot be created.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1850,7 +1850,7 @@
 <context>
     <name>PaymentServer</name>
     <message>
-        <location filename="../paymentserver.cpp" line="+226"/>
+        <location filename="../paymentserver.cpp" line="+228"/>
         <location line="+350"/>
         <location line="+42"/>
         <location line="+108"/>
@@ -2209,7 +2209,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+38"/>
+        <location line="+39"/>
         <source>QR code support not available.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2838,7 +2838,7 @@
 <context>
     <name>RecentRequestsTableModel</name>
     <message>
-        <location filename="../recentrequeststablemodel.cpp" line="+27"/>
+        <location filename="../recentrequeststablemodel.cpp" line="+26"/>
         <source>Date</source>
         <translation type="unfinished">Date</translation>
     </message>
@@ -3621,7 +3621,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 satos
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+52"/>
         <source>Status</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3680,12 +3680,12 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 satos
         <location line="+12"/>
         <location line="+54"/>
         <location line="+30"/>
-        <location line="+60"/>
+        <location line="+68"/>
         <source>Credit</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location line="-154"/>
+        <location line="-162"/>
         <source>matures in %n more block(s)</source>
         <translation>
             <numerusform>matures in %n more block</numerusform>
@@ -3700,12 +3700,12 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 satos
     <message>
         <location line="+60"/>
         <location line="+26"/>
-        <location line="+63"/>
+        <location line="+71"/>
         <source>Debit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-79"/>
+        <location line="-87"/>
         <source>Total debit</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3756,7 +3756,12 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 satos
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+23"/>
+        <source> (Certificate was not verified)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
         <source>Merchant</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4157,7 +4162,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 satos
 <context>
     <name>WalletController</name>
     <message>
-        <location filename="../walletcontroller.cpp" line="-205"/>
+        <location filename="../walletcontroller.cpp" line="-211"/>
         <source>Close wallet</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4183,7 +4188,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 satos
 <context>
     <name>WalletModel</name>
     <message>
-        <location filename="../walletmodel.cpp" line="+219"/>
+        <location filename="../walletmodel.cpp" line="+222"/>
         <source>Send Coins</source>
         <translation type="unfinished">Send Coins</translation>
     </message>

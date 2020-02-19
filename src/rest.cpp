@@ -355,7 +355,7 @@ static bool rest_solid(HTTPRequest* req, const std::string& strURIPart)
     ]  \
   }  \
 ]  \
-";
+.";
 
         req->WriteHeader("Content-Type", "application/json");
         req->WriteReply(HTTP_OK, strJSON);

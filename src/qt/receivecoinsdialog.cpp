@@ -153,7 +153,6 @@ void ReceiveCoinsDialog::on_receiveButton_clicked()
 
     QString address;
     QString label = ui->reqLabel->text();
-//    QString inscription = QString("");
     /* Generate new receiving address */
     OutputType address_type;
     if (ui->useBech32->isChecked()) {

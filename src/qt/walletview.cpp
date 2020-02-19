@@ -6,7 +6,6 @@
 
 #include <qt/addressbookpage.h>
 #include <qt/askpassphrasedialog.h>
-// #include <qt/blockexplorer.h>
 #include <qt/bitcoingui.h>
 #include <qt/clientmodel.h>
 #include <qt/guiutil.h>
@@ -19,10 +18,6 @@
 #include <qt/transactiontablemodel.h>
 #include <qt/transactionview.h>
 #include <qt/walletmodel.h>
-
-// #include <qt/inscriptionpage.h>
-// #include <qt/publisherpage.h>
-#include <qt/utilitydialog.h>
 
 #include <interfaces/node.h>
 #include <ui_interface.h>
@@ -43,10 +38,6 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 {
     // Create tabs
     overviewPage = new OverviewPage(platformStyle);
-
-    // inscriptionPage = new InscriptionPage(this);
-    // publisherPage = new PublisherPage(this);
-    // explorerWindow = new BlockExplorer(this);
 
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -73,9 +64,6 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(transactionsPage);
     addWidget(receiveCoinsPage);
     addWidget(sendCoinsPage);
-    // addWidget(inscriptionPage);
-    // addWidget(publisherPage);
-    // addWidget(explorerWindow);
 
     // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, &OverviewPage::transactionClicked, transactionView, static_cast<void (TransactionView::*)(const QModelIndex&)>(&TransactionView::focusTransaction));
@@ -143,7 +131,6 @@ void WalletView::setWalletModel(WalletModel *_walletModel)
     sendCoinsPage->setModel(_walletModel);
     usedReceivingAddressesPage->setModel(_walletModel ? _walletModel->getAddressTableModel() : nullptr);
     usedSendingAddressesPage->setModel(_walletModel ? _walletModel->getAddressTableModel() : nullptr);
-    // inscriptionsPage->setModel(_walletmodel ? _walletModel->getInscriptionTableModel() : nullptr);
 
     if (_walletModel)
     {
@@ -197,11 +184,6 @@ void WalletView::gotoHistoryPage()
 {
     setCurrentWidget(transactionsPage);
 }
-
-// void WalletView::gotoBlockExplorerPage()
-// {
-//     setCurrentWidget(explorerWindow);
-// }
 
 void WalletView::gotoReceiveCoinsPage()
 {
@@ -349,19 +331,3 @@ void WalletView::requestedSyncWarningInfo()
 {
     Q_EMIT outOfSyncWarningClicked();
 }
-
-// void WalletView::gotoInscriptionPage()
-// {
-//     setCurrentWidget(inscriptionPage); 
-// }
-
-// void WalletView::gotoPublisherPage()
-// {
-//     setCurrentWidget(publisherPage);
-// }
-
-// void WalletView::gotoBlockExplorerPage()
-// {
-//     setCurrentWidget(blockexplorerPage);
-// }
-

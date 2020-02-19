@@ -49,6 +49,7 @@ static const size_t OUTPUT_GROUP_MAX_ENTRIES = 10;
 
 static CCriticalSection cs_wallets;
 static std::vector<std::shared_ptr<CWallet>> vpwallets GUARDED_BY(cs_wallets);
+static std::list<LoadWalletFn> g_load_wallet_fns GUARDED_BY(cs_wallets);
 
 bool AddWallet(const std::shared_ptr<CWallet>& wallet)
 {
@@ -89,6 +90,13 @@ std::shared_ptr<CWallet> GetWallet(const std::string& name)
         if (wallet->GetName() == name) return wallet;
     }
     return nullptr;
+}
+
+std::unique_ptr<interfaces::Handler> HandleLoadWallet(LoadWalletFn load_wallet)
+{
+    LOCK(cs_wallets);
+    auto it = g_load_wallet_fns.emplace(g_load_wallet_fns.end(), std::move(load_wallet));
+    return interfaces::MakeHandler([it] { LOCK(cs_wallets); g_load_wallet_fns.erase(it); });
 }
 
 static Mutex g_wallet_release_mutex;
@@ -387,8 +395,8 @@ bool CWallet::AddKeyPubKeyWithDB(WalletBatch& batch, const CKey& secret, const C
 
     if (!IsCrypted()) {
         return batch.WriteKey(pubkey,
-                                                 secret.GetPrivKey(),
-                                                 mapKeyMetadata[pubkey.GetID()]);
+                              secret.GetPrivKey(),
+                              mapKeyMetadata[pubkey.GetID()]);
     }
     UnsetWalletFlagWithDB(batch, WALLET_FLAG_BLANK_WALLET);
     return true;
@@ -1047,7 +1055,7 @@ bool CWallet::MarkReplaced(const uint256& originalHash, const uint256& newHash)
     return success;
 }
 
-void CWallet::SetUsedDestinationState(const uint256& hash, unsigned int n, bool used)
+void CWallet::SetUsedDestinationState(const uint256& hash, unsigned int n, bool used, std::set<CTxDestination>& tx_destinations)
 {
     const CWalletTx* srctx = GetWalletTx(hash);
     if (!srctx) return;
@@ -1057,7 +1065,9 @@ void CWallet::SetUsedDestinationState(const uint256& hash, unsigned int n, bool 
         if (::IsMine(*this, dst)) {
             LOCK(cs_wallet);
             if (used && !GetDestData(dst, "used", nullptr)) {
-                AddDestData(dst, "used", "p"); // p for "present", opposite of absent (null)
+                if (AddDestData(dst, "used", "p")) { // p for "present", opposite of absent (null)
+                    tx_destinations.insert(dst);
+                }
             } else if (!used && GetDestData(dst, "used", nullptr)) {
                 EraseDestData(dst, "used");
             }
@@ -1065,17 +1075,31 @@ void CWallet::SetUsedDestinationState(const uint256& hash, unsigned int n, bool 
     }
 }
 
-bool CWallet::IsUsedDestination(const CTxDestination& dst) const
-{
-    LOCK(cs_wallet);
-    return ::IsMine(*this, dst) && GetDestData(dst, "used", nullptr);
-}
-
 bool CWallet::IsUsedDestination(const uint256& hash, unsigned int n) const
 {
+    AssertLockHeld(cs_wallet);
     CTxDestination dst;
     const CWalletTx* srctx = GetWalletTx(hash);
-    return srctx && ExtractDestination(srctx->tx->vout[n].scriptPubKey, dst) && IsUsedDestination(dst);
+    if (srctx) {
+        assert(srctx->tx->vout.size() > n);
+        // When descriptor wallets arrive, these additional checks are
+        // likely superfluous and can be optimized out
+        for (const auto& keyid : GetAffectedKeys(srctx->tx->vout[n].scriptPubKey, *this)) {
+            WitnessV0KeyHash wpkh_dest(keyid);
+            if (GetDestData(wpkh_dest, "used", nullptr)) {
+                return true;
+            }
+            ScriptHash sh_wpkh_dest(GetScriptForDestination(wpkh_dest));
+            if (GetDestData(sh_wpkh_dest, "used", nullptr)) {
+                return true;
+            }
+            PKHash pkh_dest(keyid);
+            if (GetDestData(pkh_dest, "used", nullptr)) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFlushOnClose)
@@ -1088,10 +1112,14 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFlushOnClose)
 
     if (IsWalletFlagSet(WALLET_FLAG_AVOID_REUSE)) {
         // Mark used destinations
+        std::set<CTxDestination> tx_destinations;
+
         for (const CTxIn& txin : wtxIn.tx->vin) {
             const COutPoint& op = txin.prevout;
-            SetUsedDestinationState(op.hash, op.n, true);
+            SetUsedDestinationState(op.hash, op.n, true, tx_destinations);
         }
+
+        MarkDestinationsDirty(tx_destinations);
     }
 
     // Inserts only if not already there, returns tx inserted or tx found
@@ -3376,6 +3404,7 @@ DBErrors CWallet::ZapSelectTx(std::vector<uint256>& vHashIn, std::vector<uint256
         const auto& it = mapWallet.find(hash);
         wtxOrdered.erase(it->second.m_it_wtxOrdered);
         mapWallet.erase(it);
+        NotifyTransactionChanged(this, hash, CT_DELETED);
     }
 
     if (nZapSelectTxRet == DBErrors::NEED_REWRITE)
@@ -3768,6 +3797,21 @@ int64_t CWallet::GetOldestKeyPoolTime()
     }
 
     return oldestKey;
+}
+
+void CWallet::MarkDestinationsDirty(const std::set<CTxDestination>& destinations) {
+    for (auto& entry : mapWallet) {
+        CWalletTx& wtx = entry.second;
+
+        for (unsigned int i = 0; i < wtx.tx->vout.size(); i++) {
+            CTxDestination dst;
+
+            if (ExtractDestination(wtx.tx->vout[i].scriptPubKey, dst) && destinations.count(dst)) {
+                wtx.MarkDirty();
+                break;
+            }
+        }
+    }
 }
 
 std::map<CTxDestination, CAmount> CWallet::GetAddressBalances(interfaces::Chain::Lock& locked_chain)
@@ -4584,7 +4628,12 @@ std::shared_ptr<CWallet> CWallet::CreateWalletFromFile(interfaces::Chain& chain,
         }
     }
 
-    chain.loadWallet(interfaces::MakeWallet(walletInstance));
+    {
+        LOCK(cs_wallets);
+        for (auto& load_wallet : g_load_wallet_fns) {
+            load_wallet(interfaces::MakeWallet(walletInstance));
+        }
+    }
 
     // Register with the validation interface. It's ok to do this after rescan since we're still holding locked_chain.
     walletInstance->handleNotifications();
@@ -4946,4 +4995,22 @@ bool CWallet::AddCryptedKeyInner(const CPubKey &vchPubKey, const std::vector<uns
     mapCryptedKeys[vchPubKey.GetID()] = make_pair(vchPubKey, vchCryptedSecret);
     ImplicitlyLearnRelatedKeyScripts(vchPubKey);
     return true;
+}
+
+void CWallet::GetScriptForMining(CScript& script)
+{
+    ReserveDestination reservedest(this);
+
+    // Reserve a new key pair from key pool
+    if (!CanGetAddresses(true)) {
+        LogPrintf("%s: can't generate a mining-address key. No keys in the internal keypool and can't generate any keys.\n", __func__);
+        return;
+    }
+    CTxDestination dest;
+    bool ret = reservedest.GetReservedDestination(OutputType::LEGACY, dest, true);
+    if (!ret) {
+        LogPrintf("%s: keypool ran out, please call keypoolrefill first", __func__);
+        return;
+    }
+    script = GetScriptForDestination(dest);
 }

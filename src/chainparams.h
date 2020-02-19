@@ -61,8 +61,9 @@ public:
     const CMessageHeader::MessageStartChars& MessageStart() const { return pchMessageStart; }
     int GetDefaultPort() const { return nDefaultPort; }
 
-    bool MiningRequiresPeers() const {return fMiningRequiresPeers; }
     const CBlock& GenesisBlock() const { return genesis; }
+    /** Make miner wait to have peers to avoid wasting work */
+    bool MiningRequiresPeers() const { return fMiningRequiresPeers; }
     /** Default value for -checkmempool and -checkblockindex argument */
     bool DefaultConsistencyChecks() const { return fDefaultConsistencyChecks; }
     /** Policy: Filter transactions that do not match well-defined patterns */
@@ -100,10 +101,10 @@ protected:
     std::string strNetworkID;
     CBlock genesis;
     std::vector<SeedSpec6> vFixedSeeds;
+    bool fMiningRequiresPeers;
     bool fDefaultConsistencyChecks;
     bool fRequireStandard;
     bool fMineBlocksOnDemand;
-    bool fMiningRequiresPeers;
     bool m_is_test_chain;
     CCheckpointData checkpointData;
     ChainTxData chainTxData;

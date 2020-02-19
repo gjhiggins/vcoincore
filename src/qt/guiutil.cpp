@@ -63,7 +63,6 @@
 void ForceActivation();
 #endif
 
-#define URI_SCHEME "vcore"
 namespace GUIUtil {
 
 QString dateTimeStr(const QDateTime &date)
@@ -115,7 +114,7 @@ void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent)
 bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
     // return if URI is not valid or is no bitcoin: URI
-    if(!uri.isValid() || uri.scheme() != QString(URI_SCHEME))
+    if(!uri.isValid() || uri.scheme() != QString("vcore"))
         return false;
 
     SendCoinsRecipient rv;
@@ -171,14 +170,6 @@ bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 
 bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
 {
-    // Convert vcore:// to vcore:
-    //
-    //    Cannot handle this later, because bitcoin:// will cause Qt to see the part after // as host,
-    //    which will lower-case it (and thus invalidate the address).
-    if(uri.startsWith(URI_SCHEME "://", Qt::CaseInsensitive))
-    {
-        uri.replace(0, std::strlen(URI_SCHEME) + 3, URI_SCHEME ":");
-    }
     QUrl uriInstance(uri);
     return parseBitcoinURI(uriInstance, out);
 }
@@ -187,7 +178,7 @@ QString formatBitcoinURI(const SendCoinsRecipient &info)
 {
     bool bech_32 = info.address.startsWith(QString::fromStdString(Params().Bech32HRP() + "1"));
 
-    QString ret = QString("bitcoin:%1").arg(bech_32 ? info.address.toUpper() : info.address);
+    QString ret = QString("vcore:%1").arg(bech_32 ? info.address.toUpper() : info.address);
     int paramCount = 0;
 
     if (info.amount)
@@ -645,7 +636,7 @@ fs::path static GetAutostartFilePath()
     std::string chain = gArgs.GetChainName();
     if (chain == CBaseChainParams::MAIN)
         return GetAutostartDir() / "vcore.desktop";
-    return GetAutostartDir() / strprintf("vcore-%s.lnk", chain);
+    return GetAutostartDir() / strprintf("vcore-%s.desktop", chain);
 }
 
 bool GetStartOnSystemStartup()
@@ -691,7 +682,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         if (chain == CBaseChainParams::MAIN)
             optionFile << "Name=V Core\n";
         else
-            optionFile << strprintf("Name=Bitcoin (%s)\n", chain);
+            optionFile << strprintf("Name=V Core (%s)\n", chain);
         optionFile << "Exec=" << pszExePath << strprintf(" -min -chain=%s\n", chain);
         optionFile << "Terminal=false\n";
         optionFile << "Hidden=false\n";

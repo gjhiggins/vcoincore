@@ -76,6 +76,7 @@ bool CheckDataDirOption();
 /** Tests only */
 void ClearDatadirCache();
 fs::path GetConfigFile(const std::string& confPath);
+void SetThreadPriority(int nPriority);
 #ifdef WIN32
 fs::path GetSpecialFolderPath(int nFolder, bool fCreate = true);
 #endif
@@ -333,6 +334,8 @@ std::string HelpMessageOpt(const std::string& option, const std::string& message
  * @note This does count virtual cores, such as those provided by HyperThreading.
  */
 int GetNumCores();
+
+void RenameThread(const char* name);
 
 /**
  * .. and a wrapper that just calls func once

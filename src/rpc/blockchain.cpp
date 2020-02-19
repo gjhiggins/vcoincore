@@ -373,7 +373,7 @@ static UniValue getdifficulty(const JSONRPCRequest& request)
 static std::string EntryDescriptionString()
 {
     return "    \"vsize\" : n,            (numeric) virtual transaction size as defined in BIP 141. This is different from actual serialized size for witness transactions as witness data is discounted.\n"
-           "    \"size\" : n,             (numeric) (DEPRECATED) same as vsize. Only returned if bitcoind is started with -deprecatedrpc=size\n"
+           "    \"size\" : n,             (numeric) (DEPRECATED) same as vsize. Only returned if vcored is started with -deprecatedrpc=size\n"
            "                              size will be completely removed in v0.20.\n"
            "    \"weight\" : n,           (numeric) transaction weight as defined in BIP 141.\n"
            "    \"fee\" : n,              (numeric) transaction fee in " + CURRENCY_UNIT + " (DEPRECATED)\n"
@@ -1159,7 +1159,7 @@ static void BIP9SoftForkDescPushBack(UniValue& softforks, const std::string &nam
     {
         bip9.pushKV("bit", consensusParams.vDeployments[id].bit);
     }
-    bip9.pushKV("startTime", consensusParams.vDeployments[id].nStartTime);
+    bip9.pushKV("start_time", consensusParams.vDeployments[id].nStartTime);
     bip9.pushKV("timeout", consensusParams.vDeployments[id].nTimeout);
     int64_t since_height = VersionBitsTipStateSinceHeight(consensusParams, id);
     bip9.pushKV("since", since_height);
@@ -1213,7 +1213,7 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
             "        \"bip9\": {               (object) status of bip9 softforks (only for \"bip9\" type)\n"
             "           \"status\": \"xxxx\",    (string) one of \"defined\", \"started\", \"locked_in\", \"active\", \"failed\"\n"
             "           \"bit\": xx,           (numeric) the bit (0-28) in the block version field used to signal this softfork (only for \"started\" status)\n"
-            "           \"startTime\": xx,     (numeric) the minimum median time past of a block at which the bit gains its meaning\n"
+            "           \"start_time\": xx,     (numeric) the minimum median time past of a block at which the bit gains its meaning\n"
             "           \"timeout\": xx,       (numeric) the median time past of a block at which the deployment is considered failed if not yet locked in\n"
             "           \"since\": xx,         (numeric) height of the first block to which the status applies\n"
             "           \"statistics\": {      (object) numeric statistics about BIP9 signalling for a softfork\n"
@@ -2049,7 +2049,7 @@ UniValue scantxoutset(const JSONRPCRequest& request)
             "                                      \"start\" for starting a scan\n"
             "                                      \"abort\" for aborting the current scan (returns true when abort was successful)\n"
             "                                      \"status\" for progress report (in %) of the current scan"},
-                    {"scanobjects", RPCArg::Type::ARR, RPCArg::Optional::NO, "Array of scan objects\n"
+                    {"scanobjects", RPCArg::Type::ARR, RPCArg::Optional::OMITTED, "Array of scan objects. Required for \"start\" action\n"
             "                                  Every scan object is either a string descriptor or an object:",
                         {
                             {"descriptor", RPCArg::Type::STR, RPCArg::Optional::OMITTED, "An output descriptor"},
@@ -2109,6 +2109,11 @@ UniValue scantxoutset(const JSONRPCRequest& request)
         if (!reserver.reserve()) {
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Scan already in progress, use action \"abort\" or \"status\"");
         }
+
+        if (request.params.size() < 2) {
+            throw JSONRPCError(RPC_MISC_ERROR, "scanobjects argument is required for the start action");
+        }
+
         std::set<CScript> needles;
         std::map<CScript, std::string> descriptors;
         CAmount total_in = 0;

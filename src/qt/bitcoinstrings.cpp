@@ -9,12 +9,11 @@
 #define UNUSED
 #endif
 static const char UNUSED *bitcoin_strings[] = {
-QT_TRANSLATE_NOOP("v-core", "V Core"),
 QT_TRANSLATE_NOOP("v-core", "The %s developers"),
 QT_TRANSLATE_NOOP("v-core", ""
 "-maxtxfee is set very high! Fees this large could be paid on a single "
 "transaction."),
-QT_TRANSLATE_NOOP("bitcoin-core", ""
+QT_TRANSLATE_NOOP("v-core", ""
 "Can't generate a change-address key. No keys in the internal keypool and "
 "can't generate any keys."),
 QT_TRANSLATE_NOOP("v-core", ""

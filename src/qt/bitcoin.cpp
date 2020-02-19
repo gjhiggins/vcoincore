@@ -416,7 +416,7 @@ int GuiMain(int argc, char* argv[])
     std::tie(argc, argv) = winArgs.get();
 #endif
     SetupEnvironment();
-    util::ThreadRename("main");
+    util::ThreadSetInternalName("main");
 
     std::unique_ptr<interfaces::Node> node = interfaces::MakeNode();
 
@@ -436,22 +436,22 @@ int GuiMain(int argc, char* argv[])
 #if QT_VERSION >= 0x050600
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
-#ifdef Q_OS_MAC
-    QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
-#endif
 
     BitcoinApplication app(*node);
 
-    // Register meta types used for QMetaObject::invokeMethod
-    qRegisterMetaType< bool* >();
+    // Register meta types used for QMetaObject::invokeMethod and Qt::QueuedConnection
+    qRegisterMetaType<bool*>();
 #ifdef ENABLE_WALLET
     qRegisterMetaType<WalletModel*>();
 #endif
-    //   Need to pass name here as CAmount is a typedef (see http://qt-project.org/doc/qt-5/qmetatype.html#qRegisterMetaType)
-    //   IMPORTANT if it is no longer a typedef use the normal variant above
-    qRegisterMetaType< CAmount >("CAmount");
-    qRegisterMetaType< std::function<void()> >("std::function<void()>");
+    // Register typedefs (see http://qt-project.org/doc/qt-5/qmetatype.html#qRegisterMetaType)
+    // IMPORTANT: if CAmount is no longer a typedef use the normal variant above (see https://doc.qt.io/qt-5/qmetatype.html#qRegisterMetaType-1)
+    qRegisterMetaType<CAmount>("CAmount");
+    qRegisterMetaType<size_t>("size_t");
+
+    qRegisterMetaType<std::function<void()>>("std::function<void()>");
     qRegisterMetaType<QMessageBox::Icon>("QMessageBox::Icon");
+
     /// 2. Parse command-line options. We do this after qt in order to show an error if there are problems parsing these
     // Command-line options take precedence:
     node->setupServerArgs();
