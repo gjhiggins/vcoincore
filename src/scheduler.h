@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2018 The Bitcoin Core developers
+// Copyright (c) 2015-2020 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -55,6 +55,13 @@ public:
     // need more accurate scheduling, don't use this method.
     void scheduleEvery(Function f, int64_t deltaMilliSeconds);
 
+    /**
+     * Mock the scheduler to fast forward in time.
+     * Iterates through items on taskQueue and reschedules them
+     * to be delta_seconds sooner.
+     */
+    void MockForward(boost::chrono::seconds delta_seconds);
+
     // To keep things as simple as possible, there is no unschedule.
 
     // Services the queue 'forever'. Should be run in a thread,
@@ -98,7 +105,7 @@ class SingleThreadedSchedulerClient {
 private:
     CScheduler *m_pscheduler;
 
-    CCriticalSection m_cs_callbacks_pending;
+    RecursiveMutex m_cs_callbacks_pending;
     std::list<std::function<void ()>> m_callbacks_pending GUARDED_BY(m_cs_callbacks_pending);
     bool m_are_callbacks_running GUARDED_BY(m_cs_callbacks_pending) = false;
 

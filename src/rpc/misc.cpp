@@ -1,18 +1,20 @@
 // Copyright (c) 2010 Satoshi Nakamoto
-// Copyright (c) 2009-2018 The Bitcoin Core developers
+// Copyright (c) 2009-2019 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <crypto/ripemd160.h>
-#include <key_io.h>
 #include <httpserver.h>
+#include <key_io.h>
+#include <node/context.h>
 #include <outputtype.h>
 #include <rpc/blockchain.h>
 #include <rpc/server.h>
 #include <rpc/util.h>
+#include <scheduler.h>
 #include <script/descriptor.h>
-#include <util/system.h>
+#include <util/check.h>
 #include <util/strencodings.h>
+#include <util/system.h>
 #include <util/validation.h>
 
 #include <stdint.h>
@@ -81,8 +83,9 @@ static UniValue createmultisig(const JSONRPCRequest& request)
                 },
                 RPCResult{
             "{\n"
-            "  \"address\":\"multisigaddress\",  (string) The value of the new multisig address.\n"
-            "  \"redeemScript\":\"script\"       (string) The string value of the hex-encoded redemption script.\n"
+            "  \"address\" : \"multisigaddress\",  (string) The value of the new multisig address.\n"
+            "  \"redeemScript\" : \"script\"       (string) The string value of the hex-encoded redemption script.\n"
+            "  \"descriptor\" : \"descriptor\"     (string) The descriptor for this multisig\n"
             "}\n"
                 },
                 RPCExamples{
@@ -119,9 +122,13 @@ static UniValue createmultisig(const JSONRPCRequest& request)
     CScript inner;
     const CTxDestination dest = AddAndGetMultisigDestination(required, pubkeys, output_type, keystore, inner);
 
+    // Make the descriptor
+    std::unique_ptr<Descriptor> descriptor = InferDescriptor(GetScriptForDestination(dest), keystore);
+
     UniValue result(UniValue::VOBJ);
     result.pushKV("address", EncodeDestination(dest));
     result.pushKV("redeemScript", HexStr(inner.begin(), inner.end()));
+    result.pushKV("descriptor", descriptor->ToString());
 
     return result;
 }
@@ -182,7 +189,7 @@ UniValue deriveaddresses(const JSONRPCRequest& request)
                 {"range", RPCArg::Type::RANGE, RPCArg::Optional::OMITTED_NAMED_ARG, "If a ranged descriptor is used, this specifies the end or the range (in [begin,end] notation) to derive."},
             },
             RPCResult{
-                "[ address ] (array) the derived addresses\n"
+                "[ address ] (json array) the derived addresses\n"
             },
             RPCExamples{
                 "First three native segwit receive addresses\n" +
@@ -343,7 +350,7 @@ static UniValue setmocktime(const JSONRPCRequest& request)
             RPCHelpMan{"setmocktime",
                 "\nSet the local time to given timestamp (-regtest only)\n",
                 {
-                    {"timestamp", RPCArg::Type::NUM, RPCArg::Optional::NO, "Unix seconds-since-epoch timestamp\n"
+                    {"timestamp", RPCArg::Type::NUM, RPCArg::Optional::NO, UNIX_EPOCH_TIME + "\n"
             "   Pass 0 to go back to using the system time."},
                 },
                 RPCResults{},
@@ -362,6 +369,36 @@ static UniValue setmocktime(const JSONRPCRequest& request)
 
     RPCTypeCheck(request.params, {UniValue::VNUM});
     SetMockTime(request.params[0].get_int64());
+
+    return NullUniValue;
+}
+
+static UniValue mockscheduler(const JSONRPCRequest& request)
+{
+    RPCHelpMan{"mockscheduler",
+        "\nBump the scheduler into the future (-regtest only)\n",
+        {
+            {"delta_time", RPCArg::Type::NUM, RPCArg::Optional::NO, "Number of seconds to forward the scheduler into the future." },
+        },
+        RPCResults{},
+        RPCExamples{""},
+    }.Check(request);
+
+    if (!Params().IsMockableChain()) {
+        throw std::runtime_error("mockscheduler is for regression testing (-regtest mode) only");
+    }
+
+    // check params are valid values
+    RPCTypeCheck(request.params, {UniValue::VNUM});
+    int64_t delta_seconds = request.params[0].get_int64();
+    if ((delta_seconds <= 0) || (delta_seconds > 3600)) {
+        throw std::runtime_error("delta_time must be between 1 and 3600 seconds (1 hr)");
+    }
+
+    // protect against null pointer dereference
+    CHECK_NONFATAL(g_rpc_node);
+    CHECK_NONFATAL(g_rpc_node->scheduler);
+    g_rpc_node->scheduler->MockForward(boost::chrono::seconds(delta_seconds));
 
     return NullUniValue;
 }
@@ -413,13 +450,13 @@ static UniValue getmemoryinfo(const JSONRPCRequest& request)
                 {
                     RPCResult{"mode \"stats\"",
             "{\n"
-            "  \"locked\": {               (json object) Information about locked memory manager\n"
-            "    \"used\": xxxxx,          (numeric) Number of bytes used\n"
-            "    \"free\": xxxxx,          (numeric) Number of bytes available in current arenas\n"
-            "    \"total\": xxxxxxx,       (numeric) Total number of bytes managed\n"
-            "    \"locked\": xxxxxx,       (numeric) Amount of bytes that succeeded locking. If this number is smaller than total, locking pages failed at some point and key data could be swapped to disk.\n"
-            "    \"chunks_used\": xxxxx,   (numeric) Number allocated chunks\n"
-            "    \"chunks_free\": xxxxx,   (numeric) Number unused chunks\n"
+            "  \"locked\" : {               (json object) Information about locked memory manager\n"
+            "    \"used\" : xxxxx,          (numeric) Number of bytes used\n"
+            "    \"free\" : xxxxx,          (numeric) Number of bytes available in current arenas\n"
+            "    \"total\" : xxxxxxx,       (numeric) Total number of bytes managed\n"
+            "    \"locked\" : xxxxxx,       (numeric) Amount of bytes that succeeded locking. If this number is smaller than total, locking pages failed at some point and key data could be swapped to disk.\n"
+            "    \"chunks_used\" : xxxxx,   (numeric) Number allocated chunks\n"
+            "    \"chunks_free\" : xxxxx,   (numeric) Number unused chunks\n"
             "  }\n"
             "}\n"
                     },
@@ -492,7 +529,7 @@ UniValue logging(const JSONRPCRequest& request)
                 },
                 RPCResult{
             "{                   (json object where keys are the logging categories, and values indicates its status\n"
-            "  \"category\": true|false,  (bool) if being debug logged or not. false:inactive, true:active\n"
+            "  \"category\" : true|false,  (boolean) if being debug logged or not. false:inactive, true:active\n"
             "  ...\n"
             "}\n"
                 },
@@ -541,6 +578,7 @@ static UniValue echo(const JSONRPCRequest& request)
         throw std::runtime_error(
             RPCHelpMan{"echo|echojson ...",
                 "\nSimply echo back the input arguments. This command is for testing.\n"
+                "\nIt will return an internal bug report when exactly 100 arguments are passed.\n"
                 "\nThe difference between echo and echojson is that echojson has argument conversion enabled in the client-side table in "
                 "vcore-cli and the GUI. There is no server-side difference.",
                 {},
@@ -548,6 +586,8 @@ static UniValue echo(const JSONRPCRequest& request)
                 RPCExamples{""},
             }.ToString()
         );
+
+    CHECK_NONFATAL(request.params.size() != 100);
 
     return request.params;
 }
@@ -567,6 +607,7 @@ static const CRPCCommand commands[] =
 
     /* Not shown in help */
     { "hidden",             "setmocktime",            &setmocktime,            {"timestamp"}},
+    { "hidden",             "mockscheduler",          &mockscheduler,          {"delta_time"}},
     { "hidden",             "echo",                   &echo,                   {"arg0","arg1","arg2","arg3","arg4","arg5","arg6","arg7","arg8","arg9"}},
     { "hidden",             "echojson",               &echo,                   {"arg0","arg1","arg2","arg3","arg4","arg5","arg6","arg7","arg8","arg9"}},
 };

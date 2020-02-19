@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2018 The Bitcoin Core developers
+// Copyright (c) 2015-2019 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -41,8 +41,6 @@ void CScheduler::serviceQueue()
         try {
             if (!shouldStop() && taskQueue.empty()) {
                 reverse_lock<boost::unique_lock<boost::mutex> > rlock(lock);
-                // Use this chance to get more entropy
-                RandAddSeedSleep();
             }
             while (!shouldStop() && taskQueue.empty()) {
                 // Wait until there is something to do.
@@ -114,6 +112,28 @@ void CScheduler::schedule(CScheduler::Function f, boost::chrono::system_clock::t
 void CScheduler::scheduleFromNow(CScheduler::Function f, int64_t deltaMilliSeconds)
 {
     schedule(f, boost::chrono::system_clock::now() + boost::chrono::milliseconds(deltaMilliSeconds));
+}
+
+void CScheduler::MockForward(boost::chrono::seconds delta_seconds)
+{
+    assert(delta_seconds.count() > 0 && delta_seconds < boost::chrono::hours{1});
+
+    {
+        boost::unique_lock<boost::mutex> lock(newTaskMutex);
+
+        // use temp_queue to maintain updated schedule
+        std::multimap<boost::chrono::system_clock::time_point, Function> temp_queue;
+
+        for (const auto& element : taskQueue) {
+            temp_queue.emplace_hint(temp_queue.cend(), element.first - delta_seconds, element.second);
+        }
+
+        // point taskQueue to temp_queue
+        taskQueue = std::move(temp_queue);
+    }
+
+    // notify that the taskQueue needs to be processed
+    newTaskScheduled.notify_one();
 }
 
 static void Repeat(CScheduler* s, CScheduler::Function f, int64_t deltaMilliSeconds)

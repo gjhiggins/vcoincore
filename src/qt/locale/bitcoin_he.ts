@@ -70,10 +70,6 @@
         <translation>אלו הן כתובות הביטקוין שלך לשליחת תשלומים. חשוב לבדוק את הסכום ואת הכתובת המקבלת לפני שליחת מטבעות.</translation>
     </message>
     <message>
-        <source>These are your Bitcoin addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>אלה כתובות הביטקוין שלך לקבלת תשלומים. השתמש בלחצן 'צור כתובת קבלה חדשה' בכרטיסייה קבלה כדי ליצור כתובות חדשות.</translation>
-    </message>
-    <message>
         <source>&amp;Copy Address</source>
         <translation>&amp;העתק כתובת</translation>
     </message>
@@ -134,10 +130,6 @@
     <message>
         <source>Repeat new passphrase</source>
         <translation>חזור על הסיסמה החדשה</translation>
-    </message>
-    <message>
-        <source>Show passphrase</source>
-        <translation>הצג סיסמה</translation>
     </message>
     <message>
         <source>Encrypt wallet</source>
@@ -1088,7 +1080,7 @@
     </message>
     <message>
         <source>Prune &amp;block storage to</source>
-        <translation>יש לגזום את &amp;מאגר הבלוקים אל</translation>
+        <translation> יש לגזום את &amp;מאגר הבלוקים אל</translation>
     </message>
     <message>
         <source>GB</source>
@@ -2222,7 +2214,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
     </message>
     <message>
         <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for bitcoin transactions than the network can process.</source>
-        <translation>כאשר יש פחות נפח עסקאות מאשר מקום בבלוק, כורים וכן צמתות מקשרות יכולות להכתיב עמלות מינימום. התשלום של עמלת מינימום הנו תקין, אך יש לקחת בחשבון שהדבר יכול לגרום לעסקה שלא תאושר ברגע שיש יותר ביקוש לעסקאות ביטקוין מאשר הרשת יכולה לעבד.</translation>
+        <translation>כאשר יש פחות נפח עסקאות מאשר מקום בבלוק, כורים וכן צמתות מקשרות יכולות להכתיב עמלות מינימום. התשלום של עמלת מינימום הנו תקין, אך יש לקחת בחשבון שהדבר יכול לגרום לעסקה שלא תאושר ברגע שיש יותר ביקוש לעסקאות ביטקוין מאשר הרשת יכולה לעבד. </translation>
     </message>
     <message>
         <source>A too low fee might result in a never confirming transaction (read the tooltip)</source>
@@ -3263,7 +3255,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
     </message>
     <message>
         <source>Unable to replay blocks. You will need to rebuild the database using -reindex-chainstate.</source>
-        <translation>שידור-חוזר של הבלוקים לא הצליח. תצטרכו לבצע בנייה מחדש של מאגר הנתונים באמצעות הדגל reindex-chainstate-.</translation>
+        <translation> שידור-חוזר של הבלוקים לא הצליח. תצטרכו לבצע בנייה מחדש של מאגר הנתונים באמצעות הדגל reindex-chainstate-.</translation>
     </message>
     <message>
         <source>Unable to rewind the database to a pre-fork state. You will need to redownload the blockchain</source>
@@ -3390,11 +3382,6 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>טעינת כתובות P2P...</translation>
     </message>
     <message>
-        <source>Error: Disk space is too low!</source>
-        <translation>שגיאה: שטח הדיסק נמוך מדי!
- </translation>
-    </message>
-    <message>
         <source>Loading banlist...</source>
         <translation>טוען רשימת חסומים...</translation>
     </message>
@@ -3508,7 +3495,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
     </message>
     <message>
         <source>Section [%s] is not recognized.</source>
-        <translation>הפסקה [%s] אינה מזוהה.</translation>
+        <translation> הפסקה [%s] אינה מזוהה.</translation>
     </message>
     <message>
         <source>Signing transaction failed</source>

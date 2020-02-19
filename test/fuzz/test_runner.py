@@ -12,6 +12,41 @@ import sys
 import subprocess
 import logging
 
+# Fuzzers known to lack a seed corpus in https://github.com/bitcoin-core/qa-assets/tree/master/fuzz_seed_corpus
+FUZZERS_MISSING_CORPORA = [
+    "addr_info_deserialize",
+    "asmap",
+    "base_encode_decode",
+    "block",
+    "block_file_info_deserialize",
+    "block_filter_deserialize",
+    "block_header_and_short_txids_deserialize",
+    "decode_tx",
+    "fee_rate_deserialize",
+    "flat_file_pos_deserialize",
+    "hex",
+    "integer",
+    "key_origin_info_deserialize",
+    "merkle_block_deserialize",
+    "out_point_deserialize",
+    "parse_hd_keypath",
+    "parse_numbers",
+    "parse_script",
+    "parse_univalue",
+    "partial_merkle_tree_deserialize",
+    "partially_signed_transaction_deserialize",
+    "prefilled_transaction_deserialize",
+    "psbt_input_deserialize",
+    "psbt_output_deserialize",
+    "pub_key_deserialize",
+    "script_deserialize",
+    "strprintf",
+    "sub_net_deserialize",
+    "tx_in",
+    "tx_in_deserialize",
+    "tx_out",
+]
+
 
 def main():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -26,6 +61,16 @@ def main():
         '--export_coverage',
         action='store_true',
         help='If true, export coverage information to files in the seed corpus',
+    )
+    parser.add_argument(
+        '--valgrind',
+        action='store_true',
+        help='If true, run fuzzing binaries under the valgrind memory error detector',
+    )
+    parser.add_argument(
+        '-x',
+        '--exclude',
+        help="A comma-separated list of targets to exclude",
     )
     parser.add_argument(
         'seed_dir',
@@ -61,7 +106,7 @@ def main():
         logging.error("No fuzz targets found")
         sys.exit(1)
 
-    logging.info("Fuzz targets found: {}".format(test_list_all))
+    logging.debug("{} fuzz target(s) found: {}".format(len(test_list_all), " ".join(sorted(test_list_all))))
 
     args.target = args.target or test_list_all  # By default run all
     test_list_error = list(set(args.target).difference(set(test_list_all)))
@@ -70,7 +115,15 @@ def main():
     test_list_selection = list(set(test_list_all).intersection(set(args.target)))
     if not test_list_selection:
         logging.error("No fuzz targets selected")
-    logging.info("Fuzz targets selected: {}".format(test_list_selection))
+    if args.exclude:
+        for excluded_target in args.exclude.split(","):
+            if excluded_target not in test_list_selection:
+                logging.error("Target \"{}\" not found in current target list.".format(excluded_target))
+                continue
+            test_list_selection.remove(excluded_target)
+    test_list_selection.sort()
+
+    logging.info("{} of {} detected fuzz target(s) selected: {}".format(len(test_list_selection), len(test_list_all), " ".join(test_list_selection)))
 
     try:
         help_output = subprocess.run(
@@ -78,7 +131,7 @@ def main():
                 os.path.join(config["environment"]["BUILDDIR"], 'src', 'test', 'fuzz', test_list_selection[0]),
                 '-help=1',
             ],
-            timeout=1,
+            timeout=10,
             check=True,
             stderr=subprocess.PIPE,
             universal_newlines=True,
@@ -95,21 +148,35 @@ def main():
         test_list=test_list_selection,
         build_dir=config["environment"]["BUILDDIR"],
         export_coverage=args.export_coverage,
+        use_valgrind=args.valgrind,
     )
 
 
-def run_once(*, corpus, test_list, build_dir, export_coverage):
+def run_once(*, corpus, test_list, build_dir, export_coverage, use_valgrind):
     for t in test_list:
+        corpus_path = os.path.join(corpus, t)
+        if t in FUZZERS_MISSING_CORPORA:
+            os.makedirs(corpus_path, exist_ok=True)
         args = [
             os.path.join(build_dir, 'src', 'test', 'fuzz', t),
             '-runs=1',
-            os.path.join(corpus, t),
+            corpus_path,
         ]
+        if use_valgrind:
+            args = ['valgrind', '--quiet', '--error-exitcode=1'] + args
         logging.debug('Run {} with args {}'.format(t, args))
         result = subprocess.run(args, stderr=subprocess.PIPE, universal_newlines=True)
         output = result.stderr
         logging.debug('Output: {}'.format(output))
-        result.check_returncode()
+        try:
+            result.check_returncode()
+        except subprocess.CalledProcessError as e:
+            if e.stdout:
+                logging.info(e.stdout)
+            if e.stderr:
+                logging.info(e.stderr)
+            logging.info("Target \"{}\" failed with exit code {}: {}".format(t, e.returncode, " ".join(args)))
+            sys.exit(1)
         if not export_coverage:
             continue
         for l in output.splitlines():

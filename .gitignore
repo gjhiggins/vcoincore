@@ -1,17 +1,16 @@
 *.tar.gz
 
 *.exe
-src/vcore
-src/vcored
-src/vcore-cli
-src/vcore-tx
-src/test/test_vcore
-src/test/test_vcore_fuzzy
-src/qt/test/test_vcore-qt
-src/vcore-wallet
-src/test/test_vcore
-src/test/test_vcore_fuzzy
-src/qt/test/test_vcore-qt
+*.pdb
+src/bitcoin
+src/bitcoind
+src/bitcoin-cli
+src/bitcoin-tx
+src/bitcoin-wallet
+src/test/fuzz
+!src/test/fuzz/*.*
+src/test/test_bitcoin
+src/qt/test/test_bitcoin-qt
 
 # autoreconf
 Makefile.in
@@ -30,6 +29,7 @@ build-aux/m4/ltversion.m4
 build-aux/missing
 build-aux/compile
 build-aux/test-driver
+config.cache
 config.log
 config.status
 configure
@@ -49,11 +49,11 @@ src/qt/forms/ui_*.h
 
 src/qt/test/moc*.cpp
 
-src/qt/vcore-qt.config
-src/qt/vcore-qt.creator
-src/qt/vcire-qt.creator.user
-src/qt/vcore-qt.files
-src/qt/vcore-qt.includes
+src/qt/bitcoin-qt.config
+src/qt/bitcoin-qt.creator
+src/qt/bitcoin-qt.creator.user
+src/qt/bitcoin-qt.files
+src/qt/bitcoin-qt.includes
 
 .deps
 .dirstamp
@@ -90,8 +90,8 @@ src/qt/vcore-qt.includes
 *.qm
 Makefile
 !depends/Makefile
-vcore-qt
-VCore-Qt.app
+src/qt/bitcoin-qt
+Bitcoin-Qt.app
 background.tiff*
 
 # Qt Creator
@@ -107,6 +107,9 @@ qrc_*.cpp
 # Mac specific
 .DS_Store
 build
+
+# Previous releases
+releases
 
 #lcov
 *.gcno
@@ -124,14 +127,11 @@ test/config.ini
 test/cache/*
 
 !src/leveldb*/Makefile
-/attic*
 
 /doc/doxygen/
 
 libbitcoinconsensus.pc
 contrib/devtools/split-debug.sh
-*.am.user
-/.astylerc
 
 # Output from running db4 installation
 db4/

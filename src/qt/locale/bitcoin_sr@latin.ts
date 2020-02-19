@@ -666,6 +666,10 @@
         <translation>Datum</translation>
     </message>
     <message>
+        <source>Date</source>
+        <translation>Datum</translation>
+    </message>
+    <message>
         <source>Label</source>
         <translation>Oznaka</translation>
     </message>

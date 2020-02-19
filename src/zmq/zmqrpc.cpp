@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Bitcoin Core developers
+// Copyright (c) 2018-2019 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -21,9 +21,9 @@ UniValue getzmqnotifications(const JSONRPCRequest& request)
                 RPCResult{
             "[\n"
             "  {                        (json object)\n"
-            "    \"type\": \"pubhashtx\",   (string) Type of notification\n"
-            "    \"address\": \"...\",      (string) Address of the publisher\n"
-            "    \"hwm\": n                 (numeric) Outbound message high water mark\n"
+            "    \"type\" : \"pubhashtx\",   (string) Type of notification\n"
+            "    \"address\" : \"...\",      (string) Address of the publisher\n"
+            "    \"hwm\" : n                 (numeric) Outbound message high water mark\n"
             "  },\n"
             "  ...\n"
             "]\n"

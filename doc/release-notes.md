@@ -1,11 +1,25 @@
-0.19.1 Release Notes
+*After branching off for a major version release of Bitcoin Core, use this
+template to create the initial release notes draft.*
+
+*The release notes draft is a temporary file that can be added to by anyone. See
+[/doc/developer-notes.md#release-notes](/doc/developer-notes.md#release-notes)
+for the process.*
+
+*Create the draft, named* "*version* Release Notes Draft"
+*(e.g. "0.20.0 Release Notes Draft"), as a collaborative wiki in:*
+
+https://github.com/bitcoin-core/bitcoin-devwiki/wiki/
+
+*Before the final release, move the notes back to this git repository.*
+
+*version* Release Notes Draft
 ===============================
 
-Bitcoin Core version 0.19.1 is now available from:
+Bitcoin Core version *version* is now available from:
 
-  <https://bitcoincore.org/bin/bitcoin-core-0.19.1/>
+  <https://bitcoincore.org/bin/bitcoin-core-*version*/>
 
-This minor release includes various bug fixes and performance
+This release includes new features, various bug fixes and performance
 improvements, as well as updated translations.
 
 Please report bugs using the issue tracker at GitHub:
@@ -32,84 +46,87 @@ Compatibility
 ==============
 
 Bitcoin Core is supported and extensively tested on operating systems using
-the Linux kernel, macOS 10.10+, and Windows 7 and newer. It is not recommended
+the Linux kernel, macOS 10.12+, and Windows 7 and newer. It is not recommended
 to use Bitcoin Core on unsupported systems.
 
 Bitcoin Core should also work on most other Unix-like systems but is not
 as frequently tested on them.
 
-From Bitcoin Core 0.17.0 onwards, macOS versions earlier than 10.10 are no
-longer supported, as Bitcoin Core is now built using Qt 5.9.x which requires
-macOS 10.10+. Additionally, Bitcoin Core does not yet change appearance when
-macOS "dark mode" is activated.
+From Bitcoin Core 0.20.0 onwards, macOS versions earlier than 10.12 are no
+longer supported. Additionally, Bitcoin Core does not yet change appearance
+when macOS "dark mode" is activated.
 
 In addition to previously supported CPU platforms, this release's pre-compiled
 distribution provides binaries for the RISC-V platform.
 
-0.19.1 change log
+Notable changes
+===============
+
+Build System
+------------
+
+- OpenSSL is no longer used by Bitcoin Core. The last usage of the library
+was removed in #17265.
+
+- glibc 2.17 or greater is now required to run the release binaries. This
+retains compatibility with RHEL 7, CentOS 7, Debian 8 and Ubuntu 14.04 LTS.
+Further details can be found in #17538.
+
+New RPCs
+--------
+
+New settings
+------------
+
+- RPC Whitelist system. It can give certain RPC users permissions to only some RPC calls.
+It can be set with two command line arguments (`rpcwhitelist` and `rpcwhitelistdefault`). (#12763)
+
+Updated settings
+----------------
+
+Updated RPCs
+------------
+
+Note: some low-level RPC changes mainly useful for testing are described in the
+Low-level Changes section below.
+
+GUI changes
+-----------
+
+- The "Start Bitcoin Core on system login" option has been removed on macOS.
+
+Wallet
+------
+
+- The wallet now by default uses bech32 addresses when using RPC, and creates native segwit change outputs.
+- The way that output trust was computed has been fixed in #16766, which impacts confirmed/unconfirmed balance status and coin selection.
+
+Low-level changes
 =================
 
-### Wallet
-- #17643 Fix origfee return for bumpfee with feerate arg (instagibbs)
-- #16963 Fix `unique_ptr` usage in boost::signals2 (promag)
-- #17258 Fix issue with conflicted mempool tx in listsinceblock (adamjonas, mchrostowski)
-- #17924 Bug: IsUsedDestination shouldn't use key id as script id for ScriptHash (instagibbs)
-- #17621 IsUsedDestination should count any known single-key address (instagibbs)
-- #17843 Reset reused transactions cache (fjahr)
+Command line
+------------
 
-### RPC and other APIs
-- #17687 cli: Fix fatal leveldb error when specifying -blockfilterindex=basic twice (brakmic)
-- #17728 require second argument only for scantxoutset start action (achow101)
-- #17445 zmq: Fix due to invalid argument and multiple notifiers (promag)
-- #17524 psbt: handle unspendable psbts (achow101)
-- #17156 psbt: check that various indexes and amounts are within bounds (achow101)
+Command line options prefixed with main/test/regtest network names like
+`-main.port=8333` `-test.server=1` previously were allowed but ignored. Now
+they trigger "Invalid parameter" errors on startup.
 
-### GUI
-- #17427 Fix missing qRegisterMetaType for `size_t` (hebasto)
-- #17695 disable File-\>CreateWallet during startup (fanquake)
-- #17634 Fix comparison function signature (hebasto)
-- #18062 Fix unintialized WalletView::progressDialog (promag)
+Tests
+-----
 
-### Tests and QA
-- #17416 Appveyor improvement - text file for vcpkg package list (sipsorcery)
-- #17488 fix "bitcoind already running" warnings on macOS (fanquake)
-- #17980 add missing #include to fix compiler errors (kallewoof)
+- It is now an error to use an unqualified `walletdir=path` setting in the config file if running on testnet or regtest
+  networks. The setting now needs to be qualified as `chain.walletdir=path` or placed in the appropriate `[chain]`
+  section. (#17447)
 
-### Platform support
-- #17736 Update msvc build for Visual Studio 2019 v16.4 (sipsorcery)
-- #17364 Updates to appveyor config for VS2019 and Qt5.9.8 + msvc project fixes (sipsorcery)
-- #17887 bug-fix macos: give free bytes to `F_PREALLOCATE` (kallewoof)
-
-### Miscellaneous
-- #17897 init: Stop indexes on shutdown after ChainStateFlushed callback (jimpo)
-- #17450 util: Add missing headers to util/fees.cpp (hebasto)
-- #17654 Unbreak build with Boost 1.72.0 (jbeich)
-- #17857 scripts: Fix symbol-check & security-check argument passing (fanquake)
-- #17762 Log to net category for exceptions in ProcessMessages (laanwj)
-- #18100 Update univalue subtree (MarcoFalke)
+- `-fallbackfee` was 0 (disabled) by default for the main chain, but 0.0002 by default for the test chains. Now it is 0
+  by default for all chains. Testnet and regtest users will have to add `fallbackfee=0.0002` to their configuration if
+  they weren't setting it and they want it to keep working like before. (#16524)
 
 Credits
 =======
 
 Thanks to everyone who directly contributed to this release:
 
-- Aaron Clauson
-- Adam Jonas
-- Andrew Chow
-- Fabian Jahr
-- fanquake
-- Gregory Sanders
-- Harris
-- Hennadii Stepanov
-- Jan Beich
-- Jim Posen
-- João Barbosa
-- Karl-Johan Alm
-- Luke Dashjr
-- MarcoFalke
-- Michael Chrostowski
-- Russell Yanofsky
-- Wladimir J. van der Laan
 
 As well as to everyone that helped with translations on
 [Transifex](https://www.transifex.com/bitcoin/bitcoin/).

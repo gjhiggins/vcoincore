@@ -10,11 +10,13 @@
 #include <chain.h>
 #include <chainparams.h>
 #include <coins.h>
-#include <node/coinstats.h>
 #include <consensus/validation.h>
 #include <core_io.h>
 #include <hash.h>
 #include <index/blockfilterindex.h>
+#include <node/coinstats.h>
+#include <node/context.h>
+#include <node/utxo_snapshot.h>
 #include <policy/feerate.h>
 #include <policy/policy.h>
 #include <policy/rbf.h>
@@ -32,15 +34,11 @@
 #include <util/validation.h>
 #include <validation.h>
 #include <validationinterface.h>
-#include <versionbitsinfo.h>
 #include <warnings.h>
 
-#include <assert.h>
 #include <stdint.h>
 
 #include <univalue.h>
-
-#include <boost/thread/thread.hpp> // boost::thread::interrupt
 
 #include <condition_variable>
 #include <memory>
@@ -56,11 +54,20 @@ static Mutex cs_blockchange;
 static std::condition_variable cond_blockchange;
 static CUpdatedBlock latestblock;
 
+CTxMemPool& EnsureMemPool()
+{
+    CHECK_NONFATAL(g_rpc_node);
+    if (!g_rpc_node->mempool) {
+        throw JSONRPCError(RPC_CLIENT_MEMPOOL_DISABLED, "Mempool disabled or instance not found");
+    }
+    return *g_rpc_node->mempool;
+}
+
 /* Calculate the difficulty for a given block index.
  */
 double GetDifficulty(const CBlockIndex* blockindex)
 {
-    assert(blockindex);
+    CHECK_NONFATAL(blockindex);
 
     int nShift = (blockindex->nBits >> 24) & 0xff;
     double dDiff =
@@ -222,7 +229,7 @@ static UniValue waitfornewblock(const JSONRPCRequest& request)
                 RPCResult{
             "{                           (json object)\n"
             "  \"hash\" : {       (string) The blockhash\n"
-            "  \"height\" : {     (int) Block height\n"
+            "  \"height\" : {     (numeric) Block height\n"
             "}\n"
                 },
                 RPCExamples{
@@ -262,7 +269,7 @@ static UniValue waitforblock(const JSONRPCRequest& request)
                 RPCResult{
             "{                           (json object)\n"
             "  \"hash\" : {       (string) The blockhash\n"
-            "  \"height\" : {     (int) Block height\n"
+            "  \"height\" : {     (numeric) Block height\n"
             "}\n"
                 },
                 RPCExamples{
@@ -306,7 +313,7 @@ static UniValue waitforblockheight(const JSONRPCRequest& request)
                 RPCResult{
             "{                           (json object)\n"
             "  \"hash\" : {       (string) The blockhash\n"
-            "  \"height\" : {     (int) Block height\n"
+            "  \"height\" : {     (numeric) Block height\n"
             "}\n"
                 },
                 RPCExamples{
@@ -393,10 +400,10 @@ static std::string EntryDescriptionString()
            "        \"ancestor\" : n,     (numeric) modified fees (see above) of in-mempool ancestors (including this one) in " + CURRENCY_UNIT + "\n"
            "        \"descendant\" : n,   (numeric) modified fees (see above) of in-mempool descendants (including this one) in " + CURRENCY_UNIT + "\n"
            "    }\n"
-           "    \"depends\" : [           (array) unconfirmed transactions used as inputs for this transaction\n"
+           "    \"depends\" : [           (json array) unconfirmed transactions used as inputs for this transaction\n"
            "        \"transactionid\",    (string) parent transaction id\n"
            "       ... ]\n"
-           "    \"spentby\" : [           (array) unconfirmed transactions spending outputs from this transaction\n"
+           "    \"spentby\" : [           (json array) unconfirmed transactions spending outputs from this transaction\n"
            "        \"transactionid\",    (string) child transaction id\n"
            "       ... ]\n"
            "    \"bip125-replaceable\" : true|false,  (boolean) Whether this transaction could be replaced due to BIP125 (replace-by-fee)\n";
@@ -418,7 +425,7 @@ static void entryToJSON(const CTxMemPool& pool, UniValue& info, const CTxMemPool
     info.pushKV("weight", (int)e.GetTxWeight());
     info.pushKV("fee", ValueFromAmount(e.GetFee()));
     info.pushKV("modifiedfee", ValueFromAmount(e.GetModifiedFee()));
-    info.pushKV("time", e.GetTime());
+    info.pushKV("time", count_seconds(e.GetTime()));
     info.pushKV("height", (int)e.GetHeight());
     info.pushKV("descendantcount", e.GetCountWithDescendants());
     info.pushKV("descendantsize", e.GetSizeWithDescendants());
@@ -521,7 +528,7 @@ static UniValue getrawmempool(const JSONRPCRequest& request)
     if (!request.params[0].isNull())
         fVerbose = request.params[0].get_bool();
 
-    return MempoolToJSON(::mempool, fVerbose);
+    return MempoolToJSON(EnsureMemPool(), fVerbose);
 }
 
 static UniValue getmempoolancestors(const JSONRPCRequest& request)
@@ -559,6 +566,7 @@ static UniValue getmempoolancestors(const JSONRPCRequest& request)
 
     uint256 hash = ParseHashV(request.params[0], "parameter 1");
 
+    const CTxMemPool& mempool = EnsureMemPool();
     LOCK(mempool.cs);
 
     CTxMemPool::txiter it = mempool.mapTx.find(hash);
@@ -584,7 +592,7 @@ static UniValue getmempoolancestors(const JSONRPCRequest& request)
             const CTxMemPoolEntry &e = *ancestorIt;
             const uint256& _hash = e.GetTx().GetHash();
             UniValue info(UniValue::VOBJ);
-            entryToJSON(::mempool, info, e);
+            entryToJSON(mempool, info, e);
             o.pushKV(_hash.ToString(), info);
         }
         return o;
@@ -626,6 +634,7 @@ static UniValue getmempooldescendants(const JSONRPCRequest& request)
 
     uint256 hash = ParseHashV(request.params[0], "parameter 1");
 
+    const CTxMemPool& mempool = EnsureMemPool();
     LOCK(mempool.cs);
 
     CTxMemPool::txiter it = mempool.mapTx.find(hash);
@@ -651,7 +660,7 @@ static UniValue getmempooldescendants(const JSONRPCRequest& request)
             const CTxMemPoolEntry &e = *descendantIt;
             const uint256& _hash = e.GetTx().GetHash();
             UniValue info(UniValue::VOBJ);
-            entryToJSON(::mempool, info, e);
+            entryToJSON(mempool, info, e);
             o.pushKV(_hash.ToString(), info);
         }
         return o;
@@ -678,6 +687,7 @@ static UniValue getmempoolentry(const JSONRPCRequest& request)
 
     uint256 hash = ParseHashV(request.params[0], "parameter 1");
 
+    const CTxMemPool& mempool = EnsureMemPool();
     LOCK(mempool.cs);
 
     CTxMemPool::txiter it = mempool.mapTx.find(hash);
@@ -687,7 +697,7 @@ static UniValue getmempoolentry(const JSONRPCRequest& request)
 
     const CTxMemPoolEntry &e = *it;
     UniValue info(UniValue::VOBJ);
-    entryToJSON(::mempool, info, e);
+    entryToJSON(mempool, info, e);
     return info;
 }
 
@@ -735,8 +745,8 @@ static UniValue getblockheader(const JSONRPCRequest& request)
             "  \"version\" : n,         (numeric) The block version\n"
             "  \"versionHex\" : \"00000000\", (string) The block version formatted in hexadecimal\n"
             "  \"merkleroot\" : \"xxxx\", (string) The merkle root\n"
-            "  \"time\" : ttt,          (numeric) The block time in seconds since epoch (Jan 1 1970 GMT)\n"
-            "  \"mediantime\" : ttt,    (numeric) The median block time in seconds since epoch (Jan 1 1970 GMT)\n"
+            "  \"time\" : ttt,          (numeric) The block time expressed in " + UNIX_EPOCH_TIME + "\n"
+            "  \"mediantime\" : ttt,    (numeric) The median block time expressed in " + UNIX_EPOCH_TIME + "\n"
             "  \"nonce\" : n,           (numeric) The nonce\n"
             "  \"bits\" : \"1d00ffff\", (string) The bits\n"
             "  \"difficulty\" : x.xxx,  (numeric) The difficulty\n"
@@ -847,8 +857,8 @@ static UniValue getblock(const JSONRPCRequest& request)
             "     \"transactionid\"     (string) The transaction id\n"
             "     ,...\n"
             "  ],\n"
-            "  \"time\" : ttt,          (numeric) The block time in seconds since epoch (Jan 1 1970 GMT)\n"
-            "  \"mediantime\" : ttt,    (numeric) The median block time in seconds since epoch (Jan 1 1970 GMT)\n"
+            "  \"time\" : ttt,          (numeric) The block time expressed in " + UNIX_EPOCH_TIME + "\n"
+            "  \"mediantime\" : ttt,    (numeric) The median block time expressed in " + UNIX_EPOCH_TIME + "\n"
             "  \"nonce\" : n,           (numeric) The nonce\n"
             "  \"bits\" : \"1d00ffff\", (string) The bits\n"
             "  \"difficulty\" : x.xxx,  (numeric) The difficulty\n"
@@ -914,7 +924,7 @@ static UniValue pruneblockchain(const JSONRPCRequest& request)
 {
             RPCHelpMan{"pruneblockchain", "",
                 {
-                    {"height", RPCArg::Type::NUM, RPCArg::Optional::NO, "The block height to prune up to. May be set to a discrete height, or a unix timestamp\n"
+                    {"height", RPCArg::Type::NUM, RPCArg::Optional::NO, "The block height to prune up to. May be set to a discrete height, or to a " + UNIX_EPOCH_TIME + "\n"
             "                  to prune blocks whose block time is at least 2 hours older than the provided timestamp."},
                 },
                 RPCResult{
@@ -959,7 +969,7 @@ static UniValue pruneblockchain(const JSONRPCRequest& request)
 
     PruneBlockFilesManual(height);
     const CBlockIndex* block = ::ChainActive().Tip();
-    assert(block);
+    CHECK_NONFATAL(block);
     while (block->pprev && (block->pprev->nStatus & BLOCK_HAVE_DATA)) {
         block = block->pprev;
     }
@@ -974,14 +984,14 @@ static UniValue gettxoutsetinfo(const JSONRPCRequest& request)
                 {},
                 RPCResult{
             "{\n"
-            "  \"height\":n,     (numeric) The current block height (index)\n"
-            "  \"bestblock\": \"hex\",   (string) The hash of the block at the tip of the chain\n"
-            "  \"transactions\": n,      (numeric) The number of transactions with unspent outputs\n"
-            "  \"txouts\": n,            (numeric) The number of unspent transaction outputs\n"
-            "  \"bogosize\": n,          (numeric) A meaningless metric for UTXO set size\n"
+            "  \"height\" : n,     (numeric) The current block height (index)\n"
+            "  \"bestblock\" : \"hex\",   (string) The hash of the block at the tip of the chain\n"
+            "  \"transactions\" : n,      (numeric) The number of transactions with unspent outputs\n"
+            "  \"txouts\" : n,            (numeric) The number of unspent transaction outputs\n"
+            "  \"bogosize\" : n,          (numeric) A meaningless metric for UTXO set size\n"
             "  \"hash_serialized_2\": \"hash\", (string) The serialized hash\n"
-            "  \"disk_size\": n,         (numeric) The estimated size of the chainstate on disk\n"
-            "  \"total_amount\": x.xxx          (numeric) The total amount\n"
+            "  \"disk_size\" : n,         (numeric) The estimated size of the chainstate on disk\n"
+            "  \"total_amount\" : x.xxx          (numeric) The total amount\n"
             "}\n"
                 },
                 RPCExamples{
@@ -1022,7 +1032,7 @@ UniValue gettxout(const JSONRPCRequest& request)
                 },
                 RPCResult{
             "{\n"
-            "  \"bestblock\":  \"hash\",    (string) The hash of the block at the tip of the chain\n"
+            "  \"bestblock\" :  \"hash\",    (string) The hash of the block at the tip of the chain\n"
             "  \"confirmations\" : n,       (numeric) The number of confirmations\n"
             "  \"value\" : x.xxx,           (numeric) The transaction value in " + CURRENCY_UNIT + "\n"
             "  \"scriptPubKey\" : {         (json object)\n"
@@ -1063,6 +1073,7 @@ UniValue gettxout(const JSONRPCRequest& request)
     CCoinsViewCache* coins_view = &::ChainstateActive().CoinsTip();
 
     if (fMempool) {
+        const CTxMemPool& mempool = EnsureMemPool();
         LOCK(mempool.cs);
         CCoinsViewMemPool view(coins_view, mempool);
         if (!view.GetCoin(out, coin) || mempool.isSpent(out)) {
@@ -1193,39 +1204,39 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
                 {},
                 RPCResult{
             "{\n"
-            "  \"chain\": \"xxxx\",              (string) current network name as defined in BIP70 (main, test, regtest)\n"
-            "  \"blocks\": xxxxxx,             (numeric) the height of the most-work fully-validated chain. The genesis block has height 0\n"
-            "  \"headers\": xxxxxx,            (numeric) the current number of headers we have validated\n"
-            "  \"bestblockhash\": \"...\",       (string) the hash of the currently best block\n"
-            "  \"difficulty\": xxxxxx,         (numeric) the current difficulty\n"
-            "  \"mediantime\": xxxxxx,         (numeric) median time for the current best block\n"
-            "  \"verificationprogress\": xxxx, (numeric) estimate of verification progress [0..1]\n"
-            "  \"initialblockdownload\": xxxx, (bool) (debug information) estimate of whether this node is in Initial Block Download mode.\n"
-            "  \"chainwork\": \"xxxx\"           (string) total amount of work in active chain, in hexadecimal\n"
-            "  \"size_on_disk\": xxxxxx,       (numeric) the estimated size of the block and undo files on disk\n"
-            "  \"pruned\": xx,                 (boolean) if the blocks are subject to pruning\n"
-            "  \"pruneheight\": xxxxxx,        (numeric) lowest-height complete block stored (only present if pruning is enabled)\n"
-            "  \"automatic_pruning\": xx,      (boolean) whether automatic pruning is enabled (only present if pruning is enabled)\n"
-            "  \"prune_target_size\": xxxxxx,  (numeric) the target size used by pruning (only present if automatic pruning is enabled)\n"
-            "  \"softforks\": {                (object) status of softforks\n"
+            "  \"chain\" : \"xxxx\",              (string) current network name (main, test, regtest)\n"
+            "  \"blocks\" : xxxxxx,             (numeric) the height of the most-work fully-validated chain. The genesis block has height 0\n"
+            "  \"headers\" : xxxxxx,            (numeric) the current number of headers we have validated\n"
+            "  \"bestblockhash\" : \"...\",       (string) the hash of the currently best block\n"
+            "  \"difficulty\" : xxxxxx,         (numeric) the current difficulty\n"
+            "  \"mediantime\" : xxxxxx,         (numeric) median time for the current best block\n"
+            "  \"verificationprogress\" : xxxx, (numeric) estimate of verification progress [0..1]\n"
+            "  \"initialblockdownload\" : xxxx, (boolean) (debug information) estimate of whether this node is in Initial Block Download mode.\n"
+            "  \"chainwork\" : \"xxxx\"           (string) total amount of work in active chain, in hexadecimal\n"
+            "  \"size_on_disk\" : xxxxxx,       (numeric) the estimated size of the block and undo files on disk\n"
+            "  \"pruned\" : xx,                 (boolean) if the blocks are subject to pruning\n"
+            "  \"pruneheight\" : xxxxxx,        (numeric) lowest-height complete block stored (only present if pruning is enabled)\n"
+            "  \"automatic_pruning\" : xx,      (boolean) whether automatic pruning is enabled (only present if pruning is enabled)\n"
+            "  \"prune_target_size\" : xxxxxx,  (numeric) the target size used by pruning (only present if automatic pruning is enabled)\n"
+            "  \"softforks\" : {                (json object) status of softforks\n"
             "     \"xxxx\" : {                 (string) name of the softfork\n"
-            "        \"type\": \"xxxx\",         (string) one of \"buried\", \"bip9\"\n"
-            "        \"bip9\": {               (object) status of bip9 softforks (only for \"bip9\" type)\n"
-            "           \"status\": \"xxxx\",    (string) one of \"defined\", \"started\", \"locked_in\", \"active\", \"failed\"\n"
-            "           \"bit\": xx,           (numeric) the bit (0-28) in the block version field used to signal this softfork (only for \"started\" status)\n"
-            "           \"start_time\": xx,     (numeric) the minimum median time past of a block at which the bit gains its meaning\n"
-            "           \"timeout\": xx,       (numeric) the median time past of a block at which the deployment is considered failed if not yet locked in\n"
-            "           \"since\": xx,         (numeric) height of the first block to which the status applies\n"
-            "           \"statistics\": {      (object) numeric statistics about BIP9 signalling for a softfork\n"
-            "              \"period\": xx,     (numeric) the length in blocks of the BIP9 signalling period \n"
-            "              \"threshold\": xx,  (numeric) the number of blocks with the version bit set required to activate the feature \n"
-            "              \"elapsed\": xx,    (numeric) the number of blocks elapsed since the beginning of the current period \n"
-            "              \"count\": xx,      (numeric) the number of blocks with the version bit set in the current period \n"
-            "              \"possible\": xx    (boolean) returns false if there are not enough blocks left in this period to pass activation threshold \n"
+            "        \"type\" : \"xxxx\",         (string) one of \"buried\", \"bip9\"\n"
+            "        \"bip9\": {               (json object) status of bip9 softforks (only for \"bip9\" type)\n"
+            "           \"status\" : \"xxxx\",    (string) one of \"defined\", \"started\", \"locked_in\", \"active\", \"failed\"\n"
+            "           \"bit\" : xx,           (numeric) the bit (0-28) in the block version field used to signal this softfork (only for \"started\" status)\n"
+            "           \"start_time\" : xx,     (numeric) the minimum median time past of a block at which the bit gains its meaning\n"
+            "           \"timeout\" : xx,       (numeric) the median time past of a block at which the deployment is considered failed if not yet locked in\n"
+            "           \"since\" : xx,         (numeric) height of the first block to which the status applies\n"
+            "           \"statistics\" : {      (json object) numeric statistics about BIP9 signalling for a softfork\n"
+            "              \"period\" : xx,     (numeric) the length in blocks of the BIP9 signalling period \n"
+            "              \"threshold\" : xx,  (numeric) the number of blocks with the version bit set required to activate the feature \n"
+            "              \"elapsed\" : xx,    (numeric) the number of blocks elapsed since the beginning of the current period \n"
+            "              \"count\" : xx,      (numeric) the number of blocks with the version bit set in the current period \n"
+            "              \"possible\" : xx    (boolean) returns false if there are not enough blocks left in this period to pass activation threshold \n"
             "           }\n"
             "        },\n"
-            "        \"height\": \"xxxxxx\",     (numeric) height of the first block which the rules are or will be enforced (only for \"buried\" type, or \"bip9\" type with \"active\" status)\n"
-            "        \"active\": xx,           (boolean) true if the rules are enforced for the mempool and the next block\n"
+            "        \"height\" : \"xxxxxx\",     (numeric) height of the first block which the rules are or will be enforced (only for \"buried\" type, or \"bip9\" type with \"active\" status)\n"
+            "        \"active\" : xx,           (boolean) true if the rules are enforced for the mempool and the next block\n"
             "     }\n"
             "  }\n"
             "  \"warnings\" : \"...\",           (string) any network and blockchain warnings.\n"
@@ -1254,7 +1265,7 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
     obj.pushKV("pruned",                fPruneMode);
     if (fPruneMode) {
         const CBlockIndex* block = tip;
-        assert(block);
+        CHECK_NONFATAL(block);
         while (block->pprev && (block->pprev->nStatus & BLOCK_HAVE_DATA)) {
             block = block->pprev;
         }
@@ -1279,7 +1290,7 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
     BIP9SoftForkDescPushBack(softforks, "testdummy", consensusParams, Consensus::DEPLOYMENT_TESTDUMMY);
     obj.pushKV("softforks",             softforks);
 
-    obj.pushKV("warnings", GetWarnings("statusbar"));
+    obj.pushKV("warnings", GetWarnings(false));
     return obj;
 }
 
@@ -1307,16 +1318,16 @@ static UniValue getchaintips(const JSONRPCRequest& request)
                 RPCResult{
             "[\n"
             "  {\n"
-            "    \"height\": xxxx,         (numeric) height of the chain tip\n"
-            "    \"hash\": \"xxxx\",         (string) block hash of the tip\n"
-            "    \"branchlen\": 0          (numeric) zero for main chain\n"
-            "    \"status\": \"active\"      (string) \"active\" for the main chain\n"
+            "    \"height\" : xxxx,         (numeric) height of the chain tip\n"
+            "    \"hash\" : \"xxxx\",         (string) block hash of the tip\n"
+            "    \"branchlen\" : 0          (numeric) zero for main chain\n"
+            "    \"status\" : \"active\"      (string) \"active\" for the main chain\n"
             "  },\n"
             "  {\n"
-            "    \"height\": xxxx,\n"
-            "    \"hash\": \"xxxx\",\n"
-            "    \"branchlen\": 1          (numeric) length of branch connecting the tip to the main chain\n"
-            "    \"status\": \"xxxx\"        (string) status of the chain (active, valid-fork, valid-headers, headers-only, invalid)\n"
+            "    \"height\" : xxxx,\n"
+            "    \"hash\" : \"xxxx\",\n"
+            "    \"branchlen\" : 1          (numeric) length of branch connecting the tip to the main chain\n"
+            "    \"status\" : \"xxxx\"        (string) status of the chain (active, valid-fork, valid-headers, headers-only, invalid)\n"
             "  }\n"
             "]\n"
             "Possible values for status:\n"
@@ -1426,13 +1437,13 @@ static UniValue getmempoolinfo(const JSONRPCRequest& request)
                 {},
                 RPCResult{
             "{\n"
-            "  \"loaded\": true|false         (boolean) True if the mempool is fully loaded\n"
-            "  \"size\": xxxxx,               (numeric) Current tx count\n"
-            "  \"bytes\": xxxxx,              (numeric) Sum of all virtual transaction sizes as defined in BIP 141. Differs from actual serialized size because witness data is discounted\n"
-            "  \"usage\": xxxxx,              (numeric) Total memory usage for the mempool\n"
-            "  \"maxmempool\": xxxxx,         (numeric) Maximum memory usage for the mempool\n"
-            "  \"mempoolminfee\": xxxxx       (numeric) Minimum fee rate in " + CURRENCY_UNIT + "/kB for tx to be accepted. Is the maximum of minrelaytxfee and minimum mempool fee\n"
-            "  \"minrelaytxfee\": xxxxx       (numeric) Current minimum relay fee for transactions\n"
+            "  \"loaded\" : true|false         (boolean) True if the mempool is fully loaded\n"
+            "  \"size\" : xxxxx,               (numeric) Current tx count\n"
+            "  \"bytes\" : xxxxx,              (numeric) Sum of all virtual transaction sizes as defined in BIP 141. Differs from actual serialized size because witness data is discounted\n"
+            "  \"usage\" : xxxxx,              (numeric) Total memory usage for the mempool\n"
+            "  \"maxmempool\" : xxxxx,         (numeric) Maximum memory usage for the mempool\n"
+            "  \"mempoolminfee\" : xxxxx       (numeric) Minimum fee rate in " + CURRENCY_UNIT + "/kB for tx to be accepted. Is the maximum of minrelaytxfee and minimum mempool fee\n"
+            "  \"minrelaytxfee\" : xxxxx       (numeric) Current minimum relay fee for transactions\n"
             "}\n"
                 },
                 RPCExamples{
@@ -1441,7 +1452,7 @@ static UniValue getmempoolinfo(const JSONRPCRequest& request)
                 },
             }.Check(request);
 
-    return MempoolInfoToJSON(::mempool);
+    return MempoolInfoToJSON(EnsureMemPool());
 }
 
 static UniValue preciousblock(const JSONRPCRequest& request)
@@ -1471,7 +1482,7 @@ static UniValue preciousblock(const JSONRPCRequest& request)
         }
     }
 
-    CValidationState state;
+    BlockValidationState state;
     PreciousBlock(state, Params(), pblockindex);
 
     if (!state.IsValid()) {
@@ -1496,7 +1507,7 @@ static UniValue invalidateblock(const JSONRPCRequest& request)
             }.Check(request);
 
     uint256 hash(ParseHashV(request.params[0], "blockhash"));
-    CValidationState state;
+    BlockValidationState state;
 
     CBlockIndex* pblockindex;
     {
@@ -1546,7 +1557,7 @@ static UniValue reconsiderblock(const JSONRPCRequest& request)
         ResetBlockFailureFlags(pblockindex);
     }
 
-    CValidationState state;
+    BlockValidationState state;
     ActivateBestChain(state, Params());
 
     if (!state.IsValid()) {
@@ -1566,14 +1577,14 @@ static UniValue getchaintxstats(const JSONRPCRequest& request)
                 },
                 RPCResult{
             "{\n"
-            "  \"time\": xxxxx,                         (numeric) The timestamp for the final block in the window in UNIX format.\n"
-            "  \"txcount\": xxxxx,                      (numeric) The total number of transactions in the chain up to that point.\n"
-            "  \"window_final_block_hash\": \"...\",      (string) The hash of the final block in the window.\n"
-            "  \"window_final_block_height\": xxxxx,    (numeric) The height of the final block in the window.\n"
-            "  \"window_block_count\": xxxxx,           (numeric) Size of the window in number of blocks.\n"
-            "  \"window_tx_count\": xxxxx,              (numeric) The number of transactions in the window. Only returned if \"window_block_count\" is > 0.\n"
-            "  \"window_interval\": xxxxx,              (numeric) The elapsed time in the window in seconds. Only returned if \"window_block_count\" is > 0.\n"
-            "  \"txrate\": x.xx,                        (numeric) The average rate of transactions per second in the window. Only returned if \"window_interval\" is > 0.\n"
+            "  \"time\" : xxxxx,                         (numeric) The timestamp for the final block in the window, expressed in " + UNIX_EPOCH_TIME + ".\n"
+            "  \"txcount\" : xxxxx,                      (numeric) The total number of transactions in the chain up to that point.\n"
+            "  \"window_final_block_hash\" : \"...\",      (string) The hash of the final block in the window.\n"
+            "  \"window_final_block_height\" : xxxxx,    (numeric) The height of the final block in the window.\n"
+            "  \"window_block_count\" : xxxxx,           (numeric) Size of the window in number of blocks.\n"
+            "  \"window_tx_count\" : xxxxx,              (numeric) The number of transactions in the window. Only returned if \"window_block_count\" is > 0.\n"
+            "  \"window_interval\" : xxxxx,              (numeric) The elapsed time in the window in seconds. Only returned if \"window_block_count\" is > 0.\n"
+            "  \"txrate\" : x.xx,                        (numeric) The average rate of transactions per second in the window. Only returned if \"window_interval\" is > 0.\n"
             "}\n"
                 },
                 RPCExamples{
@@ -1600,7 +1611,7 @@ static UniValue getchaintxstats(const JSONRPCRequest& request)
         }
     }
 
-    assert(pindex != nullptr);
+    CHECK_NONFATAL(pindex != nullptr);
 
     if (request.params[0].isNull()) {
         blockcount = std::max(0, std::min(blockcount, pindex->nHeight - 1));
@@ -1705,41 +1716,41 @@ static UniValue getblockstats(const JSONRPCRequest& request)
                 },
                 RPCResult{
             "{                           (json object)\n"
-            "  \"avgfee\": xxxxx,          (numeric) Average fee in the block\n"
-            "  \"avgfeerate\": xxxxx,      (numeric) Average feerate (in satoshis per virtual byte)\n"
-            "  \"avgtxsize\": xxxxx,       (numeric) Average transaction size\n"
-            "  \"blockhash\": xxxxx,       (string) The block hash (to check for potential reorgs)\n"
-            "  \"feerate_percentiles\": [  (array of numeric) Feerates at the 10th, 25th, 50th, 75th, and 90th percentile weight unit (in satoshis per virtual byte)\n"
+            "  \"avgfee\" : xxxxx,          (numeric) Average fee in the block\n"
+            "  \"avgfeerate\" : xxxxx,      (numeric) Average feerate (in satoshis per virtual byte)\n"
+            "  \"avgtxsize\" : xxxxx,       (numeric) Average transaction size\n"
+            "  \"blockhash\" : xxxxx,       (string) The block hash (to check for potential reorgs)\n"
+            "  \"feerate_percentiles\" : [  (array of numeric) Feerates at the 10th, 25th, 50th, 75th, and 90th percentile weight unit (in satoshis per virtual byte)\n"
             "      \"10th_percentile_feerate\",      (numeric) The 10th percentile feerate\n"
             "      \"25th_percentile_feerate\",      (numeric) The 25th percentile feerate\n"
             "      \"50th_percentile_feerate\",      (numeric) The 50th percentile feerate\n"
             "      \"75th_percentile_feerate\",      (numeric) The 75th percentile feerate\n"
             "      \"90th_percentile_feerate\",      (numeric) The 90th percentile feerate\n"
             "  ],\n"
-            "  \"height\": xxxxx,          (numeric) The height of the block\n"
-            "  \"ins\": xxxxx,             (numeric) The number of inputs (excluding coinbase)\n"
-            "  \"maxfee\": xxxxx,          (numeric) Maximum fee in the block\n"
-            "  \"maxfeerate\": xxxxx,      (numeric) Maximum feerate (in satoshis per virtual byte)\n"
-            "  \"maxtxsize\": xxxxx,       (numeric) Maximum transaction size\n"
-            "  \"medianfee\": xxxxx,       (numeric) Truncated median fee in the block\n"
-            "  \"mediantime\": xxxxx,      (numeric) The block median time past\n"
-            "  \"mediantxsize\": xxxxx,    (numeric) Truncated median transaction size\n"
-            "  \"minfee\": xxxxx,          (numeric) Minimum fee in the block\n"
-            "  \"minfeerate\": xxxxx,      (numeric) Minimum feerate (in satoshis per virtual byte)\n"
-            "  \"mintxsize\": xxxxx,       (numeric) Minimum transaction size\n"
-            "  \"outs\": xxxxx,            (numeric) The number of outputs\n"
-            "  \"subsidy\": xxxxx,         (numeric) The block subsidy\n"
-            "  \"swtotal_size\": xxxxx,    (numeric) Total size of all segwit transactions\n"
-            "  \"swtotal_weight\": xxxxx,  (numeric) Total weight of all segwit transactions divided by segwit scale factor (4)\n"
-            "  \"swtxs\": xxxxx,           (numeric) The number of segwit transactions\n"
-            "  \"time\": xxxxx,            (numeric) The block time\n"
-            "  \"total_out\": xxxxx,       (numeric) Total amount in all outputs (excluding coinbase and thus reward [ie subsidy + totalfee])\n"
-            "  \"total_size\": xxxxx,      (numeric) Total size of all non-coinbase transactions\n"
-            "  \"total_weight\": xxxxx,    (numeric) Total weight of all non-coinbase transactions divided by segwit scale factor (4)\n"
-            "  \"totalfee\": xxxxx,        (numeric) The fee total\n"
-            "  \"txs\": xxxxx,             (numeric) The number of transactions (excluding coinbase)\n"
-            "  \"utxo_increase\": xxxxx,   (numeric) The increase/decrease in the number of unspent outputs\n"
-            "  \"utxo_size_inc\": xxxxx,   (numeric) The increase/decrease in size for the utxo index (not discounting op_return and similar)\n"
+            "  \"height\" : xxxxx,          (numeric) The height of the block\n"
+            "  \"ins\" : xxxxx,             (numeric) The number of inputs (excluding coinbase)\n"
+            "  \"maxfee\" : xxxxx,          (numeric) Maximum fee in the block\n"
+            "  \"maxfeerate\" : xxxxx,      (numeric) Maximum feerate (in satoshis per virtual byte)\n"
+            "  \"maxtxsize\" : xxxxx,       (numeric) Maximum transaction size\n"
+            "  \"medianfee\" : xxxxx,       (numeric) Truncated median fee in the block\n"
+            "  \"mediantime\" : xxxxx,      (numeric) The block median time past\n"
+            "  \"mediantxsize\" : xxxxx,    (numeric) Truncated median transaction size\n"
+            "  \"minfee\" : xxxxx,          (numeric) Minimum fee in the block\n"
+            "  \"minfeerate\" : xxxxx,      (numeric) Minimum feerate (in satoshis per virtual byte)\n"
+            "  \"mintxsize\" : xxxxx,       (numeric) Minimum transaction size\n"
+            "  \"outs\" : xxxxx,            (numeric) The number of outputs\n"
+            "  \"subsidy\" : xxxxx,         (numeric) The block subsidy\n"
+            "  \"swtotal_size\" : xxxxx,    (numeric) Total size of all segwit transactions\n"
+            "  \"swtotal_weight\" : xxxxx,  (numeric) Total weight of all segwit transactions divided by segwit scale factor (4)\n"
+            "  \"swtxs\" : xxxxx,           (numeric) The number of segwit transactions\n"
+            "  \"time\" : xxxxx,            (numeric) The block time\n"
+            "  \"total_out\" : xxxxx,       (numeric) Total amount in all outputs (excluding coinbase and thus reward [ie subsidy + totalfee])\n"
+            "  \"total_size\" : xxxxx,      (numeric) Total size of all non-coinbase transactions\n"
+            "  \"total_weight\" : xxxxx,    (numeric) Total weight of all non-coinbase transactions divided by segwit scale factor (4)\n"
+            "  \"totalfee\" : xxxxx,        (numeric) The fee total\n"
+            "  \"txs\" : xxxxx,             (numeric) The number of transactions (excluding coinbase)\n"
+            "  \"utxo_increase\" : xxxxx,   (numeric) The increase/decrease in the number of unspent outputs\n"
+            "  \"utxo_size_inc\" : xxxxx,   (numeric) The increase/decrease in size for the utxo index (not discounting op_return and similar)\n"
             "}\n"
                 },
                 RPCExamples{
@@ -1773,7 +1784,7 @@ static UniValue getblockstats(const JSONRPCRequest& request)
         }
     }
 
-    assert(pindex != nullptr);
+    CHECK_NONFATAL(pindex != nullptr);
 
     std::set<std::string> stats;
     if (!request.params[1].isNull()) {
@@ -1873,7 +1884,7 @@ static UniValue getblockstats(const JSONRPCRequest& request)
             }
 
             CAmount txfee = tx_total_in - tx_total_out;
-            assert(MoneyRange(txfee));
+            CHECK_NONFATAL(MoneyRange(txfee));
             if (do_medianfee) {
                 fee_array.push_back(txfee);
             }
@@ -1957,11 +1968,13 @@ static UniValue savemempool(const JSONRPCRequest& request)
                 },
             }.Check(request);
 
-    if (!::mempool.IsLoaded()) {
+    const CTxMemPool& mempool = EnsureMemPool();
+
+    if (!mempool.IsLoaded()) {
         throw JSONRPCError(RPC_MISC_ERROR, "The mempool was not loaded yet");
     }
 
-    if (!DumpMempool(::mempool)) {
+    if (!DumpMempool(mempool)) {
         throw JSONRPCError(RPC_MISC_ERROR, "Unable to dump mempool to disk");
     }
 
@@ -1977,7 +1990,6 @@ bool FindScriptPubKey(std::atomic<int>& scan_progress, const std::atomic<bool>& 
         Coin coin;
         if (!cursor->GetKey(key) || !cursor->GetValue(coin)) return false;
         if (++count % 8192 == 0) {
-            boost::this_thread::interruption_point();
             if (should_abort) {
                 // allow to abort the scan via the abort reference
                 return false;
@@ -2010,7 +2022,7 @@ public:
     explicit CoinsViewScanReserver() : m_could_reserve(false) {}
 
     bool reserve() {
-        assert (!m_could_reserve);
+        CHECK_NONFATAL(!m_could_reserve);
         std::lock_guard<std::mutex> lock(g_utxosetscan);
         if (g_scan_in_progress) {
             return false;
@@ -2064,21 +2076,21 @@ UniValue scantxoutset(const JSONRPCRequest& request)
                 },
                 RPCResult{
             "{\n"
-            "  \"success\": true|false,         (boolean) Whether the scan was completed\n"
-            "  \"txouts\": n,                   (numeric) The number of unspent transaction outputs scanned\n"
-            "  \"height\": n,                   (numeric) The current block height (index)\n"
-            "  \"bestblock\": \"hex\",            (string) The hash of the block at the tip of the chain\n"
-            "  \"unspents\": [\n"
+            "  \"success\" : true|false,         (boolean) Whether the scan was completed\n"
+            "  \"txouts\" : n,                   (numeric) The number of unspent transaction outputs scanned\n"
+            "  \"height\" : n,                   (numeric) The current block height (index)\n"
+            "  \"bestblock\" : \"hex\",            (string) The hash of the block at the tip of the chain\n"
+            "  \"unspents\" : [\n"
             "   {\n"
-            "    \"txid\": \"hash\",              (string) The transaction id\n"
-            "    \"vout\": n,                   (numeric) The vout value\n"
-            "    \"scriptPubKey\": \"script\",    (string) The script key\n"
-            "    \"desc\": \"descriptor\",        (string) A specialized descriptor for the matched scriptPubKey\n"
-            "    \"amount\": x.xxx,             (numeric) The total amount in " + CURRENCY_UNIT + " of the unspent output\n"
-            "    \"height\": n,                 (numeric) Height of the unspent transaction output\n"
+            "    \"txid\" : \"hash\",              (string) The transaction id\n"
+            "    \"vout\" : n,                   (numeric) The vout value\n"
+            "    \"scriptPubKey\" : \"script\",    (string) The script key\n"
+            "    \"desc\" : \"descriptor\",        (string) A specialized descriptor for the matched scriptPubKey\n"
+            "    \"amount\" : x.xxx,             (numeric) The total amount in " + CURRENCY_UNIT + " of the unspent output\n"
+            "    \"height\" : n,                 (numeric) Height of the unspent transaction output\n"
             "   }\n"
             "   ,...],\n"
-            "  \"total_amount\": x.xxx,          (numeric) The total amount of all found unspent outputs in " + CURRENCY_UNIT + "\n"
+            "  \"total_amount\" : x.xxx,          (numeric) The total amount of all found unspent outputs in " + CURRENCY_UNIT + "\n"
             "]\n"
                 },
                 RPCExamples{""},
@@ -2142,9 +2154,9 @@ UniValue scantxoutset(const JSONRPCRequest& request)
             LOCK(cs_main);
             ::ChainstateActive().ForceFlushStateToDisk();
             pcursor = std::unique_ptr<CCoinsViewCursor>(::ChainstateActive().CoinsDB().Cursor());
-            assert(pcursor);
+            CHECK_NONFATAL(pcursor);
             tip = ::ChainActive().Tip();
-            assert(tip);
+            CHECK_NONFATAL(tip);
         }
         bool res = FindScriptPubKey(g_scan_progress, g_should_abort_scan, count, pcursor.get(), needles, coins);
         result.pushKV("success", res);
@@ -2252,6 +2264,113 @@ static UniValue getblockfilter(const JSONRPCRequest& request)
     return ret;
 }
 
+/**
+ * Serialize the UTXO set to a file for loading elsewhere.
+ *
+ * @see SnapshotMetadata
+ */
+UniValue dumptxoutset(const JSONRPCRequest& request)
+{
+    RPCHelpMan{
+        "dumptxoutset",
+        "\nWrite the serialized UTXO set to disk.\n"
+        "Incidentally flushes the latest coinsdb (leveldb) to disk.\n",
+        {
+            {"path",
+                RPCArg::Type::STR,
+                RPCArg::Optional::NO,
+                /* default_val */ "",
+                "path to the output file. If relative, will be prefixed by datadir."},
+        },
+        RPCResult{
+            "{\n"
+            "  \"coins_written\" : n,   (numeric) the number of coins written in the snapshot\n"
+            "  \"base_hash\" : \"...\",   (string) the hash of the base of the snapshot\n"
+            "  \"base_height\" : n,     (string) the height of the base of the snapshot\n"
+            "  \"path\" : \"...\"         (string) the absolute path that the snapshot was written to\n"
+            "]\n"
+        },
+        RPCExamples{
+            HelpExampleCli("dumptxoutset", "utxo.dat")
+        }
+    }.Check(request);
+
+    fs::path path = fs::absolute(request.params[0].get_str(), GetDataDir());
+    // Write to a temporary path and then move into `path` on completion
+    // to avoid confusion due to an interruption.
+    fs::path temppath = fs::absolute(request.params[0].get_str() + ".incomplete", GetDataDir());
+
+    if (fs::exists(path)) {
+        throw JSONRPCError(
+            RPC_INVALID_PARAMETER,
+            path.string() + " already exists. If you are sure this is what you want, "
+            "move it out of the way first");
+    }
+
+    FILE* file{fsbridge::fopen(temppath, "wb")};
+    CAutoFile afile{file, SER_DISK, CLIENT_VERSION};
+    std::unique_ptr<CCoinsViewCursor> pcursor;
+    CCoinsStats stats;
+    CBlockIndex* tip;
+
+    {
+        // We need to lock cs_main to ensure that the coinsdb isn't written to
+        // between (i) flushing coins cache to disk (coinsdb), (ii) getting stats
+        // based upon the coinsdb, and (iii) constructing a cursor to the
+        // coinsdb for use below this block.
+        //
+        // Cursors returned by leveldb iterate over snapshots, so the contents
+        // of the pcursor will not be affected by simultaneous writes during
+        // use below this block.
+        //
+        // See discussion here:
+        //   https://github.com/bitcoin/bitcoin/pull/15606#discussion_r274479369
+        //
+        LOCK(::cs_main);
+
+        ::ChainstateActive().ForceFlushStateToDisk();
+
+        if (!GetUTXOStats(&::ChainstateActive().CoinsDB(), stats)) {
+            throw JSONRPCError(RPC_INTERNAL_ERROR, "Unable to read UTXO set");
+        }
+
+        pcursor = std::unique_ptr<CCoinsViewCursor>(::ChainstateActive().CoinsDB().Cursor());
+        tip = LookupBlockIndex(stats.hashBlock);
+        CHECK_NONFATAL(tip);
+    }
+
+    SnapshotMetadata metadata{tip->GetBlockHash(), stats.coins_count, tip->nChainTx};
+
+    afile << metadata;
+
+    COutPoint key;
+    Coin coin;
+    unsigned int iter{0};
+
+    while (pcursor->Valid()) {
+        if (iter % 5000 == 0 && !IsRPCRunning()) {
+            throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Shutting down");
+        }
+        ++iter;
+        if (pcursor->GetKey(key) && pcursor->GetValue(coin)) {
+            afile << key;
+            afile << coin;
+        }
+
+        pcursor->Next();
+    }
+
+    afile.fclose();
+    fs::rename(temppath, path);
+
+    UniValue result(UniValue::VOBJ);
+    result.pushKV("coins_written", stats.coins_count);
+    result.pushKV("base_hash", tip->GetBlockHash().ToString());
+    result.pushKV("base_height", tip->nHeight);
+    result.pushKV("path", path.string());
+    return result;
+}
+
 // clang-format off
 static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         argNames
@@ -2288,6 +2407,7 @@ static const CRPCCommand commands[] =
     { "hidden",             "waitforblock",           &waitforblock,           {"blockhash","timeout"} },
     { "hidden",             "waitforblockheight",     &waitforblockheight,     {"height","timeout"} },
     { "hidden",             "syncwithvalidationinterfacequeue", &syncwithvalidationinterfacequeue, {} },
+    { "hidden",             "dumptxoutset",           &dumptxoutset,           {"path"} },
 };
 // clang-format on
 
@@ -2296,3 +2416,5 @@ void RegisterBlockchainRPCCommands(CRPCTable &t)
     for (unsigned int vcidx = 0; vcidx < ARRAYLEN(commands); vcidx++)
         t.appendCommand(commands[vcidx].name, &commands[vcidx]);
 }
+
+NodeContext* g_rpc_node = nullptr;

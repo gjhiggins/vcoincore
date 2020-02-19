@@ -467,7 +467,7 @@
     </message>
     <message>
         <source>%1 behind</source>
-        <translation>落后 %1</translation>
+        <translation>落后 %1 </translation>
     </message>
     <message>
         <source>Last received block was generated %1 ago.</source>
@@ -1000,7 +1000,7 @@
     </message>
     <message>
         <source>Error: Specified data directory "%1" cannot be created.</source>
-        <translation>错误:无法创建指定的数据目录 "%1"</translation>
+        <translation>错误:无法创建指定的数据目录 "%1" </translation>
     </message>
     <message>
         <source>Error</source>
@@ -1086,7 +1086,7 @@
     </message>
     <message>
         <source>Select payment request file</source>
-        <translation>选择支付请求文件</translation>
+        <translation>选择支付请求文件 </translation>
     </message>
     <message>
         <source>Select payment request file to open</source>
@@ -1439,7 +1439,7 @@
     </message>
     <message>
         <source>Your current balance in watch-only addresses</source>
-        <translation>您当前在仅观察观察地址中的余额</translation>
+        <translation>您当前在仅观察观察地址中的余额 </translation>
     </message>
     <message>
         <source>Spendable:</source>
@@ -1459,7 +1459,7 @@
     </message>
     <message>
         <source>Current total balance in watch-only addresses</source>
-        <translation>仅观察地址中的当前总余额</translation>
+        <translation>仅观察地址中的当前总余额 </translation>
     </message>
 </context>
 <context>
@@ -1494,7 +1494,7 @@
     </message>
     <message>
         <source>Due to widespread security flaws in BIP70 it's strongly recommended that any merchant instructions to switch wallets be ignored.</source>
-        <translation>由于BIP70具有广泛的安全缺陷，无论哪个商家指引要求您更换钱包，我们都建议您不要听信。</translation>
+        <translation>由于BIP70具有广泛的安全缺陷，强烈建议您忽略任何要求更换钱包的商家指引。</translation>
     </message>
     <message>
         <source>If you are receiving this error you should request the merchant provide a BIP21 compatible URI.</source>
@@ -2282,7 +2282,7 @@
     </message>
     <message>
         <source>Choose...</source>
-        <translation>选择...</translation>
+        <translation>选择... </translation>
     </message>
     <message>
         <source>Using the fallbackfee can result in sending a transaction that will take several hours or days (or never) to confirm. Consider choosing your fee manually or wait until you have validated the complete chain.</source>
@@ -2638,7 +2638,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
     </message>
     <message>
         <source>The Bitcoin address to sign the message with</source>
-        <translation>用来对消息签名的地址</translation>
+        <translation>用来对消息签名的地址 </translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -2901,10 +2901,6 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
     <message>
         <source>Output index</source>
         <translation>输出索引</translation>
-    </message>
-    <message>
-        <source> (Certificate was not verified)</source>
-        <translation>(证书未被验证)</translation>
     </message>
     <message>
         <source>Merchant</source>
@@ -3607,7 +3603,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
     </message>
     <message>
         <source>Error: Listening for incoming connections failed (listen returned error %s)</source>
-        <translation>错误：监听外部连接失败 (listen函数返回了错误 %s)</translation>
+        <translation>错误：监听外部连接失败 (listen函数返回了错误 %s) </translation>
     </message>
     <message>
         <source>Invalid amount for -maxtxfee=&lt;amount&gt;: '%s' (must be at least the minrelay fee of %s to prevent stuck transactions)</source>
@@ -3797,7 +3793,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
     </message>
     <message>
         <source>Cannot upgrade a non HD split wallet without upgrading to support pre split keypool. Please use -upgradewallet=169900 or -upgradewallet with no version specified.</source>
-        <translation>如果要对“非分离HD钱包（non HD split wallet）”进行升级，就必须先把它升级到支持“未进行分割的密钥池（pre split keypool）”的版本，否则无法进行升级。请使用指定了具体版本号的 -upgradewallet=169900 参数，或者直接使用不指定具体版本号的 -upgradewallet 参数重启钱包。</translation>
+        <translation>如果要对“未进行分割的HD钱包”（non HD split wallet）进行升级，就必须先把它升级到支持“未进行分割的密钥池（pre split keypool）”的版本，否则无法进行升级。请使用指定了具体版本号的 -upgradewallet=169900 参数，或者直接使用不指定具体版本号的 -upgradewallet 参数重启钱包。</translation>
     </message>
     <message>
         <source>Fee estimation failed. Fallbackfee is disabled. Wait a few blocks or enable -fallbackfee.</source>

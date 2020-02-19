@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2018 The Bitcoin Core developers
+// Copyright (c) 2011-2020 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,10 +13,8 @@
 #include <util/strencodings.h>
 #include <util/threadnames.h>
 
-#include <stdio.h>
 
 #include <map>
-#include <memory>
 #include <set>
 
 #ifdef DEBUG_LOCKCONTENTION
@@ -77,7 +75,7 @@ typedef std::set<std::pair<void*, void*> > InvLockOrders;
 struct LockData {
     // Very ugly hack: as the global constructs and destructors run single
     // threaded, we use this boolean to know whether LockData still exists,
-    // as DeleteLock can get called by global CCriticalSection destructors
+    // as DeleteLock can get called by global RecursiveMutex destructors
     // after LockData disappears.
     bool available;
     LockData() : available(true) {}
@@ -175,7 +173,7 @@ void AssertLockHeldInternal(const char* pszName, const char* pszFile, int nLine,
     for (const std::pair<void*, CLockLocation>& i : g_lockstack)
         if (i.first == cs)
             return;
-    tfm::format(std::cerr, "Assertion failed: lock %s not held in %s:%i; locks held:\n%s", pszName, pszFile, nLine, LocksHeld().c_str());
+    tfm::format(std::cerr, "Assertion failed: lock %s not held in %s:%i; locks held:\n%s", pszName, pszFile, nLine, LocksHeld());
     abort();
 }
 
@@ -183,7 +181,7 @@ void AssertLockNotHeldInternal(const char* pszName, const char* pszFile, int nLi
 {
     for (const std::pair<void*, CLockLocation>& i : g_lockstack) {
         if (i.first == cs) {
-            tfm::format(std::cerr, "Assertion failed: lock %s held in %s:%i; locks held:\n%s", pszName, pszFile, nLine, LocksHeld().c_str());
+            tfm::format(std::cerr, "Assertion failed: lock %s held in %s:%i; locks held:\n%s", pszName, pszFile, nLine, LocksHeld());
             abort();
         }
     }

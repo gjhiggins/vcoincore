@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2019 The Bitcoin Core developers
+// Copyright (c) 2009-2020 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -153,6 +153,7 @@ public:
         bool m_use_addrman_outgoing = true;
         std::vector<std::string> m_specified_outgoing;
         std::vector<std::string> m_added_nodes;
+        std::vector<bool> m_asmap;
     };
 
     void Init(const Options& connOptions) {
@@ -330,6 +331,8 @@ public:
     */
     int64_t PoissonNextSendInbound(int64_t now, int average_interval_seconds);
 
+    void SetAsmap(std::vector<bool> asmap) { addrman.m_asmap = std::move(asmap); }
+
 private:
     struct ListenSocket {
     public:
@@ -384,10 +387,10 @@ private:
     static bool NodeFullyConnected(const CNode* pnode);
 
     // Network usage totals
-    CCriticalSection cs_totalBytesRecv;
-    CCriticalSection cs_totalBytesSent;
-    uint64_t nTotalBytesRecv GUARDED_BY(cs_totalBytesRecv);
-    uint64_t nTotalBytesSent GUARDED_BY(cs_totalBytesSent);
+    RecursiveMutex cs_totalBytesRecv;
+    RecursiveMutex cs_totalBytesSent;
+    uint64_t nTotalBytesRecv GUARDED_BY(cs_totalBytesRecv) {0};
+    uint64_t nTotalBytesSent GUARDED_BY(cs_totalBytesSent) {0};
 
     // outbound limit & stats
     uint64_t nMaxOutboundTotalBytesSentInCycle GUARDED_BY(cs_totalBytesSent);
@@ -410,12 +413,12 @@ private:
     bool fAddressesInitialized{false};
     CAddrMan addrman;
     std::deque<std::string> vOneShots GUARDED_BY(cs_vOneShots);
-    CCriticalSection cs_vOneShots;
+    RecursiveMutex cs_vOneShots;
     std::vector<std::string> vAddedNodes GUARDED_BY(cs_vAddedNodes);
-    CCriticalSection cs_vAddedNodes;
+    RecursiveMutex cs_vAddedNodes;
     std::vector<CNode*> vNodes GUARDED_BY(cs_vNodes);
     std::list<CNode*> vNodesDisconnected;
-    mutable CCriticalSection cs_vNodes;
+    mutable RecursiveMutex cs_vNodes;
     std::atomic<NodeId> nLastNodeId{0};
     unsigned int nPrevNodeCount{0};
 
@@ -480,8 +483,6 @@ private:
 
     friend struct CConnmanTest;
 };
-extern std::unique_ptr<CConnman> g_connman;
-extern std::unique_ptr<BanMan> g_banman;
 void Discover();
 void StartMapPort();
 void InterruptMapPort();
@@ -567,7 +568,7 @@ struct LocalServiceInfo {
     int nPort;
 };
 
-extern CCriticalSection cs_mapLocalHost;
+extern RecursiveMutex cs_mapLocalHost;
 extern std::map<CNetAddr, LocalServiceInfo> mapLocalHost GUARDED_BY(cs_mapLocalHost);
 
 extern const std::string NET_MESSAGE_COMMAND_OTHER;
@@ -605,60 +606,110 @@ public:
     CAddress addr;
     // Bind address of our side of the connection
     CAddress addrBind;
+    uint32_t m_mapped_as;
 };
 
 
 
-
+/** Transport protocol agnostic message container.
+ * Ideally it should only contain receive time, payload,
+ * command and size.
+ */
 class CNetMessage {
+public:
+    CDataStream m_recv;                  // received message data
+    int64_t m_time = 0;                  // time (in microseconds) of message receipt.
+    bool m_valid_netmagic = false;
+    bool m_valid_header = false;
+    bool m_valid_checksum = false;
+    uint32_t m_message_size = 0;         // size of the payload
+    uint32_t m_raw_message_size = 0;     // used wire size of the message (including header/checksum)
+    std::string m_command;
+
+    CNetMessage(CDataStream&& recv_in) : m_recv(std::move(recv_in)) {}
+
+    void SetVersion(int nVersionIn)
+    {
+        m_recv.SetVersion(nVersionIn);
+    }
+};
+
+/** The TransportDeserializer takes care of holding and deserializing the
+ * network receive buffer. It can deserialize the network buffer into a
+ * transport protocol agnostic CNetMessage (command & payload)
+ */
+class TransportDeserializer {
+public:
+    // returns true if the current deserialization is complete
+    virtual bool Complete() const = 0;
+    // set the serialization context version
+    virtual void SetVersion(int version) = 0;
+    // read and deserialize data
+    virtual int Read(const char *data, unsigned int bytes) = 0;
+    // decomposes a message from the context
+    virtual CNetMessage GetMessage(const CMessageHeader::MessageStartChars& message_start, int64_t time) = 0;
+    virtual ~TransportDeserializer() {}
+};
+
+class V1TransportDeserializer final : public TransportDeserializer
+{
 private:
     mutable CHash256 hasher;
     mutable uint256 data_hash;
-public:
     bool in_data;                   // parsing header (false) or data (true)
-
     CDataStream hdrbuf;             // partially received header
     CMessageHeader hdr;             // complete header
-    unsigned int nHdrPos;
-
     CDataStream vRecv;              // received message data
+    unsigned int nHdrPos;
     unsigned int nDataPos;
 
-    int64_t nTime;                  // time (in microseconds) of message receipt.
+    const uint256& GetMessageHash() const;
+    int readHeader(const char *pch, unsigned int nBytes);
+    int readData(const char *pch, unsigned int nBytes);
 
-    CNetMessage(const CMessageHeader::MessageStartChars& pchMessageStartIn, int nTypeIn, int nVersionIn) : hdrbuf(nTypeIn, nVersionIn), hdr(pchMessageStartIn), vRecv(nTypeIn, nVersionIn) {
+    void Reset() {
+        vRecv.clear();
+        hdrbuf.clear();
         hdrbuf.resize(24);
         in_data = false;
         nHdrPos = 0;
         nDataPos = 0;
-        nTime = 0;
+        data_hash.SetNull();
+        hasher.Reset();
     }
 
-    bool complete() const
+public:
+
+    V1TransportDeserializer(const CMessageHeader::MessageStartChars& pchMessageStartIn, int nTypeIn, int nVersionIn) : hdrbuf(nTypeIn, nVersionIn), hdr(pchMessageStartIn), vRecv(nTypeIn, nVersionIn) {
+        Reset();
+    }
+
+    bool Complete() const override
     {
         if (!in_data)
             return false;
         return (hdr.nMessageSize == nDataPos);
     }
-
-    const uint256& GetMessageHash() const;
-
-    void SetVersion(int nVersionIn)
+    void SetVersion(int nVersionIn) override
     {
         hdrbuf.SetVersion(nVersionIn);
         vRecv.SetVersion(nVersionIn);
     }
-
-    int readHeader(const char *pch, unsigned int nBytes);
-    int readData(const char *pch, unsigned int nBytes);
+    int Read(const char *pch, unsigned int nBytes) override {
+        int ret = in_data ? readData(pch, nBytes) : readHeader(pch, nBytes);
+        if (ret < 0) Reset();
+        return ret;
+    }
+    CNetMessage GetMessage(const CMessageHeader::MessageStartChars& message_start, int64_t time) override;
 };
-
 
 /** Information about a peer */
 class CNode
 {
     friend class CConnman;
 public:
+    std::unique_ptr<TransportDeserializer> m_deserializer;
+
     // socket
     std::atomic<ServiceFlags> nServices{NODE_NONE};
     SOCKET hSocket GUARDED_BY(cs_hSocket);
@@ -666,15 +717,15 @@ public:
     size_t nSendOffset{0}; // offset inside the first vSendMsg already sent
     uint64_t nSendBytes GUARDED_BY(cs_vSend){0};
     std::deque<std::vector<unsigned char>> vSendMsg GUARDED_BY(cs_vSend);
-    CCriticalSection cs_vSend;
-    CCriticalSection cs_hSocket;
-    CCriticalSection cs_vRecv;
+    RecursiveMutex cs_vSend;
+    RecursiveMutex cs_hSocket;
+    RecursiveMutex cs_vRecv;
 
-    CCriticalSection cs_vProcessMsg;
+    RecursiveMutex cs_vProcessMsg;
     std::list<CNetMessage> vProcessMsg GUARDED_BY(cs_vProcessMsg);
     size_t nProcessQueueSize{0};
 
-    CCriticalSection cs_sendProcessing;
+    RecursiveMutex cs_sendProcessing;
 
     std::deque<CInv> vRecvGetData;
     uint64_t nRecvBytes GUARDED_BY(cs_vRecv){0};
@@ -729,23 +780,22 @@ public:
 
     // flood relay
     std::vector<CAddress> vAddrToSend;
-    CRollingBloomFilter addrKnown;
+    const std::unique_ptr<CRollingBloomFilter> m_addr_known;
     bool fGetAddr{false};
     int64_t nNextAddrSend GUARDED_BY(cs_sendProcessing){0};
     int64_t nNextLocalAddrSend GUARDED_BY(cs_sendProcessing){0};
 
-    const bool m_addr_relay_peer;
-    bool IsAddrRelayPeer() const { return m_addr_relay_peer; }
+    bool IsAddrRelayPeer() const { return m_addr_known != nullptr; }
 
     // List of block ids we still have announce.
     // There is no final sorting before sending, as they are always sent immediately
     // and in the order requested.
     std::vector<uint256> vInventoryBlockToSend GUARDED_BY(cs_inventory);
-    CCriticalSection cs_inventory;
+    RecursiveMutex cs_inventory;
 
     struct TxRelay {
         TxRelay() { pfilter = MakeUnique<CBloomFilter>(); }
-        mutable CCriticalSection cs_filter;
+        mutable RecursiveMutex cs_filter;
         // We use fRelayTxes for two purposes -
         // a) it allows us to not relay tx invs before receiving the peer's version message
         // b) the peer may tell us in its version message that we should not relay tx invs
@@ -753,7 +803,7 @@ public:
         bool fRelayTxes GUARDED_BY(cs_filter){false};
         std::unique_ptr<CBloomFilter> pfilter PT_GUARDED_BY(cs_filter) GUARDED_BY(cs_filter);
 
-        mutable CCriticalSection cs_tx_inventory;
+        mutable RecursiveMutex cs_tx_inventory;
         CRollingBloomFilter filterInventoryKnown GUARDED_BY(cs_tx_inventory){50000, 0.000001};
         // Set of transaction ids we still have to announce.
         // They are sorted by the mempool before relay, so the order is not important.
@@ -761,10 +811,10 @@ public:
         // Used for BIP35 mempool sending
         bool fSendMempool GUARDED_BY(cs_tx_inventory){false};
         // Last time a "MEMPOOL" request was serviced.
-        std::atomic<int64_t> timeLastMempoolReq{0};
-        int64_t nNextInvSend{0};
+        std::atomic<std::chrono::seconds> m_last_mempool_req{std::chrono::seconds{0}};
+        std::chrono::microseconds nNextInvSend{0};
 
-        CCriticalSection cs_feeFilter;
+        RecursiveMutex cs_feeFilter;
         // Minimum fee rate with which to filter inv's to this node
         CAmount minFeeFilter GUARDED_BY(cs_feeFilter){0};
         CAmount lastSentFeeFilter{0};
@@ -826,12 +876,12 @@ private:
     NetPermissionFlags m_permissionFlags{ PF_NONE };
     std::list<CNetMessage> vRecvMsg;  // Used only by SocketHandler thread
 
-    mutable CCriticalSection cs_addrName;
+    mutable RecursiveMutex cs_addrName;
     std::string addrName GUARDED_BY(cs_addrName);
 
     // Our address, as reported by the peer
     CService addrLocal GUARDED_BY(cs_addrLocal);
-    mutable CCriticalSection cs_addrLocal;
+    mutable RecursiveMutex cs_addrLocal;
 public:
 
     NodeId GetId() const {
@@ -884,7 +934,8 @@ public:
 
     void AddAddressKnown(const CAddress& _addr)
     {
-        addrKnown.insert(_addr.GetKey());
+        assert(m_addr_known);
+        m_addr_known->insert(_addr.GetKey());
     }
 
     void PushAddress(const CAddress& _addr, FastRandomContext &insecure_rand)
@@ -892,7 +943,8 @@ public:
         // Known checking here is only to save space from duplicates.
         // SendMessages will filter it again for knowns that were added
         // after addresses were pushed.
-        if (_addr.IsValid() && !addrKnown.contains(_addr.GetKey())) {
+        assert(m_addr_known);
+        if (_addr.IsValid() && !m_addr_known->contains(_addr.GetKey())) {
             if (vAddrToSend.size() >= MAX_ADDR_TO_SEND) {
                 vAddrToSend[insecure_rand.randrange(vAddrToSend.size())] = _addr;
             } else {
@@ -931,7 +983,7 @@ public:
 
     void CloseSocketDisconnect();
 
-    void copyStats(CNodeStats &stats);
+    void copyStats(CNodeStats &stats, const std::vector<bool> &m_asmap);
 
     ServiceFlags GetLocalServices() const
     {
@@ -943,11 +995,13 @@ public:
     void MaybeSetAddrName(const std::string& addrNameIn);
 };
 
-
-
-
-
 /** Return a timestamp in the future (in microseconds) for exponentially distributed events. */
 int64_t PoissonNextSend(int64_t now, int average_interval_seconds);
+
+/** Wrapper to return mockable type */
+inline std::chrono::microseconds PoissonNextSend(std::chrono::microseconds now, std::chrono::seconds average_interval)
+{
+    return std::chrono::microseconds{PoissonNextSend(now.count(), average_interval.count())};
+}
 
 #endif // BITCOIN_NET_H

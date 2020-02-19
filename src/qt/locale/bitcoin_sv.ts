@@ -70,10 +70,6 @@
         <translation>Detta är dina Bitcoin-adresser för att skicka betalningar. Kontrollera alltid belopp och mottagaradress innan du skickar bitcoin.</translation>
     </message>
     <message>
-        <source>These are your Bitcoin addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>Detta är dina Bitcoinadresser för att ta emot betalningar. Använd knappen 'Skapa ny mottagaradress' på fliken ta emot för att skapa nya adresser .</translation>
-    </message>
-    <message>
         <source>&amp;Copy Address</source>
         <translation>&amp;Kopiera adress</translation>
     </message>
@@ -137,10 +133,6 @@ Försök igen.</translation>
         <translation>Upprepa ny lösenfras</translation>
     </message>
     <message>
-        <source>Show passphrase</source>
-        <translation>Visa lösenfras</translation>
-    </message>
-    <message>
         <source>Encrypt wallet</source>
         <translation>Kryptera plånbok</translation>
     </message>
@@ -181,28 +173,8 @@ Försök igen.</translation>
         <translation>Plånbok krypterad</translation>
     </message>
     <message>
-        <source>Enter the new passphrase for the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
-        <translation>Ange den nya lösenfrasen för plånboken. &lt;br/&gt; Använd en lösenfras på &lt;b&gt;tio eller fler slumpmässiga tecken&lt;/b&gt;, eller &lt;b&gt;åtta eller fler ord&lt;/b&gt;.</translation>
-    </message>
-    <message>
-        <source>Enter the old passphrase and new passphrase for the wallet.</source>
-        <translation>Ange den gamla lösenfrasen och den nya lösenfrasen för plånboken.</translation>
-    </message>
-    <message>
         <source>Remember that encrypting your wallet cannot fully protect your bitcoins from being stolen by malware infecting your computer.</source>
         <translation>Kom ihåg att kryptering av din plånbok inte helt kan skydda dig från stöld av dina bitcoins om skadlig kod infekterat din dator.</translation>
-    </message>
-    <message>
-        <source>Wallet to be encrypted</source>
-        <translation>Plånbok som ska krypteras</translation>
-    </message>
-    <message>
-        <source>Your wallet is about to be encrypted. </source>
-        <translation>Din plånbok kommer att krypteras.</translation>
-    </message>
-    <message>
-        <source>Your wallet is now encrypted. </source>
-        <translation>Din plånbok är nu krypterad.</translation>
     </message>
     <message>
         <source>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. For security reasons, previous backups of the unencrypted wallet file will become useless as soon as you start using the new, encrypted wallet.</source>
@@ -325,14 +297,6 @@ Försök igen.</translation>
     <message>
         <source>Open &amp;URI...</source>
         <translation>Öppna &amp;URI...</translation>
-    </message>
-    <message>
-        <source>Create Wallet...</source>
-        <translation>Skapa plånbok...</translation>
-    </message>
-    <message>
-        <source>Create a new wallet</source>
-        <translation>Skapa ny plånbok</translation>
     </message>
     <message>
         <source>Wallet:</source>
@@ -563,10 +527,6 @@ Försök igen.</translation>
         <translation>Fel: %1</translation>
     </message>
     <message>
-        <source>Warning: %1</source>
-        <translation>Varning: %1</translation>
-    </message>
-    <message>
         <source>Date: %1
 </source>
         <translation>Datum: %1
@@ -788,38 +748,10 @@ Försök igen.</translation>
 </context>
 <context>
     <name>CreateWalletActivity</name>
-    <message>
-        <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
-        <translation>Skapar plånboken &lt;b&gt;%1&lt;/b&gt;...</translation>
-    </message>
-    <message>
-        <source>Create wallet failed</source>
-        <translation>Plånboken kunde inte skapas</translation>
-    </message>
     </context>
 <context>
     <name>CreateWalletDialog</name>
-    <message>
-        <source>Create Wallet</source>
-        <translation>Skapa plånbok</translation>
-    </message>
-    <message>
-        <source>Wallet Name</source>
-        <translation>Namn på plånboken</translation>
-    </message>
-    <message>
-        <source>Encrypt the wallet. The wallet will be encrypted with a passphrase of your choice.</source>
-        <translation>Kryptera plånboken. Plånboken krypteras med en lösenfras som du själv väljer.</translation>
-    </message>
-    <message>
-        <source>Encrypt Wallet</source>
-        <translation>Kryptera plånbok</translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation>Skapa</translation>
-    </message>
-</context>
+    </context>
 <context>
     <name>EditAddressDialog</name>
     <message>
@@ -981,17 +913,13 @@ Försök igen.</translation>
     </message>
     <message numerus="yes">
         <source>%n GB of free space available</source>
-        <translation><numerusform>%n GB fritt utrymme kvar</numerusform><numerusform>%n GB ledigt utrymme kvar</numerusform></translation>
+        <translation><numerusform>%n GB fritt utrymme kvar</numerusform><numerusform>%n GB fritt utrymme kvar</numerusform></translation>
     </message>
     <message numerus="yes">
         <source>(of %n GB needed)</source>
-        <translation><numerusform>(av %n GB behövs)</numerusform><numerusform>(av de %n GB som behövs)</numerusform></translation>
+        <translation><numerusform>(av %n GB behövs)</numerusform><numerusform>(av %n GB behövs)</numerusform></translation>
     </message>
-    <message numerus="yes">
-        <source>(%n GB needed for full chain)</source>
-        <translation><numerusform>(%n GB behövs för hela kedjan)</numerusform><numerusform>(%n GB behövs för hela kedjan)</numerusform></translation>
-    </message>
-</context>
+    </context>
 <context>
     <name>ModalOverlay</name>
     <message>
@@ -1004,7 +932,7 @@ Försök igen.</translation>
     </message>
     <message>
         <source>Attempting to spend bitcoins that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>Att försöka spendera bitcoin som påverkas av transaktioner som ännu inte visas kommer inte accepteras av nätverket.</translation>
+        <translation>Att försöka spendera bitcoin som påverkas av transaktioner som ännu inte visas kommer inte accepteras av nätverket. </translation>
     </message>
     <message>
         <source>Number of blocks left</source>
@@ -1068,10 +996,6 @@ Försök igen.</translation>
 </context>
 <context>
     <name>OpenWalletActivity</name>
-    <message>
-        <source>Open wallet failed</source>
-        <translation>Det gick inte att öppna plånboken</translation>
-    </message>
     <message>
         <source>default wallet</source>
         <translation>Standardplånbok</translation>
@@ -1225,11 +1149,11 @@ Försök igen.</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
-        <translation>Proxy-&amp;IP:</translation>
+        <translation>Proxy-&amp;IP: </translation>
     </message>
     <message>
         <source>&amp;Port:</source>
-        <translation>&amp;Port:</translation>
+        <translation>&amp;Port: </translation>
     </message>
     <message>
         <source>Port of the proxy (e.g. 9050)</source>
@@ -1277,7 +1201,7 @@ Försök igen.</translation>
     </message>
     <message>
         <source>User Interface &amp;language:</source>
-        <translation>Användargränssnittets &amp;språk:</translation>
+        <translation>Användargränssnittets &amp;språk: </translation>
     </message>
     <message>
         <source>The user interface language can be set here. This setting will take effect after restarting %1.</source>
@@ -1285,7 +1209,7 @@ Försök igen.</translation>
     </message>
     <message>
         <source>&amp;Unit to show amounts in:</source>
-        <translation>&amp;Måttenhet att visa belopp i:</translation>
+        <translation>&amp;Måttenhet att visa belopp i: </translation>
     </message>
     <message>
         <source>Choose the default subdivision unit to show in the interface and when sending coins.</source>
@@ -2041,10 +1965,6 @@ Försök igen.</translation>
         <translation>Ett valfritt belopp att begära. Lämna tomt eller ange noll för att inte begära ett specifikt belopp.</translation>
     </message>
     <message>
-        <source>&amp;Create new receiving address</source>
-        <translation>S&amp;kapa ny mottagaradress</translation>
-    </message>
-    <message>
         <source>Clear all fields of the form.</source>
         <translation>Rensa alla formulärfälten</translation>
     </message>
@@ -2364,10 +2284,6 @@ Notera: Då avgiften beräknas per byte kommer en avgift på 50 satoshi tas ut f
     <message>
         <source>%1 (%2 blocks)</source>
         <translation>%1 (%2 block)</translation>
-    </message>
-    <message>
-        <source> from wallet '%1'</source>
-        <translation>från plånbok: '%1'</translation>
     </message>
     <message>
         <source>%1 to %2</source>
@@ -3471,10 +3387,6 @@ Notera: Då avgiften beräknas per byte kommer en avgift på 50 satoshi tas ut f
         <translation>Läser in P2P-adresser...</translation>
     </message>
     <message>
-        <source>Error: Disk space is too low!</source>
-        <translation>Fel: Diskutrymmet är för lågt!</translation>
-    </message>
-    <message>
         <source>Loading banlist...</source>
         <translation>Läser in listan över bannlysningar …</translation>
     </message>
@@ -3581,10 +3493,6 @@ Notera: Då avgiften beräknas per byte kommer en avgift på 50 satoshi tas ut f
     <message>
         <source>Need to specify a port with -whitebind: '%s'</source>
         <translation>Port måste anges med -whitelist: '%s'</translation>
-    </message>
-    <message>
-        <source>Prune mode is incompatible with -blockfilterindex.</source>
-        <translation>Gallringsläge är inkompatibelt med -blockfilterindex.</translation>
     </message>
     <message>
         <source>Reducing -maxconnections from %d to %d, because of system limitations.</source>
@@ -3694,11 +3602,11 @@ Notera: Då avgiften beräknas per byte kommer en avgift på 50 satoshi tas ut f
     </message>
     <message>
         <source>This is the minimum transaction fee you pay on every transaction.</source>
-        <translation>Det här är minimiavgiften du kommer betala för varje transaktion.</translation>
+        <translation>Det här är minimiavgiften du kommer betala för varje transaktion. </translation>
     </message>
     <message>
         <source>This is the transaction fee you will pay if you send a transaction.</source>
-        <translation>Det här är transaktionsavgiften du kommer betala om du skickar en transaktion.</translation>
+        <translation>Det här är transaktionsavgiften du kommer betala om du skickar en transaktion. </translation>
     </message>
     <message>
         <source>Transaction amounts must not be negative</source>
@@ -3754,7 +3662,7 @@ Notera: Då avgiften beräknas per byte kommer en avgift på 50 satoshi tas ut f
     </message>
     <message>
         <source>Done loading</source>
-        <translation>Inläsning klar</translation>
+        <translation>Klar med laddning</translation>
     </message>
 </context>
 </TS>

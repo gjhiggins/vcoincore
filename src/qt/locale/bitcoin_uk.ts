@@ -70,10 +70,6 @@
         <translation>Это ваши адреса Bitcoin для отправки платежей. Всегда проверяйте количество и адрес получателя перед отправкой перевода.</translation>
     </message>
     <message>
-        <source>These are your Bitcoin addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>Це ваші біткойн-адреси для отримання платежів. Використовуйте кнопку "Створити нову адресу прийому" на вкладці отримання, для створення нових адрес.</translation>
-    </message>
-    <message>
         <source>&amp;Copy Address</source>
         <translation>Копировать &amp;адрес</translation>
     </message>
@@ -136,10 +132,6 @@
         <translation>Повторите новый пароль</translation>
     </message>
     <message>
-        <source>Show passphrase</source>
-        <translation>Показати парольну фразу</translation>
-    </message>
-    <message>
         <source>Encrypt wallet</source>
         <translation>Зашифровать электронный кошелёк</translation>
     </message>
@@ -180,24 +172,8 @@
         <translation>Кошелёк зашифрован</translation>
     </message>
     <message>
-        <source>Enter the old passphrase and new passphrase for the wallet.</source>
-        <translation>Введіть стару та нову парольну фразу для гаманця.</translation>
-    </message>
-    <message>
         <source>Remember that encrypting your wallet cannot fully protect your bitcoins from being stolen by malware infecting your computer.</source>
         <translation>Пам’ятайте, що шифрування гаманця не може повністю захистити ваші біткоіни від кражі, у випадку якщо ваш комп’ютер буде інфіковано шкідливими програмами.</translation>
-    </message>
-    <message>
-        <source>Wallet to be encrypted</source>
-        <translation>Гаманець який потрібно зашифрувати</translation>
-    </message>
-    <message>
-        <source>Your wallet is about to be encrypted. </source>
-        <translation>Ваш гаманець буде зашифровано.</translation>
-    </message>
-    <message>
-        <source>Your wallet is now encrypted. </source>
-        <translation>Ваш гаманець зашифровано.</translation>
     </message>
     <message>
         <source>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. For security reasons, previous backups of the unencrypted wallet file will become useless as soon as you start using the new, encrypted wallet.</source>
@@ -322,14 +298,6 @@
         <translation>Відкрити &amp;URI</translation>
     </message>
     <message>
-        <source>Create Wallet...</source>
-        <translation>Створити Гаманець...</translation>
-    </message>
-    <message>
-        <source>Create a new wallet</source>
-        <translation>Створити новий гаманець</translation>
-    </message>
-    <message>
         <source>Wallet:</source>
         <translation>Кошелёк</translation>
     </message>
@@ -403,7 +371,7 @@
     </message>
     <message>
         <source>Sign messages with your Bitcoin addresses to prove you own them</source>
-        <translation>Підтвердіть, що Ви є власником повідомлення підписавши його Вашою Bitcoin-адресою</translation>
+        <translation>Підтвердіть, що Ви є власником повідомлення підписавши його Вашою Bitcoin-адресою </translation>
     </message>
     <message>
         <source>Verify messages to ensure they were signed with specified Bitcoin addresses</source>
@@ -558,10 +526,6 @@
         <translation>Помилка: %1</translation>
     </message>
     <message>
-        <source>Warning: %1</source>
-        <translation>Попередження: %1</translation>
-    </message>
-    <message>
         <source>Date: %1
 </source>
         <translation>Дата: %1
@@ -714,7 +678,7 @@
     </message>
     <message>
         <source>Copy transaction ID</source>
-        <translation>Копіювати ID транзакції</translation>
+        <translation>Копіювати ID транзакції </translation>
     </message>
     <message>
         <source>Lock unspent</source>
@@ -783,42 +747,10 @@
 </context>
 <context>
     <name>CreateWalletActivity</name>
-    <message>
-        <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
-        <translation>Створення Гаманця &lt;b&gt;%1&lt;/b&gt;...</translation>
-    </message>
-    <message>
-        <source>Create wallet failed</source>
-        <translation>Помилка створення гаманця</translation>
-    </message>
-    <message>
-        <source>Create wallet warning</source>
-        <translation>Попередження створення гаманця</translation>
-    </message>
-</context>
+    </context>
 <context>
     <name>CreateWalletDialog</name>
-    <message>
-        <source>Create Wallet</source>
-        <translation>Створити Гаманець</translation>
-    </message>
-    <message>
-        <source>Wallet Name</source>
-        <translation>Назва Гаманця</translation>
-    </message>
-    <message>
-        <source>Encrypt the wallet. The wallet will be encrypted with a passphrase of your choice.</source>
-        <translation>Зашифруйте гаманець. Гаманець буде зашифрований за допомогою пароля на ваш вибір.</translation>
-    </message>
-    <message>
-        <source>Encrypt Wallet</source>
-        <translation>Шифрувати Гаманець</translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation>Створити</translation>
-    </message>
-</context>
+    </context>
 <context>
     <name>EditAddressDialog</name>
     <message>
@@ -1063,14 +995,6 @@
 </context>
 <context>
     <name>OpenWalletActivity</name>
-    <message>
-        <source>Open wallet failed</source>
-        <translation>Помилка відкриття гаманця</translation>
-    </message>
-    <message>
-        <source>Open wallet warning</source>
-        <translation>Попередження відкриття гаманця</translation>
-    </message>
     <message>
         <source>default wallet</source>
         <translation>гаманець за змовчуванням</translation>
@@ -2256,7 +2180,7 @@
 Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis per kB" for a transaction size of 500 bytes (half of 1 kB) would ultimately yield a fee of only 50 satoshis.</source>
         <translation>Вкажіть комісію за кБ (1,000 байт) віртуального розміру транзакції.
 
-Примітка: Так як комісія нараховується за байт, комісія "100 сатоші за кБ" для транзакції розміром 500 байт (пів 1 кБ) буде приблизно 50 сатоші.</translation>
+Примітка: Так як комісія нараховується за байт, комісія "100 сатоші за кБ" для транзакції розміром 500 байт (пів 1 кБ) буде приблизно 50 сатоші. </translation>
     </message>
     <message>
         <source>per kilobyte</source>
@@ -2672,7 +2596,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
     </message>
     <message>
         <source>Private key for the entered address is not available.</source>
-        <translation>Приватний ключ для введеної адреси недоступний.</translation>
+        <translation>Приватний ключ для введеної адреси недоступний. </translation>
     </message>
     <message>
         <source>Message signing failed.</source>
@@ -2843,10 +2767,6 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
     <message>
         <source>Output index</source>
         <translation>Вихідний індекс</translation>
-    </message>
-    <message>
-        <source> (Certificate was not verified)</source>
-        <translation>(Сертифікат не підтверджено)</translation>
     </message>
     <message>
         <source>Merchant</source>
@@ -3079,7 +2999,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
     </message>
     <message>
         <source>Copy transaction ID</source>
-        <translation>Скопіювати ID транзакції</translation>
+        <translation>Скопіювати ID транзакції </translation>
     </message>
     <message>
         <source>Copy raw transaction</source>
@@ -3421,7 +3341,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
     </message>
     <message>
         <source>Error opening block database</source>
-        <translation>Помилка відкриття блоку бази даних</translation>
+        <translation>Помилка відкриття блоку бази даних </translation>
     </message>
     <message>
         <source>Failed to listen on any port. Use -listen=0 if you want this.</source>
@@ -3468,10 +3388,6 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>Завантаження P2P адрес...</translation>
     </message>
     <message>
-        <source>Error: Disk space is too low!</source>
-        <translation>Помилка: замало дискового простору!</translation>
-    </message>
-    <message>
         <source>Loading banlist...</source>
         <translation>Завантаження бан-списку...</translation>
     </message>
@@ -3481,7 +3397,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
     </message>
     <message>
         <source>Prune cannot be configured with a negative value.</source>
-        <translation>Розмір скороченого ланцюжка блоків не може бути від'ємним.</translation>
+        <translation>Розмір скороченого ланцюжка блоків не може бути від'ємним. </translation>
     </message>
     <message>
         <source>Prune mode is incompatible with -txindex.</source>
@@ -3541,7 +3457,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
     </message>
     <message>
         <source>The transaction amount is too small to send after the fee has been deducted</source>
-        <translation>Залишок від суми транзакції зі сплатою комісії занадто малий</translation>
+        <translation>Залишок від суми транзакції зі сплатою комісії занадто малий </translation>
     </message>
     <message>
         <source>You need to rebuild the database using -reindex to go back to unpruned mode.  This will redownload the entire blockchain</source>
@@ -3638,7 +3554,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
     </message>
     <message>
         <source>Verifying wallet(s)...</source>
-        <translation>Перевірка гаманця(ців)...</translation>
+        <translation>Перевірка гаманця(ців)... </translation>
     </message>
     <message>
         <source>Warning: unknown new rules activated (versionbit %i)</source>
@@ -3718,7 +3634,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
     </message>
     <message>
         <source>Fee estimation failed. Fallbackfee is disabled. Wait a few blocks or enable -fallbackfee.</source>
-        <translation>Оцінка комісії не вдалася. Fallbackfee вимкнено. Зачекайте кілька блоків або ввімкніть -fallbackfee.</translation>
+        <translation>Оцінка комісії не вдалася. Fallbackfee вимкнено. Зачекайте кілька блоків або ввімкніть -fallbackfee. </translation>
     </message>
     <message>
         <source>Warning: Private keys detected in wallet {%s} with disabled private keys</source>

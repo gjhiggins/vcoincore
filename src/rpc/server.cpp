@@ -1,12 +1,10 @@
 // Copyright (c) 2010 Satoshi Nakamoto
-// Copyright (c) 2009-2019 The Bitcoin Core developers
+// Copyright (c) 2009-2020 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <rpc/server.h>
 
-#include <fs.h>
-#include <key_io.h>
 #include <rpc/util.h>
 #include <shutdown.h>
 #include <sync.h>
@@ -20,7 +18,7 @@
 #include <memory> // for unique_ptr
 #include <unordered_map>
 
-static CCriticalSection cs_rpcWarmup;
+static RecursiveMutex cs_rpcWarmup;
 static std::atomic<bool> g_rpc_running{false};
 static bool fRPCInWarmup GUARDED_BY(cs_rpcWarmup) = true;
 static std::string rpcWarmupStatus GUARDED_BY(cs_rpcWarmup) = "RPC server started";
@@ -200,14 +198,14 @@ static UniValue getrpcinfo(const JSONRPCRequest& request)
                 {},
                 RPCResult{
             "{\n"
-            " \"active_commands\" (array) All active commands\n"
+            " \"active_commands\" (json array) All active commands\n"
             "  [\n"
-            "   {               (object) Information about an active command\n"
+            "   {               (json object) Information about an active command\n"
             "    \"method\"       (string)  The name of the RPC command \n"
             "    \"duration\"     (numeric)  The running time in microseconds\n"
             "   },...\n"
             "  ],\n"
-            " \"logpath\": \"xxx\" (string) The complete file path to the debug log\n"
+            " \"logpath\" : \"xxx\" (string) The complete file path to the debug log\n"
             "}\n"
                 },
                 RPCExamples{

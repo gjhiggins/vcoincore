@@ -3243,6 +3243,10 @@
         <translation>Bilinmeyen adres türü '%s'</translation>
     </message>
     <message>
+        <source>Unknown address type '%s'</source>
+        <translation>Bilinmeyen adres türü '%s'</translation>
+    </message>
+    <message>
         <source>Upgrading txindex database</source>
         <translation>txindex veritabanı yükseltiliyor</translation>
     </message>
