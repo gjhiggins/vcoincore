@@ -1090,7 +1090,7 @@ UniValue setgenerate(const JSONRPCRequest& request)
     gArgs.SoftSetArg("-gen", (fGenerate ? "1" : "0"));
     gArgs.SoftSetArg("-genproclimit", itostr(nGenProcLimit));
 
-    int numCores = GenerateVCores(fGenerate, nGenProcLimit, Params(), *g_connman, wallet);
+    int numCores = GenerateVCores(fGenerate, nGenProcLimit, Params(), *g_rpc_node->connman, wallet);
 
     nGenProcLimit = nGenProcLimit >= 0 ? nGenProcLimit : numCores;
     std::string msg = "";

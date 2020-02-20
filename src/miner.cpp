@@ -22,6 +22,7 @@
 #include <policy/policy.h>
 #include <pow.h>
 #include <primitives/transaction.h>
+#include <rpc/blockchain.h>
 #include <rpc/protocol.h>
 #include <script/standard.h>
 #include <timedata.h>
@@ -112,7 +113,7 @@ static BlockAssembler::Options DefaultOptions(const CChainParams& params)
 }
 
 BlockAssembler::BlockAssembler(const CTxMemPool& mempool, const CChainParams& params)
-    : BlockAssembler(mempool, params, DefaultOptions()) {}
+    : BlockAssembler(mempool, params, DefaultOptions(params)) {}
 
 void BlockAssembler::resetBlock()
 {
@@ -519,6 +520,7 @@ void static VCoreMiner(const CChainParams& chainparams, CConnman& connman, std::
     CScript coinbaseScript;
     pwallet->GetScriptForMining(coinbaseScript);
     //GetMainSignals().ScriptForMining(coinbaseScript);
+    const CTxMemPool& mempool = EnsureMemPool();
 
     while (true) {
         try {
@@ -549,7 +551,7 @@ void static VCoreMiner(const CChainParams& chainparams, CConnman& connman, std::
             if(!pindexPrev) break;
 
             LogPrintf("Creating New block");
-            BlockAssembler assembler(chainparams);
+            BlockAssembler assembler(mempool, chainparams);
             auto pblocktemplate = assembler.CreateNewBlock(coinbaseScript, pwallet);
             if (!pblocktemplate.get()) {
                 LogPrintf("VCoreminer #%s -- Failed to find a coinstake\n", i);
@@ -563,7 +565,7 @@ void static VCoreMiner(const CChainParams& chainparams, CConnman& connman, std::
                       ::GetSerializeSize(*pblock));
 
             // check if block is valid
-            CValidationState state;
+            BlockValidationState state;
             if (!TestBlockValidity(state, chainparams, *pblock, pindexPrev, false, false)) {
                 throw std::runtime_error(strprintf("%s: TestBlockValidity failed: %s", __func__, FormatStateMessage(state)));
             }
@@ -608,7 +610,7 @@ void static VCoreMiner(const CChainParams& chainparams, CConnman& connman, std::
                     nHashCounter += nHashesDone;
                 if (GetTimeMillis() - nHPSTimerStart > 4000)
                 {
-                    static CCriticalSection cs;
+                    static RecursiveMutex cs;
                     {
                         LOCK(cs);
                         if (GetTimeMillis() - nHPSTimerStart > 4000)

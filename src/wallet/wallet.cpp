@@ -3202,21 +3202,6 @@ void CWallet::MarkDestinationsDirty(const std::set<CTxDestination>& destinations
     }
 }
 
-void CWallet::MarkDestinationsDirty(const std::set<CTxDestination>& destinations) {
-    for (auto& entry : mapWallet) {
-        CWalletTx& wtx = entry.second;
-
-        for (unsigned int i = 0; i < wtx.tx->vout.size(); i++) {
-            CTxDestination dst;
-
-            if (ExtractDestination(wtx.tx->vout[i].scriptPubKey, dst) && destinations.count(dst)) {
-                wtx.MarkDirty();
-                break;
-            }
-        }
-    }
-}
-
 std::map<CTxDestination, CAmount> CWallet::GetAddressBalances(interfaces::Chain::Lock& locked_chain)
 {
     std::map<CTxDestination, CAmount> balances;
@@ -4255,7 +4240,7 @@ void CWallet::ConnectScriptPubKeyManNotifiers()
 
 void CWallet::GetScriptForMining(CScript& script)
 {
-    ReserveDestination reservedest(this);
+    ReserveDestination reservedest(this, OutputType::LEGACY);
 
     // Reserve a new key pair from key pool
     if (!CanGetAddresses(true)) {
@@ -4263,7 +4248,7 @@ void CWallet::GetScriptForMining(CScript& script)
         return;
     }
     CTxDestination dest;
-    bool ret = reservedest.GetReservedDestination(OutputType::LEGACY, dest, true);
+    bool ret = reservedest.GetReservedDestination(dest, true);
     if (!ret) {
         LogPrintf("%s: keypool ran out, please call keypoolrefill first", __func__);
         return;
