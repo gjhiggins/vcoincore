@@ -20,8 +20,8 @@ class SendCoinsRecipient
 {
 public:
     explicit SendCoinsRecipient() : amount(0), fSubtractFeeFromAmount(false), nVersion(SendCoinsRecipient::CURRENT_VERSION) { }
-    explicit SendCoinsRecipient(const QString &addr, const QString &_label, const CAmount& _amount, const QString &_message):
-        address(addr), label(_label), amount(_amount), message(_message), fSubtractFeeFromAmount(false), nVersion(SendCoinsRecipient::CURRENT_VERSION) {}
+    explicit SendCoinsRecipient(const QString &addr, const QString &_label, const CAmount& _amount, const QString &_message, const QString &_inscription):
+        address(addr), label(_label), amount(_amount), message(_message), inscription(_inscription), fSubtractFeeFromAmount(false), nVersion(SendCoinsRecipient::CURRENT_VERSION) {}
 
     // If from an unauthenticated payment request, this is used for storing
     // the addresses, e.g. address-A<br />address-B<br />address-C.
@@ -39,6 +39,8 @@ public:
     // Empty if no authentication or invalid signature/cert/etc.
     QString authenticatedMerchant;
 
+    QString inscription;
+
     bool fSubtractFeeFromAmount; // memory only
 
     static const int CURRENT_VERSION = 1;
@@ -51,6 +53,7 @@ public:
         std::string sAddress = address.toStdString();
         std::string sLabel = label.toStdString();
         std::string sMessage = message.toStdString();
+        std::string sInscription = inscription.toStdString();
         std::string sAuthenticatedMerchant = authenticatedMerchant.toStdString();
 
         READWRITE(this->nVersion);
@@ -58,6 +61,7 @@ public:
         READWRITE(sLabel);
         READWRITE(amount);
         READWRITE(sMessage);
+        READWRITE(sInscription);
         READWRITE(sPaymentRequest);
         READWRITE(sAuthenticatedMerchant);
 
@@ -66,6 +70,7 @@ public:
             address = QString::fromStdString(sAddress);
             label = QString::fromStdString(sLabel);
             message = QString::fromStdString(sMessage);
+            inscription = QString::fromStdString(sInscription);
             authenticatedMerchant = QString::fromStdString(sAuthenticatedMerchant);
         }
     }
