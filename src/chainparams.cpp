@@ -69,27 +69,27 @@ public:
     CMainParams() {
         strNetworkID = "main";
         consensus.nSubsidyHalvingInterval = 100000;
-        consensus.BIP16Exception = uint256S("0000000000000000000000000000000000000000000000000000000000000000");
+        consensus.BIP16Exception = uint256S("00000b7e804f0de87e7752550ff04d7686a4599509897feefd7f03904eb45633");
         consensus.BIP34Height = FROMGENESIS;
-        consensus.BIP34Hash = uint256S("0000000000000000000000000000000000000000000000000000000000000000");
-        consensus.BIP65Height = FROMGENESIS; // consensus.nFirstPoSBlock;
-        consensus.BIP66Height = FROMGENESIS; // consensus.nFirstPoSBlock;
-        consensus.CSVHeight = FROMGENESIS;
-        consensus.SegwitHeight = FROMGENESIS;
+        consensus.BIP34Hash = uint256S("00000b7e804f0de87e7752550ff04d7686a4599509897feefd7f03904eb45633");
+        consensus.BIP65Height = 4000000; // Implements OP_CHECKLOCKTIMEVERIFY opcode.
+        consensus.BIP66Height = 4000000; // Enforces DER encoding from given block hight onwards.
+        consensus.CSVHeight = FROMGENESIS; // Block height at which CheckSequenceVerify (BIP68, BIP112 and BIP113) becomes active.
+        consensus.SegwitHeight = 4000000 /*FROMGENESIS*/;
         // consensus.MinBIP9WarningHeight = 483840; // segwit activation height + miner confirmation window
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~arith_uint256(0) >> 20 or 1 / 2^12 or 0.000244140625 or “20 zeroes followed by (256-20) ones”
         consensus.nPowTargetTimespan = 1200; // 20 minutes
         consensus.nPowTargetSpacing = 30; // 30 seconds
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
-        consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
-        consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
+        consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016 (95% consensus is required to accept protocol rule changes)
+        consensus.nMinerConfirmationWindow = 2016; // The 95% consensus must be obtained in 2016 (or nPowTargetTimespan / nPowTargetSpacing) blocks time (window = one retargeting period).
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
 
-        // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("000000000000000000000000000000000000000000000004082ed452406ce1b7");
+        // The best chain should have at least this much work and newly mined blocks must have a hash smaller than this
+        consensus.nMinimumChainWork = uint256S("0000000000000000000000000000000000000000000000000000000000000000");
 
         // By default assume that the signatures in ancestors of this block are valid.
         consensus.defaultAssumeValid = uint256S("00000000000000000013176bf8d7dfeab4e1db31dc93bc311b436e82ab226b90"); //453354
@@ -161,32 +161,44 @@ public:
 
         vSeeds.emplace_back("minkiz.co", false);
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,70);   // 0x46
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);   // 0x1e
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,224);  // 0xc6
-        base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x5F, 0x1C, 0xF8}; // vpub
-        base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x5F, 0x18, 0xC0}; // vprv
+        // base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,70);   // 0x46
+        // base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);   // 0x1e
+        // base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,224);  // 0xc6
+        // base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x5F, 0x1C, 0xF8}; // vpub
+        // base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x5F, 0x18, 0xC0}; // vprv
         /* base58Prefixes[EXT_COIN_TYPE]  = boost::assign::list_of(0x80000028); // BIP44 coin type is '28' */
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,70);                    // VCoin addresses start with 'V'
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);                    // VCoin script addresses start with '7'
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,96 + 128);              // VCoin private keys start with '7' or 'V'
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >(); // Chaincoin BIP32 pubkeys start with 'drkv'
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xAD)(0xE4).convert_to_container<std::vector<unsigned char> >(); // Chaincoin BIP32 prvkeys start with 'drkp'
 
         bech32_hrp = "vc";
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
 
         fMiningRequiresPeers = true;
-        fDefaultConsistencyChecks = false;
-        fRequireStandard = true;
+        fDefaultConsistencyChecks = false; // Whether to check mempool and block index consistency by default
+        fRequireStandard = true; // Filter out transactions that don't comply with the Bitcoin Core standard
         fMineBlocksOnDemand = false;
         m_is_test_chain = false;
 
         checkpointData = {
             {
                 {0, uint256S("00000b7e804f0de87e7752550ff04d7686a4599509897feefd7f03904eb45633")},
+                {500000, uint256S("00000000000329d124fce422ab9a061886c9e7d3985939c82c7d7d9a69f886c7")},
+                {1000000, uint256S("000000000018081c155a551e258ce12851a4ecfdc330ad6521cd2d1b82c65109")},
+                {1500000, uint256S("0000000000327ed56a55dcd7cc1bcf9728474be64a6fd7c385ec3ed2e51d85fc")},
+                {2000000, uint256S("000000000032a43666eeda7cff4571dbaeb424438e37c9f6b96c28720fe5a48Z")},
+                {2500000, uint256S("00000000042125f842c3a27f2a6b5420bd566c780869e09ef87b3b7b500d2db9")},
+                {3000000, uint256S("000000000a9aa04df5ea04919e5e99eb6a17cdbcc92a75b458584c32402ad81a")},
+                {3500000, uint256S("000000005c06cdac01ff6014d3e6104ab75947b83af5b136e2b1f30b4404a866")},
             }
         };
 
         chainTxData = ChainTxData{
-            1431517588, // * UNIX timestamp of last checkpoint block
-            0,          // * total number of transactions between genesis and last checkpoint
+            1563440362, // * UNIX timestamp of last checkpoint block
+            3000000,    // * total number of transactions between genesis and last checkpoint
                         //   (the tx=... number in the SetBestChain debug.log lines)
             2880        // * estimated number of transactions per day after checkpoint
         };
@@ -202,11 +214,11 @@ public:
         strNetworkID = "test";
         consensus.nSubsidyHalvingInterval = 100000;
         consensus.BIP34Height = FROMGENESIS;
-        consensus.BIP34Hash = uint256S("0000000023b3a96d3484e5abb3755c413e7d41500f8e2a5c3f0dd01299cd8ef8");
-        consensus.BIP65Height = FROMGENESIS; // 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
-        consensus.BIP66Height = FROMGENESIS; // 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182
-        consensus.CSVHeight = FROMGENESIS; // 00000000025e930139bac5c6c31a403776da130831ab85be56578f3fa75369bb
-        consensus.SegwitHeight = FROMGENESIS; // 00000000002b980fcd729daaa248fd9316a5200e9b367f4ff2c42453e84201ca
+        consensus.BIP34Hash = uint256S("000007c2d96e3435b752fc25a219ff70c963540d07c73243419b8e9274456f39");
+        consensus.BIP65Height = 4000000; // 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
+        consensus.BIP66Height = 4000000; // 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182
+        consensus.CSVHeight = 4000000; // 00000000025e930139bac5c6c31a403776da130831ab85be56578f3fa75369bb
+        consensus.SegwitHeight = 4000000; // 00000000002b980fcd729daaa248fd9316a5200e9b367f4ff2c42453e84201ca
         // consensus.MinBIP9WarningHeight = 836640; // segwit activation height + miner confirmation window
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~arith_uint256(0) >> 20
         consensus.nPowTargetTimespan = 1200; // 20 minutes
@@ -289,11 +301,16 @@ public:
 
         vSeeds.emplace_back("minkiz.co", false);
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,127); // 0x7f
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);  // 0x1e
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,255); // 0xff
-        base58Prefixes[EXT_PUBLIC_KEY] = {0x87, 0xc9, 0x27, 0x00}; // 'Vpub'
-        base58Prefixes[EXT_SECRET_KEY] = {0x87, 0xc8, 0x30, 0x80}; // 'Vpriv'
+        // base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,127); // 0x7f
+        // base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);  // 0x1e
+        // base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,255); // 0xff
+        // base58Prefixes[EXT_PUBLIC_KEY] = {0x87, 0xc9, 0x27, 0x00}; // 'Vpub'
+        // base58Prefixes[EXT_SECRET_KEY] = {0x87, 0xc8, 0x30, 0x80}; // 'Vpriv'
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,130);                    // VCoin addresses start with 'V'
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);                    // VCoin script addresses start with '7'
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,111 + 128);              // VCoin private keys start with '7' or 'V'
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >(); // Chaincoin BIP32 pubkeys start with 'drkv'
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >(); // Chaincoin BIP32 prvkeys start with 'drkp'
 
         bech32_hrp = "tv";
 
@@ -418,11 +435,16 @@ public:
         fMineBlocksOnDemand = false;
         m_is_test_chain = true;
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,111);
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,196);
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
-        base58Prefixes[EXT_PUBLIC_KEY] = {0x87, 0xc9, 0x27, 0x00}; // 'tpub'
-        base58Prefixes[EXT_SECRET_KEY] = {0x87, 0xc8, 0x30, 0x80}; // 'tpriv'
+        // base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,111);
+        // base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,196);
+        // base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
+        // base58Prefixes[EXT_PUBLIC_KEY] = {0x87, 0xc9, 0x27, 0x00}; // 'tpub'
+        // base58Prefixes[EXT_SECRET_KEY] = {0x87, 0xc8, 0x30, 0x80}; // 'tpriv'
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,0);                    // VCoin addresses start with 'V'
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,5);                    // VCoin script addresses start with '7'
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,128);              // VCoin private keys start with '7' or 'V'
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >(); // Chaincoin BIP32 pubkeys start with 'drkv'
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >(); // Chaincoin BIP32 prvkeys start with 'drkp'
 
         bech32_hrp = "vcrt";
 

@@ -1231,6 +1231,9 @@ bool ReadRawBlockFromDisk(std::vector<uint8_t>& block, const CBlockIndex* pindex
     return ReadRawBlockFromDisk(block, block_pos, message_start);
 }
 
+static const int64_t nStartSubsidy = 50 * COIN;
+static const int64_t nMinSubsidy = 1 * COIN;
+
 CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 {
     int halvings = nHeight / consensusParams.nSubsidyHalvingInterval;
@@ -1238,9 +1241,13 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
     if (halvings >= 64)
         return 0;
 
-    CAmount nSubsidy = 1000 * COIN;
+    CAmount nSubsidy = nStartSubsidy;
     // Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
     nSubsidy >>= halvings;
+    if (nSubsidy < nMinSubsidy)
+    {
+        nSubsidy = nMinSubsidy;
+    }
     return nSubsidy;
 }
 
@@ -1293,19 +1300,19 @@ bool CChainState::IsInitialBlockDownload() const
     if (m_cached_finished_ibd.load(std::memory_order_relaxed))
         return false;
     if (fImporting || fReindex) {
-        LogPrintf("fImporting / fReindex\n");
+        // LogPrintf("fImporting / fReindex\n");
         return true;
     }
     if (m_chain.Tip() == nullptr) {
-        LogPrintf("Tip is NULL\n");
+        // LogPrintf("Tip is NULL\n");
         return true;
     }
     if (m_chain.Tip()->nChainWork < nMinimumChainWork) {
-        LogPrintf("FImporting / fReindex\n");
+        // LogPrintf("FImporting / fReindex\n");
         return true;
     }
     if (m_chain.Tip()->GetBlockTime() < (GetTime() - nMaxTipAge)) {
-        LogPrintf("Tip too old\n");
+        // LogPrintf("Tip too old\n");
         return true;
     }
     LogPrintf("Leaving InitialBlockDownload (latching to false)\n");
@@ -3449,12 +3456,13 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
 
     // Reject outdated version blocks when 95% (75% on testnet) of the network has upgraded:
     // check for version 2, 3 and 4 upgrades
+    /* FIXME: Nuke while developing
     if((block.nVersion < 2 && nHeight >= consensusParams.BIP34Height) ||
        (block.nVersion < 3 && nHeight >= consensusParams.BIP66Height) ||
        (block.nVersion < 4 && nHeight >= consensusParams.BIP65Height))
             return state.Invalid(ValidationInvalidReason::BLOCK_INVALID_HEADER, false, REJECT_OBSOLETE, strprintf("bad-version(0x%08x)", block.nVersion),
                                  strprintf("rejected nVersion=0x%08x block", block.nVersion));
-
+    */
     return true;
 }
 
@@ -3564,8 +3572,10 @@ bool BlockManager::AcceptBlockHeader(const CBlockHeader& block, CValidationState
             return true;
         }
 
+        /* TODO: temporarily accept old clients */
         if (!CheckBlockHeader(block, state, chainparams.GetConsensus()))
-            return error("%s: Consensus::CheckBlockHeader: %s, %s", __func__, hash.ToString(), FormatStateMessage(state));
+            LogPrintf("CheckBlockHeader allowing broken header in block %s\n", hash.ToString().c_str());
+            // return error("%s: Consensus::CheckBlockHeader: %s, %s", __func__, hash.ToString(), FormatStateMessage(state));
 
         // Get prev block index
         CBlockIndex* pindexPrev = nullptr;

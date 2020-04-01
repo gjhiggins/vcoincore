@@ -14,7 +14,6 @@
 #include <consensus/consensus.h>
 #include <consensus/merkle.h>
 #include <consensus/tx_verify.h>
-#include <consensus/merkle.h>
 #include <consensus/validation.h>
 #include <hash.h>
 #include <net.h>
@@ -172,7 +171,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     // not activated.
     // TODO: replace this with a call to main to assess validity of a mempool
     // transaction (which in most cases can be a no-op).
-    fIncludeWitness = true; // nHeight >= chainparams.GetConsensus().SegwitHeight;
+    fIncludeWitness = nHeight >= chainparams.GetConsensus().SegwitHeight;
 
     int nPackagesSelected = 0;
     int nDescendantsUpdated = 0;
