@@ -25,6 +25,7 @@
 
 #include <memory>
 
+class BlockExplorer;
 class ClientModel;
 class NetworkStyle;
 class Notificator;
@@ -145,6 +146,7 @@ private:
     QAction* changePassphraseAction = nullptr;
     QAction* aboutQtAction = nullptr;
     QAction* openRPCConsoleAction = nullptr;
+    QAction* openBlockExplorerAction = nullptr;
     QAction* openAction = nullptr;
     QAction* showHelpMessageAction = nullptr;
     QAction* m_create_wallet_action{nullptr};
@@ -161,6 +163,7 @@ private:
     const std::unique_ptr<QMenu> trayIconMenu;
     Notificator* notificator = nullptr;
     RPCConsole* rpcConsole = nullptr;
+    BlockExplorer* blockExplorer = nullptr;
     HelpMessageDialog* helpMessageDialog = nullptr;
     ModalOverlay* modalOverlay = nullptr;
 
@@ -278,6 +281,8 @@ public Q_SLOTS:
     void optionsClicked();
     /** Show about dialog */
     void aboutClicked();
+    /** Show explorer window */
+    void showBlockExplorerWindow();
     /** Show debug window */
     void showDebugWindow();
     /** Show debug window and set focus to the console */

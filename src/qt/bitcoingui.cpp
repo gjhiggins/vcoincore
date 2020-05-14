@@ -5,6 +5,7 @@
 #include <qt/bitcoingui.h>
 
 #include <qt/bitcoinunits.h>
+#include <qt/blockexplorer.h>
 #include <qt/clientmodel.h>
 #include <qt/createwalletdialog.h>
 #include <qt/guiconstants.h>
@@ -100,6 +101,7 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
     updateWindowTitle();
 
     rpcConsole = new RPCConsole(node, _platformStyle, nullptr);
+    blockExplorer = new BlockExplorer(_platformStyle, this);
     helpMessageDialog = new HelpMessageDialog(node, this, false);
 #ifdef ENABLE_WALLET
     if(enableWallet)
@@ -236,6 +238,7 @@ BitcoinGUI::~BitcoinGUI()
 #endif
 
     delete rpcConsole;
+    delete blockExplorer;
 }
 
 void BitcoinGUI::createActions()
@@ -331,6 +334,12 @@ void BitcoinGUI::createActions()
     openRPCConsoleAction->setEnabled(false);
     openRPCConsoleAction->setObjectName("openRPCConsoleAction");
 
+    openBlockExplorerAction = new QAction(tr("Blockchain"), this);
+    openBlockExplorerAction->setStatusTip(tr("Explore block and transaction data"));
+    // initially disable the explorer window menu item
+    openBlockExplorerAction->setEnabled(false);
+    openBlockExplorerAction->setObjectName("openBlockExplorerAction");
+
     usedSendingAddressesAction = new QAction(tr("&Sending addresses"), this);
     usedSendingAddressesAction->setStatusTip(tr("Show the list of used sending addresses and labels"));
     usedReceivingAddressesAction = new QAction(tr("&Receiving addresses"), this);
@@ -362,8 +371,10 @@ void BitcoinGUI::createActions()
     connect(toggleHideAction, &QAction::triggered, this, &BitcoinGUI::toggleHidden);
     connect(showHelpMessageAction, &QAction::triggered, this, &BitcoinGUI::showHelpMessageClicked);
     connect(openRPCConsoleAction, &QAction::triggered, this, &BitcoinGUI::showDebugWindow);
+    connect(openBlockExplorerAction, &QAction::triggered, this, &BitcoinGUI::showBlockExplorerWindow);
     // prevents an open debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, &QAction::triggered, rpcConsole, &QWidget::hide);
+    connect(quitAction, &QAction::triggered, blockExplorer, &QWidget::hide);
 
 #ifdef ENABLE_WALLET
     if(walletFrame)
@@ -496,6 +507,7 @@ void BitcoinGUI::createMenuBar()
         window_menu->addSeparator();
         window_menu->addAction(usedSendingAddressesAction);
         window_menu->addAction(usedReceivingAddressesAction);
+        window_menu->addAction(openBlockExplorerAction);
     }
 
     window_menu->addSeparator();
@@ -579,6 +591,8 @@ void BitcoinGUI::setClientModel(ClientModel *_clientModel)
 
         rpcConsole->setClientModel(_clientModel);
 
+        blockExplorer->setClientModel(_clientModel);
+
         updateProxyIcon();
 
 #ifdef ENABLE_WALLET
@@ -607,6 +621,7 @@ void BitcoinGUI::setClientModel(ClientModel *_clientModel)
         }
         // Propagate cleared model to child objects
         rpcConsole->setClientModel(nullptr);
+        blockExplorer->setClientModel(nullptr);
 #ifdef ENABLE_WALLET
         if (walletFrame)
         {
@@ -712,6 +727,7 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     usedReceivingAddressesAction->setEnabled(enabled);
     openAction->setEnabled(enabled);
     m_close_wallet_action->setEnabled(enabled);
+    openBlockExplorerAction->setEnabled(enabled);
 }
 
 void BitcoinGUI::createTrayIcon()
@@ -757,6 +773,7 @@ void BitcoinGUI::createTrayIconMenu()
         trayIconMenu->addAction(verifyMessageAction);
         trayIconMenu->addSeparator();
         trayIconMenu->addAction(openRPCConsoleAction);
+        trayIconMenu->addAction(openBlockExplorerAction);
     }
     trayIconMenu->addAction(optionsAction);
 #ifndef Q_OS_MAC // This is built-in on macOS
@@ -821,6 +838,11 @@ void BitcoinGUI::openClicked()
     {
         Q_EMIT receivedURI(dlg.getURI());
     }
+}
+
+void BitcoinGUI::showBlockExplorerWindow()
+{
+    GUIUtil::bringToFront(blockExplorer);
 }
 
 void BitcoinGUI::gotoOverviewPage()
@@ -1126,6 +1148,7 @@ void BitcoinGUI::closeEvent(QCloseEvent *event)
         {
             // close rpcConsole in case it was open to make some space for the shutdown window
             rpcConsole->close();
+            blockExplorer->close();
 
             QApplication::quit();
         }
@@ -1144,6 +1167,7 @@ void BitcoinGUI::showEvent(QShowEvent *event)
 {
     // enable the debug window when the main window shows up
     openRPCConsoleAction->setEnabled(true);
+    openBlockExplorerAction->setEnabled(true);
     aboutAction->setEnabled(true);
     optionsAction->setEnabled(true);
 }
@@ -1322,6 +1346,8 @@ void BitcoinGUI::detectShutdown()
     {
         if(rpcConsole)
             rpcConsole->hide();
+        if(blockExplorer)
+            blockExplorer->hide();
         qApp->quit();
     }
 }
