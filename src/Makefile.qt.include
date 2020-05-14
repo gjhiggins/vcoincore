@@ -11,6 +11,7 @@ include Makefile.qt_locale.include
 QT_FORMS_UI = \
   qt/forms/addressbookpage.ui \
   qt/forms/askpassphrasedialog.ui \
+  qt/forms/blockexplorer.ui \
   qt/forms/coincontroldialog.ui \
   qt/forms/createwalletdialog.ui \
   qt/forms/editaddressdialog.ui \
