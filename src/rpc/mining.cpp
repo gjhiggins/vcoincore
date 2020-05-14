@@ -84,22 +84,22 @@ static UniValue GetNetworkHashPS(int lookup, int height) {
 
 static UniValue getnetworkhashps(const JSONRPCRequest& request)
 {
-            RPCHelpMan{"getnetworkhashps",
-                "\nReturns the estimated network hashes per second based on the last n blocks.\n"
-                "Pass in [blocks] to override # of blocks, -1 specifies since last difficulty change.\n"
-                "Pass in [height] to estimate the network speed at the time when a certain block was found.\n",
-                {
-                    {"nblocks", RPCArg::Type::NUM, /* default */ "120", "The number of blocks, or -1 for blocks since last difficulty change."},
-                    {"height", RPCArg::Type::NUM, /* default */ "-1", "To estimate at the time of the given height."},
-                },
-                RPCResult{
-            "x             (numeric) Hashes per second estimated\n"
-                },
-                RPCExamples{
-                    HelpExampleCli("getnetworkhashps", "")
-            + HelpExampleRpc("getnetworkhashps", "")
-                },
-            }.Check(request);
+    RPCHelpMan{"getnetworkhashps",
+        "\nReturns the estimated network hashes per second based on the last n blocks.\n"
+        "Pass in [blocks] to override # of blocks, -1 specifies since last difficulty change.\n"
+        "Pass in [height] to estimate the network speed at the time when a certain block was found.\n",
+        {
+            {"nblocks", RPCArg::Type::NUM, /* default */ "120", "The number of blocks, or -1 for blocks since last difficulty change."},
+            {"height", RPCArg::Type::NUM, /* default */ "-1", "To estimate at the time of the given height."},
+        },
+        RPCResult{
+    "x             (numeric) Hashes per second estimated\n"
+        },
+        RPCExamples{
+            HelpExampleCli("getnetworkhashps", "")
+    + HelpExampleRpc("getnetworkhashps", "")
+        },
+    }.Check(request);
 
     LOCK(cs_main);
     return GetNetworkHashPS(!request.params[0].isNull() ? request.params[0].get_int() : 120, !request.params[1].isNull() ? request.params[1].get_int() : -1);
@@ -148,23 +148,23 @@ static UniValue generateBlocks(const CScript& coinbase_script, int nGenerate, ui
 
 static UniValue generatetoaddress(const JSONRPCRequest& request)
 {
-            RPCHelpMan{"generatetoaddress",
-                "\nMine blocks immediately to a specified address (before the RPC call returns)\n",
-                {
-                    {"nblocks", RPCArg::Type::NUM, RPCArg::Optional::NO, "How many blocks are generated immediately."},
-                    {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The address to send the newly generated coins to."},
-                    {"maxtries", RPCArg::Type::NUM, /* default */ "1000000", "How many iterations to try."},
-                },
-                RPCResult{
-            "[ blockhashes ]     (array) hashes of blocks generated\n"
-                },
-                RPCExamples{
-            "\nGenerate 11 blocks to myaddress\n"
-            + HelpExampleCli("generatetoaddress", "11 \"myaddress\"")
-            + "If you are running the V Core core wallet, you can get a new address to send the newly generated coins to with:\n"
-            + HelpExampleCli("getnewaddress", "")
-                },
-            }.Check(request);
+    RPCHelpMan{"generatetoaddress",
+        "\nMine blocks immediately to a specified address (before the RPC call returns)\n",
+        {
+            {"nblocks", RPCArg::Type::NUM, RPCArg::Optional::NO, "How many blocks are generated immediately."},
+            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The address to send the newly generated coins to."},
+            {"maxtries", RPCArg::Type::NUM, /* default */ "1000000", "How many iterations to try."},
+        },
+        RPCResult{
+    "[ blockhashes ]     (array) hashes of blocks generated\n"
+        },
+        RPCExamples{
+    "\nGenerate 11 blocks to myaddress\n"
+    + HelpExampleCli("generatetoaddress", "11 \"myaddress\"")
+    + "If you are running the V Core core wallet, you can get a new address to send the newly generated coins to with:\n"
+    + HelpExampleCli("getnewaddress", "")
+        },
+    }.Check(request);
 
     int nGenerate = request.params[0].get_int();
     uint64_t nMaxTries = 1000000;
@@ -184,27 +184,27 @@ static UniValue generatetoaddress(const JSONRPCRequest& request)
 
 static UniValue getmininginfo(const JSONRPCRequest& request)
 {
-            RPCHelpMan{"getmininginfo",
-                "\nReturns a json object containing mining-related information.",
-                {},
-                RPCResult{
-                    "{\n"
-                    "  \"blocks\": nnn,             (numeric) The current block\n"
-                    "  \"currentblockweight\": nnn, (numeric, optional) The block weight of the last assembled block (only present if a block was ever assembled)\n"
-                    "  \"currentblocktx\": nnn,     (numeric, optional) The number of block transactions of the last assembled block (only present if a block was ever assembled)\n"
-                    "  \"difficulty\": xxx.xxxxx    (numeric) The current difficulty\n"
-                    "  \"networkhashps\": nnn,      (numeric) The network hashes per second\n"
-                    "  \"hashespersec\": nnn,       (numeric) The hashes per second of built-in miner\n"
-                    "  \"pooledtx\": n              (numeric) The size of the mempool\n"
-                    "  \"chain\": \"xxxx\",           (string) current network name as defined in BIP70 (main, test, regtest)\n"
-                    "  \"warnings\": \"...\"          (string) any network and blockchain warnings\n"
-                    "}\n"
-                },
-                RPCExamples{
-                    HelpExampleCli("getmininginfo", "")
-            + HelpExampleRpc("getmininginfo", "")
-                },
-            }.Check(request);
+    RPCHelpMan{"getmininginfo",
+        "\nReturns a json object containing mining-related information.",
+        {},
+        RPCResult{
+            "{\n"
+            "  \"blocks\": nnn,             (numeric) The current block\n"
+            "  \"currentblockweight\": nnn, (numeric, optional) The block weight of the last assembled block (only present if a block was ever assembled)\n"
+            "  \"currentblocktx\": nnn,     (numeric, optional) The number of block transactions of the last assembled block (only present if a block was ever assembled)\n"
+            "  \"difficulty\": xxx.xxxxx    (numeric) The current difficulty\n"
+            "  \"networkhashps\": nnn,      (numeric) The network hashes per second\n"
+            "  \"hashespersec\": nnn,       (numeric) The hashes per second of built-in miner\n"
+            "  \"pooledtx\": n              (numeric) The size of the mempool\n"
+            "  \"chain\": \"xxxx\",           (string) current network name as defined in BIP70 (main, test, regtest)\n"
+            "  \"warnings\": \"...\"          (string) any network and blockchain warnings\n"
+            "}\n"
+        },
+        RPCExamples{
+            HelpExampleCli("getmininginfo", "")
+    + HelpExampleRpc("getmininginfo", "")
+        },
+    }.Check(request);
 
     LOCK(cs_main);
 
@@ -225,25 +225,25 @@ static UniValue getmininginfo(const JSONRPCRequest& request)
 // NOTE: Unlike wallet RPC (which use BTC values), mining RPCs follow GBT (BIP 22) in using satoshi amounts
 static UniValue prioritisetransaction(const JSONRPCRequest& request)
 {
-            RPCHelpMan{"prioritisetransaction",
-                "Accepts the transaction into mined blocks at a higher (or lower) priority\n",
-                {
-                    {"txid", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "The transaction id."},
-                    {"dummy", RPCArg::Type::NUM, RPCArg::Optional::OMITTED_NAMED_ARG, "API-Compatibility for previous API. Must be zero or null.\n"
-            "                  DEPRECATED. For forward compatibility use named arguments and omit this parameter."},
-                    {"fee_delta", RPCArg::Type::NUM, RPCArg::Optional::NO, "The fee value (in satoshis) to add (or subtract, if negative).\n"
-            "                  Note, that this value is not a fee rate. It is a value to modify absolute fee of the TX.\n"
-            "                  The fee is not actually paid, only the algorithm for selecting transactions into a block\n"
-            "                  considers the transaction as it would have paid a higher (or lower) fee."},
-                },
-                RPCResult{
-            "true              (boolean) Returns true\n"
-                },
-                RPCExamples{
-                    HelpExampleCli("prioritisetransaction", "\"txid\" 0.0 10000")
-            + HelpExampleRpc("prioritisetransaction", "\"txid\", 0.0, 10000")
-                },
-            }.Check(request);
+    RPCHelpMan{"prioritisetransaction",
+        "Accepts the transaction into mined blocks at a higher (or lower) priority\n",
+        {
+            {"txid", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "The transaction id."},
+            {"dummy", RPCArg::Type::NUM, RPCArg::Optional::OMITTED_NAMED_ARG, "API-Compatibility for previous API. Must be zero or null.\n"
+    "                  DEPRECATED. For forward compatibility use named arguments and omit this parameter."},
+            {"fee_delta", RPCArg::Type::NUM, RPCArg::Optional::NO, "The fee value (in satoshis) to add (or subtract, if negative).\n"
+    "                  Note, that this value is not a fee rate. It is a value to modify absolute fee of the TX.\n"
+    "                  The fee is not actually paid, only the algorithm for selecting transactions into a block\n"
+    "                  considers the transaction as it would have paid a higher (or lower) fee."},
+        },
+        RPCResult{
+    "true              (boolean) Returns true\n"
+        },
+        RPCExamples{
+            HelpExampleCli("prioritisetransaction", "\"txid\" 0.0 10000")
+    + HelpExampleRpc("prioritisetransaction", "\"txid\", 0.0, 10000")
+        },
+    }.Check(request);
 
     LOCK(cs_main);
 
@@ -692,19 +692,19 @@ protected:
 static UniValue submitblock(const JSONRPCRequest& request)
 {
     // We allow 2 arguments for compliance with BIP22. Argument 2 is ignored.
-            RPCHelpMan{"submitblock",
-                "\nAttempts to submit new block to network.\n"
-                "See https://en.bitcoin.it/wiki/BIP_0022 for full specification.\n",
-                {
-                    {"hexdata", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "the hex-encoded block data to submit"},
-                    {"dummy", RPCArg::Type::STR, /* default */ "ignored", "dummy value, for compatibility with BIP22. This value is ignored."},
-                },
-                RPCResults{},
-                RPCExamples{
-                    HelpExampleCli("submitblock", "\"mydata\"")
-            + HelpExampleRpc("submitblock", "\"mydata\"")
-                },
-            }.Check(request);
+    RPCHelpMan{"submitblock",
+        "\nAttempts to submit new block to network.\n"
+        "See https://en.bitcoin.it/wiki/BIP_0022 for full specification.\n",
+        {
+            {"hexdata", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "the hex-encoded block data to submit"},
+            {"dummy", RPCArg::Type::STR, /* default */ "ignored", "dummy value, for compatibility with BIP22. This value is ignored."},
+        },
+        RPCResults{},
+        RPCExamples{
+            HelpExampleCli("submitblock", "\"mydata\"")
+    + HelpExampleRpc("submitblock", "\"mydata\"")
+        },
+    }.Check(request);
 
     std::shared_ptr<CBlock> blockptr = std::make_shared<CBlock>();
     CBlock& block = *blockptr;
@@ -754,20 +754,20 @@ static UniValue submitblock(const JSONRPCRequest& request)
 
 static UniValue submitheader(const JSONRPCRequest& request)
 {
-            RPCHelpMan{"submitheader",
-                "\nDecode the given hexdata as a header and submit it as a candidate chain tip if valid."
-                "\nThrows when the header is invalid.\n",
-                {
-                    {"hexdata", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "the hex-encoded block header data"},
-                },
-                RPCResult{
-            "None"
-                },
-                RPCExamples{
-                    HelpExampleCli("submitheader", "\"aabbcc\"") +
-                    HelpExampleRpc("submitheader", "\"aabbcc\"")
-                },
-            }.Check(request);
+    RPCHelpMan{"submitheader",
+        "\nDecode the given hexdata as a header and submit it as a candidate chain tip if valid."
+        "\nThrows when the header is invalid.\n",
+        {
+            {"hexdata", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "the hex-encoded block header data"},
+        },
+        RPCResult{
+    "None"
+        },
+        RPCExamples{
+            HelpExampleCli("submitheader", "\"aabbcc\"") +
+            HelpExampleRpc("submitheader", "\"aabbcc\"")
+        },
+    }.Check(request);
 
     CBlockHeader h;
     if (!DecodeHexBlockHeader(h, request.params[0].get_str())) {
@@ -791,39 +791,39 @@ static UniValue submitheader(const JSONRPCRequest& request)
 
 static UniValue estimatesmartfee(const JSONRPCRequest& request)
 {
-            RPCHelpMan{"estimatesmartfee",
-                "\nEstimates the approximate fee per kilobyte needed for a transaction to begin\n"
-                "confirmation within conf_target blocks if possible and return the number of blocks\n"
-                "for which the estimate is valid. Uses virtual transaction size as defined\n"
-                "in BIP 141 (witness data is discounted).\n",
-                {
-                    {"conf_target", RPCArg::Type::NUM, RPCArg::Optional::NO, "Confirmation target in blocks (1 - 1008)"},
-                    {"estimate_mode", RPCArg::Type::STR, /* default */ "CONSERVATIVE", "The fee estimate mode.\n"
-            "                   Whether to return a more conservative estimate which also satisfies\n"
-            "                   a longer history. A conservative estimate potentially returns a\n"
-            "                   higher feerate and is more likely to be sufficient for the desired\n"
-            "                   target, but is not as responsive to short term drops in the\n"
-            "                   prevailing fee market.  Must be one of:\n"
-            "       \"UNSET\"\n"
-            "       \"ECONOMICAL\"\n"
-            "       \"CONSERVATIVE\""},
-                },
-                RPCResult{
-            "{\n"
-            "  \"feerate\" : x.x,     (numeric, optional) estimate fee rate in " + CURRENCY_UNIT + "/kB\n"
-            "  \"errors\": [ str... ] (json array of strings, optional) Errors encountered during processing\n"
-            "  \"blocks\" : n         (numeric) block number where estimate was found\n"
-            "}\n"
-            "\n"
-            "The request target will be clamped between 2 and the highest target\n"
-            "fee estimation is able to return based on how long it has been running.\n"
-            "An error is returned if not enough transactions and blocks\n"
-            "have been observed to make an estimate for any number of blocks.\n"
-                },
-                RPCExamples{
-                    HelpExampleCli("estimatesmartfee", "6")
-                },
-            }.Check(request);
+    RPCHelpMan{"estimatesmartfee",
+        "\nEstimates the approximate fee per kilobyte needed for a transaction to begin\n"
+        "confirmation within conf_target blocks if possible and return the number of blocks\n"
+        "for which the estimate is valid. Uses virtual transaction size as defined\n"
+        "in BIP 141 (witness data is discounted).\n",
+        {
+            {"conf_target", RPCArg::Type::NUM, RPCArg::Optional::NO, "Confirmation target in blocks (1 - 1008)"},
+            {"estimate_mode", RPCArg::Type::STR, /* default */ "CONSERVATIVE", "The fee estimate mode.\n"
+    "                   Whether to return a more conservative estimate which also satisfies\n"
+    "                   a longer history. A conservative estimate potentially returns a\n"
+    "                   higher feerate and is more likely to be sufficient for the desired\n"
+    "                   target, but is not as responsive to short term drops in the\n"
+    "                   prevailing fee market.  Must be one of:\n"
+    "       \"UNSET\"\n"
+    "       \"ECONOMICAL\"\n"
+    "       \"CONSERVATIVE\""},
+        },
+        RPCResult{
+    "{\n"
+    "  \"feerate\" : x.x,     (numeric, optional) estimate fee rate in " + CURRENCY_UNIT + "/kB\n"
+    "  \"errors\": [ str... ] (json array of strings, optional) Errors encountered during processing\n"
+    "  \"blocks\" : n         (numeric) block number where estimate was found\n"
+    "}\n"
+    "\n"
+    "The request target will be clamped between 2 and the highest target\n"
+    "fee estimation is able to return based on how long it has been running.\n"
+    "An error is returned if not enough transactions and blocks\n"
+    "have been observed to make an estimate for any number of blocks.\n"
+        },
+        RPCExamples{
+            HelpExampleCli("estimatesmartfee", "6")
+        },
+    }.Check(request);
 
     RPCTypeCheck(request.params, {UniValue::VNUM, UniValue::VSTR});
     RPCTypeCheckArgument(request.params[0], UniValue::VNUM);
@@ -854,47 +854,47 @@ static UniValue estimatesmartfee(const JSONRPCRequest& request)
 
 static UniValue estimaterawfee(const JSONRPCRequest& request)
 {
-            RPCHelpMan{"estimaterawfee",
-                "\nWARNING: This interface is unstable and may disappear or change!\n"
-                "\nWARNING: This is an advanced API call that is tightly coupled to the specific\n"
-                "         implementation of fee estimation. The parameters it can be called with\n"
-                "         and the results it returns will change if the internal implementation changes.\n"
-                "\nEstimates the approximate fee per kilobyte needed for a transaction to begin\n"
-                "confirmation within conf_target blocks if possible. Uses virtual transaction size as\n"
-                "defined in BIP 141 (witness data is discounted).\n",
-                {
-                    {"conf_target", RPCArg::Type::NUM, RPCArg::Optional::NO, "Confirmation target in blocks (1 - 1008)"},
-                    {"threshold", RPCArg::Type::NUM, /* default */ "0.95", "The proportion of transactions in a given feerate range that must have been\n"
-            "               confirmed within conf_target in order to consider those feerates as high enough and proceed to check\n"
-            "               lower buckets."},
-                },
-                RPCResult{
-            "{\n"
-            "  \"short\" : {            (json object, optional) estimate for short time horizon\n"
-            "      \"feerate\" : x.x,        (numeric, optional) estimate fee rate in " + CURRENCY_UNIT + "/kB\n"
-            "      \"decay\" : x.x,          (numeric) exponential decay (per block) for historical moving average of confirmation data\n"
-            "      \"scale\" : x,            (numeric) The resolution of confirmation targets at this time horizon\n"
-            "      \"pass\" : {              (json object, optional) information about the lowest range of feerates to succeed in meeting the threshold\n"
-            "          \"startrange\" : x.x,     (numeric) start of feerate range\n"
-            "          \"endrange\" : x.x,       (numeric) end of feerate range\n"
-            "          \"withintarget\" : x.x,   (numeric) number of txs over history horizon in the feerate range that were confirmed within target\n"
-            "          \"totalconfirmed\" : x.x, (numeric) number of txs over history horizon in the feerate range that were confirmed at any point\n"
-            "          \"inmempool\" : x.x,      (numeric) current number of txs in mempool in the feerate range unconfirmed for at least target blocks\n"
-            "          \"leftmempool\" : x.x,    (numeric) number of txs over history horizon in the feerate range that left mempool unconfirmed after target\n"
-            "      },\n"
-            "      \"fail\" : { ... },       (json object, optional) information about the highest range of feerates to fail to meet the threshold\n"
-            "      \"errors\":  [ str... ]   (json array of strings, optional) Errors encountered during processing\n"
-            "  },\n"
-            "  \"medium\" : { ... },    (json object, optional) estimate for medium time horizon\n"
-            "  \"long\" : { ... }       (json object) estimate for long time horizon\n"
-            "}\n"
-            "\n"
-            "Results are returned for any horizon which tracks blocks up to the confirmation target.\n"
-                },
-                RPCExamples{
-                    HelpExampleCli("estimaterawfee", "6 0.9")
-                },
-            }.Check(request);
+    RPCHelpMan{"estimaterawfee",
+        "\nWARNING: This interface is unstable and may disappear or change!\n"
+        "\nWARNING: This is an advanced API call that is tightly coupled to the specific\n"
+        "         implementation of fee estimation. The parameters it can be called with\n"
+        "         and the results it returns will change if the internal implementation changes.\n"
+        "\nEstimates the approximate fee per kilobyte needed for a transaction to begin\n"
+        "confirmation within conf_target blocks if possible. Uses virtual transaction size as\n"
+        "defined in BIP 141 (witness data is discounted).\n",
+        {
+            {"conf_target", RPCArg::Type::NUM, RPCArg::Optional::NO, "Confirmation target in blocks (1 - 1008)"},
+            {"threshold", RPCArg::Type::NUM, /* default */ "0.95", "The proportion of transactions in a given feerate range that must have been\n"
+    "               confirmed within conf_target in order to consider those feerates as high enough and proceed to check\n"
+    "               lower buckets."},
+        },
+        RPCResult{
+    "{\n"
+    "  \"short\" : {            (json object, optional) estimate for short time horizon\n"
+    "      \"feerate\" : x.x,        (numeric, optional) estimate fee rate in " + CURRENCY_UNIT + "/kB\n"
+    "      \"decay\" : x.x,          (numeric) exponential decay (per block) for historical moving average of confirmation data\n"
+    "      \"scale\" : x,            (numeric) The resolution of confirmation targets at this time horizon\n"
+    "      \"pass\" : {              (json object, optional) information about the lowest range of feerates to succeed in meeting the threshold\n"
+    "          \"startrange\" : x.x,     (numeric) start of feerate range\n"
+    "          \"endrange\" : x.x,       (numeric) end of feerate range\n"
+    "          \"withintarget\" : x.x,   (numeric) number of txs over history horizon in the feerate range that were confirmed within target\n"
+    "          \"totalconfirmed\" : x.x, (numeric) number of txs over history horizon in the feerate range that were confirmed at any point\n"
+    "          \"inmempool\" : x.x,      (numeric) current number of txs in mempool in the feerate range unconfirmed for at least target blocks\n"
+    "          \"leftmempool\" : x.x,    (numeric) number of txs over history horizon in the feerate range that left mempool unconfirmed after target\n"
+    "      },\n"
+    "      \"fail\" : { ... },       (json object, optional) information about the highest range of feerates to fail to meet the threshold\n"
+    "      \"errors\":  [ str... ]   (json array of strings, optional) Errors encountered during processing\n"
+    "  },\n"
+    "  \"medium\" : { ... },    (json object, optional) estimate for medium time horizon\n"
+    "  \"long\" : { ... }       (json object) estimate for long time horizon\n"
+    "}\n"
+    "\n"
+    "Results are returned for any horizon which tracks blocks up to the confirmation target.\n"
+        },
+        RPCExamples{
+            HelpExampleCli("estimaterawfee", "6 0.9")
+        },
+    }.Check(request);
 
     RPCTypeCheck(request.params, {UniValue::VNUM, UniValue::VNUM}, true);
     RPCTypeCheckArgument(request.params[0], UniValue::VNUM);
