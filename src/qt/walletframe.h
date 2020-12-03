@@ -93,6 +93,8 @@ public Q_SLOTS:
     void usedReceivingAddresses();
     /** Pass on signal over requested out-of-sync-warning information */
     void outOfSyncWarningClicked();
+    /** Update the plot on the overview (home) page */
+    void updatePlot(int count);
 };
 
 #endif // BITCOIN_QT_WALLETFRAME_H

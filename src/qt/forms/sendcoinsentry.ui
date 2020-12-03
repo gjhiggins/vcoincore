@@ -220,17 +220,34 @@
      </widget>
     </item>
     <item row="4" column="1">
-     <widget class="QLineEdit" name="inscriptionText">
-      <property name="toolTip">
-       <string>A (100-character max) string of ASCII characters to be stored with the transaction on the V Core network.</string>
+     <layout class="QHBoxLayout" name="inscriptionLayout">
+      <property name="spacing">
+       <number>0</number>
       </property>
-      <property name="placeholderText">
-       <string>ni://example.org/sha-256;5AbXdpz5DcaYXCh9l3eI9ruBosiL5XDU3rxBbBaUO70</string>
-      </property>
-      <property name="clearButtonEnabled">
-       <bool>true</bool>
-      </property>
-     </widget>
+      <item>
+       <widget class="QValidatedLineEdit" name="inscriptionText">
+        <property name="toolTip">
+         <string>A (100-character max) string of ASCII characters to be stored with the transaction on the {{coinname}} network.</string>
+        </property>
+        <property name="placeholderText">
+         <string>ni://example.org/sha-256;5AbXdpz5DcaYXCh9l3eI9ruBosiL5XDU3rxBbBaUO70</string>
+        </property>
+        <property name="clearButtonEnabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="selectFileButton">
+        <property name="text">
+         <string>Notarize File...</string>
+        </property>
+         <property name="toolTip">
+          <string>Select file to hash for notarization in the {{coinname}} blockchain.</string>
+         </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item row="5" column="0" colspan="2">
      <widget class="Line" name="line2">
@@ -732,7 +749,7 @@
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QLineEdit" name="inscriptionText_is">
+     <widget class="QValidatedLineEdit" name="inscriptionText_is">
       <property name="toolTip">
        <string>A (100-character max) string of ASCII characters to be stored with the transaction on the V Core network.</string>
       </property>
@@ -1285,7 +1302,7 @@
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QLineEdit" name="inscriptionText_s">
+     <widget class="QValidatedLineEdit" name="inscriptionText_s">
       <property name="toolTip">
        <string>A (100-character max) string of ASCII characters to be stored with the transaction on the V Core network.</string>
       </property>
@@ -1327,7 +1344,6 @@
    <class>BitcoinAmountField</class>
    <extends>QLineEdit</extends>
    <header>qt/bitcoinamountfield.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

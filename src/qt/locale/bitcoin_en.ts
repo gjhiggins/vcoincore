@@ -798,6 +798,19 @@
     </message>
 </context>
 <context>
+    <name>BlockExplorer</name>
+    <message>
+        <location filename="../blockexplorer.cpp" line="+59"/>
+        <source>unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../blockexplorer.cpp" line="+84"/>
+        <source>Non-standard script</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CoinControlDialog</name>
     <message>
         <location filename="../forms/coincontroldialog.ui" line="+14"/>

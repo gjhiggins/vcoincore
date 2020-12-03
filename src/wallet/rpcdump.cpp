@@ -17,6 +17,7 @@
 #include <util/system.h>
 #include <util/time.h>
 #include <util/translation.h>
+#include <validation.h>
 #include <wallet/rpcwallet.h>
 #include <wallet/wallet.h>
 
@@ -249,7 +250,7 @@ UniValue importaddress(const JSONRPCRequest& request)
             "as change, and not show up in many RPCs.\n"
             "Note: Use \"getwalletinfo\" to query the scanning progress.\n",
                 {
-                    {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The V Core address (or hex-encoded script)"},
+                    {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The address (or hex-encoded script)"},
                     {"label", RPCArg::Type::STR, /* default */ "\"\"", "An optional label"},
                     {"rescan", RPCArg::Type::BOOL, /* default */ "true", "Rescan the wallet for transactions"},
                     {"p2sh", RPCArg::Type::BOOL, /* default */ "false", "Add the P2SH version of the script as well"},
@@ -318,7 +319,7 @@ UniValue importaddress(const JSONRPCRequest& request)
 
             pwallet->ImportScriptPubKeys(strLabel, scripts, false /* have_solving_data */, true /* apply_label */, 1 /* timestamp */);
         } else {
-            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid V Core address or script");
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid address or script");
         }
     }
     if (fRescan)
@@ -466,7 +467,6 @@ UniValue importpubkey(const JSONRPCRequest& request)
             + HelpExampleRpc("importpubkey", "\"mypubkey\", \"testing\", false")
                 },
             }.Check(request);
-
 
     std::string strLabel;
     if (!request.params[1].isNull())
@@ -715,7 +715,7 @@ UniValue dumpprivkey(const JSONRPCRequest& request)
     std::string strAddress = request.params[0].get_str();
     CTxDestination dest = DecodeDestination(strAddress);
     if (!IsValidDestination(dest)) {
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid V Core address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid address");
     }
     auto keyid = GetKeyForDestination(*pwallet, dest);
     if (keyid.IsNull()) {
@@ -743,7 +743,7 @@ UniValue dumpwallet(const JSONRPCRequest& request)
                 "Note that if your wallet contains keys which are not derived from your HD seed (e.g. imported keys), these are not covered by\n"
                 "only backing up the seed itself, and must be backed up too (e.g. ensure you back up the whole dumpfile).\n",
                 {
-                    {"filename", RPCArg::Type::STR, RPCArg::Optional::NO, "The filename with path (either absolute or relative to bitcoind)"},
+                    {"filename", RPCArg::Type::STR, RPCArg::Optional::NO, "The filename with path (either absolute or relative to vcored)"},
                 },
                 RPCResult{
             "{                           (json object)\n"
@@ -857,6 +857,161 @@ UniValue dumpwallet(const JSONRPCRequest& request)
     reply.pushKV("filename", filepath.string());
 
     return reply;
+}
+
+UniValue makekeypair(const JSONRPCRequest& request)
+{
+    RPCHelpMan{"makekeypair",
+        "\nMake a private/public keypair.\n",
+        {
+            {"uncompressed", RPCArg::Type::BOOL, /* default */ "false", "Optional, create uncompressed keys"},
+        },
+        {
+            RPCResult{"if uncompressed is set to true (or 1)",
+
+                "{                         (json object)\n"
+                "  \"compressed\": false,       (boolean) asserts generated keypair is uncompressed\n"
+                "  \"addresses\": {\n"
+                "    \"legacy\": \"data\",         (string) The corresponding (legacy) address\n"
+                "  },\n"
+                "  \"privkey\": \"data\",          (string) WIF-formatted privkey\n"
+                "  \"public key\": \"data\",       (string) Hex-encoded uncompressed public key\n"
+                "  \"private key\": \"data\",      (string) Hex-encoded private key\n"
+            },
+
+            RPCResult{"if uncompressed is not set",
+                "{                         (json object)\n"
+                "  \"compressed\": true,        (boolean) asserts generated keypair is compressed\n"
+                "  \"addresses\": {\n"
+                "    \"legacy\": \"data\",         (string) The corresponding legacy address\n"
+                "    \"segwit\": \"data\",         (string) The corresponding segwit address\n"
+                "    \"bech32\": \"data\"          (string) The corresponding bech32 address\n"
+                "  },\n"
+                "  \"privkey\": \"data\",          (string) WIF-formatted privkey\n"
+                "  \"public key\": \"data\",       (string) Hex-encoded compressed public key\n"
+                "  \"private key\": \"data\"       (string) Hex-encoded private key\n"
+                "}\n"
+            },
+        },
+       RPCExamples{
+           HelpExampleCli("makekeypair", "\"false\"")
+            + HelpExampleRpc("makekeypair", "\"false\"")
+       },
+    }.Check(request);
+    // Whether to generate uncompressed keys
+    bool compressed_wanted = true;
+    if (!request.params[0].isNull()) {
+        compressed_wanted = request.params[0].isNum() ? (request.params[0].get_int() != 0) : request.params[0].get_bool();
+    }
+
+    std::vector<std::string> addresstypes = {"legacy", "segwit", "bech32"};
+
+    int i = 0;
+    CKey key;
+    key.MakeNewKey(compressed_wanted);
+    CPubKey pubkey = key.GetPubKey();
+    CPrivKey privkey = key.GetPrivKey();
+    std::vector<CTxDestination> dests = GetAllDestinationsForKey(pubkey);
+
+    UniValue addresses(UniValue::VOBJ);
+    for (const auto& dest : GetAllDestinationsForKey(pubkey)) {
+        addresses.pushKV(strprintf("%s", addresstypes[i]), EncodeDestination(dest));
+        i++;
+    }
+
+    UniValue result(UniValue::VOBJ);
+
+    result.pushKV("compressed", compressed_wanted);
+    result.pushKV("addresses", addresses);
+    result.pushKV("privkey", EncodeSecret(key));
+    result.pushKV("public key", HexStr(pubkey));
+    result.pushKV("private key", HexStr(key));
+
+    return result;
+}
+
+UniValue dumpbootstrap(const JSONRPCRequest& request)
+{
+    //         RPCHelpMan{"dumpbootstrap",
+    //                "\nCreates a bootstrap format block dump of the blockchain in destination, which can be a directory or a path with filename.\n"
+    //                "Imported scripts are included in the dumpfile, but corresponding BIP173 addresses, etc. may not be added automatically by importwallet.\n"
+    //                "Note that if your wallet contains keys which are not derived from your HD seed (e.g. imported keys), these are not covered by\n"
+    //                "only backing up the seed itself, and must be backed up too (e.g. ensure you back up the whole dumpfile).\n",
+    //                {
+    //                    {"filename", RPCArg::Type::STR, /* default */ "bootstrap.dat", "Optional filename with path (either absolute or relative)"},
+    //                    {"startblock", RPCArg::Type::NUM, /* default */ "0", "Optional first block number to dump (default 0)."},
+    //                    {"endblock", RPCArg::Type::NUM, /* default */ "4000000", "Optional last block number to dump (default 4000000)."},
+    //                },
+    //                RPCResult{
+    //            "{                         (json object)\n"
+    //            "  \"filename\" : {        (string) The filename with full absolute path\n"
+    //            "}\n"
+    //                },
+    //                RPCExamples{
+    //                    HelpExampleCli("dumpbootstrap", "\"test.dat\"")
+    //                  + HelpExampleRpc("dumpbootstrap", "\"test.dat\"")
+    //                },
+    //            }.Check(request);
+
+    // std::string strDest = request.params[0].get_str();
+
+    // int nEndBlock = 4000000;
+    // int nStartBlock = 0;
+
+    // if (request.params.size() > 1)
+    //     nStartBlock = request.params[1].get_int();
+
+    // if (request.params.size() > 2) {
+    //     nEndBlock = request.params[2].get_int();
+    // }
+
+    // fs::path filepath = request.params[0].get_str();
+    // filepath = fs::absolute(filepath);
+
+
+    // // boost::filesystem::path pathDest(strDest);
+    // if (boost::filesystem::is_directory(filepath))
+    //     filepath /= "bootstrap.dat";
+
+    // try {
+    //     if (fs::exists(filepath)) {
+    //         throw JSONRPCError(RPC_INVALID_PARAMETER, filepath.string() + " already exists. If you are sure this is what you want, move it out of the way first");
+    //     }
+
+    //     fsbridge::ofstream file;
+    //     file.open(filepath);
+    //     if (!file.is_open())
+    //         throw JSONRPCError(RPC_INVALID_PARAMETER, "Cannot open wallet dump file");
+
+    //     CBlockIndex* pblockindex = ::ChainActive()[nStartBlock];
+
+    //     const CChainParams& chainparams = Params();
+
+    //     while (pblockindex->nHeight < nEndBlock)
+    //     {
+    //         CBlock block;
+
+    //         ReadBlockFromDisk(block, pblockindex, Params().GetConsensus());
+
+    //         if (pblockindex->nHeight == nStartBlock)
+    //             FlatFilePos blockPos = SaveBlockToDisk(block, pblockindex->nHeight, chainparams, nullptr);
+    //             // return error("Not yet implemented");
+    //         else
+    //             FlatFilePos blockPos = SaveBlockToDisk(block, pblockindex->nHeight, chainparams, blockPos);
+    //             // return error("Not yet implemented");
+
+    //         if (blockPos->IsNull())
+    //             return error("%s: writing block to disk failed", __func__);
+
+    //         pblockindex = ::ChainActive().Next(pblockindex);
+    //     }
+
+    // } catch(const boost::filesystem::filesystem_error &e) {
+    //     throw JSONRPCError(-1, "Error: Bootstrap dump failed!");
+    // }
+
+    // return "bootstrap file created";
+    return "Not yet implemented";
 }
 
 struct ImportData

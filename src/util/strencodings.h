@@ -37,6 +37,7 @@ enum SafeChars
 std::string SanitizeString(const std::string& str, int rule = SAFE_CHARS_DEFAULT);
 std::vector<unsigned char> ParseHex(const char* psz);
 std::vector<unsigned char> ParseHex(const std::string& str);
+std::string HashToString(unsigned char* hash);
 signed char HexDigit(char c);
 /* Returns true if each character in str is a hex character, and has an even
  * number of hex digits.*/

@@ -106,6 +106,15 @@ std::vector<unsigned char> ParseHex(const std::string& str)
     return ParseHex(str.c_str());
 }
 
+std::string HashToString(unsigned char* hash) {
+    char outputBuffer[65];
+    for(int i=0;i<32;i++) {
+        sprintf(outputBuffer+(i*2),"%02x",hash[i]);
+    }
+    outputBuffer[64]=0;
+    return std::string(outputBuffer);
+}
+
 void SplitHostPort(std::string in, int &portOut, std::string &hostOut) {
     size_t colon = in.find_last_of(':');
     // if a : is found, and it either follows a [...], or no other : is in the string, treat it as port separator

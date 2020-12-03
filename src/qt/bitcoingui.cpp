@@ -684,7 +684,8 @@ void BitcoinGUI::removeWallet(WalletModel* walletModel)
 
 void BitcoinGUI::setCurrentWallet(WalletModel* wallet_model)
 {
-    if (!walletFrame) return;
+    if(!walletFrame)
+        return;
     walletFrame->setCurrentWallet(wallet_model);
     for (int index = 0; index < m_wallet_selector->count(); ++index) {
         if (m_wallet_selector->itemData(index).value<WalletModel*>() == wallet_model) {
@@ -726,8 +727,8 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     usedSendingAddressesAction->setEnabled(enabled);
     usedReceivingAddressesAction->setEnabled(enabled);
     openAction->setEnabled(enabled);
-    m_close_wallet_action->setEnabled(enabled);
     openBlockExplorerAction->setEnabled(enabled);
+    m_close_wallet_action->setEnabled(enabled);
 }
 
 void BitcoinGUI::createTrayIcon()
@@ -958,6 +959,11 @@ void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate, double nVer
 
     // Prevent orphan statusbar messages (e.g. hover Quit in main menu, wait until chain-sync starts -> garbled text)
     statusBar()->clearMessage();
+
+    if (gArgs.GetBoolArg("-chart", DEFAULT_CHARTPLOTTING) && count > 0 )
+    {
+        walletFrame->updatePlot(count);
+    }
 
     // Acquire current block source
     enum BlockSource blockSource = clientModel->getBlockSource();

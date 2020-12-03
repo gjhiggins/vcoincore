@@ -14,9 +14,11 @@
 #include <qt/guiutil.h>
 #include <qt/optionsmodel.h>
 #include <qt/platformstyle.h>
+#include <util/strencodings.h>
 
 #include <QApplication>
 #include <QClipboard>
+#include <QFileDialog>
 
 SendCoinsEntry::SendCoinsEntry(const PlatformStyle *_platformStyle, QWidget *parent) :
     QStackedWidget(parent),
@@ -77,6 +79,76 @@ void SendCoinsEntry::on_addressBookButton_clicked()
     }
 }
 
+void SendCoinsEntry::on_selectFileButton_clicked()
+{
+    QString fileName;
+    QFileDialog dlg(this);
+    dlg.setFileMode(QFileDialog::ExistingFile);
+
+    if (dlg.exec())
+    {
+        fileName = dlg.selectedFiles()[0];
+        unsigned char shahash[CSHA256::OUTPUT_SIZE];
+        std::ifstream infile (fileName.toStdString(), std::ios::binary);
+
+        // get size of file
+        infile.seekg (0,infile.end);
+        long bufsize = infile.tellg();
+        infile.seekg (0);
+
+        // allocate memory for file content
+        char* buffer = new char[bufsize];
+
+        // read content of infile
+        infile.read (buffer, bufsize);
+        infile.close();
+
+        CSHA256().Write((const unsigned char*)buffer, bufsize).Finalize(shahash);
+        std::string notaryID = HashToString(shahash);
+
+        // release dynamically-allocated memory
+        delete[] buffer;
+
+        if (!(IsHexNumber(notaryID) && notaryID.length() == 64)) {
+            ui->inscriptionText->setValid(false);
+            return;
+        }
+        // Make sure wallet is unlocked
+        WalletModel::UnlockContext ctx(model->requestUnlock());
+        if (!ctx.isValid()) {
+            return;
+        }
+
+        // Warn if file is NULL
+        if (notaryID == "") {
+            QMessageBox::warning(this, tr("Notarize File"),
+                tr("Unable to open file for hashing."),
+                QMessageBox::Ok, QMessageBox::Ok);
+            return;
+        }
+        ui->inscriptionText->setText(QString::fromStdString(notaryID));
+    }
+}
+
+/*
+void SendCoinsEntry::contextualMenu(const QPoint &point)
+{
+    QModelIndex index = ui->tableWidget->indexAt(point);
+    if (index.isValid())
+    {
+        contextMenu->exec(QCursor::pos());
+    }
+}
+
+void SendCoinsEntry::onCopyTxID()
+{
+    QString txID = ui->tableWidget->selectedItems().at(0)->text();
+    if (txID.length() > 0) {
+        QApplication::clipboard()->setText(txID);
+    }
+}
+*/
+
 void SendCoinsEntry::on_payTo_textChanged(const QString &address)
 {
     updateLabel(address);
@@ -97,6 +169,11 @@ void SendCoinsEntry::setModel(WalletModel *_model)
     clear();
 }
 
+void SendCoinsEntry::setRemoveEnabled(bool enabled)
+{
+    ui->deleteButton->setEnabled(enabled);
+}
+
 void SendCoinsEntry::clear()
 {
     // clear UI elements for normal payment
@@ -108,8 +185,6 @@ void SendCoinsEntry::clear()
     ui->messageTextLabel->hide();
     ui->messageLabel->hide();
     ui->inscriptionText->clear();
-    // ui->inscriptionText->hide();
-    // ui->inscriptionLabel->hide();
     // clear UI elements for unauthenticated payment request
     ui->payTo_is->clear();
     ui->memoTextLabel_is->clear();
@@ -178,6 +253,12 @@ bool SendCoinsEntry::validate(interfaces::Node& node)
         retval = false;
     }
 
+    if (!ui->inscriptionText->text().isEmpty() && !ui->inscriptionText->text().startsWith("ni://"))
+    {
+        ui->inscriptionText->setValid(false);
+        retval = false;
+    }
+
     return retval;
 }
 
@@ -194,6 +275,7 @@ SendCoinsRecipient SendCoinsEntry::getValue()
     recipient.label = ui->addAsLabel->text();
     recipient.amount = ui->payAmount->value();
     recipient.message = ui->messageTextLabel->text();
+    recipient.inscription = ui->inscriptionText->text();
     recipient.fSubtractFeeFromAmount = (ui->checkboxSubtractFeeFromAmount->checkState() == Qt::Checked);
 
     return recipient;
@@ -247,8 +329,6 @@ void SendCoinsEntry::setValue(const SendCoinsRecipient &value)
 
         // inscriptiom
         ui->inscriptionText->setText(recipient.inscription);
-        // ui->inscriptionText->setVisible(!recipient.inscription.isEmpty());
-        // ui->inscriptionLabel->setVisible(!recipient.inscription.isEmpty());
         ui->inscriptionText->setVisible(true);
         ui->inscriptionLabel->setVisible(true);
 
@@ -321,36 +401,4 @@ bool SendCoinsEntry::updateInscription(const QString &inscription)
     ui->inscriptionText->setText(inscription);
     return true;
 }
-
-    //    QString textOP = ui->msgLabel->text();
-    //    if (textOP.length() > int(MAX_OP_RETURN_RELAY))
-    //    {
-    //        QMessageBox::information(NULL, tr("Wallet Message"), tr("Inscriptions are limited to a maximum of 100 characters."), QMessageBox::Yes , QMessageBox::Yes);
-    //        return;
-    //    }
-
-    /*
-     * Handle txReference (OP_RETURN) text
-    */
-
-
-//    QList<SendCoinsRecipient> recipients;
-//    SendCoinsRecipient rcptmp;
-//    // Payment request
-//    if (rcptmp.paymentRequest.IsInitialized())
-//        return ;
-//    /* Not required
-//    rcptmp.typeInd = AddressTableModel::AT_Normal;
-//    */
-//    rcptmp.address = addrOP;
-//    rcptmp.label = "inscription";
-//    rcptmp.amount = /*DUST_HARD_LIMIT*/ 1000 /*MIN_OP_RETURN_TX_FEE*/;
-//    rcptmp.message = textOP;
-//    recipients.append(rcptmp);
-
-
-
-
-    // FIXME: Add txreference
-    // prepareStatus = model->prepareTransaction(currentTransaction, txreference, ctrl);
 

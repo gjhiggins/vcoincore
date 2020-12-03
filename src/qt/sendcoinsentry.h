@@ -49,6 +49,7 @@ public:
     void setFocus();
 
 public Q_SLOTS:
+    void setRemoveEnabled(bool enabled);
     void clear();
     void checkSubtractFeeFromAmount();
 
@@ -67,6 +68,7 @@ private Q_SLOTS:
     void on_addressBookButton_clicked();
     void on_pasteButton_clicked();
     void updateDisplayUnit();
+    void on_selectFileButton_clicked();
 
 private:
     SendCoinsRecipient recipient;
@@ -76,6 +78,7 @@ private:
 
     bool updateLabel(const QString &address);
     bool updateInscription(const QString &inscription);
+    std::string hashFile(std::string fileName);
 };
 
 #endif // BITCOIN_QT_SENDCOINSENTRY_H

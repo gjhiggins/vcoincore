@@ -165,7 +165,7 @@ void ReceiveCoinsDialog::on_receiveButton_clicked()
     }
     address = model->getAddressTableModel()->addRow(AddressTableModel::Receive, label, "", address_type);
     SendCoinsRecipient info(address, label,
-        ui->reqAmount->value(), ui->reqMessage->text(), "");
+        ui->reqAmount->value(), ui->reqMessage->text(), QString(""));
     ReceiveRequestDialog *dialog = new ReceiveRequestDialog(this);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->setModel(model);

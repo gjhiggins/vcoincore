@@ -10,6 +10,7 @@
 #include <QWidget>
 #include <memory>
 
+class CBlockIndex;
 class ClientModel;
 class TransactionFilterProxy;
 class TxViewDelegate;
@@ -35,6 +36,7 @@ public:
 
     void setClientModel(ClientModel *clientModel);
     void setWalletModel(WalletModel *walletModel);
+    void updatePlot(int count);
     void showOutOfSyncWarning(bool fShow);
 
 public Q_SLOTS:
@@ -49,6 +51,10 @@ private:
     ClientModel *clientModel;
     WalletModel *walletModel;
     interfaces::WalletBalances m_balances;
+    QVector<double> vX;
+    QVector<double> vY;
+    QVector<double> vX2;
+    QVector<double> vY2;
 
     TxViewDelegate *txdelegate;
     std::unique_ptr<TransactionFilterProxy> filter;

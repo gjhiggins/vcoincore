@@ -15,6 +15,13 @@
 #include <qt/transactiontablemodel.h>
 #include <qt/walletmodel.h>
 
+#include <chain.h>
+#include <rpc/blockchain.h>
+#include <rpc/mining.h>
+#include <univalue.h>
+#include <util/system.h>
+#include <validation.h>
+
 #include <QAbstractItemDelegate>
 #include <QPainter>
 
@@ -134,6 +141,56 @@ OverviewPage::OverviewPage(const PlatformStyle *platformStyle, QWidget *parent) 
     ui->listTransactions->setAttribute(Qt::WA_MacShowFocusRect, false);
 
     connect(ui->listTransactions, &QListView::clicked, this, &OverviewPage::handleTransactionClicked);
+
+    if (gArgs.GetBoolArg("-chart", DEFAULT_CHARTPLOTTING))
+    {
+        // setup Plot
+
+        // give the axes some labels:
+        ui->workplot->xAxis->setLabel("Last 7 days (4032 blocks)");
+        ui->workplot->yAxis->setLabel("Difficulty");
+        ui->workplot->yAxis2->setLabel("Hash rate");
+        ui->workplot->yAxis2->setVisible(true);
+
+        // set axes label fonts:
+        QFont label = font();
+        ui->workplot->yAxis->setLabelFont(label);
+        ui->workplot->yAxis->setTickLabelFont(label);
+        ui->workplot->yAxis2->setTickLabelFont(label);
+
+        ui->workplot->xAxis->setTickLabels(false);
+        // If block height is rendered ...
+        // ui->workplot->xAxis->setLabelFont(label);
+        // ui->workplot->xAxis->setTickLabelFont(label);
+        // ui->workplot->xAxis->setTickLabelRotation(15);
+        // ui->workplot->xAxis->setNumberFormat("f");
+
+        ui->workplot->xAxis->setAutoSubTicks(false);
+        ui->workplot->yAxis->setAutoSubTicks(false);
+        ui->workplot->yAxis2->setAutoSubTicks(false);
+        ui->workplot->xAxis->setSubTickCount(0);
+        ui->workplot->yAxis->setSubTickCount(0);
+        ui->workplot->yAxis2->setSubTickCount(0);
+
+        // create graph
+        ui->workplot->addGraph(ui->workplot->xAxis, ui->workplot->yAxis);
+        // set the pens
+        ui->workplot->graph(0)->setPen(QPen(QColor(255, 165, 18)));
+        ui->workplot->graph(0)->setLineStyle(QCPGraph::lsNone);
+        ui->workplot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, QColor(255, 165, 18), 1));
+
+        // create graph
+        ui->workplot->addGraph(ui->workplot->xAxis, ui->workplot->yAxis2);
+        // set the pens
+        ui->workplot->graph(1)->setPen(QPen(QColor(145, 137, 255)));
+        ui->workplot->graph(1)->setLineStyle(QCPGraph::lsNone);
+        ui->workplot->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, QColor(145, 137, 255), 1));
+
+    }
+    else
+    {
+        ui->workplot->setVisible(false);
+    }
 
     // start with displaying the "out of sync" warnings
     showOutOfSyncWarning(true);
@@ -272,3 +329,59 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
     ui->labelWalletStatus->setVisible(fShow);
     ui->labelTransactionsStatus->setVisible(fShow);
 }
+
+void OverviewPage::updatePlot(int count)
+{
+    // Double Check to make sure we don't try to update the plot when it is disabled
+    if (!gArgs.GetBoolArg("-chart", DEFAULT_CHARTPLOTTING)) { return; }
+
+    int numLookBack = 4032;
+    double diffMax = 0;
+    double hashMax = 0;
+    CBlockIndex* pindex = LookupBlockIndex(::ChainActive().Tip()->GetBlockHash());
+
+    int height;
+    {
+        LOCK(cs_main);
+        height = ::ChainActive().Tip()->nHeight;
+    }
+
+    int xStart = std::max<int>(height-numLookBack, 0) + 1;
+    int xEnd = height;
+
+    // Start at the end and walk backwards
+    int i = numLookBack-1;
+    int x = xEnd;
+
+    // This should be a noop if the size is already 2000
+    vX.resize(numLookBack);
+    vY.resize(numLookBack);
+    vX2.resize(numLookBack);
+    vY2.resize(numLookBack);
+
+    CBlockIndex* itr = pindex;
+    while(i >= 0 && itr != NULL)
+    {
+        vX[i] = itr->nHeight;
+        vY[i] = GetDifficulty(itr);
+        vY2[i] = (double)GetNetworkHashPS(120, itr->nHeight).get_real();
+        diffMax = std::max<double>(diffMax, vY[i]);
+        hashMax = std::max<double>(hashMax, vY2[i]);
+
+        itr = itr->pprev;
+        i--;
+        x--;
+    }
+
+    ui->workplot->graph(0)->setData(vX, vY);
+    ui->workplot->graph(1)->setData(vX, vY2);
+
+    // set axes ranges, so we see all data:
+    ui->workplot->xAxis->setRange((double)xStart, (double)xEnd);
+    ui->workplot->yAxis->setRange(0, diffMax+(diffMax/10));
+    ui->workplot->yAxis2->setRange(0, hashMax+(hashMax/10));
+
+    ui->workplot->replot();
+
+}
+

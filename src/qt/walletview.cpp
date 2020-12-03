@@ -303,6 +303,13 @@ void WalletView::usedReceivingAddresses()
     GUIUtil::bringToFront(usedReceivingAddressesPage);
 }
 
+void WalletView::updatePlot(int count)
+{
+    if(!walletModel)
+        return;
+    overviewPage->updatePlot(count);
+}
+
 void WalletView::showProgress(const QString &title, int nProgress)
 {
     if (nProgress == 0) {

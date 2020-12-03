@@ -34,9 +34,9 @@
 
 #include <memory>
 #include <stdint.h>
-
 #include <univalue.h>
 
+extern uint64_t nHashesPerSec;
 static const bool DEFAULT_GENERATE = false;
 static const int DEFAULT_GENERATE_THREADS = 1;
 
@@ -45,7 +45,7 @@ static const int DEFAULT_GENERATE_THREADS = 1;
  * or from the last difficulty change if 'lookup' is nonpositive.
  * If 'height' is nonnegative, compute the estimate at the time when a given block was found.
  */
-static UniValue GetNetworkHashPS(int lookup, int height) {
+UniValue GetNetworkHashPS(int lookup, int height) {
     CBlockIndex *pb = ::ChainActive().Tip();
 
     if (height >= 0 && height < ::ChainActive().Height())
@@ -990,6 +990,7 @@ UniValue getgenerate(const JSONRPCRequest& request)
             + HelpExampleRpc("getgenerate", "")
         );
 
+    LOCK(cs_main);
     return gArgs.GetBoolArg("-gen", DEFAULT_GENERATE);
 }
 
@@ -1034,7 +1035,6 @@ UniValue setgenerate(const JSONRPCRequest& request)
 
     gArgs.SoftSetArg("-gen", (fGenerate ? "1" : "0"));
     gArgs.SoftSetArg("-genproclimit", itostr(nGenProcLimit));
-
     int numCores = GenerateVCores(fGenerate, nGenProcLimit, Params(), *g_connman, wallet);
 
     nGenProcLimit = nGenProcLimit >= 0 ? nGenProcLimit : numCores;

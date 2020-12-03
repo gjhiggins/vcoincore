@@ -635,6 +635,13 @@
     </message>
 </context>
 <context>
+    <name>BlockExplorer</name>
+    <message>
+        <source>unknown</source>
+        <translation>unknown</translation>
+    </message>
+</context>
+<context>
     <name>CoinControlDialog</name>
     <message>
         <source>Coin Selection</source>

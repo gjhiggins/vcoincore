@@ -183,11 +183,22 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
             setAddress.insert(rcp.address);
             ++nAddresses;
 
-            CScript scriptPubKey = GetScriptForDestination(DecodeDestination(rcp.address.toStdString()));
-            CRecipient recipient = {scriptPubKey, rcp.amount, rcp.fSubtractFeeFromAmount};
-            vecSend.push_back(recipient);
+            if (rcp.inscription != "")
+            {
+                QByteArray ba = rcp.inscription.toLocal8Bit();
+                std::vector<unsigned char> data(ba.begin(), ba.end());
+                CScript scriptPubKey = CScript() << OP_RETURN << data;
+                CRecipient recipient = {scriptPubKey, rcp.amount, rcp.fSubtractFeeFromAmount};
+                vecSend.push_back(recipient);
 
-            total += rcp.amount;
+                total += rcp.amount;
+            } else {
+                CScript scriptPubKey = GetScriptForDestination(DecodeDestination(rcp.address.toStdString()));
+                CRecipient recipient = {scriptPubKey, rcp.amount, rcp.fSubtractFeeFromAmount};
+                vecSend.push_back(recipient);
+
+                total += rcp.amount;
+            }
         }
     }
     if(setAddress.size() != nAddresses)

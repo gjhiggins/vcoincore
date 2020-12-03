@@ -16,7 +16,6 @@ namespace interfaces {
 
 namespace Ui {
     class HelpMessageDialog;
-    class InscriptionDialog;
 }
 
 /** "Help message" dialog box */
