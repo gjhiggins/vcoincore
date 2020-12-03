@@ -69,17 +69,18 @@ public:
     CMainParams() {
         strNetworkID = "main";
         consensus.nSubsidyHalvingInterval = 100000;
-        consensus.BIP16Exception = uint256S("00000b7e804f0de87e7752550ff04d7686a4599509897feefd7f03904eb45633");
+        consensus.BIP16Exception = uint256S(MAINNETGENESISHASH);
         consensus.BIP34Height = FROMGENESIS;
-        consensus.BIP34Hash = uint256S("00000b7e804f0de87e7752550ff04d7686a4599509897feefd7f03904eb45633");
-        consensus.BIP65Height = 4000000; // Implements OP_CHECKLOCKTIMEVERIFY opcode.
-        consensus.BIP66Height = 4000000; // Enforces DER encoding from given block hight onwards.
+        consensus.BIP34Hash = uint256S(MAINNETGENESISHASH);
+        consensus.BIP65Height = 6000000; // Implements OP_CHECKLOCKTIMEVERIFY opcode.
+        consensus.BIP66Height = 6000000; // Enforces DER encoding from given block hight onwards.
         consensus.CSVHeight = FROMGENESIS; // Block height at which CheckSequenceVerify (BIP68, BIP112 and BIP113) becomes active.
-        consensus.SegwitHeight = 4000000 /*FROMGENESIS*/;
+        consensus.SegwitHeight = 6000000 /*FROMGENESIS*/;
         // consensus.MinBIP9WarningHeight = 483840; // segwit activation height + miner confirmation window
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~arith_uint256(0) >> 20 or 1 / 2^12 or 0.000244140625 or “20 zeroes followed by (256-20) ones”
         consensus.nPowTargetTimespan = 1200; // 20 minutes
         consensus.nPowTargetSpacing = 30; // 30 seconds
+        consensus.nCoinbaseMaturity = 100;
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016 (95% consensus is required to accept protocol rule changes)
@@ -108,7 +109,7 @@ public:
         m_assumed_blockchain_size = 1;
         m_assumed_chain_state_size = 0.5;
 
-        genesis = CreateGenesisBlock(1431517588, 1486592, 0x1e0fffff, 1, 1 * COIN);
+        genesis = CreateGenesisBlock(1431517588, MAINNETNONCE, 0x1e0fffff, 1, 1 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         LogPrintf("mainnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
         LogPrintf("mainnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
@@ -156,22 +157,17 @@ public:
         std::cout << "  hash: " << genesis.GetHash().ToString().c_str() << "\n";
         std::cout << "  merklehash: "  << genesis.hashMerkleRoot.ToString().c_str() << "\n";
 
-        assert(consensus.hashGenesisBlock == uint256S("00000b7e804f0de87e7752550ff04d7686a4599509897feefd7f03904eb45633"));
-        assert(genesis.hashMerkleRoot == uint256S("1576ef41775095b26a8f8f2bb65b693ec12230608a425aa84ee462381cae00e6"));
+        assert(consensus.hashGenesisBlock == uint256S(MAINNETGENESISHASH));
+        assert(genesis.hashMerkleRoot == uint256S(MERKLETREEROOTHASH));
 
         vSeeds.emplace_back("minkiz.co", false);
 
-        // base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,70);   // 0x46
-        // base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);   // 0x1e
-        // base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,224);  // 0xc6
-        // base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x5F, 0x1C, 0xF8}; // vpub
-        // base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x5F, 0x18, 0xC0}; // vprv
-        /* base58Prefixes[EXT_COIN_TYPE]  = boost::assign::list_of(0x80000028); // BIP44 coin type is '28' */
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,70);                    // VCoin addresses start with 'V'
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);                    // VCoin script addresses start with '7'
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,96 + 128);              // VCoin private keys start with '7' or 'V'
-        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >(); // Chaincoin BIP32 pubkeys start with 'drkv'
-        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xAD)(0xE4).convert_to_container<std::vector<unsigned char> >(); // Chaincoin BIP32 prvkeys start with 'drkp'
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,70);  // addresses start with 'V' - 0x46
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);  // script addresses start with '7' - 0x1e
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,96 + 128); // private keys start with '7' or 'V' - 0xc6
+        base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x88, 0xB2, 0x1E}; // BIP32 pubkeys start with 'drkv'
+        base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4}; // BIP32 prvkeys start with 'drkp'
+        base58Prefixes[EXT_COIN_TYPE]  = {0x80, 0x00, 0x00, 0x028}; // BIP44 coin type is '28'
 
         bech32_hrp = "vc";
 
@@ -185,7 +181,7 @@ public:
 
         checkpointData = {
             {
-                {0, uint256S("00000b7e804f0de87e7752550ff04d7686a4599509897feefd7f03904eb45633")},
+                {0, uint256S(MAINNETGENESISHASH)},
                 {500000, uint256S("00000000000329d124fce422ab9a061886c9e7d3985939c82c7d7d9a69f886c7")},
                 {1000000, uint256S("000000000018081c155a551e258ce12851a4ecfdc330ad6521cd2d1b82c65109")},
                 {1500000, uint256S("0000000000327ed56a55dcd7cc1bcf9728474be64a6fd7c385ec3ed2e51d85fc")},
@@ -223,6 +219,7 @@ public:
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~arith_uint256(0) >> 20
         consensus.nPowTargetTimespan = 1200; // 20 minutes
         consensus.nPowTargetSpacing = 30; // 30 seconds
+        consensus.nCoinbaseMaturity = 10;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
@@ -251,7 +248,7 @@ public:
         m_assumed_blockchain_size = 1;
         m_assumed_chain_state_size = 0.5;
 
-        genesis = CreateGenesisBlock(1581969864, 713385, 0x1e0fffff, 1, 1 * COIN);
+        genesis = CreateGenesisBlock(1581969864, TESTNETNONCE, 0x1e0fffff, 1, 1 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         LogPrintf("testnet: %s\n", consensus.hashGenesisBlock.ToString().c_str());
         LogPrintf("testnet: %s\n", genesis.hashMerkleRoot.ToString().c_str());
@@ -292,8 +289,8 @@ public:
             // Testnet --- nonce: {{nnonce}} time: {{ntime}} hash: {{genesisblockhash}}
         }
         */
-        assert(consensus.hashGenesisBlock == uint256S("000007c2d96e3435b752fc25a219ff70c963540d07c73243419b8e9274456f39"));
-        assert(genesis.hashMerkleRoot == uint256S("1576ef41775095b26a8f8f2bb65b693ec12230608a425aa84ee462381cae00e6"));
+        assert(consensus.hashGenesisBlock == uint256S(TESTNETGENESISHASH));
+        assert(genesis.hashMerkleRoot == uint256S(TESTNETMERKLETREEROOTHASH));
 
         vFixedSeeds.clear();
         vSeeds.clear();
@@ -301,16 +298,12 @@ public:
 
         vSeeds.emplace_back("minkiz.co", false);
 
-        // base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,127); // 0x7f
-        // base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);  // 0x1e
-        // base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,255); // 0xff
-        // base58Prefixes[EXT_PUBLIC_KEY] = {0x87, 0xc9, 0x27, 0x00}; // 'Vpub'
-        // base58Prefixes[EXT_SECRET_KEY] = {0x87, 0xc8, 0x30, 0x80}; // 'Vpriv'
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,130);                    // VCoin addresses start with 'V'
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);                    // VCoin script addresses start with '7'
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,111 + 128);              // VCoin private keys start with '7' or 'V'
-        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >(); // Chaincoin BIP32 pubkeys start with 'drkv'
-        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >(); // Chaincoin BIP32 prvkeys start with 'drkp'
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,130); // testnet addresses start with 'V' - 0x7f
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,30);  // testnet script addresses start with '7' - 0x1e
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,111 + 128); // testnet private keys start with '7' or 'V' - 0xff
+        base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF}; // BIP32 testnet pubkeys start with 'drkv'
+        base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94}; // BIP32 testnet prvkeys start with 'drkp'
+        base58Prefixes[EXT_COIN_TYPE]  = {0x80, 0x00, 0x00, 0x01}; // BIP44 testnet coin type is '1'
 
         bech32_hrp = "tv";
 
@@ -325,7 +318,7 @@ public:
 
         checkpointData = {
             {
-                {0, uint256S("000007e14c52364cee2d4d9483541d473e3e73c896df75882273b91313b44816")},
+                {0, uint256S(TESTNETGENESISHASH)},
             }
         };
 
@@ -340,6 +333,7 @@ public:
 /**
  * Regression test
  */
+
 class CRegTestParams : public CChainParams {
 public:
     explicit CRegTestParams(const ArgsManager& args) {
@@ -355,6 +349,7 @@ public:
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 1200; // 20 minutes
         consensus.nPowTargetSpacing = 30; // 30 seconds
+        consensus.nCoinbaseMaturity = 10;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
         consensus.nRuleChangeActivationThreshold = 108; // 75% for testchains
@@ -380,7 +375,7 @@ public:
 
         UpdateActivationParametersFromArgs(args);
 
-        genesis = CreateGenesisBlock(1296688602, 3, 0x207fffff, 1, 1 * COIN);
+        genesis = CreateGenesisBlock(1296688602, REGTESTNONCE, 0x207fffff, 1, 1 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         LogPrintf("regtest: %s\n", consensus.hashGenesisBlock.ToString().c_str());
         LogPrintf("regtest: %s\n", genesis.hashMerkleRoot.ToString().c_str());
@@ -422,8 +417,8 @@ public:
         }
         */
 
-        assert(consensus.hashGenesisBlock == uint256S("ffc694d084bd98d8b0708c8a5fba877f498476439c7ab31f0cf3f5c38c026a64"));
-        assert(genesis.hashMerkleRoot == uint256S("1576ef41775095b26a8f8f2bb65b693ec12230608a425aa84ee462381cae00e6"));
+        assert(consensus.hashGenesisBlock == uint256S(REGTESTGENESISHASH));
+        assert(genesis.hashMerkleRoot == uint256S(MERKLETREEROOTHASH));
 
         vFixedSeeds.clear(); //!< Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();      //!< Regtest mode doesn't have any DNS seeds.
@@ -435,22 +430,18 @@ public:
         fMineBlocksOnDemand = false;
         m_is_test_chain = true;
 
-        // base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,111);
-        // base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,196);
-        // base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
-        // base58Prefixes[EXT_PUBLIC_KEY] = {0x87, 0xc9, 0x27, 0x00}; // 'tpub'
-        // base58Prefixes[EXT_SECRET_KEY] = {0x87, 0xc8, 0x30, 0x80}; // 'tpriv'
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,0);                    // VCoin addresses start with 'V'
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,5);                    // VCoin script addresses start with '7'
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,128);              // VCoin private keys start with '7' or 'V'
-        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >(); // Chaincoin BIP32 pubkeys start with 'drkv'
-        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >(); // Chaincoin BIP32 prvkeys start with 'drkp'
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,0); // regtest addresses start with 'V'
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,5); // regtest script addresses start with '7'
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,128); // regtest private keys start with '7' or 'V'
+        base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF}; // BIP32 regtest pubkeys start with 'drkv'
+        base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94}; // BIP32 regtest prvkeys start with 'drkp'
+        base58Prefixes[EXT_COIN_TYPE]  = {0x80, 0x00, 0x00, 0x01}; // BIP44 regtest coin type is '1'
 
         bech32_hrp = "vcrt";
 
         checkpointData = {
             {
-                {0, uint256S("ffc694d084bd98d8b0708c8a5fba877f498476439c7ab31f0cf3f5c38c026a64")},
+                {0, uint256S(REGTESTGENESISHASH)},
             }
         };
 

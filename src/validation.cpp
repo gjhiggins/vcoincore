@@ -673,7 +673,7 @@ bool MemPoolAccept::PreChecks(ATMPArgs& args, Workspace& ws)
         return state.Invalid(ValidationInvalidReason::TX_PREMATURE_SPEND, false, REJECT_NONSTANDARD, "non-BIP68-final");
 
     CAmount nFees = 0;
-    if (!Consensus::CheckTxInputs(tx, state, m_view, GetSpendHeight(m_view), nFees)) {
+    if (!Consensus::CheckTxInputs(tx, state, m_view, GetSpendHeight(m_view), nFees, Params().GetConsensus())) {
         return error("%s: Consensus::CheckTxInputs: %s, %s", __func__, tx.GetHash().ToString(), FormatStateMessage(state));
     }
 
@@ -1299,22 +1299,14 @@ bool CChainState::IsInitialBlockDownload() const
     LOCK(cs_main);
     if (m_cached_finished_ibd.load(std::memory_order_relaxed))
         return false;
-    if (fImporting || fReindex) {
-        // LogPrintf("fImporting / fReindex\n");
+    if (fImporting || fReindex)
         return true;
-    }
-    if (m_chain.Tip() == nullptr) {
-        // LogPrintf("Tip is NULL\n");
+    if (m_chain.Tip() == nullptr)
         return true;
-    }
-    if (m_chain.Tip()->nChainWork < nMinimumChainWork) {
-        // LogPrintf("FImporting / fReindex\n");
+    if (m_chain.Tip()->nChainWork < nMinimumChainWork)
         return true;
-    }
-    if (m_chain.Tip()->GetBlockTime() < (GetTime() - nMaxTipAge)) {
-        // LogPrintf("Tip too old\n");
+    if (m_chain.Tip()->GetBlockTime() < (GetTime() - nMaxTipAge))
         return true;
-    }
     LogPrintf("Leaving InitialBlockDownload (latching to false)\n");
     m_cached_finished_ibd.store(true, std::memory_order_relaxed);
     return false;
@@ -2114,7 +2106,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
         if (!tx.IsCoinBase())
         {
             CAmount txfee = 0;
-            if (!Consensus::CheckTxInputs(tx, state, view, pindex->nHeight, txfee)) {
+            if (!Consensus::CheckTxInputs(tx, state, view, pindex->nHeight, txfee, chainparams.GetConsensus())) {
                 if (!IsBlockReason(state.GetReason())) {
                     // CheckTxInputs may return MISSING_INPUTS or
                     // PREMATURE_SPEND but we can't return that, as it's not
@@ -3342,8 +3334,9 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
 bool IsWitnessEnabled(const CBlockIndex* pindexPrev, const Consensus::Params& params)
 {
     int height = pindexPrev == nullptr ? 0 : pindexPrev->nHeight + 1;
-    bool iswitnessenabled = height >= params.SegwitHeight;
-    LogPrintf("IsWitnessEnabled = %s (%u %u)\n", iswitnessenabled, height, params.SegwitHeight);
+    /* FIXME: gjh segwit settings */
+    // bool iswitnessenabled = height >= params.SegwitHeight;
+    // LogPrintf("IsWitnessEnabled = %s (%u %u)\n", iswitnessenabled, height, params.SegwitHeight);
     return (height >= params.SegwitHeight);
 }
 
