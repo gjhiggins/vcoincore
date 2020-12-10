@@ -103,10 +103,9 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
         bnNew = bnPowLimit;
 
     /// debug print
-    // printf("GetNextWorkRequired RETARGET\n");
-    // printf("nTargetTimespan = %"PRI64d"    nActualTimespan = %"PRI64d"\n", nAveragingTargetTimespan, nActualTimespan);
-    // printf("Before: %08x  %s\n", pindexLast->nBits, arith_uint256().SetCompact(pindexLast->nBits).ToString().c_str());
-    // printf("After:  %08x  %s\n", bnNew.GetCompact(), bnNew.ToString().c_str());
+    // LogPrint(BCLog::DEVEL, "GetNextWorkRequired Retarget, nTargetTimespan = %li, nActualTimespan = %li.\n", nAveragingTargetTimespan, nActualTimespan);
+    // LogPrint(BCLog::DEVEL, "Before: %08x  %s\n", pindexLast->nBits, arith_uint256().SetCompact(pindexLast->nBits).ToString().c_str());
+    // LogPrint(BCLog::DEVEL, "After:  %016llx  %s\n", bnNew.GetCompact(), bnNew.ToString().c_str());
 
     return bnNew.GetCompact();
 }
