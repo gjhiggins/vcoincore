@@ -16,6 +16,7 @@
 #include <qt/walletmodel.h>
 
 #include <chain.h>
+#include <chainparams.h>
 #include <rpc/blockchain.h>
 #include <rpc/mining.h>
 #include <univalue.h>
@@ -141,6 +142,11 @@ OverviewPage::OverviewPage(const PlatformStyle *platformStyle, QWidget *parent) 
     ui->listTransactions->setAttribute(Qt::WA_MacShowFocusRect, false);
 
     connect(ui->listTransactions, &QListView::clicked, this, &OverviewPage::handleTransactionClicked);
+
+    if (Params().IsTestChain()) {
+        QPixmap testnet_pixmap (":/icons/logo_testnet");
+        ui->labelMainLogo->setPixmap(testnet_pixmap);
+    }
 
     if (gArgs.GetBoolArg("-chart", DEFAULT_CHARTPLOTTING))
     {
