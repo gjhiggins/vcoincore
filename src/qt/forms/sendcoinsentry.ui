@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>729</width>
-    <height>150</height>
+    <height>174</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -239,12 +239,12 @@
       </item>
       <item>
        <widget class="QPushButton" name="selectFileButton">
+        <property name="toolTip">
+         <string>Select file to hash for notarization in the V Core blockchain.</string>
+        </property>
         <property name="text">
          <string>Notarize File...</string>
         </property>
-         <property name="toolTip">
-          <string>Select file to hash for notarization in the {{coinname}} blockchain.</string>
-         </property>
        </widget>
       </item>
      </layout>
@@ -1344,6 +1344,7 @@
    <class>BitcoinAmountField</class>
    <extends>QLineEdit</extends>
    <header>qt/bitcoinamountfield.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
