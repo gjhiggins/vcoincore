@@ -1,5 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin Core developers
+// Copyright (c) 2021 The V Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -237,6 +238,10 @@ extern const char *GETBLOCKTXN;
  * @since protocol version 70014 as described by BIP 152
  */
 extern const char *BLOCKTXN;
+/**
+ * The Dandelion tx message transmits a single Dandelion transaction.
+ */
+extern const char *DANDELIONTX;
 };
 
 /* Get a vector of all valid message types (see above) */
@@ -294,7 +299,7 @@ enum ServiceFlags : uint64_t {
  * Thus, generally, avoid calling with peerServices == NODE_NONE, unless
  * state-specific flags must absolutely be avoided. When called with
  * peerServices == NODE_NONE, the returned desirable service flags are
- * guaranteed to not change dependant on state - ie they are suitable for
+ * guaranteed to not change dependent on state - ie they are suitable for
  * use when describing peers which we know to be desirable, but for which
  * we do not have a confirmed set of service flags.
  *
@@ -374,9 +379,11 @@ enum GetDataMsg
     // The following can only occur in getdata. Invs always use TX or BLOCK.
     MSG_FILTERED_BLOCK = 3,  //!< Defined in BIP37
     MSG_CMPCT_BLOCK = 4,     //!< Defined in BIP152
+    MSG_DANDELION_TX = 5,    //!< Dandelion
     MSG_WITNESS_BLOCK = MSG_BLOCK | MSG_WITNESS_FLAG, //!< Defined in BIP144
     MSG_WITNESS_TX = MSG_TX | MSG_WITNESS_FLAG,       //!< Defined in BIP144
     MSG_FILTERED_WITNESS_BLOCK = MSG_FILTERED_BLOCK | MSG_WITNESS_FLAG,
+    MSG_DANDELION_WITNESS_TX = MSG_DANDELION_TX | MSG_WITNESS_FLAG,
 };
 
 /** inv message data */

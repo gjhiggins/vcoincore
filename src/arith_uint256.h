@@ -288,9 +288,34 @@ public:
 
     friend uint256 ArithToUint256(const arith_uint256 &);
     friend arith_uint256 UintToArith256(const uint256 &);
+    friend class arith_uint512;
 };
 
 uint256 ArithToUint256(const arith_uint256 &);
 arith_uint256 UintToArith256(const uint256 &);
+
+
+/** 512-bit unsigned integer */
+class arith_uint512  : public base_uint<512> {
+protected:
+	enum { WIDTH = 512 / 32 };
+	uint32_t pn[WIDTH];
+
+public:
+	arith_uint512()
+	{
+		for (int i = 0; i < WIDTH; i++)
+			pn[i] = 0;
+	}
+
+	arith_uint256 trim256() const
+	{
+		arith_uint256 ret;
+		for (unsigned int i = 0; i < arith_uint256::WIDTH; i++) {
+			ret.pn[i] = pn[i];
+		}
+		return ret;
+	}
+};
 
 #endif // BITCOIN_ARITH_UINT256_H

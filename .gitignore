@@ -1,13 +1,21 @@
+bin
+*.config
+*.creator
+*.files
+*.includes
+.deps
+*.user
+
 *.tar.gz
 
 *.exe
-src/bitcoin
-src/bitcoind
-src/bitcoin-cli
-src/bitcoin-tx
-src/test/test_bitcoin
-src/test/test_bitcoin_fuzzy
-src/qt/test/test_bitcoin-qt
+src/vcore
+src/vcored
+src/vcore-cli
+src/vcore-tx
+src/test/test_vcore
+src/test/test_vcore_fuzzy
+src/qt/test/test_vcore-qt
 
 # autoreconf
 Makefile.in
@@ -35,7 +43,7 @@ src/config/bitcoin-config.h.in
 src/config/stamp-h1
 share/setup.nsi
 share/qt/Info.plist
-
+src/obj/build.h
 src/univalue/gen
 
 src/qt/*.moc
@@ -80,13 +88,13 @@ src/qt/bitcoin-qt.includes
 # Compilation and Qt preprocessor part
 *.qm
 Makefile
-bitcoin-qt
-Bitcoin-Qt.app
+vcore-qt
+V-Core-Qt.app
 background.tiff*
 
 # Unit-tests
 Makefile.test
-bitcoin-qt_test
+vcore-qt_test
 
 # Resources cpp
 qrc_*.cpp
@@ -116,3 +124,6 @@ test/cache/*
 
 libbitcoinconsensus.pc
 contrib/devtools/split-debug.sh
+
+#python stuff
+.mypy_cache

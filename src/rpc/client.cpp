@@ -29,6 +29,8 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "setmocktime", 0, "timestamp" },
     { "generate", 0, "nblocks" },
     { "generate", 1, "maxtries" },
+    { "setgenerate", 0, "generate" },
+    { "setgenerate", 1, "maxproclimit" },
     { "generatetoaddress", 0, "nblocks" },
     { "generatetoaddress", 2, "maxtries" },
     { "getnetworkhashps", 0, "nblocks" },
@@ -143,6 +145,12 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "echojson", 9, "arg9" },
     { "rescanblockchain", 0, "start_height"},
     { "rescanblockchain", 1, "stop_height"},
+    { "makekeypair", 0, "uncompressed" },
+    { "renderblock", 0, "block" },
+    { "dumptriples", 1, "start" },
+    { "dumptriples", 2, "end" },
+    { "getnetworkhashps", 0, "lookup"},
+    { "getnetworkhashps", 1, "height"},
 };
 
 class CRPCConvertTable

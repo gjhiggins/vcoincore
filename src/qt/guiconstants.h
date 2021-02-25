@@ -1,3 +1,4 @@
+// Copyright (c) 2021 The V Core developers
 // Copyright (c) 2011-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -15,6 +16,7 @@ static const int MAX_PASSPHRASE_SIZE = 1024;
 static const int STATUSBAR_ICONSIZE = 16;
 
 static const bool DEFAULT_SPLASHSCREEN = true;
+static const bool DEFAULT_CHARTPLOTTING = true;
 
 /* Invalid field background style */
 #define STYLE_INVALID "background:#FF8080"
@@ -46,9 +48,9 @@ static const int MAX_URI_LENGTH = 255;
 /* Number of frames in spinner animation */
 #define SPINNER_FRAMES 36
 
-#define QAPP_ORG_NAME "Bitcoin"
-#define QAPP_ORG_DOMAIN "bitcoin.org"
-#define QAPP_APP_NAME_DEFAULT "Bitcoin-Qt"
-#define QAPP_APP_NAME_TESTNET "Bitcoin-Qt-testnet"
+#define QAPP_ORG_NAME "V Core"
+#define QAPP_ORG_DOMAIN "vcore.org"
+#define QAPP_APP_NAME_DEFAULT "V-Core-Qt"
+#define QAPP_APP_NAME_TESTNET "V-Core-Qt-testnet"
 
 #endif // BITCOIN_QT_GUICONSTANTS_H

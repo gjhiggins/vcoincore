@@ -1,5 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin Core developers
+// Copyright (c) 2021 The V Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,6 +14,15 @@
 
 #include <memory>
 #include <vector>
+
+#define MAINNETGENESISHASH "00000b7e804f0de87e7752550ff04d7686a4599509897feefd7f03904eb45633"
+#define MERKLETREEROOTHASH "1576ef41775095b26a8f8f2bb65b693ec12230608a425aa84ee462381cae00e6"
+#define MAINNETNONCE 1486592
+#define TESTNETGENESISHASH "000007c2d96e3435b752fc25a219ff70c963540d07c73243419b8e9274456f39"
+#define TESTNETMERKLETREEROOTHASH "1576ef41775095b26a8f8f2bb65b693ec12230608a425aa84ee462381cae00e6"
+#define TESTNETNONCE 713385
+#define REGTESTGENESISHASH "ffc694d084bd98d8b0708c8a5fba877f498476439c7ab31f0cf3f5c38c026a64"
+#define REGTESTNONCE 3
 
 struct SeedSpec6 {
     uint8_t addr[16];
@@ -28,7 +38,9 @@ struct CCheckpointData {
 struct ChainTxData {
     int64_t nTime;
     int64_t nTxCount;
+	int64_t nDataSize;
     double dTxRate;
+	double dDataRate;
 };
 
 /**
@@ -44,9 +56,10 @@ public:
     enum Base58Type {
         PUBKEY_ADDRESS,
         SCRIPT_ADDRESS,
-        SECRET_KEY,
-        EXT_PUBLIC_KEY,
-        EXT_SECRET_KEY,
+        SECRET_KEY,     // BIP16
+        EXT_PUBLIC_KEY, // BIP32
+        EXT_SECRET_KEY, // BIP32
+        EXT_COIN_TYPE,  // BIP44
 
         MAX_BASE58_TYPES
     };
@@ -55,6 +68,8 @@ public:
     const CMessageHeader::MessageStartChars& MessageStart() const { return pchMessageStart; }
     int GetDefaultPort() const { return nDefaultPort; }
 
+    /** Make miner wait to have peers to avoid wasting work */
+    bool MiningRequiresPeers() const {return fMiningRequiresPeers; }
     const CBlock& GenesisBlock() const { return genesis; }
     /** Default value for -checkmempool and -checkblockindex argument */
     bool DefaultConsistencyChecks() const { return fDefaultConsistencyChecks; }
@@ -89,6 +104,7 @@ protected:
     bool fDefaultConsistencyChecks;
     bool fRequireStandard;
     bool fMineBlocksOnDemand;
+    bool fMiningRequiresPeers;
     CCheckpointData checkpointData;
     ChainTxData chainTxData;
 };

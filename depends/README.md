@@ -25,6 +25,7 @@ Common `host-platform-triplets` for cross compilation are:
 - `x86_64-apple-darwin11` for MacOSX
 - `arm-linux-gnueabihf` for Linux ARM 32 bit
 - `aarch64-linux-gnu` for Linux ARM 64 bit
+- `x86_64-apple-darwin11` for Mac OSX
 
 No other options are needed, the paths are automatically configured.
 

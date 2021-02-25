@@ -165,6 +165,9 @@ BOOST_AUTO_TEST_CASE(processnewblock_signals_ordering)
             for (auto block : blocks) {
                 if (block->vtx.size() == 1) {
                     bool processed = ProcessNewBlock(Params(), block, true, &ignored);
+                    /* FIXME gjh: fails here, probably as
+                    CreateNewBlock: TestBlockValidity failed: bad-txns-inputs-missingorspent, CheckTxInputs: inputs missing/spent (code 16)
+                    */
                     assert(processed);
                 }
             }

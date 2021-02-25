@@ -13,7 +13,7 @@ import re
 from test_framework.blocktools import create_block, create_coinbase
 from test_framework.messages import msg_block
 from test_framework.mininode import P2PInterface, network_thread_start, mininode_lock
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import AltcoinTestFramework
 from test_framework.util import wait_until
 
 VB_PERIOD = 144           # versionbits period length for regtest
@@ -26,7 +26,7 @@ WARN_UNKNOWN_RULES_MINED = "Unknown block versions being mined! It's possible un
 WARN_UNKNOWN_RULES_ACTIVE = "unknown new rules activated (versionbit {})".format(VB_UNKNOWN_BIT)
 VB_PATTERN = re.compile("Warning: unknown new rules activated.*versionbit")
 
-class VersionBitsWarningTest(BitcoinTestFramework):
+class VersionBitsWarningTest(AltcoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 1

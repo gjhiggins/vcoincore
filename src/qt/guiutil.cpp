@@ -9,13 +9,17 @@
 #include <qt/qvalidatedlineedit.h>
 #include <qt/walletmodel.h>
 
-#include <primitives/transaction.h>
+#include <arith_uint256.h>
 #include <init.h>
+#include <miner.h>
+#include <rpc/blockchain.h>
 #include <policy/policy.h>
+#include <primitives/transaction.h>
 #include <protocol.h>
 #include <script/script.h>
 #include <script/standard.h>
 #include <util.h>
+#include <validation.h> // For minRelayTxFee
 
 #ifdef WIN32
 #ifdef _WIN32_WINNT
@@ -36,6 +40,7 @@
 #endif
 
 #include <boost/scoped_array.hpp>
+#include <boost/thread.hpp>
 
 #include <QAbstractItemView>
 #include <QApplication>
@@ -61,6 +66,18 @@
 #if QT_VERSION >= 0x50200
 #include <QFontDatabase>
 #endif
+
+#define BOOST_UTF8_BEGIN_NAMESPACE \
+     namespace boost { namespace filesystem { namespace detail {
+
+#define BOOST_UTF8_END_NAMESPACE }}}
+#define BOOST_UTF8_DECL BOOST_FILESYSTEM_DECL
+
+#include <boost/detail/utf8_codecvt_facet.ipp>
+
+#undef BOOST_UTF8_BEGIN_NAMESPACE
+#undef BOOST_UTF8_END_NAMESPACE
+#undef BOOST_UTF8_DECL
 
 static fs::detail::utf8_codecvt_facet utf8;
 
@@ -127,7 +144,7 @@ void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent)
 #if QT_VERSION >= 0x040700
     // We don't want translators to use own addresses in translations
     // and this is the only place, where this address is supplied.
-    widget->setPlaceholderText(QObject::tr("Enter a Bitcoin address (e.g. %1)").arg(
+    widget->setPlaceholderText(QObject::tr("Enter a V Core address (e.g. %1)").arg(
         QString::fromStdString(DummyAddress(Params()))));
 #endif
     widget->setValidator(new BitcoinAddressEntryValidator(parent));
@@ -146,7 +163,7 @@ void setupAmountWidget(QLineEdit *widget, QWidget *parent)
 bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
     // return if URI is not valid or is no bitcoin: URI
-    if(!uri.isValid() || uri.scheme() != QString("bitcoin"))
+    if(!uri.isValid() || uri.scheme() != QString("vcore"))
         return false;
 
     SendCoinsRecipient rv;
@@ -210,9 +227,9 @@ bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
     //
     //    Cannot handle this later, because bitcoin:// will cause Qt to see the part after // as host,
     //    which will lower-case it (and thus invalidate the address).
-    if(uri.startsWith("bitcoin://", Qt::CaseInsensitive))
+    if(uri.startsWith("v-core://", Qt::CaseInsensitive))
     {
-        uri.replace(0, 10, "bitcoin:");
+        uri.replace(0, std::strlen("v-core") + 3, "vcore:");
     }
     QUrl uriInstance(uri);
     return parseBitcoinURI(uriInstance, out);
@@ -220,7 +237,7 @@ bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
 
 QString formatBitcoinURI(const SendCoinsRecipient &info)
 {
-    QString ret = QString("bitcoin:%1").arg(info.address);
+    QString ret = QString("v-core:%1").arg(info.address);
     int paramCount = 0;
 
     if (info.amount)
@@ -615,10 +632,10 @@ fs::path static StartupShortcutPath()
 {
     std::string chain = ChainNameFromCommandLine();
     if (chain == CBaseChainParams::MAIN)
-        return GetSpecialFolderPath(CSIDL_STARTUP) / "Bitcoin.lnk";
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "V Core.lnk";
     if (chain == CBaseChainParams::TESTNET) // Remove this special case when CBaseChainParams::TESTNET = "testnet4"
-        return GetSpecialFolderPath(CSIDL_STARTUP) / "Bitcoin (testnet).lnk";
-    return GetSpecialFolderPath(CSIDL_STARTUP) / strprintf("Bitcoin (%s).lnk", chain);
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "V Core (testnet).lnk";
+    return GetSpecialFolderPath(CSIDL_STARTUP) / strprintf("V Core (%s).lnk", chain);
 }
 
 bool GetStartOnSystemStartup()
@@ -713,8 +730,8 @@ fs::path static GetAutostartFilePath()
 {
     std::string chain = ChainNameFromCommandLine();
     if (chain == CBaseChainParams::MAIN)
-        return GetAutostartDir() / "bitcoin.desktop";
-    return GetAutostartDir() / strprintf("bitcoin-%s.lnk", chain);
+        return GetAutostartDir() / "vcore.desktop";
+    return GetAutostartDir() / strprintf("vcore-%s.lnk", chain);
 }
 
 bool GetStartOnSystemStartup()
@@ -758,9 +775,9 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         optionFile << "[Desktop Entry]\n";
         optionFile << "Type=Application\n";
         if (chain == CBaseChainParams::MAIN)
-            optionFile << "Name=Bitcoin\n";
+            optionFile << "Name=V Core\n";
         else
-            optionFile << strprintf("Name=Bitcoin (%s)\n", chain);
+            optionFile << strprintf("Name=V Core (%s)\n", chain);
         optionFile << "Exec=" << pszExePath << strprintf(" -min -testnet=%d -regtest=%d\n", gArgs.GetBoolArg("-testnet", false), gArgs.GetBoolArg("-regtest", false));
         optionFile << "Terminal=false\n";
         optionFile << "Hidden=false\n";
@@ -813,7 +830,7 @@ LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef
             CFRelease(currentItemURL);
         }
     }
-    
+
     CFRelease(listSnapshot);
     return nullptr;
 }
@@ -870,12 +887,20 @@ void setClipboard(const QString& str)
 
 fs::path qstringToBoostPath(const QString &path)
 {
+#ifdef WIN32
     return fs::path(path.toStdString(), utf8);
+#else
+    return fs::path(path.toStdString());
+#endif
 }
 
 QString boostPathToQString(const fs::path &path)
 {
+#ifdef WIN32
     return QString::fromStdString(path.string(utf8));
+#else
+    return QString::fromStdString(path.string());
+#endif
 }
 
 QString formatDurationStr(int secs)
@@ -1011,10 +1036,140 @@ void ClickableLabel::mouseReleaseEvent(QMouseEvent *event)
 {
     Q_EMIT clicked(event->pos());
 }
-    
+
 void ClickableProgressBar::mouseReleaseEvent(QMouseEvent *event)
 {
     Q_EMIT clicked(event->pos());
 }
 
+int MaxThreads() {
+    int nThreads = boost::thread::hardware_concurrency();
+
+    int nUseThreads = gArgs.GetArg("-genproclimit", -1);
+    if (nUseThreads < 0) {
+        nUseThreads = nThreads;
+    }
+    return nUseThreads;
+}
+
+int64_t GetHashRate() {
+
+    if (GetTimeMillis() - nHPSTimerStart > 8000)
+        return (int64_t)0;
+    return (int64_t)dHashesPerSec;
+}
+
+QString FormatHashRate(qint64 n)
+{
+    if (n == 0)
+        return "0 H/s";
+
+    int i = (int)floor(log(n) / log(1000));
+    float v = n * pow(1000.0f, -i);
+
+    QString prefix = "";
+    if (i >= 1 && i < 9)
+        prefix = " kMGTPEZY"[i];
+
+    return QString("%1 %2H/s").arg(v, 0, 'f', 2).arg(prefix);
+}
+
+int64_t GetNetworkHashPS(int lookup, int height)
+{
+    CBlockIndex* pb = chainActive.Tip();
+
+    if (height >= 0 && height < chainActive.Height())
+        pb = chainActive[height];
+
+    if (pb == NULL || !pb->nHeight)
+        return 0;
+
+    // If lookup is -1, then use blocks since last difficulty change.
+    if (lookup <= 0)
+        lookup = pb->nHeight % Params().GetConsensus().DifficultyAdjustmentInterval() + 1;
+
+    // If lookup is larger than chain, then set it to chain length.
+    if (lookup > pb->nHeight)
+        lookup = pb->nHeight;
+
+    CBlockIndex* pb0 = pb;
+    int64_t minTime = pb0->GetBlockTime();
+    int64_t maxTime = minTime;
+    for (int i = 0; i < lookup; i++) {
+        pb0 = pb0->pprev;
+        int64_t time = pb0->GetBlockTime();
+        minTime = std::min(time, minTime);
+        maxTime = std::max(time, maxTime);
+    }
+
+    // In case there's a situation where minTime == maxTime, we don't want a divide by zero exception.
+    if (minTime == maxTime)
+        return 0;
+
+    arith_uint256 workDiff = pb->nChainWork - pb0->nChainWork;
+    int64_t timeDiff = maxTime - minTime;
+
+    return workDiff.getdouble() / timeDiff;
+}
+
+QString FormatTimeInterval(arith_uint256 time)
+{
+    enum EUnit { YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, NUM_UNITS };
+
+    const int SecondsPerUnit[NUM_UNITS] =
+        {
+            31556952,      // average number of seconds in gregorian year
+            31556952 / 12, // average number of seconds in gregorian month
+            24 * 60 * 60,  // number of seconds in a day
+            60 * 60,       // number of seconds in an hour
+            60,            // number of seconds in a minute
+            1};
+
+    const char* UnitNames[NUM_UNITS] =
+        {
+            "year",
+            "month",
+            "day",
+            "hour",
+            "minute",
+            "second"};
+
+    if (time > 0xFFFFFFFF) {
+        time /= SecondsPerUnit[YEAR];
+        return QString("%1 years").arg(time.ToString().c_str());
+    } else {
+        unsigned int t32 = (unsigned int)time.GetCompact();
+
+        int Values[NUM_UNITS];
+        for (int i = 0; i < NUM_UNITS; i++) {
+            Values[i] = t32 / SecondsPerUnit[i];
+            t32 %= SecondsPerUnit[i];
+        }
+
+        int FirstNonZero = 0;
+        while (FirstNonZero < NUM_UNITS && Values[FirstNonZero] == 0)
+            FirstNonZero++;
+
+        QString TimeStr;
+        for (int i = FirstNonZero; i < std::min(FirstNonZero + 3, (int)NUM_UNITS); i++) {
+            int Value = Values[i];
+            TimeStr += QString("%1 %2%3 ").arg(Value).arg(UnitNames[i]).arg((Value == 1) ? "" : "s"); // FIXME: this is English specific
+        }
+        return TimeStr;
+    }
+}
+
+QString HashRateUnits(int64_t hashRate)
+{
+    if (hashRate == 0)
+        return "H/s";
+
+    int i = (int)floor(log(hashRate) / log(1000));
+
+    QString prefix = "";
+    if (i >= 1 && i < 9)
+        prefix = " kMGTPEZY"[i];
+
+    return QString("%1H/s").arg(prefix);
+}
 } // namespace GUIUtil

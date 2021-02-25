@@ -1,4 +1,5 @@
 // Copyright (c) 2011-2017 The Bitcoin Core developers
+// Copyright (c) 2020 The V Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -20,6 +21,11 @@
 #include <qt/walletmodel.h>
 
 #include <ui_interface.h>
+
+#include <qt/blockexplorer.h>
+#include <qt/miningpage.h>
+#include <qt/multisigdialog.h>
+#include <wallet/wallet.h>
 
 #include <QAction>
 #include <QActionGroup>
@@ -54,6 +60,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     transactionsPage->setLayout(vbox);
 
     receiveCoinsPage = new ReceiveCoinsDialog(platformStyle);
+    miningPage = new MiningPage(platformStyle);
     sendCoinsPage = new SendCoinsDialog(platformStyle);
 
     usedSendingAddressesPage = new AddressBookPage(platformStyle, AddressBookPage::ForEditing, AddressBookPage::SendingTab, this);
@@ -61,6 +68,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 
     addWidget(overviewPage);
     addWidget(transactionsPage);
+    addWidget(miningPage);
     addWidget(receiveCoinsPage);
     addWidget(sendCoinsPage);
 
@@ -100,7 +108,7 @@ void WalletView::setBitcoinGUI(BitcoinGUI *gui)
         // Pass through transaction notifications
         connect(this, SIGNAL(incomingTransaction(QString,int,CAmount,QString,QString,QString)), gui, SLOT(incomingTransaction(QString,int,CAmount,QString,QString,QString)));
 
-        // Connect HD enabled state signal 
+        // Connect HD enabled state signal
         connect(this, SIGNAL(hdEnabledStatusChanged(int)), gui, SLOT(setHDStatus(int)));
     }
 }
@@ -119,6 +127,7 @@ void WalletView::setWalletModel(WalletModel *_walletModel)
 
     // Put transaction list in tabs
     transactionView->setModel(_walletModel);
+    miningPage->setModel(_walletModel);
     overviewPage->setWalletModel(_walletModel);
     receiveCoinsPage->setModel(_walletModel);
     sendCoinsPage->setModel(_walletModel);
@@ -177,6 +186,27 @@ void WalletView::gotoOverviewPage()
 void WalletView::gotoHistoryPage()
 {
     setCurrentWidget(transactionsPage);
+}
+
+void WalletView::gotoBlockExplorerPage()
+{
+    BlockExplorer *blockexplorerPage = new BlockExplorer(this);
+    blockexplorerPage->setAttribute(Qt::WA_DeleteOnClose);
+    // blockexplorerPage->setModel(walletModel);
+    blockexplorerPage->show();
+}
+
+void WalletView::gotoMiningPage()
+{
+    setCurrentWidget(miningPage);
+}
+
+void WalletView::gotoMultisigDialog()
+{
+    MultisigDialog *multisigDialog = new MultisigDialog(platformStyle, this);
+    multisigDialog->setAttribute(Qt::WA_DeleteOnClose);
+    multisigDialog->setModel(walletModel);
+    multisigDialog->showDialog();
 }
 
 void WalletView::gotoReceiveCoinsPage()
@@ -299,6 +329,13 @@ void WalletView::usedReceivingAddresses()
     usedReceivingAddressesPage->show();
     usedReceivingAddressesPage->raise();
     usedReceivingAddressesPage->activateWindow();
+}
+
+void WalletView::updatePlot(int count)
+{
+    if(!walletModel)
+        return;
+    overviewPage->updatePlot(count);
 }
 
 void WalletView::showProgress(const QString &title, int nProgress)

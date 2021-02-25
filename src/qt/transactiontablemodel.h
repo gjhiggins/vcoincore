@@ -72,6 +72,8 @@ public:
         StatusRole,
         /** Unprocessed icon */
         RawDecorationRole,
+        /** Inscription icon */
+        InscriptionRole,
     };
 
     int rowCount(const QModelIndex &parent) const;

@@ -1,4 +1,5 @@
 // Copyright (c) 2014-2017 The Bitcoin Core developers
+// Copyright (c) 2021 The V Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -52,6 +53,17 @@ const CBaseChainParams& BaseParams();
 
 /** Sets the params returned by Params() to those for the given network. */
 void SelectBaseParams(const std::string& chain);
+
+/*
+inline bool TestNet() {
+    // Note: it's deliberate that this returns "false" for regression test mode.
+    return Params().NetworkID() == CChainParams::TESTNET;
+}
+
+inline bool RegTest() {
+    return Params().NetworkID() == CChainParams::REGTEST;
+}
+*/
 
 /**
  * Looks for -regtest, -testnet and returns the appropriate BIP70 chain name.

@@ -4,10 +4,10 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test the wallet accounts properly when there is a double-spend conflict."""
 
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import AltcoinTestFramework
 from test_framework.util import *
 
-class TxnMallTest(BitcoinTestFramework):
+class TxnMallTest(AltcoinTestFramework):
     def set_test_params(self):
         self.num_nodes = 4
 

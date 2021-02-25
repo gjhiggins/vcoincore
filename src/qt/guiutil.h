@@ -1,4 +1,5 @@
 // Copyright (c) 2011-2017 The Bitcoin Core developers
+// Copyright (c) 2020 The V Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -6,7 +7,9 @@
 #define BITCOIN_QT_GUIUTIL_H
 
 #include <amount.h>
+#include <arith_uint256.h>
 #include <fs.h>
+#include <miner.h>
 
 #include <QEvent>
 #include <QHeaderView>
@@ -17,6 +20,7 @@
 #include <QTableView>
 #include <QLabel>
 
+class arith_uint256;
 class QValidatedLineEdit;
 class SendCoinsRecipient;
 
@@ -215,11 +219,11 @@ namespace GUIUtil
     protected:
         void mouseReleaseEvent(QMouseEvent *event);
     };
-    
+
     class ClickableProgressBar : public QProgressBar
     {
         Q_OBJECT
-        
+
     Q_SIGNALS:
         /** Emitted when the progressbar is clicked. The relative mouse coordinates of the click are
          * passed to the signal.
@@ -242,6 +246,14 @@ namespace GUIUtil
 #else
     typedef ClickableProgressBar ProgressBar;
 #endif
+
+// utility functions for mining UI
+int MaxThreads();
+int64_t GetHashRate();
+QString FormatHashRate(qint64 n);
+int64_t GetNetworkHashPS(int lookup, int height);
+QString FormatTimeInterval(arith_uint256 time);
+QString HashRateUnits(int64_t hashRate);
 
 } // namespace GUIUtil
 

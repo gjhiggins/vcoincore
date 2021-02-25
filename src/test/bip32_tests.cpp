@@ -92,7 +92,9 @@ void RunTest(const TestVector &test) {
     CExtKey key;
     CExtPubKey pubkey;
     key.SetMaster(seed.data(), seed.size());
+
     pubkey = key.Neuter();
+    int i = 0;
     for (const TestDerivation &derive : test.vDerive) {
         unsigned char data[74];
         key.Encode(data);
@@ -100,6 +102,7 @@ void RunTest(const TestVector &test) {
 
         // Test private key
         CBitcoinExtKey b58key; b58key.SetKey(key);
+	    std::cout << "sed -i 's/" << derive.prv << "/" << b58key.ToString() << "/' src/test/bip32_tests.cpp" << std::endl;
         BOOST_CHECK(b58key.ToString() == derive.prv);
 
         CBitcoinExtKey b58keyDecodeCheck(derive.prv);
@@ -108,6 +111,7 @@ void RunTest(const TestVector &test) {
 
         // Test public key
         CBitcoinExtPubKey b58pubkey; b58pubkey.SetKey(pubkey);
+	    std::cout << "sed -i 's/" << derive.pub << "/" << b58pubkey.ToString() << "/' src/test/bip32_tests.cpp" << std::endl;
         BOOST_CHECK(b58pubkey.ToString() == derive.pub);
 
         CBitcoinExtPubKey b58PubkeyDecodeCheck(derive.pub);
@@ -142,6 +146,7 @@ void RunTest(const TestVector &test) {
 
         BOOST_CHECK(pubCheck == pubkeyNew);
         BOOST_CHECK(privCheck == keyNew);
+        i++;
     }
 }
 

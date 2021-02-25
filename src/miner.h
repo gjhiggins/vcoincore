@@ -1,5 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin Core developers
+// Copyright (c) 2021 The V Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -16,7 +17,10 @@
 
 class CBlockIndex;
 class CChainParams;
+class CConnman;
+class CReserveKey;
 class CScript;
+class CWallet;
 
 namespace Consensus { struct Params; };
 
@@ -195,5 +199,19 @@ private:
 /** Modify the extranonce in a block */
 void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned int& nExtraNonce);
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev);
+
+// getwork
+void SHA256Transform(void* pstate, void* pinput, const void* pinit);
+/** ByteReverse Function used by GetWork */ // TODO: Shift to util
+uint32_t ByteReverse(uint32_t value);
+/** Do mining precalculation */
+void FormatHashBuffers(CBlock* pblock, char* pmidstate, char* pdata, char* phash1);
+/** Check mined block */
+bool ProcessBlockFound(const std::shared_ptr<const CBlock> pblock, const CChainParams& chainparams);
+
+int GenerateVCoins(bool fGenerate, int nThreads, const CChainParams& chainparams);
+extern double dHashesPerSec;
+extern int64_t nHPSTimerStart;
+
 
 #endif // BITCOIN_MINER_H

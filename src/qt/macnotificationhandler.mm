@@ -2,7 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "macnotificationhandler.h"
+#include <qt/macnotificationhandler.h>
 
 #undef slots
 #import <objc/runtime.h>
@@ -13,7 +13,7 @@
 - (NSString *)__bundleIdentifier
 {
     if (self == [NSBundle mainBundle]) {
-        return @"org.bitcoinfoundation.Bitcoin-Qt";
+        return @"org.vcore.V-Core-Qt";
     } else {
         return [self __bundleIdentifier];
     }

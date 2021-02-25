@@ -1,4 +1,5 @@
 // Copyright (c) 2011-2017 The Bitcoin Core developers
+// Copyright (c) 2020 The V Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -17,6 +18,7 @@ class ReceiveCoinsDialog;
 class SendCoinsDialog;
 class SendCoinsRecipient;
 class TransactionView;
+class MiningPage;
 class WalletModel;
 class AddressBookPage;
 
@@ -60,6 +62,7 @@ private:
 
     OverviewPage *overviewPage;
     QWidget *transactionsPage;
+    MiningPage *miningPage;
     ReceiveCoinsDialog *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
     AddressBookPage *usedSendingAddressesPage;
@@ -75,6 +78,12 @@ public Q_SLOTS:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
+    /** Switch to Explorer page */
+    void gotoBlockExplorerPage();
+    /** Switch to mining page */
+    void gotoMiningPage();
+    /** Switch to Multisig Dialog */
+    void gotoMultisigDialog();
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
@@ -112,6 +121,9 @@ public Q_SLOTS:
 
     /** User has requested more information about the out of sync state */
     void requestedSyncWarningInfo();
+
+    /** Update the plot on the overview (home) page */
+    void updatePlot(int count);
 
 Q_SIGNALS:
     /** Signal that we want to show the main window */

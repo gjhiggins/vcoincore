@@ -1,4 +1,5 @@
 // Copyright (c) 2011-2017 The Bitcoin Core developers
+// Copyright (c) 2014-2021 The V Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -71,6 +72,10 @@ public:
     bool getNetworkActive() const;
     //! Toggle network activity state in core
     void setNetworkActive(bool active);
+    //! Toggle mining activity state
+    /* FIXME gjh mininig status
+    void setMiningActive(bool mining, double hashrate);
+    */
     //! Return warnings to be displayed in status bar
     QString getStatusBarWarnings() const;
 
@@ -79,6 +84,7 @@ public:
     bool isReleaseVersion() const;
     QString formatClientStartupTime() const;
     QString dataDir() const;
+    bool getMiningStarted() const;
 
     // caches for the best header
     mutable std::atomic<int> cachedBestHeaderHeight;
@@ -90,6 +96,7 @@ private:
     BanTableModel *banTableModel;
 
     QTimer *pollTimer;
+    bool miningStarted;
 
     void subscribeToCoreSignals();
     void unsubscribeFromCoreSignals();
@@ -99,6 +106,9 @@ Q_SIGNALS:
     void numBlocksChanged(int count, const QDateTime& blockDate, double nVerificationProgress, bool header);
     void mempoolSizeChanged(long count, size_t mempoolSizeInBytes);
     void networkActiveChanged(bool networkActive);
+    /* FIXME: gjh - mining status signalling
+    void miningChanged(bool mining, double hashrate);
+    */
     void alertsChanged(const QString &warnings);
     void bytesChanged(quint64 totalBytesIn, quint64 totalBytesOut);
 
@@ -112,6 +122,9 @@ public Q_SLOTS:
     void updateTimer();
     void updateNumConnections(int numConnections);
     void updateNetworkActive(bool networkActive);
+    /* FIXME: gjh - mining status signalling
+    void updateMiningActive(bool mining, double hashrate);
+    */
     void updateAlert();
     void updateBanlist();
 };

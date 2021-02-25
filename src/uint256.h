@@ -90,6 +90,17 @@ public:
                ((uint64_t)ptr[6]) << 48 | \
                ((uint64_t)ptr[7]) << 56;
     }
+	
+	double getdouble() const
+    {
+        double ret = 0.0;
+        double fact = 1.0;
+        for (int i = 0; i < WIDTH; i++) {
+            ret += fact * data[i];
+            fact *= 256.0;
+        }
+        return ret;
+    }
 
     template<typename Stream>
     void Serialize(Stream& s) const
@@ -133,6 +144,13 @@ public:
     {
         return ReadLE64(data);
     }
+	
+	uint256(uint64_t b)
+    {
+        *(uint64_t*)data = b;
+        for (int i = 8; i < WIDTH; i++)
+            data[i] = 0;
+    }
 };
 
 /* uint256 from const char *.
@@ -155,5 +173,19 @@ inline uint256 uint256S(const std::string& str)
     rv.SetHex(str);
     return rv;
 }
+
+class uint512 : public base_blob<512> {
+public:
+    uint512() {}
+    uint512(const base_blob<512>& b) : base_blob<512>(b) {}
+    explicit uint512(const std::vector<unsigned char>& vch) : base_blob<512>(vch) {}
+
+    uint256 trim256() const
+    {
+        uint256 result;
+        memcpy((void*)&result, (void*)data, 32);
+        return result;
+    }
+};
 
 #endif // BITCOIN_UINT256_H

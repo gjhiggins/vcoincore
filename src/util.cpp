@@ -1,5 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin Core developers
+// Copyright (c) 2020 The V Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -82,8 +83,8 @@
 // Application startup time (used for uptime calculation)
 const int64_t nStartupTime = GetTime();
 
-const char * const BITCOIN_CONF_FILENAME = "bitcoin.conf";
-const char * const BITCOIN_PID_FILENAME = "bitcoind.pid";
+const char * const BITCOIN_CONF_FILENAME = "vcore.conf";
+const char * const BITCOIN_PID_FILENAME = "vcored.pid";
 const char * const DEFAULT_DEBUGLOGFILE = "debug.log";
 
 ArgsManager gArgs;
@@ -252,6 +253,8 @@ const CLogCategoryDesc LogCategories[] =
     {BCLog::COINDB, "coindb"},
     {BCLog::QT, "qt"},
     {BCLog::LEVELDB, "leveldb"},
+    {BCLog::DANDELION, "dandelion"},
+    {BCLog::DEVEL, "devel"},
     {BCLog::ALL, "1"},
     {BCLog::ALL, "all"},
 };
@@ -277,7 +280,8 @@ std::string ListLogCategories()
 {
     std::string ret;
     int outcount = 0;
-    for (unsigned int i = 0; i < ARRAYLEN(LogCategories); i++) {
+    for (unsigned int i = 0; i < ARRAYLEN(LogCategories); i++)
+    {
         // Omit the special cases.
         if (LogCategories[i].flag != BCLog::NONE && LogCategories[i].flag != BCLog::ALL) {
             if (outcount != 0) ret += ", ";
@@ -558,7 +562,7 @@ static std::string FormatException(const std::exception* pex, const char* pszThr
     char pszModule[MAX_PATH] = "";
     GetModuleFileNameA(nullptr, pszModule, sizeof(pszModule));
 #else
-    const char* pszModule = "bitcoin";
+    const char* pszModule = "vcore";
 #endif
     if (pex)
         return strprintf(
@@ -577,13 +581,13 @@ void PrintExceptionContinue(const std::exception* pex, const char* pszThread)
 
 fs::path GetDefaultDataDir()
 {
-    // Windows < Vista: C:\Documents and Settings\Username\Application Data\Bitcoin
-    // Windows >= Vista: C:\Users\Username\AppData\Roaming\Bitcoin
-    // Mac: ~/Library/Application Support/Bitcoin
-    // Unix: ~/.bitcoin
+    // Windows < Vista: C:\Documents and Settings\Username\Application Data\V Core
+    // Windows >= Vista: C:\Users\Username\AppData\Roaming\V Core
+    // Mac: ~/Library/Application Support/V Core
+    // Unix: ~/.vcore
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "Bitcoin";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "V Core";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -593,10 +597,10 @@ fs::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/Bitcoin";
+    return pathRet / "Library/Application Support/V Core";
 #else
     // Unix
-    return pathRet / ".bitcoin";
+    return pathRet / ".vcore";
 #endif
 #endif
 }
@@ -658,7 +662,7 @@ void ArgsManager::ReadConfigFile(const std::string& confPath)
 {
     fs::ifstream streamConfig(GetConfigFile(confPath));
     if (!streamConfig.good())
-        return; // No bitcoin.conf file is OK
+        return; // No vcore.conf file is OK
 
     {
         LOCK(cs_args);

@@ -1,4 +1,5 @@
 // Copyright (c) 2011-2017 The Bitcoin Core developers
+// Copyright (c) 2020 The V Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -124,6 +125,27 @@ void WalletFrame::gotoHistoryPage()
         i.value()->gotoHistoryPage();
 }
 
+void WalletFrame::gotoBlockExplorerPage()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoBlockExplorerPage();
+}
+
+void WalletFrame::gotoMiningPage()
+{
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoMiningPage();
+}
+
+void WalletFrame::gotoMultisigDialog()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoMultisigDialog();
+}
+
 void WalletFrame::gotoReceiveCoinsPage()
 {
     QMap<QString, WalletView*>::const_iterator i;
@@ -178,6 +200,13 @@ void WalletFrame::unlockWallet()
     WalletView *walletView = currentWalletView();
     if (walletView)
         walletView->unlockWallet();
+}
+
+void WalletFrame::updatePlot(int count)
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+    	walletView->updatePlot(count);
 }
 
 void WalletFrame::usedSendingAddresses()

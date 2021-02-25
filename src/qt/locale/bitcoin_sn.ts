@@ -64,7 +64,7 @@
     </message>
 </context>
 <context>
-    <name>BitcoinGUI</name>
+    <name>VCOREGUI</name>
     <message>
         <source>E&amp;xit</source>
         <translation>Buda</translation>
@@ -98,8 +98,8 @@
         <translation>Vhura &amp;URI</translation>
     </message>
     <message>
-        <source>Bitcoin</source>
-        <translation>Bitcoin</translation>
+        <source>V Core</source>
+        <translation>V Core</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -165,8 +165,8 @@
 <context>
     <name>Intro</name>
     <message>
-        <source>Bitcoin</source>
-        <translation>Bitcoin</translation>
+        <source>V Core</source>
+        <translation>V Core</translation>
     </message>
     </context>
 <context>
@@ -194,8 +194,8 @@
         <translation>Marii </translation>
     </message>
     <message>
-        <source>Enter a Bitcoin address (e.g. %1)</source>
-        <translation>Nyora kero ye Bitcoin (sekuti %1)</translation>
+        <source>Enter a V Core address (e.g. %1)</source>
+        <translation>Nyora kero ye V Core (sekuti %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -350,7 +350,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>bitcoin-core</name>
+    <name>v-core</name>
     <message>
         <source>Information</source>
         <translation>Ruzivo</translation>

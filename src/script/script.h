@@ -19,6 +19,8 @@
 #include <string>
 #include <vector>
 
+class CPubKey;
+
 // Maximum number of bytes pushable to the stack
 static const unsigned int MAX_SCRIPT_ELEMENT_SIZE = 520;
 
@@ -209,7 +211,7 @@ class CScriptNum
  * The semantics are subtle, though: operands must be in the range [-2^31 +1...2^31 -1],
  * but results may overflow (and are valid as long as they are not used in a subsequent
  * numeric operation). CScriptNum enforces those semantics by storing results as
- * an int64 and allowing out-of-range values to be returned as a vector of bytes but
+ * an int64_t and allowing out-of-range values to be returned as a vector of bytes but
  * throwing an exception if arithmetic is done or the result is interpreted as an integer.
  */
 public:
@@ -640,6 +642,7 @@ public:
      */
     unsigned int GetSigOpCount(const CScript& scriptSig) const;
 
+    bool IsPayToPublicKeyHash() const;
     bool IsPayToScriptHash() const;
     bool IsPayToWitnessScriptHash() const;
     bool IsWitnessProgram(int& version, std::vector<unsigned char>& program) const;
@@ -667,6 +670,8 @@ public:
         CScriptBase::clear();
         shrink_to_fit();
     }
+
+    void SetMultisig(int nRequired, const std::vector<CPubKey>& keys);
 };
 
 struct CScriptWitness

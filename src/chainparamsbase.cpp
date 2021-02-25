@@ -7,6 +7,7 @@
 
 #include <tinyformat.h>
 #include <util.h>
+#include <protocol.h>
 
 #include <assert.h>
 #include <memory>
@@ -33,7 +34,7 @@ class CBaseMainParams : public CBaseChainParams
 public:
     CBaseMainParams()
     {
-        nRPCPort = 8332;
+        nRPCPort = 5531;
     }
 };
 
@@ -45,7 +46,7 @@ class CBaseTestNetParams : public CBaseChainParams
 public:
     CBaseTestNetParams()
     {
-        nRPCPort = 18332;
+        nRPCPort = 55535;
         strDataDir = "testnet3";
     }
 };
@@ -58,7 +59,7 @@ class CBaseRegTestParams : public CBaseChainParams
 public:
     CBaseRegTestParams()
     {
-        nRPCPort = 18443;
+        nRPCPort = 18445;
         strDataDir = "regtest";
     }
 };

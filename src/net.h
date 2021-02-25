@@ -1,5 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin Core developers
+// Copyright (c) 2021 The V Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -86,6 +87,15 @@ static const size_t DEFAULT_MAXSENDBUFFER    = 1 * 1000;
 
 // NOTE: When adjusting this, update rpcnet:setban's help ("24h")
 static const unsigned int DEFAULT_MISBEHAVING_BANTIME = 60 * 60 * 24;  // Default 24-hour ban
+
+/** Maximum number of outbound peers designated as Dandelion destinations */
+static const int DANDELION_MAX_DESTINATIONS = 2;
+/** Expected time between Dandelion routing shuffles (in seconds). */
+static const int DANDELION_SHUFFLE_INTERVAL = 600;
+/** The minimum amount of time a Dandelion transaction is embargoed (seconds) */
+static const int DANDELION_EMBARGO_MINIMUM = 10;
+/** The average additional embargo time beyond the minimum amount (seconds) */
+static const int DANDELION_EMBARGO_AVG_ADD = 20;
 
 typedef int64_t NodeId;
 
@@ -314,6 +324,19 @@ public:
     unsigned int GetReceiveFloodSize() const;
 
     void WakeMessageHandler();
+    
+    // Public Dandelion field
+    std::map<uint256, int64_t> mDandelionEmbargo;
+    // Dandelion methods
+    bool isDandelionInbound(const CNode* const pnode) const;
+    bool isLocalDandelionDestinationSet() const;
+    bool setLocalDandelionDestination();
+    CNode* getDandelionDestination(CNode* pfrom);
+    bool localDandelionDestinationPushInventory(const CInv& inv);
+    bool insertDandelionEmbargo(const uint256& hash, const int64_t& embargo);
+    bool isTxDandelionEmbargoed(const uint256& hash) const;
+    bool removeDandelionEmbargo(const uint256& hash);
+
 private:
     struct ListenSocket {
         SOCKET socket;
@@ -333,6 +356,7 @@ private:
     void AcceptConnection(const ListenSocket& hListenSocket);
     void ThreadSocketHandler();
     void ThreadDNSAddressSeed();
+    void ThreadDandelionShuffle();
 
     uint64_t CalculateKeyedNetGroup(const CAddress& ad) const;
 
@@ -402,6 +426,18 @@ private:
     mutable CCriticalSection cs_vNodes;
     std::atomic<NodeId> nLastNodeId;
 
+    // Dandelion fields
+    std::vector<CNode*> vDandelionInbound;
+    std::vector<CNode*> vDandelionOutbound;
+    std::vector<CNode*> vDandelionDestination;
+    CNode* localDandelionDestination = nullptr;
+    std::map<CNode*, CNode*> mDandelionRoutes;
+    // Dandelion helper functions
+    CNode* SelectFromDandelionDestinations() const;
+    void CloseDandelionConnections(const CNode* const pnode);
+    std::string GetDandelionRoutingDataDebugString() const;
+    void DandelionShuffle();
+    
     /** Services this instance offers */
     ServiceFlags nLocalServices;
 
@@ -432,6 +468,7 @@ private:
     std::thread threadOpenAddedConnections;
     std::thread threadOpenConnections;
     std::thread threadMessageHandler;
+    std::thread threadDandelionShuffle;
 
     /** flag for deciding to connect to an extra outbound peer,
      *  in excess of nMaxOutbound
@@ -656,6 +693,7 @@ public:
     CCriticalSection cs_filter;
     std::unique_ptr<CBloomFilter> pfilter;
     std::atomic<int> nRefCount;
+    bool fSupportsDandelion = false;
 
     const uint64_t nKeyedNetGroup;
     std::atomic_bool fPauseRecv;
@@ -679,9 +717,13 @@ public:
 
     // inventory based relay
     CRollingBloomFilter filterInventoryKnown;
+    // Set of Dandelion transactions that should be known to this peer
+    std::set<uint256> setDandelionInventoryKnown;
     // Set of transaction ids we still have to announce.
     // They are sorted by the mempool before relay, so the order is not important.
     std::set<uint256> setInventoryTxToSend;
+    // List of Dandelion transaction ids to announce.
+    std::vector<uint256> vInventoryDandelionTxToSend;
     // List of block ids we still have announce.
     // There is no final sorting before sending, as they are always sent immediately
     // and in the order requested.
@@ -825,6 +867,10 @@ public:
             if (!filterInventoryKnown.contains(inv.hash)) {
                 setInventoryTxToSend.insert(inv.hash);
             }
+        } else if (inv.type == MSG_DANDELION_TX) {
+            if (setDandelionInventoryKnown.count(inv.hash)==0) {
+                vInventoryDandelionTxToSend.push_back(inv.hash);
+            }
         } else if (inv.type == MSG_BLOCK) {
             vInventoryBlockToSend.push_back(inv.hash);
         }
@@ -852,6 +898,11 @@ public:
     void MaybeSetAddrName(const std::string& addrNameIn);
 };
 
+class CExplicitNetCleanup
+{
+public:
+    static void callCleanup();
+};
 
 
 

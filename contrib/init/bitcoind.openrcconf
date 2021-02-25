@@ -1,23 +1,23 @@
-# /etc/conf.d/bitcoind: config file for /etc/init.d/bitcoind
+# /etc/conf.d/vcored: config file for /etc/init.d/vcored
 
 # Config file location
-#BITCOIND_CONFIGFILE="/etc/bitcoin/bitcoin.conf"
+#BITCOIND_CONFIGFILE="/etc/vcore/vcore.conf"
 
 # What directory to write pidfile to?  (created and owned by $BITCOIND_USER)
-#BITCOIND_PIDDIR="/var/run/bitcoind"
+#BITCOIND_PIDDIR="/var/run/vcored"
 
 # What filename to give the pidfile
-#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/bitcoind.pid"
+#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/vcored.pid"
 
 # Where to write bitcoind data (be mindful that the blockchain is large)
-#BITCOIND_DATADIR="/var/lib/bitcoind"
+#BITCOIND_DATADIR="/var/lib/vcored"
 
 # User and group to own bitcoind process
-#BITCOIND_USER="bitcoin"
-#BITCOIND_GROUP="bitcoin"
+#BITCOIND_USER="vcore"
+#BITCOIND_GROUP="vcore"
 
 # Path to bitcoind executable
-#BITCOIND_BIN="/usr/bin/bitcoind"
+#BITCOIND_BIN="/usr/bin/vcored"
 
 # Nice value to run bitcoind under
 #BITCOIND_NICE=0

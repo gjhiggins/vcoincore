@@ -8,6 +8,8 @@
 #include <tinyformat.h>
 #include <utilstrencodings.h>
 
+#include <key.h>
+
 const char* GetOpName(opcodetype opcode)
 {
     switch (opcode)
@@ -199,6 +201,18 @@ unsigned int CScript::GetSigOpCount(const CScript& scriptSig) const
     return subscript.GetSigOpCount(true);
 }
 
+bool CScript::IsPayToPublicKeyHash() const
+{
+    // Extra-fast test for pay-to-pubkey-hash CScripts:
+    return (this->size() == 25 &&
+	    (*this)[0] == OP_DUP &&
+	    (*this)[1] == OP_HASH160 &&
+	    (*this)[2] == 0x14 &&
+	    (*this)[23] == OP_EQUALVERIFY &&
+	    (*this)[24] == OP_CHECKSIG);
+}
+
+
 bool CScript::IsPayToScriptHash() const
 {
     // Extra-fast test for pay-to-script-hash CScripts:
@@ -279,4 +293,17 @@ bool CScript::HasValidOps() const
         }
     }
     return true;
+}
+
+void CScript::SetMultisig(int nRequired, const std::vector<CPubKey>& keys)
+{
+    this->clear();
+
+    *this << EncodeOP_N(nRequired);
+    for (const auto& pubkey : keys)
+    {
+        std::vector<unsigned char> vchPubKey(pubkey.begin(), pubkey.end());
+        *this << vchPubKey;
+    }
+    *this << EncodeOP_N(keys.size()) << OP_CHECKMULTISIG;
 }

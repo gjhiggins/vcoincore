@@ -1,20 +1,20 @@
-Bitcoin Core
+V Core
 =============
 
 Intro
 -----
-Bitcoin is a free open source peer-to-peer electronic cash system that is
-completely decentralized, without the need for a central server or trusted
-parties.  Users hold the crypto keys to their own money and transact directly
-with each other, with the help of a P2P network to check for double-spending.
+V Core is a free open source project derived from Bitcoin, with
+the goal of providing a long-term energy-efficient crypto-currency.
+Built on the foundation of Bitcoin, innovations such as proof-of-stake
+help further advance the field of crypto-currency.
 
 
 Setup
 -----
-Unpack the files into a directory and run bitcoin-qt.exe.
+Unpack the files into a directory and run vcore-qt.exe.
 
-Bitcoin Core is the original Bitcoin client and it builds the backbone of the network.
-However, it downloads and stores the entire history of Bitcoin transactions;
+V Core is the original V Core client and it builds the backbone of the network.
+However, it downloads and stores the entire history of V Core transactions;
 depending on the speed of your computer and network connection, the synchronization
 process can take anywhere from a few hours to a day or more.
 

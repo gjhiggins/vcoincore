@@ -14,7 +14,7 @@ package_name_ns = sys.argv[2]
 ds = DSStore.open(output_file, 'w+')
 ds['.']['bwsp'] = {
     'ShowStatusBar': False,
-    'WindowBounds': b'{{300, 280}, {500, 343}}',
+    'WindowBounds': b'{ {300, 280}, {500, 343} }',
     'ContainerShowSidebar': False,
     'SidebarWidth': 0,
     'ShowTabView': False,
@@ -45,8 +45,8 @@ alias = Alias.from_bytes(icvp['backgroundImageAlias'])
 alias.volume.name = package_name_ns
 alias.volume.posix_path = '/Volumes/' + package_name_ns
 alias.volume.disk_image_alias.target.filename = package_name_ns + '.temp.dmg'
-alias.volume.disk_image_alias.target.carbon_path = 'Macintosh HD:Users:\x00bitcoinuser:\x00Documents:\x00bitcoin:\x00bitcoin:\x00' + package_name_ns + '.temp.dmg'
-alias.volume.disk_image_alias.target.posix_path = 'Users/bitcoinuser/Documents/bitcoin/bitcoin/' + package_name_ns + '.temp.dmg'
+alias.volume.disk_image_alias.target.carbon_path = 'Macintosh HD:Users:\x00vcoreuser:\x00Documents:\x00vcore:\x00vcore:\x00' + package_name_ns + '.temp.dmg'
+alias.volume.disk_image_alias.target.posix_path = 'Users/vcoreuser/Documents/vcore/vcore/' + package_name_ns + '.temp.dmg'
 alias.target.carbon_path = package_name_ns + ':.background:\x00background.tiff'
 icvp['backgroundImageAlias'] = biplist.Data(alias.to_bytes())
 ds['.']['icvp'] = icvp
@@ -54,7 +54,7 @@ ds['.']['icvp'] = icvp
 ds['.']['vSrn'] = ('long', 1)
 
 ds['Applications']['Iloc'] = (370, 156)
-ds['Bitcoin-Qt.app']['Iloc'] = (128, 156)
+ds['V-Core-Qt.app']['Iloc'] = (128, 156)
 
 ds.flush()
 ds.close()

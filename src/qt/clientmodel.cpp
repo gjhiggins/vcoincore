@@ -1,4 +1,5 @@
 // Copyright (c) 2011-2017 The Bitcoin Core developers
+// Copyright (c) 2014-2021 The V Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -45,6 +46,8 @@ ClientModel::ClientModel(OptionsModel *_optionsModel, QObject *parent) :
     connect(pollTimer, SIGNAL(timeout()), this, SLOT(updateTimer()));
     pollTimer->start(MODEL_UPDATE_DELAY);
 
+    miningStarted = false;
+
     subscribeToCoreSignals();
 }
 
@@ -74,6 +77,19 @@ int ClientModel::getNumBlocks() const
     LOCK(cs_main);
     return chainActive.Height();
 }
+
+bool ClientModel::getMiningStarted() const
+{
+    return miningStarted;
+}
+
+/* FIXME: gjh - mining status signalling
+void ClientModel::setMining(bool mining, double hashrate)
+{
+    miningStarted = mining;
+    Q_EMIT miningChanged(mining, hashrate);
+}
+*/
 
 int ClientModel::getHeaderTipHeight() const
 {
@@ -164,6 +180,13 @@ void ClientModel::updateNetworkActive(bool networkActive)
     Q_EMIT networkActiveChanged(networkActive);
 }
 
+/* FIXME: gjh - mining status signalling
+void ClientModel::updateMining(bool isMining)
+{
+    Q_EMIT miningChanged(isMining);
+}
+*/
+
 void ClientModel::updateAlert()
 {
     Q_EMIT alertsChanged(getStatusBarWarnings());
@@ -200,6 +223,23 @@ bool ClientModel::getNetworkActive() const
     }
     return false;
 }
+
+/* FIXME: gjh - mining status signalling
+void ClientModel::setMiningActive(bool mining, double hashrate)
+{
+    // isMining = mining;
+}
+*/
+
+/* FIXME: gjh - mining status signalling
+bool ClientModel::getMiningActive() const
+{
+    if (isMining) {
+        return true;
+    }
+    return false;
+}
+*/
 
 QString ClientModel::getStatusBarWarnings() const
 {
@@ -279,6 +319,16 @@ static void NotifyAlertChanged(ClientModel *clientmodel)
     QMetaObject::invokeMethod(clientmodel, "updateAlert", Qt::QueuedConnection);
 }
 
+/* FIXME: gjh mining status
+static void NotifyMiningChanged(ClientModel *clientmodel, bool isMining, double hashrate)
+{
+    qDebug() << "NotifyMiningChanged";
+    QMetaObject::invokeMethod(clientmodel, "miningChanged", Qt::QueuedConnection,
+                              Q_ARG(bool, isMining),
+                              Q_ARG(double, hashrate));
+}
+*/
+
 static void BannedListChanged(ClientModel *clientmodel)
 {
     qDebug() << QString("%1: Requesting update for peer banlist").arg(__func__);
@@ -318,6 +368,9 @@ void ClientModel::subscribeToCoreSignals()
     // Connect signals to client
     uiInterface.ShowProgress.connect(boost::bind(ShowProgress, this, _1, _2));
     uiInterface.NotifyNumConnectionsChanged.connect(boost::bind(NotifyNumConnectionsChanged, this, _1));
+	/* FIXME: gjh mining status
+    uiInterface.NotifyMiningChanged.connect(boost::bind(NotifyMiningChanged, this, _1, _2));
+    */
     uiInterface.NotifyNetworkActiveChanged.connect(boost::bind(NotifyNetworkActiveChanged, this, _1));
     uiInterface.NotifyAlertChanged.connect(boost::bind(NotifyAlertChanged, this));
     uiInterface.BannedListChanged.connect(boost::bind(BannedListChanged, this));
@@ -330,6 +383,9 @@ void ClientModel::unsubscribeFromCoreSignals()
     // Disconnect signals from client
     uiInterface.ShowProgress.disconnect(boost::bind(ShowProgress, this, _1, _2));
     uiInterface.NotifyNumConnectionsChanged.disconnect(boost::bind(NotifyNumConnectionsChanged, this, _1));
+    /* FIXME: gjh mining status
+    uiInterface.NotifyMiningChanged.disconnect(boost::bind(NotifyMiningChanged, this, _1, _2));
+    */
     uiInterface.NotifyNetworkActiveChanged.disconnect(boost::bind(NotifyNetworkActiveChanged, this, _1));
     uiInterface.NotifyAlertChanged.disconnect(boost::bind(NotifyAlertChanged, this));
     uiInterface.BannedListChanged.disconnect(boost::bind(BannedListChanged, this));

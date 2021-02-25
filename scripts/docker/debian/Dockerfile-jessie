@@ -1,0 +1,23 @@
+FROM debian:jessie
+
+#Default branch name develop
+ARG BRANCH_NAME=develop
+#Default
+ARG REPO_SLUG=vcore/vcore
+ENV REPO_SLUG=${REPO_SLUG}
+ENV REPO_URL=https://github.com/${REPO_SLUG}
+
+RUN apt-get -qq update && \
+    apt-get -qqy install \
+	git \
+	sudo
+
+#RUN git clone ${REPO_URL} --branch $BRANCH_NAME --single-branch --depth 1 
+
+COPY vcore.tar.gz /vcore.tar.gz
+RUN tar -xvf /vcore.tar.gz
+
+RUN cd /vcore && ./scripts/dependencies-ubuntu.sh && ./scripts/install-ubuntu.sh && \
+	apt-get purge git build-essential -qy && \
+	apt-get autoremove -qy && \
+	apt-get clean

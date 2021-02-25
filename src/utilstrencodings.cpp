@@ -1,5 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin Core developers
+// Copyright (c) 2021 The V Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -102,6 +103,15 @@ std::vector<unsigned char> ParseHex(const char* psz)
 std::vector<unsigned char> ParseHex(const std::string& str)
 {
     return ParseHex(str.c_str());
+}
+
+std::string HashToString(unsigned char* hash) {
+    char outputBuffer[65];
+    for(int i=0;i<32;i++) {
+        sprintf(outputBuffer+(i*2),"%02x",hash[i]);
+    }
+    outputBuffer[64]=0;
+    return std::string(outputBuffer);
 }
 
 void SplitHostPort(std::string in, int &portOut, std::string &hostOut) {

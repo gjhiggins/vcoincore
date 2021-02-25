@@ -12,18 +12,18 @@
 . /etc/init.d/functions
 
 # you can override defaults in /etc/sysconfig/bitcoind, see below
-if [ -f /etc/sysconfig/bitcoind ]; then
-        . /etc/sysconfig/bitcoind
+if [ -f /etc/sysconfig/vcored ]; then
+        . /etc/sysconfig/vcored
 fi
 
 RETVAL=0
 
-prog=bitcoind
+prog=vcored
 # you can override the lockfile via BITCOIND_LOCKFILE in /etc/sysconfig/bitcoind
-lockfile=${BITCOIND_LOCKFILE-/var/lock/subsys/bitcoind}
+lockfile=${BITCOIND_LOCKFILE-/var/lock/subsys/vcored}
 
 # bitcoind defaults to /usr/bin/bitcoind, override with BITCOIND_BIN
-bitcoind=${BITCOIND_BIN-/usr/bin/bitcoind}
+bitcoind=${BITCOIND_BIN-/usr/bin/vcored}
 
 # bitcoind opts default to -disablewallet, override with BITCOIND_OPTS
 bitcoind_opts=${BITCOIND_OPTS--disablewallet}

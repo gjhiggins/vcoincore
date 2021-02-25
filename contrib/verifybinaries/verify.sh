@@ -23,10 +23,10 @@ TMPFILE="hashes.tmp"
 
 SIGNATUREFILENAME="SHA256SUMS.asc"
 RCSUBDIR="test"
-HOST1="https://bitcoincore.org"
-HOST2="https://bitcoin.org"
+HOST1="https://vcorecore.org"
+HOST2="https://vcore.org"
 BASEDIR="/bin/"
-VERSIONPREFIX="bitcoin-core-"
+VERSIONPREFIX="v-core-"
 RCVERSIONSTRING="rc"
 
 if [ ! -d "$WORKINGDIR" ]; then
@@ -123,7 +123,7 @@ if [ $RET -ne 0 ]; then
       echo "Bad signature."
    elif [ $RET -eq 2 ]; then
       #or if a gpg error has occurred
-      echo "gpg error. Do you have the Bitcoin Core binary release signing key installed?"
+      echo "gpg error. Do you have the V Core binary release signing key installed?"
    fi
 
    echo "gpg output:"
